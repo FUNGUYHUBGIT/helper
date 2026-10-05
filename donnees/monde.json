@@ -1,0 +1,200 @@
+[
+ {
+  "ajoutePar": "auto",
+  "categorie": "international",
+  "date": "2026-10-05",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#f6d365\"/><stop offset=\"1\" stop-color=\"#fda085\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><g transform=\"translate(60 0)\"><circle cx=\"0\" cy=\"118\" r=\"11\" fill=\"#3d5a8a\"/><path d=\"M-14 175v-30a14 14 0 0 1 28 0v30z\" fill=\"#3d5a8a\"/><path d=\"M10 140l12-40\" stroke=\"#5a3d2b\" stroke-width=\"3\"/><rect x=\"5\" y=\"72\" width=\"38\" height=\"28\" rx=\"3\" fill=\"#fff\" stroke=\"#5a3d2b\" stroke-width=\"2\"/><path d=\"M12 82h24M12 90h16\" stroke=\"#3d5a8a\" stroke-width=\"3\"/></g><g transform=\"translate(140 0)\"><circle cx=\"0\" cy=\"118\" r=\"11\" fill=\"#e5484d\"/><path d=\"M-14 175v-30a14 14 0 0 1 28 0v30z\" fill=\"#e5484d\"/><path d=\"M10 140l12-40\" stroke=\"#5a3d2b\" stroke-width=\"3\"/><rect x=\"5\" y=\"72\" width=\"38\" height=\"28\" rx=\"3\" fill=\"#fff\" stroke=\"#5a3d2b\" stroke-width=\"2\"/><path d=\"M12 82h24M12 90h16\" stroke=\"#e5484d\" stroke-width=\"3\"/></g><g transform=\"translate(220 0)\"><circle cx=\"0\" cy=\"118\" r=\"11\" fill=\"#2a9d8f\"/><path d=\"M-14 175v-30a14 14 0 0 1 28 0v30z\" fill=\"#2a9d8f\"/><path d=\"M10 140l12-40\" stroke=\"#5a3d2b\" stroke-width=\"3\"/><rect x=\"5\" y=\"72\" width=\"38\" height=\"28\" rx=\"3\" fill=\"#fff\" stroke=\"#5a3d2b\" stroke-width=\"2\"/><path d=\"M12 82h24M12 90h16\" stroke=\"#2a9d8f\" stroke-width=\"3\"/></g><g transform=\"translate(300 0)\"><circle cx=\"0\" cy=\"118\" r=\"11\" fill=\"#6c4ab6\"/><path d=\"M-14 175v-30a14 14 0 0 1 28 0v30z\" fill=\"#6c4ab6\"/><path d=\"M10 140l12-40\" stroke=\"#5a3d2b\" stroke-width=\"3\"/><rect x=\"5\" y=\"72\" width=\"38\" height=\"28\" rx=\"3\" fill=\"#fff\" stroke=\"#5a3d2b\" stroke-width=\"2\"/><path d=\"M12 82h24M12 90h16\" stroke=\"#6c4ab6\" stroke-width=\"3\"/></g><rect y=\"175\" width=\"400\" height=\"25\" fill=\"#9b6b4f\" opacity=\".5\"/><g transform=\"translate(350 40)\"><rect width=\"14\" height=\"30\" fill=\"#111\"/><rect x=\"14\" width=\"14\" height=\"30\" fill=\"#f2c500\"/><rect x=\"28\" width=\"14\" height=\"30\" fill=\"#e5484d\"/></g></svg>",
+  "resume": "En Belgique francophone, des lycéens et des étudiants sont descendus dans la rue pour soutenir leurs enseignants et dénoncer la hausse des frais liés aux études.",
+  "source": "franceinfo",
+  "titre": "En Belgique aussi, lycéens et étudiants manifestent",
+  "url": "https://www.franceinfo.fr/monde/europe/belgique/des-lyceens-et-etudiants-manifestent-aussi-en-belgique-francophone-pour-soutenir-les-enseignants-et-denoncer-des-frais-en-hausse_8223364.html",
+  "id": "m-2026-10-05-belgique"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "international",
+  "date": "2026-10-05",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#22409a\"/><stop offset=\"1\" stop-color=\"#14275e\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M140 20 L300 20 L300 180z\" fill=\"#f7d117\"/><path d=\"M130 28 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M152 50 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M174 72 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M196 94 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M218 116 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M240 138 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M262 160 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><g transform=\"translate(40 110)\"><rect width=\"70\" height=\"56\" rx=\"6\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"3\"/><rect x=\"18\" y=\"-12\" width=\"34\" height=\"22\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"2\"/><rect x=\"12\" y=\"20\" width=\"46\" height=\"5\" fill=\"#bbb\"/><rect x=\"12\" y=\"32\" width=\"30\" height=\"5\" fill=\"#bbb\"/></g></svg>",
+  "resume": "Les Bosniens ont voté dimanche lors d'élections générales. Dans ce pays divisé entre trois communautés (bosniaques, serbes et croates), les partis nationalistes serbes et croates gagnent du terrain, et l'abstention (les gens qui ne votent pas) augmente.",
+  "source": "Le Monde",
+  "titre": "Élections en Bosnie-Herzégovine : les partis nationalistes progressent",
+  "url": "https://www.lemonde.fr/international/article/2026/10/05/elections-generales-en-bosnie-herzegovine-les-partis-nationalistes-serbes-et-croates-gagnent-du-terrain_6788479_3210.html",
+  "id": "m-2026-10-05-bosnie"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "international",
+  "date": "2026-10-05",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0f8a3d\"/><stop offset=\"1\" stop-color=\"#08602a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M200 30 L330 100 L200 170 L70 100z\" fill=\"#ffd400\"/><circle cx=\"200\" cy=\"100\" r=\"44\" fill=\"#1d3e8a\"/><path d=\"M158 92 q42-18 84 4\" stroke=\"#fff\" stroke-width=\"5\" fill=\"none\"/><g transform=\"translate(300 120)\"><rect width=\"70\" height=\"56\" rx=\"6\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"3\"/><rect x=\"18\" y=\"-12\" width=\"34\" height=\"22\" fill=\"#f4f4f4\" stroke=\"#333\" stroke-width=\"2\"/><path d=\"M22 28 l10 10 18-20\" stroke=\"#0f8a3d\" stroke-width=\"5\" fill=\"none\"/></g></svg>",
+  "resume": "Au premier tour de l'élection présidentielle brésilienne, Flavio Bolsonaro, candidat d'extrême droite et fils de l'ancien président Jair Bolsonaro, obtient environ 47 % des voix, contre 45 % pour le président sortant Lula. Les deux candidats s'affronteront au second tour.",
+  "source": "Le Monde",
+  "titre": "Brésil : Flavio Bolsonaro devance Lula au premier tour de la présidentielle",
+  "url": "https://www.lemonde.fr/international/article/2026/10/05/lula-a-paye-le-prix-du-mecontentement-des-electeurs-au-bresil-flavio-bolsonaro-devance-lula-au-premier-tour-de-l-election-presidentielle_6788483_3210.html",
+  "id": "m-2026-10-05-bresil"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "environnement",
+  "date": "2026-10-05",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7fc8f0\"/><stop offset=\"1\" stop-color=\"#d9f1ff\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"320\" cy=\"50\" r=\"24\" fill=\"#ffd166\"/><ellipse cx=\"190\" cy=\"150\" rx=\"90\" ry=\"22\" fill=\"#f1d9a0\"/><path d=\"M190 150c-4-40 0-70 10-90\" stroke=\"#8a5a2b\" stroke-width=\"7\" fill=\"none\"/><g fill=\"#3fa34d\"><path d=\"M200 60c-25-10-45 0-55 15 20-8 35-5 55-15z\"/><path d=\"M200 60c20-20 45-15 55 0-20-5-35-3-55 0z\"/><path d=\"M200 60c-5-25 10-40 25-40-12 12-15 25-25 40z\"/><path d=\"M200 60c10 10 15 30 5 45 0-18-3-30-5-45z\"/></g><path d=\"M0 160 Q25 150 50 160 T100 160 T150 160 T200 160 T250 160 T300 160 T350 160 T400 160 V200 H0z\" fill=\"#2f7fd1\"/><path d=\"M0 172 Q25 162 50 172 T100 172 T150 172 T200 172 T250 172 T300 172 T350 172 T400 172 V200 H0z\" fill=\"#1d5fa8\"/><path d=\"M340 150v-40\" stroke=\"#e5484d\" stroke-width=\"4\"/><path d=\"M332 118l8-12 8 12\" fill=\"#e5484d\"/></svg>",
+  "resume": "Une réunion de préparation de la COP31, la grande conférence de l'ONU sur le climat, s'est ouverte à Nadi, aux Fidji. Les îles du Pacifique, menacées par la montée des eaux et les tempêtes, veulent alerter sur l'urgence climatique. La COP31 aura lieu le mois prochain en Turquie.",
+  "source": "La Libre",
+  "titre": "Climat : les pays du Pacifique se réunissent aux Fidji avant la COP31",
+  "url": "https://www.lalibre.be/planete/environnement/2026/10/05/cop31-aux-fidji-les-pays-du-pacifique-veulent-alerter-sur-lurgence-climatique-H4F2L3WDPFAVFDNCW2LS6KU2S4/",
+  "id": "m-2026-10-05-cop31"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "techno",
+  "date": "2026-10-05",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ffe3ee\"/><stop offset=\"1\" stop-color=\"#ffd0e0\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><g transform=\"translate(70 40)\"><rect width=\"140\" height=\"110\" rx=\"14\" fill=\"#fff\" stroke=\"#c76b8f\" stroke-width=\"3\"/><circle cx=\"45\" cy=\"45\" r=\"12\" fill=\"#5fd3ff\"/><circle cx=\"95\" cy=\"45\" r=\"12\" fill=\"#5fd3ff\"/><path d=\"M60 80 q10 12 20 0\" stroke=\"#c76b8f\" stroke-width=\"4\" fill=\"none\"/><path d=\"M70 -20 v20\" stroke=\"#c76b8f\" stroke-width=\"3\"/><circle cx=\"70\" cy=\"-24\" r=\"6\" fill=\"#e5484d\"/></g><g fill=\"none\" stroke=\"#9b6cf2\" stroke-width=\"3\" opacity=\".8\"><path d=\"M220 80 q15 -10 30 0 t30 0 t30 0\"/><path d=\"M220 100 q15 -10 30 0 t30 0 t30 0\"/><path d=\"M220 120 q15 -10 30 0 t30 0 t30 0\"/></g><path d=\"M340 60 c-12 -12 -30 0 -18 14 l18 20 18 -20 c12 -14 -6 -26 -18 -14z\" fill=\"#f06292\" transform=\"translate(-10 10)\"/><path d=\"M330 120 c0 25 -25 25 -25 50 M330 120 c0 25 25 25 25 50\" stroke=\"#f06292\" stroke-width=\"10\" stroke-linecap=\"round\" fill=\"none\" opacity=\"0\"/><g transform=\"translate(320 120)\"><path d=\"M0 0 c-14 0 -14 22 0 22 l0 40\" stroke=\"#f06292\" stroke-width=\"8\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M0 0 c14 0 14 22 0 22\" stroke=\"#f06292\" stroke-width=\"8\" fill=\"none\"/></g></svg>",
+  "resume": "Des chercheurs développent un « nez électronique » : un appareil qui analyse des odeurs, aidé par l'intelligence artificielle, pour repérer plus tôt les signes d'un cancer du sein. Dépister tôt permet de mieux soigner.",
+  "source": "BFM Business",
+  "titre": "Un « nez électronique » pour dépister le cancer du sein",
+  "url": "https://www.bfmtv.com/economie/replay-emissions/good-morning-business/culture-ia-un-nez-electronique-pour-depister-le-cancer-du-sein-05-10_EN-202610050079.html",
+  "id": "m-2026-10-05-nez"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "sante",
+  "date": "2026-10-05",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#2a1d3d\"/><stop offset=\"1\" stop-color=\"#120e1f\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"250\" cy=\"100\" r=\"70\" fill=\"#7c5cff\" opacity=\".18\"/><path d=\"M150 100l100 0\" stroke=\"#5fd3ff\" stroke-width=\"4\" opacity=\".0\"/><path d=\"M60 100 L190 100\" stroke=\"#5fd3ff\" stroke-width=\"10\" stroke-linecap=\"round\" opacity=\".35\"/><path d=\"M60 100 L190 100\" stroke=\"#bff1ff\" stroke-width=\"3\" stroke-linecap=\"round\"/><g fill=\"#f2a6c0\" stroke=\"#c76b8f\" stroke-width=\"3\"><path d=\"M200 70c10-30 60-35 80-15 25-5 45 15 40 40 15 15 5 45-20 45-10 20-45 20-55 5-25 10-55-5-50-30-15-15-10-40 5-45z\"/></g><path d=\"M230 60c5 20-10 30 0 50M260 55c-5 25 15 30 5 60M290 80c-10 10-5 30 10 35\" fill=\"none\" stroke=\"#c76b8f\" stroke-width=\"3\"/><g fill=\"#bff1ff\"><circle cx=\"240\" cy=\"95\" r=\"5\"/><circle cx=\"275\" cy=\"110\" r=\"4\"/><circle cx=\"300\" cy=\"90\" r=\"3.5\"/></g><circle cx=\"80\" cy=\"150\" r=\"26\" fill=\"#f2ae02\" stroke=\"#b37f00\" stroke-width=\"4\"/><circle cx=\"80\" cy=\"150\" r=\"16\" fill=\"none\" stroke=\"#b37f00\" stroke-width=\"2.5\"/><path d=\"M68 120l12 14 12-14\" fill=\"#e5484d\"/></svg>",
+  "resume": "Karl Deisseroth, Peter Hegemann et Georg Nagel reçoivent le Nobel de médecine. Leurs travaux permettent de contrôler des neurones avec de la lumière, une méthode qui a ouvert une nouvelle ère pour l'étude du cerveau.",
+  "source": "franceinfo",
+  "titre": "Le prix Nobel de médecine 2026 récompense l'optogénétique",
+  "url": "https://www.franceinfo.fr/monde/prix-nobel/le-nobel-de-medecine-2026-decerne-aux-chercheurs-karl-deisseroth-peter-hegemann-et-georg-nagel-pour-avoir-pose-les-fondements-d-une-nouvelle-ere-en-neurosciences_8223166.html",
+  "id": "m-2026-10-05-nobel"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "economie",
+  "date": "2026-10-05",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#f7c873\"/><stop offset=\"1\" stop-color=\"#f19a4a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"320\" cy=\"60\" r=\"28\" fill=\"#fff3c4\" opacity=\".9\"/><path d=\"M0 170 Q100 150 200 165 T400 160 V200 H0z\" fill=\"#d98a3a\"/><g transform=\"translate(60 60)\" fill=\"none\" stroke=\"#2b2f36\" stroke-width=\"5\" stroke-linejoin=\"round\"><path d=\"M10 110 L50 20 L90 110\"/><path d=\"M25 75 h50 M35 50 h30\"/><path d=\"M50 20 L110 0 L140 30\"/><path d=\"M140 30 v60\"/></g><g transform=\"translate(250 120)\"><rect width=\"34\" height=\"46\" rx=\"6\" fill=\"#2b2f36\"/><rect x=\"40\" width=\"34\" height=\"46\" rx=\"6\" fill=\"#2b2f36\"/><rect x=\"80\" width=\"34\" height=\"46\" rx=\"6\" fill=\"#2b2f36\"/><path d=\"M0 14h114M0 32h114\" stroke=\"#f2ae02\" stroke-width=\"3\"/></g><path d=\"M200 70 q-10 16 0 22 q10-6 0-22z\" fill=\"#111\"/></svg>",
+  "resume": "Les grands pays producteurs du Moyen-Orient (hors Iran) exportent de nouveau 18 millions de barils de pétrole par jour, comme avant le conflit qui a éclaté en février. C'est important car ce pétrole influence le prix de l'essence dans le monde entier.",
+  "source": "BFM Business",
+  "titre": "Le pétrole du Moyen-Orient retrouve son niveau d'avant-guerre",
+  "url": "https://www.bfmtv.com/economie/entreprises/energie/18-millions-de-barils-par-jour-les-exportations-de-petrole-du-moyen-orient-retrouvent-leur-niveau-d-avant-guerre_AV-202610050088.html",
+  "id": "m-2026-10-05-petrole"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "sciences",
+  "date": "2026-10-04",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0b1030\"/><stop offset=\"1\" stop-color=\"#1d1b4a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"30\" cy=\"30\" r=\"1.5\" fill=\"#fff\" opacity=\"0.8\"/><circle cx=\"90\" cy=\"160\" r=\"1\" fill=\"#fff\" opacity=\"0.6\"/><circle cx=\"140\" cy=\"40\" r=\"1.2\" fill=\"#fff\" opacity=\"0.7\"/><circle cx=\"360\" cy=\"30\" r=\"1.6\" fill=\"#fff\" opacity=\"0.9\"/><circle cx=\"330\" cy=\"170\" r=\"1\" fill=\"#fff\" opacity=\"0.6\"/><circle cx=\"60\" cy=\"90\" r=\"0.9\" fill=\"#fff\" opacity=\"0.5\"/><circle cx=\"380\" cy=\"120\" r=\"1.2\" fill=\"#fff\" opacity=\"0.7\"/><circle cx=\"250\" cy=\"20\" r=\"1\" fill=\"#fff\" opacity=\"0.6\"/><ellipse cx=\"200\" cy=\"100\" rx=\"120\" ry=\"26\" fill=\"none\" stroke=\"#d8c08a\" stroke-width=\"10\" transform=\"rotate(-15 200 100)\" opacity=\".9\"/><circle cx=\"200\" cy=\"100\" r=\"50\" fill=\"#e8c77a\"/><path d=\"M152 88q48 10 96 0M150 104q50 12 100 0M156 120q44 8 88 0\" stroke=\"#c99a4b\" stroke-width=\"5\" fill=\"none\" opacity=\".7\"/><path d=\"M80 100 A120 26 0 0 0 320 100\" fill=\"none\" stroke=\"#f0dca8\" stroke-width=\"10\" transform=\"rotate(-15 200 100)\"/><circle cx=\"335\" cy=\"60\" r=\"7\" fill=\"#e0a85a\"/></svg>",
+  "resume": "Le 4 octobre, Saturne est arrivée à l'opposition : la Terre se trouve entre elle et le Soleil, elle est donc visible toute la nuit. Avec une petite lunette, on peut voir ses anneaux et sa plus grande lune, Titan.",
+  "source": "Ciel & Espace",
+  "titre": "Saturne au meilleur de sa forme dans le ciel d'octobre",
+  "url": "https://www.cieletespace.fr/article/en-octobre-2026-ne-laissez-pas-filer-saturne",
+  "id": "m-2026-10-04-saturne"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "environnement",
+  "date": "2026-10-03",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#bfe6ff\"/><stop offset=\"1\" stop-color=\"#eaf7ff\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"80\" cy=\"50\" r=\"26\" fill=\"#ffd166\"/><g transform=\"translate(140 40)\"><path d=\"M30 130 L40 0 L50 130z\" fill=\"#f4f4f4\" stroke=\"#aaa\" stroke-width=\"2\"/><g transform=\"translate(40 0)\"><path d=\"M0 0 L-6 -60 L6 -60z M0 0 L55 25 L50 35z M0 0 L-50 35 L-56 25z\" fill=\"#fff\" stroke=\"#aaa\" stroke-width=\"1.5\"/></g></g><g transform=\"translate(40 130)\"><rect width=\"90\" height=\"40\" fill=\"#2b4ca8\" transform=\"skewX(-15)\"/><path d=\"M0 13h90M0 26h90M30 0v40M60 0v40\" stroke=\"#9fc0ff\" stroke-width=\"1.5\" transform=\"skewX(-15)\"/></g><path d=\"M300 40 l-30 60 h24 l-18 60 46-78 h-26 l18-42z\" fill=\"#f2ae02\" stroke=\"#b37f00\" stroke-width=\"2\"/><text x=\"300\" y=\"190\" font-family=\"Arial,sans-serif\" font-size=\"22\" font-weight=\"900\" fill=\"#e5484d\">− €</text></svg>",
+  "resume": "Depuis le début de l'année, l'électricité a été vendue à un prix négatif pendant 520 heures sur le marché de gros, un record. Cela arrive quand on produit plus d'électricité (soleil, vent, nucléaire) que ce que l'on consomme. Mais cela ne fait pas baisser les factures des ménages.",
+  "source": "BFM Business",
+  "titre": "Électricité : record de 520 heures à prix négatifs en France",
+  "url": "https://www.bfmtv.com/economie/video-electricite-la-france-bat-un-record-historique-avec-520-heures-a-prix-negatifs_VN-202610030077.html",
+  "id": "m-2026-10-03-electricite"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "sciences",
+  "date": "2026-10-03",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0e1a3a\"/><stop offset=\"1\" stop-color=\"#2a3f7a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"30\" cy=\"30\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"80\" cy=\"70\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"350\" cy=\"40\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"300\" cy=\"90\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"60\" cy=\"150\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"370\" cy=\"140\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"150\" cy=\"20\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"250\" cy=\"30\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><g transform=\"translate(200 100) rotate(35)\"><path d=\"M-12 -70 q12 -25 24 0 v90 h-24z\" fill=\"#e8ecf5\"/><path d=\"M-12 -40 h24\" stroke=\"#2b4ca8\" stroke-width=\"5\"/><path d=\"M-12 -30 h24\" stroke=\"#e5484d\" stroke-width=\"5\"/><path d=\"M-12 10 l-14 20 h14z M12 10 l14 20 h-14z\" fill=\"#e5484d\"/><path d=\"M-8 22 q8 50 16 0z\" fill=\"#f5a524\"/><path d=\"M-4 22 q4 30 8 0z\" fill=\"#ffe08a\"/></g><g transform=\"translate(40 130) rotate(-20)\"><path d=\"M0 20 q50 -40 100 0 q-50 30 -100 0z\" fill=\"#d9a35a\" stroke=\"#a8742d\" stroke-width=\"2\"/><path d=\"M25 10 l10 14 M50 6 l10 14 M75 10 l10 14\" stroke=\"#a8742d\" stroke-width=\"2.5\"/></g></svg>",
+  "resume": "Près de Bordeaux, l'entreprise Hyprspace a inauguré son usine, surnommée « la Boulangerie », pour fabriquer en série ses micro-lanceurs « Baguette ». Ces petites fusées doivent envoyer de petits satellites dans l'espace.",
+  "source": "L'Usine Nouvelle",
+  "titre": "Espace : la start-up française Hyprspace ouvre son usine de mini-fusées",
+  "url": "https://www.usinenouvelle.com/industrie-technologie/deeptech/new-space/new-space-le-francais-hyprspace-inaugure-sa-boulangerie-pres-de-bordeaux-pour-produire-en-serie-ses-micro-lanceurs-baguette.NGNDRDTIKVBNXLHXA3PPWUYM4Q.html",
+  "id": "m-2026-10-03-hyprspace"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "international",
+  "date": "2026-10-03",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7d8aa6\"/><stop offset=\"1\" stop-color=\"#c9cfda\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M0 150 H400 V200 H0z\" fill=\"#3c6e9e\"/><path d=\"M0 160 Q50 155 100 160 T200 160 T300 160 T400 160\" stroke=\"#8fb4d6\" stroke-width=\"2\" fill=\"none\"/><path d=\"M20 120 H170 M230 120 H380\" stroke=\"#4a4f5a\" stroke-width=\"10\"/><path d=\"M170 120 l18 14 M230 120 l-14 18\" stroke=\"#4a4f5a\" stroke-width=\"8\"/><rect x=\"40\" y=\"120\" width=\"10\" height=\"40\" fill=\"#5c6270\"/><rect x=\"110\" y=\"120\" width=\"10\" height=\"40\" fill=\"#5c6270\"/><rect x=\"280\" y=\"120\" width=\"10\" height=\"40\" fill=\"#5c6270\"/><rect x=\"350\" y=\"120\" width=\"10\" height=\"40\" fill=\"#5c6270\"/><path d=\"M100 120 L100 60 L80 120 M100 60 L130 120 M300 120 L300 60 L270 120 M300 60 L330 120\" stroke=\"#5c6270\" stroke-width=\"3\" fill=\"none\"/><g fill=\"#f5a524\"><path d=\"M200 105 l8-22 6 16 12-14-4 22z\"/></g><circle cx=\"200\" cy=\"95\" r=\"30\" fill=\"#ccc\" opacity=\".35\"/><g transform=\"translate(330 20)\"><rect width=\"50\" height=\"17\" fill=\"#2f6fd1\"/><rect y=\"17\" width=\"50\" height=\"17\" fill=\"#ffd400\"/></g></svg>",
+  "resume": "En deux jours, l'armée russe a frappé deux des principaux ponts qui traversent le fleuve Dniepr à Kiev, la capitale de l'Ukraine. Ces ponts sont essentiels pour circuler dans la ville. La guerre, commencée en 2022 avec l'invasion russe, se poursuit.",
+  "source": "France 24",
+  "titre": "Guerre en Ukraine : deux grands ponts de Kiev touchés par des frappes russes",
+  "url": "https://www.france24.com/fr/europe/20261003-en-direct-ukraine-un-nouveau-grand-pont-de-kiev-touch%C3%A9-par-des-frappes-russes",
+  "id": "m-2026-10-03-kiev"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "economie",
+  "date": "2026-10-03",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1f2a3c\"/><stop offset=\"1\" stop-color=\"#121924\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M30 160 L90 150 L150 152 L210 130 L270 110 L340 70\" fill=\"none\" stroke=\"#5cc98a\" stroke-width=\"5\" stroke-linejoin=\"round\"/><path d=\"M30 160 L90 150 L150 152 L210 130 L270 110 L340 70 V180 H30z\" fill=\"#5cc98a\" opacity=\".15\"/><g transform=\"translate(300 25)\"><circle cx=\"30\" cy=\"30\" r=\"30\" fill=\"#f2ae02\"/><text x=\"30\" y=\"41\" text-anchor=\"middle\" font-family=\"Arial,sans-serif\" font-size=\"28\" font-weight=\"900\" fill=\"#1f2a3c\">5%</text></g><g transform=\"translate(40 30)\"><rect width=\"70\" height=\"44\" rx=\"5\" fill=\"#fff\"/><path d=\"M10 14h50M10 24h40M10 34h30\" stroke=\"#8aa2d1\" stroke-width=\"4\"/><circle cx=\"58\" cy=\"34\" r=\"6\" fill=\"#e5484d\"/></g></svg>",
+  "resume": "Pour emprunter sur 10 ans, l'État français doit payer un taux d'intérêt d'environ 5 %, le plus haut depuis 2002. Les investisseurs ont moins confiance, à cause d'une dette élevée et d'une croissance faible, ce qui rend chaque emprunt plus coûteux.",
+  "source": "BFM Business",
+  "titre": "La France emprunte désormais à près de 5 %, un niveau jamais vu depuis 2002",
+  "url": "https://www.bfmtv.com/economie/economie-social/finances-publiques/la-france-emprunte-a-5-et-alors-quel-est-le-probleme-taux-a-10-ans-oat-spread-on-vous-explique-la-crise-de-la-dette-francaise-sans-jargon-financier_AV-202610030055.html",
+  "id": "m-2026-10-03-taux"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "economie",
+  "date": "2026-10-02",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fff4dc\"/><stop offset=\"1\" stop-color=\"#ffe0b0\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M40 170 h330\" stroke=\"#8a6a3a\" stroke-width=\"3\"/><path d=\"M40 170 V30\" stroke=\"#8a6a3a\" stroke-width=\"3\"/><path d=\"M50 150 L110 135 L160 140 L220 110 L270 95 L330 55\" fill=\"none\" stroke=\"#e5484d\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M318 50 l20 0 -5 18z\" fill=\"#e5484d\"/><g transform=\"translate(85 95)\"><path d=\"M0 40c0-30 10-40 20-40s20 10 20 40z\" fill=\"#e8b04a\"/><path d=\"M20 0v40M10 12l10 8 10-8M8 24l12 8 12-8\" stroke=\"#a5752a\" stroke-width=\"2\" fill=\"none\"/></g><g transform=\"translate(240 120)\"><ellipse cx=\"20\" cy=\"25\" rx=\"24\" ry=\"18\" fill=\"#f5f0e1\" stroke=\"#b9a77a\" stroke-width=\"2\"/><path d=\"M0 20h40\" stroke=\"#b9a77a\" stroke-width=\"2\"/></g><text x=\"345\" y=\"110\" font-family=\"Arial,sans-serif\" font-size=\"34\" font-weight=\"900\" fill=\"#e5484d\">€</text></svg>",
+  "resume": "Selon la FAO, l'agence de l'ONU pour l'alimentation, les prix mondiaux des denrées alimentaires ont atteint leur plus haut niveau depuis novembre 2022. Cette hausse pèse sur le budget des ménages, surtout dans les pays pauvres.",
+  "source": "L'Usine Nouvelle",
+  "titre": "Les prix mondiaux de l'alimentation au plus haut depuis 2022",
+  "url": "https://www.usinenouvelle.com/agro/les-prix-mondiaux-des-denrees-alimentaires-sont-au-plus-haut-depuis-novembre-2022-selon-lonu.QPXEABZ5WVHVJA5J7CQ6FTTDEQ.html",
+  "id": "m-2026-10-02-fao"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "france",
+  "date": "2026-10-01",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#d7e3f4\"/><stop offset=\"1\" stop-color=\"#f1f5fb\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect x=\"70\" y=\"60\" width=\"260\" height=\"110\" fill=\"#e9dcc6\" stroke=\"#8b7a5c\" stroke-width=\"2\"/><path d=\"M60 60 L200 25 L340 60z\" fill=\"#b4573f\"/><rect x=\"90\" y=\"75\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"90\" y=\"120\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"140\" y=\"75\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"140\" y=\"120\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"234\" y=\"75\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"234\" y=\"120\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"284\" y=\"75\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"284\" y=\"120\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"180\" y=\"110\" width=\"40\" height=\"60\" fill=\"#7a5c3c\"/><g transform=\"translate(150 140)\"><rect x=\"0\" y=\"0\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/><rect x=\"22\" y=\"6\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/><rect x=\"44\" y=\"0\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/><rect x=\"66\" y=\"6\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/><rect x=\"88\" y=\"0\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/></g><g transform=\"translate(20 100)\"><rect width=\"56\" height=\"34\" rx=\"3\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"2\"/><path d=\"M8 12h40M8 22h28\" stroke=\"#e5484d\" stroke-width=\"4\"/><path d=\"M28 34v36\" stroke=\"#5a3d2b\" stroke-width=\"3\"/></g></svg>",
+  "resume": "Dans de nombreux lycées, des élèves bloquent l'entrée pour protester contre le manque de professeurs, les classes surchargées et l'état des bâtiments. Des universités pourraient rejoindre le mouvement. Certains blocages ont donné lieu à des tensions avec la police.",
+  "source": "franceinfo",
+  "titre": "Les blocages de lycées se poursuivent partout en France",
+  "url": "https://www.franceinfo.fr/societe/education/le-blocage-des-lycees-se-poursuit-partout-en-france-des-universites-pourraient-rejoindre-le-mouvement_8216944.html",
+  "id": "m-2026-10-01-lycees"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "international",
+  "date": "2026-10-01",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#20262f\"/><stop offset=\"1\" stop-color=\"#0f1318\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"120\" cy=\"100\" r=\"55\" fill=\"#2b4ca8\"/><path d=\"M120 50 v100 M70 100 h100\" stroke=\"#fff\" stroke-width=\"3\"/><path d=\"M120 55 l10 45 -10 45 -10-45z\" fill=\"#fff\"/><circle cx=\"120\" cy=\"100\" r=\"10\" fill=\"#2b4ca8\" stroke=\"#fff\" stroke-width=\"3\"/><g transform=\"translate(240 50)\"><rect width=\"110\" height=\"34\" fill=\"#fff\"/><rect y=\"34\" width=\"110\" height=\"34\" fill=\"#1c57a5\"/><rect y=\"68\" width=\"110\" height=\"34\" fill=\"#d52b1e\"/></g><path d=\"M190 90 l12 0 -6 -10z M210 110 l-12 0 6 10z\" fill=\"#f2ae02\"/><path d=\"M185 100 h40\" stroke=\"#f2ae02\" stroke-width=\"3\" stroke-dasharray=\"6 5\"/><g transform=\"translate(200 170)\"><circle r=\"14\" fill=\"#f2ae02\"/><path d=\"M0 0 L-8 -12 A14 14 0 0 1 8 -12z M0 0 L14 2 A14 14 0 0 1 6 13z M0 0 L-6 13 A14 14 0 0 1 -14 2z\" fill=\"#20262f\"/><circle r=\"3\" fill=\"#20262f\"/></g></svg>",
+  "resume": "Le président russe a averti que « toutes les armes » pourraient être utilisées si l'enclave russe de Kaliningrad, située entre la Pologne et la Lituanie, était isolée de la Russie. Le secrétaire général de l'OTAN, l'alliance militaire dont fait partie la France, a appelé Moscou à cesser ces menaces.",
+  "source": "20 minutes",
+  "titre": "Kaliningrad : Vladimir Poutine menace l'OTAN de l'arme nucléaire",
+  "url": "https://www.20min.ch/fr/story/guerre-en-ukraine-kaliningrad-poutine-brandit-encore-la-menace-nucleaire-405723338808",
+  "id": "m-2026-10-01-otan"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "economie",
+  "date": "2026-09-29",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#e9eef7\"/><stop offset=\"1\" stop-color=\"#cfd9ec\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect x=\"60\" y=\"130\" width=\"30\" height=\"40\" rx=\"3\" fill=\"#9fb3d9\"/><rect x=\"102\" y=\"115\" width=\"30\" height=\"55\" rx=\"3\" fill=\"#8aa2d1\"/><rect x=\"144\" y=\"95\" width=\"30\" height=\"75\" rx=\"3\" fill=\"#7590c8\"/><rect x=\"186\" y=\"75\" width=\"30\" height=\"95\" rx=\"3\" fill=\"#5f7ebf\"/><rect x=\"228\" y=\"52\" width=\"30\" height=\"118\" rx=\"3\" fill=\"#4a6cb5\"/><rect x=\"270\" y=\"30\" width=\"30\" height=\"140\" rx=\"3\" fill=\"#e5484d\"/><path d=\"M40 172 h300\" stroke=\"#2b3a55\" stroke-width=\"3\"/><g transform=\"translate(330 40)\"><circle cx=\"25\" cy=\"25\" r=\"25\" fill=\"#f2ae02\"/><text x=\"25\" y=\"35\" text-anchor=\"middle\" font-family=\"Arial,sans-serif\" font-size=\"28\" font-weight=\"900\" fill=\"#fff\">€</text></g><text x=\"58\" y=\"88\" font-family=\"Arial,sans-serif\" font-size=\"34\" font-weight=\"900\" fill=\"#e5484d\">119 %</text></svg>",
+  "resume": "Selon l'Insee, la dette de l'État, des collectivités et de la Sécurité sociale atteint 3 595,5 milliards d'euros, soit 119 % du PIB (la richesse produite en un an par le pays). C'est un record, qui inquiète car rembourser coûte de plus en plus cher.",
+  "source": "franceinfo",
+  "titre": "La dette publique de la France atteint un record : 119 % du PIB",
+  "url": "https://www.franceinfo.fr/economie/crise/crise-de-la-dette/la-dette-publique-de-la-france-a-atteint-3-595-5-milliards-d-euros-au-deuxieme-trimestre-soit-119-du-pib-un-record_8214491.html",
+  "id": "m-2026-09-29-dette"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "france",
+  "date": "2026-09-28",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#c9d6f2\"/><stop offset=\"1\" stop-color=\"#eef2fb\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M90 80 L200 35 L310 80z\" fill=\"#e9e3d3\" stroke=\"#8b8270\" stroke-width=\"2\"/><rect x=\"95\" y=\"80\" width=\"210\" height=\"10\" fill=\"#d8d0bb\"/><rect x=\"105\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"129\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"153\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"177\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"201\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"225\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"249\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"273\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"297\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"85\" y=\"152\" width=\"230\" height=\"12\" fill=\"#d8d0bb\"/><rect x=\"75\" y=\"164\" width=\"250\" height=\"10\" fill=\"#c9c0a8\"/><path d=\"M200 35 v-20\" stroke=\"#555\" stroke-width=\"2\"/><g transform=\"translate(200 15)\"><rect width=\"10\" height=\"12\" fill=\"#2b4ca8\"/><rect x=\"10\" width=\"10\" height=\"12\" fill=\"#fff\"/><rect x=\"20\" width=\"10\" height=\"12\" fill=\"#e5484d\"/></g><g transform=\"translate(330 120)\"><rect width=\"40\" height=\"50\" rx=\"4\" fill=\"#fff\" stroke=\"#2b4ca8\" stroke-width=\"3\"/><rect x=\"10\" y=\"-8\" width=\"20\" height=\"16\" fill=\"#f2ae02\"/></g></svg>",
+  "resume": "Le 27 septembre, la moitié des sénateurs a été renouvelée par les « grands électeurs » (surtout des élus locaux). La majorité de droite et du centre est conservée, le Rassemblement national forme pour la première fois un groupe au Sénat et La France insoumise y fait son entrée.",
+  "source": "Public Sénat",
+  "titre": "Sénatoriales : la majorité de droite et du centre reste en place",
+  "url": "https://www.publicsenat.fr/actualites/politique/en-direct-elections-senatoriales-2026-suivez-tous-les-resultats-les-enjeux-les-reactions-politiques",
+  "id": "m-2026-09-28-senat"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "environnement",
+  "date": "2026-09-26",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#5a6b7d\"/><stop offset=\"1\" stop-color=\"#8fa0b2\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M40 20 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M90 40 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M150 15 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M210 35 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M270 20 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M330 40 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M370 15 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M120 60 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M250 55 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M150 150 V70 l10-25 10 25 V150z M175 150 V90 l8-18 8 18 V150z\" fill=\"#d4a017\"/><path d=\"M155 70 h10 M180 90 h6\" stroke=\"#8a6500\" stroke-width=\"2\"/><rect x=\"230\" y=\"80\" width=\"60\" height=\"80\" fill=\"#c9c3b8\"/><rect x=\"240\" y=\"92\" width=\"12\" height=\"12\" fill=\"#7d8ea0\"/><rect x=\"240\" y=\"116\" width=\"12\" height=\"12\" fill=\"#7d8ea0\"/><rect x=\"268\" y=\"92\" width=\"12\" height=\"12\" fill=\"#7d8ea0\"/><rect x=\"268\" y=\"116\" width=\"12\" height=\"12\" fill=\"#7d8ea0\"/><rect x=\"40\" y=\"100\" width=\"70\" height=\"60\" fill=\"#d8cfc0\"/><path d=\"M35 100 L75 75 L115 100z\" fill=\"#b4573f\"/><path d=\"M0 140 Q30 132 60 140 T120 140 T180 140 T240 140 T300 140 T360 140 T420 140 V200 H0z\" fill=\"#7a6a4f\" opacity=\".92\"/><path d=\"M0 155 Q30 148 60 155 T120 155 T180 155 T240 155 T300 155 T360 155 T420 155\" stroke=\"#a89474\" stroke-width=\"3\" fill=\"none\"/><g transform=\"translate(300 128)\"><path d=\"M0 10 h60 l-10 14 h-40z\" fill=\"#e5484d\"/><circle cx=\"30\" cy=\"0\" r=\"7\" fill=\"#f4c7a1\"/></g></svg>",
+  "resume": "Des pluies torrentielles, près de 300 mm d'eau, ont inondé la capitale thaïlandaise. L'état de catastrophe naturelle a été déclaré dans ses 50 districts, des milliers d'habitants ont été évacués et des usines ont dû s'arrêter.",
+  "source": "France 24",
+  "titre": "Thaïlande : Bangkok en état de catastrophe naturelle après des inondations",
+  "url": "https://www.france24.com/fr/asie-pacifique/20260926-inondations-%C3%A0-bangkok-les-autorit%C3%A9s-d%C3%A9clarent-l-%C3%A9tat-de-catastrophe-naturelle",
+  "id": "m-2026-09-26-bangkok"
+ }
+]

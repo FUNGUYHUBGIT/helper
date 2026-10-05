@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><clipPath id="clip-rond"><circle cx="24" cy="24" r="19"/></clipPath>
+    <clipPath id="clip-carre"><rect x="3.3" y="25" width="19.1" height="19.1" rx="6.3"/></clipPath>
+    <clipPath id="clip-rond-carre" clip-path="url(#clip-carre)"><circle cx="24" cy="24" r="19"/></clipPath>
+  </defs>
+    <!-- rond en quatre quarts (le quart haut-gauche a deux tons) -->
+    <g clip-path="url(#clip-rond)">
+      <rect x="0" y="0" width="13.2" height="48" fill="#f4b615"/>
+      <rect x="13.2" y="0" width="11.2" height="48" fill="#f2ae02"/>
+      <rect x="0" y="23.2" width="24.4" height="25" fill="#f2ae02"/>
+      <rect x="24.4" y="0" width="24" height="23.2" fill="#f2b825"/>
+      <rect x="24.4" y="23.2" width="24" height="25" fill="#dc9e02"/>
+    </g>
+    <!-- carré arrondi et sa partie superposée au rond -->
+    <rect x="3.3" y="25" width="19.1" height="19.1" rx="6.3" fill="#f7c94d"/>
+    <g clip-path="url(#clip-rond-carre)"><rect x="0" y="0" width="48" height="48" fill="#ca9102"/></g>
+    <!-- lettre H : claire hors du rond, foncée sur le rond -->
+    <path d="M8 28.4h2.2v5.7h5v-5.7h2.2v13.5h-2.2v-5.9h-5v5.9H8z" fill="#a87a08"/>
+    <g clip-path="url(#clip-rond)"><path d="M8 28.4h2.2v5.7h5v-5.7h2.2v13.5h-2.2v-5.9h-5v5.9H8z" fill="#58471d"/></g>
+  </svg>
