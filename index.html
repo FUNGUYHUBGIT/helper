@@ -853,6 +853,12 @@ a.lien{color:var(--accent)}
 @keyframes lg-cligne{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
 @keyframes lg-secoue{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 @media (prefers-reduced-motion:reduce){.lg-mod *{animation:none!important;transition:none!important}}
+.ec-bloc{display:flex;flex-direction:column;gap:12px}.ec-lecteur{gap:10px;align-items:center}.ec-compte{font-size:.84rem}
+.ec-choix button.choisi{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--surface-2))}
+.ec-texte{padding:10px 12px;border-left:3px solid var(--accent);background:var(--surface-2);border-radius:8px}
+.ec-transcription{margin-top:8px;font-size:.9rem}.ec-transcription summary{cursor:pointer;color:var(--accent)}.ec-transcription p{margin:.4em 0 0;font-style:italic}
+.fig-exo .obj-doc:has(.lg-dialogue){width:100%}
+.lv-bloc .lv-tete{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .nav-chantier{margin-left:auto;font:600 .6rem/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:4px;color:#1a1300;background:repeating-linear-gradient(-45deg,#f2ae02 0 6px,#ffd35a 6px 12px);white-space:nowrap}
 .bandeau-chantier{display:flex;gap:12px;align-items:center;padding:12px 16px;margin:0 0 18px;border-radius:10px;border:1.5px dashed #f2ae02;background:repeating-linear-gradient(-45deg,color-mix(in srgb,#f2ae02 10%,transparent) 0 14px,transparent 14px 28px);font-size:.92rem}
 .bandeau-chantier-ico{font-size:1.5rem}
@@ -2683,6 +2689,186 @@ Article 2. La langue de la République est le français. L'emblème national est
       {q: "Quelle différence avec l'article 1er de la DDHC de 1789 ?", choix: ["Il concerne « tous les êtres humains » et parle aussi de dignité", "Il ne parle pas de liberté", "Il ne concerne que les Français", "Il supprime l'égalité"], bonne: 0, exp: "La DUDH est universelle (tous les êtres humains) et ajoute la notion de dignité."}
     ]}];
 DOCS_HGE.forEach(d => d.questions.forEach(x => BANQUE_REVISION.push({ex: "dnb", an: 0, mat: "hge", src: "Analyse de document", ctxTitre: d.titre, ctx: d.texte, ...x})));
+/* ===================== EXERCICES BREVET · LANGUES VIVANTES (anglais, espagnol) =====================
+   Le brevet n'a pas d'épreuve écrite de langue : ces questions entraînent au niveau attendu en fin de 3e (A2 → B1).
+   Compréhension écrite et orale, grammaire, vocabulaire, culture. lv = "en" ou "es". */
+const LQ = (lv, theme, o) => ({ex: "dnb", an: 0, mat: "langues", lv, theme, src: "Langues · " + theme, ...o});
+const VF = ["Vrai", "Faux"];
+const LG_TXT = {
+  maya: "Hi! My name is Maya and I live in Brighton, a city on the south coast of England. Last summer, my family and I volunteered at a beach clean-up. We collected more than 200 kilos of plastic in one weekend! I was shocked because most of it was small pieces of bottles and bags. Since then, I have stopped buying plastic bottles and I always carry a metal one. Next year, I'm going to start an eco-club at my school. I think young people can change things if they work together.",
+  rosa: "On 1 December 1955, in Montgomery, Alabama, a Black woman named Rosa Parks was travelling home from work by bus. At that time, buses were segregated: Black passengers had to sit at the back. When the driver ordered her to give her seat to a white passenger, she refused. She was arrested and fined. Her courage inspired a boycott of the city's buses which lasted 381 days and was led by a young pastor, Martin Luther King. In 1956, the Supreme Court declared bus segregation illegal.",
+  diego: "Me llamo Diego y vivo en Valencia, en el este de España. Todos los años, en marzo, mi ciudad celebra las Fallas: la gente construye enormes figuras de cartón y madera, y la última noche las quema en la calle. El año pasado fui con mis primos a ver la «cremà». ¡Había muchísima gente y hacía mucho calor por el fuego! Este año voy a participar en la construcción de una falla con los vecinos de mi barrio.",
+  frida: "Frida Kahlo nació en 1907 en Coyoacán, cerca de la Ciudad de México. A los dieciocho años, tuvo un grave accidente de autobús y pasó muchos meses en la cama. Durante ese tiempo empezó a pintar: su madre le instaló un espejo encima de la cama y Frida hizo muchos autorretratos. Más tarde se casó con el pintor Diego Rivera. Hoy, su casa, la «Casa Azul», es un museo muy visitado."
+};
+const AUDIO = {
+  avion: "Good morning everyone. This is your captain speaking. We are now flying at thirty-five thousand feet. The weather in Dublin is cloudy and the temperature is twelve degrees. We will land in about forty minutes. Thank you for flying with us.",
+  jess: "Hi Tom, it's Jess. I'm sorry, I can't come to the cinema tonight because I have to look after my little brother. My parents are at a wedding. Can we go on Saturday afternoon instead? Call me back!",
+  musee: "Welcome to the Science Museum in London. The museum is open every day from ten a.m. to six p.m. Entry is free, but the special exhibition about space costs eight pounds. The café is on the ground floor, next to the shop.",
+  tren: "Atención, por favor. El tren con destino a Barcelona saldrá con veinte minutos de retraso, a las diez y cuarto, de la vía número tres. Disculpen las molestias.",
+  marta: "¡Hola, Lucía! Soy Marta. ¿Quieres venir a mi fiesta de cumpleaños? Es el sábado por la tarde, a las cinco, en mi casa. Trae tu bañador porque vamos a bañarnos en la piscina. ¡Hasta pronto!",
+  prado: "Bienvenidos al Museo del Prado. El museo abre de lunes a sábado de diez de la mañana a ocho de la tarde, y los domingos de diez a siete. La entrada es gratuita las dos últimas horas del día."
+};
+const ecoute = (lv, audio, q, choix, exp) => LQ(lv, "Compréhension orale", {genre: "ecoute", audio, voix: lv === "es" ? "es-ES" : "en-GB", q, choix, bonne: 0, exp});
+const FIG_LG = module => ({type: "module", module: {kind: "module", ...module}});
+
+const BANQUE_LANGUES = [
+  /* ================= ANGLAIS ================= */
+  /* --- Compréhension écrite : Maya --- */
+  LQ("en", "Compréhension écrite", {ctxTitre: "Text: A beach clean-up", ctx: LG_TXT.maya, q: "Where does Maya live?", choix: ["In a city on the south coast of England", "In London", "In a village in Scotland", "Near a lake in Wales"], bonne: 0, exp: "« I live in Brighton, a city on the south coast of England »."}),
+  LQ("en", "Compréhension écrite", {ctxTitre: "Text: A beach clean-up", ctx: LG_TXT.maya, q: "What did Maya do last summer?", choix: ["She helped to clean a beach", "She went on holiday to Spain", "She worked in a shop", "She organised a concert"], bonne: 0, exp: "« Last summer, my family and I volunteered at a beach clean-up »."}),
+  LQ("en", "Compréhension écrite", {ctxTitre: "Text: A beach clean-up", ctx: LG_TXT.maya, q: "Vrai ou faux : Maya achète encore des bouteilles en plastique.", choix: VF, bonne: 1, exp: "Faux : « Since then, I have stopped buying plastic bottles »."}),
+  LQ("en", "Compréhension écrite", {ctxTitre: "Text: A beach clean-up", ctx: LG_TXT.maya, q: "Combien de kilos de plastique ont-ils ramassés ? Réponds en chiffres.", rep: ["200", "more than 200", "plus de 200", "200 kilos", "200 kg"], exp: "« We collected more than 200 kilos of plastic in one weekend »."}),
+  LQ("en", "Grammaire en contexte", {ctxTitre: "Text: A beach clean-up", ctx: LG_TXT.maya, q: "Quel temps est employé dans « I have stopped buying plastic bottles » ?", choix: ["Present perfect", "Past simple", "Present continuous", "Future with will"], bonne: 0, exp: "have + participe passé : present perfect. L'action a commencé dans le passé (« since then ») et a un effet aujourd'hui."}),
+  LQ("en", "Compréhension écrite", {ctxTitre: "Text: A beach clean-up", ctx: LG_TXT.maya, q: "What is Maya's project for next year?", choix: ["To start an eco-club at her school", "To move to another city", "To buy an electric car", "To write a book about the sea"], bonne: 0, exp: "« Next year, I'm going to start an eco-club at my school » (be going to = projet)."}),
+  /* --- Compréhension écrite : Rosa Parks --- */
+  LQ("en", "Compréhension écrite", {ctxTitre: "Text: Rosa Parks", ctx: LG_TXT.rosa, q: "Why was Rosa Parks arrested?", choix: ["She refused to give her seat to a white passenger", "She didn't pay for her ticket", "She attacked the bus driver", "She was driving without a licence"], bonne: 0, exp: "« When the driver ordered her to give her seat to a white passenger, she refused. She was arrested »."}),
+  LQ("en", "Compréhension écrite", {ctxTitre: "Text: Rosa Parks", ctx: LG_TXT.rosa, q: "Combien de jours le boycott a-t-il duré ?", rep: ["381", "381 days", "381 jours"], exp: "« a boycott of the city's buses which lasted 381 days »."}),
+  LQ("en", "Compréhension écrite", {ctxTitre: "Text: Rosa Parks", ctx: LG_TXT.rosa, q: "Who led the boycott?", choix: ["Martin Luther King", "Malcolm X", "Abraham Lincoln", "John F. Kennedy"], bonne: 0, exp: "« led by a young pastor, Martin Luther King »."}),
+  LQ("en", "Vocabulaire en contexte", {ctxTitre: "Text: Rosa Parks", ctx: LG_TXT.rosa, q: "Dans le texte, que veut dire « segregated » ?", choix: ["Séparés selon la couleur de peau", "Très bondés", "Gratuits pour tous", "Très modernes"], bonne: 0, exp: "La phrase suivante l'explique : « Black passengers had to sit at the back »."}),
+  LQ("en", "Compréhension écrite", {ctxTitre: "Text: Rosa Parks", ctx: LG_TXT.rosa, q: "Vrai ou faux : en 1956, la ségrégation dans les bus est devenue illégale.", choix: VF, bonne: 0, exp: "Vrai : « In 1956, the Supreme Court declared bus segregation illegal »."}),
+  LQ("en", "Grammaire en contexte", {ctxTitre: "Text: Rosa Parks", ctx: LG_TXT.rosa, genre: "trous", q: "Complète au prétérit (past simple) les verbes entre parenthèses.", texte: "Rosa Parks [was] (be) on the bus when the driver [ordered] (order) her to stand up.\nShe [refused] (refuse), so the police [arrested] (arrest) her.\nThe boycott [began|started] (begin) a few days later.", exp: "be → was ; verbes réguliers en -ed ; begin → began (irrégulier)."}),
+  /* --- Compréhension orale --- */
+  ecoute("en", AUDIO.avion, "Écoute l'annonce. What is the temperature in Dublin?", ["12 degrees", "20 degrees", "35 degrees", "40 degrees"], "« The temperature is twelve degrees ». 35 000 ft est l'altitude de l'avion."),
+  ecoute("en", AUDIO.avion, "Écoute l'annonce. When will the plane land?", ["In about forty minutes", "In about fourteen minutes", "In twelve minutes", "In one hour and a half"], "« We will land in about forty minutes ». Attention : forty (40) ≠ fourteen (14)."),
+  ecoute("en", AUDIO.jess, "Écoute le message. Why can't Jess go to the cinema?", ["She has to look after her little brother", "She is ill", "She has too much homework", "She is at a wedding"], "« I have to look after my little brother. My parents are at a wedding »."),
+  ecoute("en", AUDIO.jess, "Écoute le message. What does Jess suggest?", ["Going on Saturday afternoon", "Going on Sunday morning", "Watching a film at home", "Going to the wedding"], "« Can we go on Saturday afternoon instead? »"),
+  ecoute("en", AUDIO.musee, "Écoute l'annonce. How much does the space exhibition cost?", ["Eight pounds", "It's free", "Ten pounds", "Six pounds"], "« Entry is free, but the special exhibition about space costs eight pounds »."),
+  ecoute("en", AUDIO.musee, "Écoute l'annonce. Where is the café?", ["On the ground floor, next to the shop", "On the first floor", "Outside the museum", "In the space exhibition"], "« The café is on the ground floor, next to the shop »."),
+  LQ("en", "Dictée", {genre: "dictee", voix: "en-GB", ponctuation: false, dictee: "My best friend lives in Manchester. Last year, she visited me in France and we went to Paris together. Next summer, we are going to travel to Scotland.", q: "Dictée en anglais : écoute le texte et écris-le (majuscules et ponctuation comprises).", exp: "Attention : lives (3e personne), visited (prétérit régulier), went (prétérit de go), are going to (projet)."}),
+  /* --- Grammaire --- */
+  LQ("en", "Grammaire", {genre: "trous", q: "Complète le récit avec le verbe au bon temps (past simple ou past continuous).", texte: "Last Saturday, I [went] (go) to the market with my mum.\nWe [bought] (buy) some fruit and then we [had] (have) lunch in a small café.\nWhile we [were eating] (eat), it [started|began] (start) to rain.", exp: "Actions terminées : past simple (went, bought, had). Action en cours interrompue : past continuous (were eating)."}),
+  LQ("en", "Grammaire", {genre: "homophones", q: "Choisis la bonne forme dans chaque phrase.", texteH: "I have lived here {for|since|during} ten years.\nShe has been a teacher {since|for|ago} 2018.\nWe moved to London three years {ago|since|for}.\n{Have|Did|Do} you ever been to Ireland?\nHe {has just finished|just has finished|has just finish} his homework.", exp: "for + durée ; since + point de départ ; ago = « il y a » avec le prétérit. Have you ever… ? = present perfect."}),
+  LQ("en", "Grammaire", {genre: "homophones", q: "Choisis le bon mot interrogatif.", texteH: "{Where|When|Who} do you live? — In Leeds.\n{How often|How long|How much} do you play tennis? — Twice a week.\n{Whose|Who's|Who} bag is this? — It's mine.\n{How much|How many} sugar do you want? — Just a little.\n{What|Who|How} time is it? — It's half past four.", exp: "How often = fréquence ; Whose = à qui ; How much + indénombrable (sugar), How many + dénombrable."}),
+  LQ("en", "Grammaire", {genre: "homophones", q: "Comparatifs et superlatifs : choisis la bonne forme.", texteH: "Mount Everest is {higher|more high|the highest} than Mont Blanc.\nThis is {the best|the better|the most good} film I have ever seen.\nMy sister is {more intelligent|intelligenter|most intelligent} than me.\nThe bus is {the cheapest|the most cheap|the cheaper} way to travel.\nLondon is {bigger|more big|biggest} than Oxford.", exp: "Adjectif court : -er than / the -est (big → bigger : on double la consonne). Adjectif long : more … than / the most. good → better → the best."}),
+  LQ("en", "Grammaire", {genre: "homophones", q: "Modaux : choisis celui qui convient.", texteH: "You {mustn't|don't have to|can} smoke on the plane: it's forbidden.\nIt's Sunday: you {don't have to|mustn't|must} get up early.\n{Could|Must|Should} you help me, please?\nYou look tired: you {should|shouldn't|mustn't} go to bed.", exp: "mustn't = interdiction ; don't have to = absence d'obligation ; could = demande polie ; should = conseil."}),
+  LQ("en", "Réécriture", {genre: "reecriture", q: "Réécris ces phrases à la forme négative, avec les contractions (doesn't, didn't…).", depart: "[She plays] tennis every Saturday. [They went] to the cinema yesterday. [I can] swim.", attendu: "She doesn't play tennis every Saturday. They didn't go to the cinema yesterday. I can't swim.", exp: "Présent : doesn't + base verbale (sans -s). Prétérit : didn't + base verbale. Modal : can't."}),
+  LQ("en", "Réécriture", {genre: "reecriture", q: "Réécris ce texte au prétérit (past simple) en commençant par « Yesterday, ».", depart: "I [get] up at seven. I [take] the bus to school and I [meet] my friends.", attendu: "Yesterday, I got up at seven. I took the bus to school and I met my friends.", exp: "get → got, take → took, meet → met : trois verbes irréguliers à connaître."}),
+  LQ("en", "Dialogue", {genre: "ordre", q: "Remets ce dialogue à la gare dans le bon ordre.", extremes: ["Début du dialogue", "Fin du dialogue"], items: ["Hello, can I help you?", "Yes, I'd like a ticket to Oxford, please.", "Single or return?", "Return, please. How much is it?", "It's twenty-four pounds.", "Here you are. Thank you!"], exp: "On salue, on demande, l'employé précise (single = aller simple, return = aller-retour), puis on paie."}),
+  LQ("en", "Vocabulaire", {genre: "associer", q: "Attention aux faux amis ! Associe chaque mot anglais à sa vraie traduction.", paires: [["actually", "en fait"], ["library", "bibliothèque"], ["sensible", "raisonnable"], ["to attend", "assister à"]], exp: "actually ≠ actuellement (currently) ; library ≠ librairie (bookshop) ; sensible ≠ sensible (sensitive) ; to attend ≠ attendre (to wait)."}),
+  LQ("en", "Vocabulaire", {genre: "associer", q: "Associe chaque adjectif à sa traduction.", paires: [["proud", "fier"], ["worried", "inquiet"], ["bored", "qui s'ennuie"], ["angry", "en colère"]], exp: "Vocabulaire des émotions, très utile pour l'expression écrite."}),
+  LQ("en", "Verbes irréguliers", {genre: "tableau", entete: true, q: "Complète le tableau des verbes irréguliers.", lignes: [["Base verbale", "Prétérit", "Participe passé", "Français"], ["go", "went", "gone", "aller"], ["write", "wrote", "written", "écrire"], ["take", "took", "taken", "prendre"], ["buy", "bought", "bought", "acheter"], ["see", "saw", "seen", "voir"]], trous: ["1:1", "1:2", "2:2", "3:1", "4:1", "4:2", "5:1"], exp: "go-went-gone, write-wrote-written, take-took-taken, buy-bought-bought, see-saw-seen."}),
+  LQ("en", "Dialogue en BD", {fig: FIG_LG({type: "dialogue", langue: "en", mode: "lecture", traduction: false, ...LG_DEF_BD_EN()}), q: "Lis la BD. What is Emma going to do next Saturday?", choix: ["Watch the science-fiction film", "Go to the cinema with Leo's cousin", "Cook a meal for Leo", "Go to a concert"], bonne: 0, exp: "« I'm going to watch it next Saturday » : it = the science-fiction film."}),
+  LQ("en", "Dialogue en BD", {fig: FIG_LG({type: "dialogue", langue: "en", mode: "lecture", traduction: false, ...LG_DEF_BD_EN()}), q: "Lis la BD. Quel temps Leo utilise-t-il pour raconter son week-end ?", choix: ["Le past simple (went, was)", "Le present perfect", "Le présent simple", "Le futur avec will"], bonne: 0, exp: "« I went… It was amazing » : actions terminées le week-end dernier → past simple."}),
+  LQ("en", "Frise des temps", {fig: FIG_LG({type: "frise-temps", langue: "en", statique: true, montrer: "parfait"}), q: "Quelle phrase correspond à ce schéma (une action qui commence dans le passé et continue jusqu'à maintenant) ?", choix: ["I have lived in Paris since 2019.", "I lived in Paris in 2019.", "I will live in Paris one day.", "I'm living with my aunt this week."], bonne: 0, exp: "Present perfect + since : l'action a commencé en 2019 et dure encore."}),
+  LQ("en", "Frise des temps", {fig: FIG_LG({type: "frise-temps", langue: "en", statique: true, montrer: "passe-duree"}), q: "Ce schéma montre une action en cours dans le passé, interrompue par une autre. Quelle phrase lui correspond ?", choix: ["I was reading when the phone rang.", "I read a book yesterday.", "I have read this book twice.", "I'm going to read tonight."], bonne: 0, exp: "Past continuous (was reading) pour l'action en cours, past simple (rang) pour l'action qui l'interrompt."}),
+  LQ("en", "Traduction", {q: "Traduis en anglais : « Je n'ai jamais visité Londres. »", rep: ["I have never visited London", "I've never visited London", "I have never been to London", "I've never been to London"], exp: "Expérience de vie → present perfect + never : I have never visited London (ou I've never been to London)."}),
+  LQ("en", "Traduction", {q: "Écris la question qui correspond à la réponse : « I'm fifteen. »", rep: ["How old are you", "How old are you?"], exp: "Pour l'âge, on utilise be : How old are you? — I'm fifteen (years old)."}),
+  LQ("en", "Culture", {q: "What do Americans celebrate on the fourth Thursday of November?", choix: ["Thanksgiving", "Independence Day", "Halloween", "Memorial Day"], bonne: 0, exp: "Thanksgiving : repas en famille autour de la dinde, le 4e jeudi de novembre."}),
+  LQ("en", "Culture", {q: "What is the capital city of Australia?", choix: ["Canberra", "Sydney", "Melbourne", "Perth"], bonne: 0, exp: "Canberra a été choisie comme compromis entre Sydney et Melbourne."}),
+  LQ("en", "Culture", {q: "Which country has two official languages, English and French, at the federal level?", choix: ["Canada", "Ireland", "New Zealand", "Scotland"], bonne: 0, exp: "Le Canada est officiellement bilingue (anglais et français)."}),
+  LQ("en", "Culture", {q: "When is Independence Day celebrated in the USA?", choix: ["On the 4th of July", "On the 14th of July", "On the 1st of May", "On the 25th of December"], bonne: 0, exp: "Le 4 juillet 1776, les treize colonies déclarent leur indépendance."}),
+
+  /* ================= ESPAGNOL ================= */
+  /* --- Compréhension écrite : Diego et les Fallas --- */
+  LQ("es", "Compréhension écrite", {ctxTitre: "Texto: Las Fallas de Valencia", ctx: LG_TXT.diego, q: "¿Dónde vive Diego?", choix: ["En Valencia", "En Madrid", "En Sevilla", "En Barcelona"], bonne: 0, exp: "« Vivo en Valencia, en el este de España »."}),
+  LQ("es", "Compréhension écrite", {ctxTitre: "Texto: Las Fallas de Valencia", ctx: LG_TXT.diego, q: "¿Cuándo se celebran las Fallas?", choix: ["En marzo", "En agosto", "En diciembre", "En mayo"], bonne: 0, exp: "« Todos los años, en marzo, mi ciudad celebra las Fallas »."}),
+  LQ("es", "Compréhension écrite", {ctxTitre: "Texto: Las Fallas de Valencia", ctx: LG_TXT.diego, q: "¿Qué hace la gente la última noche?", choix: ["Quema las figuras en la calle", "Construye las figuras", "Va a la playa", "Come paella en casa"], bonne: 0, exp: "« La última noche las quema en la calle » : c'est la « cremà »."}),
+  LQ("es", "Compréhension écrite", {ctxTitre: "Texto: Las Fallas de Valencia", ctx: LG_TXT.diego, q: "Vrai ou faux : Diego n'a jamais vu la « cremà ».", choix: VF, bonne: 1, exp: "Faux : « El año pasado fui con mis primos a ver la cremà »."}),
+  LQ("es", "Grammaire en contexte", {ctxTitre: "Texto: Las Fallas de Valencia", ctx: LG_TXT.diego, q: "Dans « Había muchísima gente », à quel temps est le verbe ?", choix: ["Pretérito imperfecto", "Pretérito indefinido", "Presente", "Futuro"], bonne: 0, exp: "Había (haber) est à l'imparfait : on décrit la scène dans le passé."}),
+  LQ("es", "Compréhension écrite", {ctxTitre: "Texto: Las Fallas de Valencia", ctx: LG_TXT.diego, q: "¿Qué va a hacer Diego este año?", choix: ["Participar en la construcción de una falla", "Ir a Madrid con sus primos", "Ver la cremà en la televisión", "Vender figuras de cartón"], bonne: 0, exp: "« Este año voy a participar en la construcción de una falla » (ir a + infinitif = projet)."}),
+  /* --- Compréhension écrite : Frida Kahlo --- */
+  LQ("es", "Compréhension écrite", {ctxTitre: "Texto: Frida Kahlo", ctx: LG_TXT.frida, q: "¿Qué le pasó a Frida a los dieciocho años?", choix: ["Tuvo un grave accidente de autobús", "Ganó un premio de pintura", "Se fue a vivir a París", "Conoció a Diego Rivera"], bonne: 0, exp: "« A los dieciocho años, tuvo un grave accidente de autobús »."}),
+  LQ("es", "Compréhension écrite", {ctxTitre: "Texto: Frida Kahlo", ctx: LG_TXT.frida, q: "En quelle année Frida Kahlo est-elle née ?", rep: ["1907"], exp: "« Frida Kahlo nació en 1907 en Coyoacán »."}),
+  LQ("es", "Compréhension écrite", {ctxTitre: "Texto: Frida Kahlo", ctx: LG_TXT.frida, q: "¿Por qué Frida pintó muchos autorretratos?", choix: ["Porque tenía un espejo encima de la cama", "Porque no tenía dinero para pagar modelos", "Porque su profesor se lo pedía", "Porque vivía sola en la Casa Azul"], bonne: 0, exp: "« Su madre le instaló un espejo encima de la cama y Frida hizo muchos autorretratos »."}),
+  LQ("es", "Compréhension écrite", {ctxTitre: "Texto: Frida Kahlo", ctx: LG_TXT.frida, q: "Vrai ou faux : aujourd'hui, la maison de Frida est un musée.", choix: VF, bonne: 0, exp: "Vrai : « Hoy, su casa, la Casa Azul, es un museo muy visitado »."}),
+  LQ("es", "Grammaire en contexte", {ctxTitre: "Texto: Frida Kahlo", ctx: LG_TXT.frida, genre: "trous", q: "Complète au pretérito indefinido les verbes entre parenthèses.", texte: "Frida [nació] (nacer) en 1907.\nA los dieciocho años, [tuvo] (tener) un accidente.\n[Empezó] (empezar) a pintar en la cama y [hizo] (hacer) muchos autorretratos.", exp: "nacer → nació (régulier) ; tener → tuvo, hacer → hizo (irréguliers) ; empezar → empezó."}),
+  /* --- Compréhension orale --- */
+  ecoute("es", AUDIO.tren, "Escucha el anuncio. ¿A qué hora sale el tren?", ["A las diez y cuarto", "A las diez", "A las tres", "A las nueve y veinte"], "« Saldrá con veinte minutos de retraso, a las diez y cuarto » : 10 h 15."),
+  ecoute("es", AUDIO.tren, "Escucha el anuncio. ¿De qué vía sale el tren?", ["De la vía tres", "De la vía dos", "De la vía diez", "De la vía veinte"], "« De la vía número tres »."),
+  ecoute("es", AUDIO.marta, "Escucha el mensaje. ¿Qué tiene que llevar Lucía?", ["Su bañador", "Un regalo", "Una tarta", "Su bicicleta"], "« Trae tu bañador porque vamos a bañarnos en la piscina »."),
+  ecoute("es", AUDIO.marta, "Escucha el mensaje. ¿Cuándo es la fiesta?", ["El sábado a las cinco de la tarde", "El domingo a las cinco", "El sábado a las siete", "El viernes por la noche"], "« Es el sábado por la tarde, a las cinco »."),
+  ecoute("es", AUDIO.prado, "Escucha el anuncio. ¿Cuándo es gratuita la entrada?", ["Las dos últimas horas del día", "Todo el domingo", "Por la mañana", "Nunca"], "« La entrada es gratuita las dos últimas horas del día »."),
+  ecoute("es", AUDIO.prado, "Escucha el anuncio. ¿A qué hora cierra el museo el domingo?", ["A las siete", "A las ocho", "A las diez", "A las seis"], "« Los domingos de diez a siete »."),
+  LQ("es", "Dictée", {genre: "dictee", voix: "es-ES", ponctuation: false, dictee: "Mi hermano y yo vivimos en un pueblo cerca de Granada. El verano pasado fuimos a la playa con nuestros abuelos. Mañana vamos a visitar la Alhambra.", q: "Dictée en espagnol : écoute le texte et écris-le (accents et ponctuation compris).", exp: "vivimos (presente, nosotros), fuimos (indefinido de ir), vamos a visitar (futur proche). N'oublie pas l'accent de « Mañana »."}),
+  /* --- Grammaire --- */
+  LQ("es", "Grammaire", {genre: "homophones", q: "Ser ou estar ? Choisis la bonne forme.", texteH: "Mi padre {es|está} médico.\nHoy {estoy|soy} muy cansado.\nMadrid {está|es} en el centro de España.\nLa fiesta {es|está} en mi casa.\nLas ventanas {están|son} abiertas.", exp: "ser : identité, profession, événement (la fiesta es en…). estar : état passager, localisation d'un lieu ou d'un objet."}),
+  LQ("es", "Grammaire", {genre: "homophones", q: "Gustar et encantar : choisis la bonne forme.", texteH: "A mí me {gustan|gusta} los perros.\nA mi hermana le {gusta|gustan} bailar.\n¿A vosotros os {gusta|gustan} el chocolate?\nA nosotros {nos|os|les} encanta el fútbol.\nA ellos {les|los|se} gustan los videojuegos.", exp: "Le verbe s'accorde avec ce qui plaît : me gusta el perro, me gustan los perros. Pronoms : me, te, le, nos, os, les."}),
+  LQ("es", "Grammaire", {genre: "homophones", q: "Indefinido ou imperfecto ? Choisis la bonne forme.", texteH: "Cuando {era|fui} pequeño, {vivía|viví} en Lima.\nAyer {fuimos|íbamos} al cine.\nMientras {leía|leí}, sonó el teléfono.\nEl año pasado {visité|visitaba} Cuba.", exp: "Imperfecto : description, habitude, action en cours (cuando era, mientras). Indefinido : action ponctuelle et datée (ayer, el año pasado)."}),
+  LQ("es", "Grammaire", {genre: "homophones", q: "Por ou para, muy ou mucho : choisis.", texteH: "Este regalo es {para|por} ti.\nGracias {por|para} tu ayuda.\nEstoy {muy|mucho} contento.\nTengo {mucho|muy} trabajo.\nPaseamos {por|para} el parque.", exp: "para : destinataire, but. por : cause, lieu de passage. muy + adjectif ; mucho + nom."}),
+  LQ("es", "Grammaire", {genre: "trous", q: "Complète au pretérito indefinido (yo, nosotros).", texte: "Ayer yo [comí] (comer) en un restaurante.\nDespués [fui] (ir, yo) al cine con mis amigos.\nNosotros [vimos] (ver) una película de terror.", exp: "comer → comí ; ir → fui ; ver → vimos."}),
+  LQ("es", "Grammaire", {genre: "trous", q: "Complète au futuro (yo).", texte: "El año que viene, [viajaré] (viajar) a Argentina.\n[Aprenderé] (aprender) a bailar el tango y [tendré] (tener) muchos amigos.", exp: "Futur : infinitif + é, ás, á… Irrégulier : tener → tendré."}),
+  LQ("es", "Réécriture", {genre: "reecriture", q: "Réécris au pretérito indefinido en commençant par « Ayer ».", depart: "[Me levanto] a las siete. [Desayuno] con mi familia y [salgo] de casa.", attendu: "Ayer me levanté a las siete. Desayuné con mi familia y salí de casa.", exp: "levantarse → me levanté ; desayunar → desayuné ; salir → salí. Attention aux accents écrits."}),
+  LQ("es", "Réécriture", {genre: "reecriture", q: "Réécris en remplaçant « yo » par « nosotros ».", depart: "[Yo vivo] en Toledo. [Tengo] un perro y [hablo] dos idiomas.", attendu: "Nosotros vivimos en Toledo. Tenemos un perro y hablamos dos idiomas.", exp: "vivir → vivimos ; tener → tenemos ; hablar → hablamos."}),
+  LQ("es", "Dialogue", {genre: "ordre", q: "Remets ce dialogue au marché dans le bon ordre.", extremes: ["Début del diálogo", "Fin del diálogo"], items: ["Buenos días, ¿qué desea?", "Quería un kilo de tomates, por favor.", "Aquí tiene. ¿Algo más?", "No, gracias. ¿Cuánto es?", "Son dos euros con cincuenta.", "Tome. ¡Adiós!"], exp: "Le vendeur salue, le client demande, le vendeur sert, on demande le prix, on paie."}),
+  LQ("es", "Vocabulaire", {genre: "associer", q: "Attention aux faux amis ! Associe chaque mot espagnol à sa vraie traduction.", paires: [["embarazada", "enceinte"], ["constipado", "enrhumé"], ["la carpeta", "le classeur"], ["exquisito", "délicieux"]], exp: "embarazada ≠ embarrassée ; constipado ≠ constipé ; carpeta ≠ carpette."}),
+  LQ("es", "Vocabulaire", {genre: "associer", q: "Associe chaque mot interrogatif à sa traduction.", paires: [["¿Dónde?", "Où ?"], ["¿Cuándo?", "Quand ?"], ["¿Por qué?", "Pourquoi ?"], ["¿Cuánto?", "Combien ?"]], exp: "Les mots interrogatifs portent toujours un accent écrit."}),
+  LQ("es", "Conjugaison", {genre: "tableau", entete: true, q: "Complète le tableau du verbe « hablar ».", lignes: [["", "Presente", "Indefinido", "Futuro"], ["yo", "hablo", "hablé", "hablaré"], ["tú", "hablas", "hablaste", "hablarás"], ["él / ella", "habla", "habló", "hablará"], ["nosotros", "hablamos", "hablamos", "hablaremos"]], trous: ["1:2", "2:1", "2:3", "3:2", "4:3"], exp: "Indefinido : -é, -aste, -ó, -amos. Futuro : infinitif + -é, -ás, -á, -emos."}),
+  LQ("es", "Conjugaison", {genre: "tableau", entete: true, q: "Ser et ir : complète le tableau.", lignes: [["", "Ser (presente)", "Ir (presente)", "Ser / ir (indefinido)"], ["yo", "soy", "voy", "fui"], ["tú", "eres", "vas", "fuiste"], ["él / ella", "es", "va", "fue"], ["ellos", "son", "van", "fueron"]], trous: ["1:1", "2:2", "2:3", "3:3", "4:2", "4:3"], exp: "Au pretérito indefinido, ser et ir ont exactement les mêmes formes : fui, fuiste, fue… fueron."}),
+  LQ("es", "Dialogue en BD", {fig: FIG_LG({type: "dialogue", langue: "es", mode: "lecture", traduction: false, ...LG_DEF_BD_ES()}), q: "Lee el cómic. ¿Qué hizo Pablo el fin de semana?", choix: ["Fue al cine con su prima", "Fue a la playa", "Jugó al fútbol", "Visitó a Lucía"], bonne: 0, exp: "« Fui al cine con mi prima »."}),
+  LQ("es", "Dialogue en BD", {fig: FIG_LG({type: "dialogue", langue: "es", mode: "lecture", traduction: false, ...LG_DEF_BD_ES()}), q: "Lee el cómic. ¿Cuándo va a ver Lucía la película?", choix: ["El sábado que viene", "Esta noche", "El domingo pasado", "Nunca"], bonne: 0, exp: "« Yo voy a verla el sábado que viene » (ir a + infinitif)."}),
+  LQ("es", "Frise des temps", {fig: FIG_LG({type: "frise-temps", langue: "es", statique: true, montrer: "passe-duree"}), q: "Ce schéma montre une habitude ou une description dans le passé. Quelle phrase lui correspond ?", choix: ["Cuando era niño, jugaba en el parque.", "Ayer jugué en el parque.", "Mañana jugaré en el parque.", "Ahora estoy jugando en el parque."], bonne: 0, exp: "Pretérito imperfecto (era, jugaba) : habitude dans le passé."}),
+  LQ("es", "Frise des temps", {fig: FIG_LG({type: "frise-temps", langue: "es", statique: true, montrer: "futur-proche"}), q: "Quelle phrase correspond à ce schéma (un projet proche, décidé maintenant) ?", choix: ["Esta tarde voy a estudiar.", "Ayer estudié mucho.", "Estudiaba todos los días.", "He estudiado esta mañana."], bonne: 0, exp: "ir a + infinitif : futur proche (voy a estudiar)."}),
+  LQ("es", "Traduction", {q: "Traduis en espagnol : « Il fait très chaud aujourd'hui. »", rep: ["Hace mucho calor hoy", "Hoy hace mucho calor", "Hace muchísimo calor hoy", "Hoy hace muchísimo calor"], exp: "Pour la météo : hace + nom (calor, frío, sol). « Très chaud » se dit mucho calor (calor est un nom)."}),
+  LQ("es", "Traduction", {q: "Traduis en espagnol : « Nous allons voyager au Pérou. »", rep: ["Vamos a viajar a Perú", "Vamos a viajar a Peru", "Nosotros vamos a viajar a Perú", "Vamos a viajar al Perú"], exp: "Futur proche : ir a + infinitif → vamos a viajar."}),
+  LQ("es", "Culture", {q: "¿Qué se celebra en México el 1 y el 2 de noviembre?", choix: ["El Día de Muertos", "La Tomatina", "San Fermín", "Las Fallas"], bonne: 0, exp: "Le Día de Muertos honore les défunts avec des autels (ofrendas), des calaveras et des fleurs de cempasúchil."}),
+  LQ("es", "Culture", {q: "¿En qué ciudad se celebran los Sanfermines?", choix: ["Pamplona", "Sevilla", "Bilbao", "Valencia"], bonne: 0, exp: "À Pamplona, du 6 au 14 juillet, avec les célèbres « encierros »."}),
+  LQ("es", "Culture", {q: "¿Qué pintor español pintó el «Guernica»?", choix: ["Pablo Picasso", "Salvador Dalí", "Diego Velázquez", "Francisco de Goya"], bonne: 0, exp: "Picasso le peint en 1937 après le bombardement de Guernica pendant la guerre civile."}),
+  LQ("es", "Culture", {q: "¿Cuál es la capital de Argentina?", choix: ["Buenos Aires", "Santiago", "Lima", "Montevideo"], bonne: 0, exp: "Santiago : Chili ; Lima : Pérou ; Montevideo : Uruguay."})
+];
+// BD par défaut des modules (sans dépendre de l'ordre de chargement des fichiers)
+function LG_DEF_BD_EN(){ return {titre: "At the café", decor: "cafe", perso1: "Emma", perso2: "Leo", lignes: [
+  {qui: "1", texte: "Hi Leo! What did you do last weekend?"}, {qui: "2", texte: "I went to the cinema with my cousin."}, {qui: "1", texte: "Cool! Which film did you see?"},
+  {qui: "2", texte: "A science-fiction film. It was amazing!"}, {qui: "1", texte: "I'm going to watch it next Saturday."}, {qui: "2", texte: "You will love it, I promise!"}]}; }
+function LG_DEF_BD_ES(){ return {titre: "En la calle", decor: "rue", perso1: "Lucía", perso2: "Pablo", lignes: [
+  {qui: "1", texte: "¡Hola, Pablo! ¿Qué hiciste el fin de semana?"}, {qui: "2", texte: "Fui al cine con mi prima."}, {qui: "1", texte: "¡Qué guay! ¿Qué película viste?"},
+  {qui: "2", texte: "Una película de ciencia ficción. ¡Fue genial!"}, {qui: "1", texte: "Yo voy a verla el sábado que viene."}, {qui: "2", texte: "¡Te va a encantar!"}]}; }
+
+/* ----- Questions générées à l'infini ----- */
+const VOCAB_EN = [["la bibliothèque", "library"], ["le voyage", "journey"], ["les devoirs", "homework"], ["le quartier", "neighbourhood"], ["la mairie", "town hall"], ["le métier", "job"], ["la santé", "health"], ["l'environnement", "environment"],
+  ["la plage", "beach"], ["le lendemain", "the next day"], ["un an", "a year"], ["bientôt", "soon"], ["déjà", "already"], ["encore", "again"], ["souvent", "often"], ["partager", "to share"], ["emprunter", "to borrow"], ["prêter", "to lend"],
+  ["gagner", "to win"], ["perdre", "to lose"], ["oublier", "to forget"], ["se souvenir", "to remember"], ["essayer", "to try"], ["réussir", "to succeed"], ["le paysage", "landscape"], ["la guerre", "war"], ["la paix", "peace"], ["le droit", "right"]];
+const VOCAB_ES = [["la bibliothèque", "la biblioteca"], ["le voyage", "el viaje"], ["les devoirs", "los deberes"], ["le quartier", "el barrio"], ["la mairie", "el ayuntamiento"], ["le métier", "el oficio"], ["la santé", "la salud"], ["la plage", "la playa"],
+  ["le lendemain", "el día siguiente"], ["bientôt", "pronto"], ["déjà", "ya"], ["souvent", "a menudo"], ["toujours", "siempre"], ["partager", "compartir"], ["gagner", "ganar"], ["perdre", "perder"], ["oublier", "olvidar"], ["se souvenir", "acordarse"],
+  ["essayer", "intentar"], ["le paysage", "el paisaje"], ["la guerre", "la guerra"], ["la paix", "la paz"], ["l'ordinateur", "el ordenador"], ["la voiture", "el coche"], ["le petit déjeuner", "el desayuno"], ["la ville", "la ciudad"], ["la semaine", "la semana"], ["rapide", "rápido"]];
+const TEMPS_PHRASES = {
+  en: [["We went to Rome last year.", "passe"], ["She bought a new phone two days ago.", "passe"], ["They were playing football when it started to snow.", "passe-duree"], ["I was sleeping at midnight.", "passe-duree"],
+    ["He has already finished his homework.", "parfait"], ["We have known each other for ten years.", "parfait"], ["My cousin often visits us on Sundays.", "present"], ["The sun rises in the east.", "present"],
+    ["Be quiet! The baby is sleeping.", "present-continu"], ["Listen! Someone is knocking at the door.", "present-continu"], ["Look at those clouds: it's going to rain.", "futur-proche"], ["I'm going to visit my grandparents this weekend.", "futur-proche"],
+    ["I think robots will do most jobs in 2080.", "futur"], ["Don't worry, I'll help you tomorrow.", "futur"]],
+  es: [["El verano pasado fuimos a Mallorca.", "passe"], ["Anoche cenamos en casa de mis abuelos.", "passe"], ["De pequeña, mi madre vivía en el campo.", "passe-duree"], ["Antes, todos los niños jugaban en la calle.", "passe-duree"],
+    ["Hoy he comido demasiado.", "parfait"], ["Todavía no he terminado el libro.", "parfait"], ["Normalmente voy al colegio en autobús.", "present"], ["Los sábados mi padre cocina paella.", "present"],
+    ["Ahora mismo estoy escuchando música.", "present-continu"], ["En este momento mis amigos están jugando al fútbol.", "present-continu"], ["Esta noche vamos a ver una película.", "futur-proche"], ["Pronto voy a cambiar de móvil.", "futur-proche"],
+    ["Dentro de diez años viviré en Canadá.", "futur"], ["Mañana lloverá en el norte.", "futur"]]
+};
+const SER_ESTAR = [["Mi madre ___ profesora.", "es"], ["El café ___ frío.", "está"], ["Nosotros ___ franceses.", "somos"], ["¿Dónde ___ el baño?", "está"], ["Hoy ___ lunes.", "es"], ["Mis amigos ___ enfermos.", "están"],
+  ["La mesa ___ de madera.", "es"], ["Tú ___ de Lyon.", "eres"], ["Yo ___ en casa.", "estoy"], ["Sevilla ___ en Andalucía.", "está"], ["El concierto ___ en el estadio.", "es"], ["La puerta ___ cerrada.", "está"]];
+const FOR_SINCE = [["I have studied English ___ six years.", "for"], ["She has lived in Dublin ___ 2020.", "since"], ["We met three weeks ___.", "ago"], ["They have been friends ___ primary school.", "since"],
+  ["He has worked here ___ a long time.", "for"], ["I saw that film two days ___.", "ago"], ["It has rained ___ Monday.", "since"], ["My dog has slept ___ hours!", "for"]];
+const VERBES_ES = ["hablar", "trabajar", "estudiar", "comer", "beber", "vivir", "escribir", "viajar", "bailar", "aprender", "abrir", "cantar", "cocinar", "recibir", "visitar", "tomar", "mirar",
+  "ser", "estar", "tener", "ir", "hacer", "poder", "decir", "venir", "ver", "dar", "saber", "poner", "salir", "querer"];
+const VERBES_EN3 = [["watch", "TV every evening"], ["go", "to school by bike"], ["study", "Spanish at school"], ["play", "the guitar very well"], ["do", "the washing-up after dinner"], ["have", "two brothers"], ["fly", "to Madrid every month"], ["fix", "old computers"]];
+const SUJETS_EN3 = ["My brother", "My aunt", "Our teacher", "He", "She", "My best friend"];
+const nomTempsLg = (lv, k) => LG_TEMPS[lv][k].nom;
+GENERATEURS.push(
+  ["dnb", "langues", () => { const v = prendre(Object.keys(EN_IRR).filter(x => !["be", "lie"].includes(x))), [p, pp] = EN_IRR[v], part = Math.random() < .4;
+    return {q: `Quel est ${part ? "le participe passé" : "le prétérit (past simple)"} du verbe irrégulier « to ${v} » ?`, rep: part ? [pp, ...(v === "get" ? ["gotten"] : [])] : [p], exp: `${v} – ${p} – ${pp}.`, theme: "Verbes irréguliers"}; }, "en"],
+  ["dnb", "langues", () => { const [v, c] = prendre(VERBES_EN3), s = prendre(SUJETS_EN3), f = enS(v);
+    return {genre: "trous", texte: `${s} [${f}] (${v}) ${c}.`, q: "Complète au présent simple.", exp: `À la 3e personne du singulier (he, she, it), on ajoute -s : ${v} → ${f}.`, theme: "Grammaire"}; }, "en"],
+  ["dnb", "langues", () => { const [ph, k] = prendre(TEMPS_PHRASES.en), autres = Object.keys(LG_TEMPS.en).filter(x => x !== k);
+    return qcm({q: `Quel temps est utilisé dans : « ${ph} » ?`, exp: `${nomTempsLg("en", k)} : ${LG_TEMPS.en[k].emploi}`, theme: "Les temps"}, nomTempsLg("en", k), melanger(autres).map(x => nomTempsLg("en", x))); }, "en"],
+  ["dnb", "langues", () => { const k = prendre(Object.keys(LG_TEMPS.en)), bonne = prendre(TEMPS_PHRASES.en.filter(p => p[1] === k))[0], faux = melanger(TEMPS_PHRASES.en.filter(p => p[1] !== k && !(k.startsWith("present") && p[1].startsWith("present")))).slice(0, 3).map(p => p[0]);
+    return qcm({q: "Quelle phrase correspond à ce schéma de la frise des temps ?", fig: FIG_LG({type: "frise-temps", langue: "en", statique: true, montrer: k}), exp: `Le schéma représente le ${nomTempsLg("en", k)} : ${LG_TEMPS.en[k].emploi}`, theme: "Frise des temps"}, bonne, faux); }, "en"],
+  ["dnb", "langues", () => { const p = prendre(LG_PREP_ORDRE), bonne = LG_PREP_TXT.en[p][0];
+    return qcm({q: "Where is the cat? Choisis la bonne préposition.", fig: FIG_LG({type: "prepositions", langue: "en", statique: true, depart: p}), exp: LG_PREP_TXT.en[p][1] + " — " + LG_PREP_TXT.en[p][2], theme: "Prépositions"}, bonne, melanger(LG_PREP_ORDRE.filter(x => x !== p)).map(x => LG_PREP_TXT.en[x][0])); }, "en"],
+  ["dnb", "langues", () => { const [fr, en] = prendre(VOCAB_EN);
+    return qcm({q: `Comment dit-on « ${fr} » en anglais ?`, exp: `${fr} = ${en}.`, theme: "Vocabulaire"}, en, melanger(VOCAB_EN.filter(x => x[1] !== en)).map(x => x[1])); }, "en"],
+  ["dnb", "langues", () => { const [ph, r] = prendre(FOR_SINCE);
+    return qcm({q: `Complète : « ${ph} »`, exp: "for + durée (six years) ; since + point de départ (2020, Monday) ; ago = « il y a », avec le prétérit.", theme: "Grammaire"}, r, ["for", "since", "ago", "during"].filter(x => x !== r)); }, "en"],
+  ["dnb", "langues", () => { const v = prendre(VERBES_ES), t = prendre(["presente", "indefinido", "imperfecto", "futuro"]), k = alea(0, 5), f = conjuguerEs(v, t)[k][1], pr = PRONOMS.es[k];
+    const nomT = (TEMPS_CONJ.es.find(x => x[0] === t) || [, t])[1];
+    return {q: `Conjugue « ${v} » au ${nomT.toLowerCase()} avec « ${pr} ».`, rep: [f], exp: `${pr} ${f}.`, theme: "Conjugaison"}; }, "es"],
+  ["dnb", "langues", () => { const [ph, k] = prendre(TEMPS_PHRASES.es), autres = Object.keys(LG_TEMPS.es).filter(x => x !== k);
+    return qcm({q: `¿Qué tiempo se usa en: «${ph}»?`, exp: `${nomTempsLg("es", k)} : ${LG_TEMPS.es[k].emploi}`, theme: "Les temps"}, nomTempsLg("es", k), melanger(autres).map(x => nomTempsLg("es", x))); }, "es"],
+  ["dnb", "langues", () => { const k = prendre(Object.keys(LG_TEMPS.es)), bonne = prendre(TEMPS_PHRASES.es.filter(p => p[1] === k))[0], faux = melanger(TEMPS_PHRASES.es.filter(p => p[1] !== k && !(k.startsWith("present") && p[1].startsWith("present")))).slice(0, 3).map(p => p[0]);
+    return qcm({q: "¿Qué frase corresponde a este esquema de la línea del tiempo?", fig: FIG_LG({type: "frise-temps", langue: "es", statique: true, montrer: k}), exp: `Le schéma représente le ${nomTempsLg("es", k)} : ${LG_TEMPS.es[k].emploi}`, theme: "Frise des temps"}, bonne, faux); }, "es"],
+  ["dnb", "langues", () => { const p = prendre(LG_PREP_ORDRE), bonne = LG_PREP_TXT.es[p][0];
+    return qcm({q: "¿Dónde está el gato? Elige la preposición correcta.", fig: FIG_LG({type: "prepositions", langue: "es", statique: true, depart: p}), exp: LG_PREP_TXT.es[p][1] + " — " + LG_PREP_TXT.es[p][2], theme: "Prépositions"}, bonne, melanger(LG_PREP_ORDRE.filter(x => x !== p)).map(x => LG_PREP_TXT.es[x][0])); }, "es"],
+  ["dnb", "langues", () => { const [fr, es] = prendre(VOCAB_ES);
+    return qcm({q: `Comment dit-on « ${fr} » en espagnol ?`, exp: `${fr} = ${es}.`, theme: "Vocabulaire"}, es, melanger(VOCAB_ES.filter(x => x[1] !== es)).map(x => x[1])); }, "es"],
+  ["dnb", "langues", () => { const [ph, r] = prendre(SER_ESTAR), formes = ["es", "está", "somos", "estamos", "están", "son", "eres", "estás", "soy", "estoy"];
+    const paire = {es: "está", "está": "es", somos: "estamos", "están": "son", eres: "estás", estoy: "soy"}[r];
+    return qcm({q: `Ser ou estar ? Complète : « ${ph} »`, exp: "ser : identité, origine, profession, matière, date, lieu d'un événement. estar : état passager, localisation.", theme: "Grammaire"}, r, [paire, ...melanger(formes.filter(x => x !== r && x !== paire))]); }, "es"]
+);
 
 /* ===================== OUTILS ===================== */
 const $ = s => document.querySelector(s);
@@ -3372,7 +3558,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.58";
+const VERSION_SITE = "0.59";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -3670,7 +3856,7 @@ VUES.exos = function vueExos(){
 };
 
 /* ----- Exercices Brevet : séries de 50 questions tirées au hasard dans les sujets (DNB ou BIA) ----- */
-let choixBrevet = {ex: "dnb", an: "tous", entrainement: true, mats: {dnb: MATIERES_BREVET.map(m => m[0]), bia: MODULES_BIA.map(m => m[0])}};
+let choixBrevet = {ex: "dnb", an: "tous", entrainement: true, lv: "en", mats: {dnb: MATIERES_BREVET.map(m => m[0]), bia: MODULES_BIA.map(m => m[0])}};
 const listeMatieres = ex => ex === "bia" ? MODULES_BIA : MATIERES_BREVET;
 const anneesDe = ex => [...new Set(BANQUE_BREVET.filter(q => q.ex === ex).map(q => q.an))].sort((a, b) => b - a);
 const poolBrevet = () => BANQUE_BREVET.filter(q => q.ex === choixBrevet.ex && (choixBrevet.an === "tous" || q.an === +choixBrevet.an) && choixBrevet.mats[choixBrevet.ex].includes(q.mat));
@@ -3696,6 +3882,7 @@ VUES.brevet = function vueBrevet(){
       <p class="doux" style="font-size:.88rem">${total || genMats.length ? `<strong>${pool.length}</strong> question${pool.length > 1 ? "s" : ""} des sujets officiels${choixBrevet.entrainement ? `, <strong>${rev.length}</strong> de révision${genMats.length ? ` et des questions <strong>générées à l'infini</strong> (${genMats.map(m => listeMatieres(ex).find(x => x[0] === m)[1]).join(", ")}), avec des valeurs différentes à chaque série` : ""}` : ""}. Déjà vues : ${dejaVues} / ${total}. Les questions jamais vues passent en premier, puis celles que tu as ratées.` : "Aucune question pour ce choix : sélectionne au moins une matière."}${record ? ` Record : ${record} %.` : ""}</p>
       <div class="rangee"><button class="btn" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>Lancer une série de ${nbSerie || 50} questions</button>${dejaVues ? `<button class="btn sec" type="button" id="raz-vues">Oublier les questions vues</button>` : ""}</div>
     </div>
+    ${ex === "dnb" ? blocLangues() : ""}
     <div class="bloc">
       <span class="mono">Sujets complets et sources</span>
       <div class="sources">${sujets.map(([, s]) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">📄 ${esc(s.titre)} ↗</a>`).join("") || `<span class="doux">Aucun sujet pour cette année.</span>`}</div>
@@ -3709,12 +3896,42 @@ VUES.brevet = function vueBrevet(){
   });
   zone().querySelectorAll("#entr-brevet button").forEach(b => b.onclick = () => { choixBrevet.entrainement = b.dataset.v === "oui"; vueBrevet(); });
   if ($("#raz-vues")) deuxClics($("#raz-vues"), () => { prog.vuesB = {}; sauver(); vueBrevet(); });
+  zone().querySelectorAll("#lv-brevet button").forEach(b => b.onclick = () => { choixBrevet.lv = b.dataset.v; vueBrevet(); });
+  if ($("#lancer-langues")) $("#lancer-langues").onclick = () => {
+    const serie = construireSerieLangues(choixBrevet.lv);
+    if (serie.length) lancerQuiz(serie, {titre: "Série Langues · " + ({en: "Anglais", es: "Espagnol"}[choixBrevet.lv] || "Anglais et espagnol"), sur: "Exercices Brevet · Langues vivantes", brevet: "langues"});
+  };
   $("#lancer-brevet").onclick = () => {
     const serie = construireSerieBrevet();
     if (!serie.length) return;
     lancerQuiz(serie, {titre: ex === "bia" ? "Série BIA" : "Série brevet", sur: "Exercices Brevet · " + (choixBrevet.an === "tous" ? "toutes années" : choixBrevet.an), brevet: ex});
   };
 };
+/* ----- Section Langues vivantes : séries de 50 questions (banque rédigée + questions générées) ----- */
+const lvOk = (q, lv) => lv === "tous" || q.lv === lv;
+function blocLangues(){
+  const lv = choixBrevet.lv, n = BANQUE_LANGUES.filter(q => lvOk(q, lv)).length, rec = (prog.brevet || {}).langues;
+  return `<div class="bloc lv-bloc"><div class="lv-tete"><span class="mono">Langues vivantes</span>${rec !== undefined ? `<span class="badge">Record ${rec} %</span>` : ""}</div>
+    <p class="doux" style="font-size:.88rem;max-width:75ch">Le brevet n'a pas d'épreuve écrite de langue : ces séries t'entraînent au niveau attendu en fin de 3e. Au programme : compréhension écrite et orale (le texte est lu à voix haute), dictée, grammaire, réécriture, vocabulaire, dialogues en BD, frise des temps et culture.</p>
+    ${segment("lv-brevet", [["en", "Anglais"], ["es", "Espagnol"], ["tous", "Les deux"]], lv)}
+    <p class="doux" style="font-size:.88rem"><strong>${n}</strong> questions rédigées et des questions <strong>générées à l'infini</strong> (verbes, temps, prépositions, vocabulaire).</p>
+    <div class="rangee"><button class="btn" type="button" id="lancer-langues">Lancer une série de 50 questions</button></div></div>`;
+}
+function construireSerieLangues(lv){
+  const N = 50, vues = (prog && prog.vuesB) || {}, nomLv = q => q.lv === "es" ? "Espagnol" : "Anglais";
+  const banque = BANQUE_LANGUES.filter(q => lvOk(q, lv)).map(q => ({...q, cleB: cleQuestion(q)}));
+  const score = q => { const v = vues[q.cleB]; if (!v) return Math.random(); const [n, f, t] = v; return f > 0 ? 1 + (1 - Math.min(1, f / n)) * .5 + Math.random() * .2 : 2 + t / 1e10 + Math.random() * .2; };
+  const choisies = banque.map(q => [score(q), q]).sort((a, b) => a[0] - b[0]).slice(0, Math.min(banque.length, 34)).map(x => x[1]);
+  const gens = GENERATEURS.filter(g => g[0] === "dnb" && g[1] === "langues" && (lv === "tous" || g[3] === lv)), sortie = [], vus = new Set();
+  for (let essai = 0; gens.length && choisies.length + sortie.length < N && essai < N * 10; essai++){
+    const g = gens[(essai + Math.floor(Math.random() * gens.length)) % gens.length];
+    try { const q = g[2](), cle = q && q.q + "|" + JSON.stringify(q.fig || "") + "|" + (q.choix?.[0] || q.texte || q.rep?.[0]); if (!q || vus.has(cle)) continue; vus.add(cle);
+      sortie.push({...q, ex: "dnb", mat: "langues", lv: g[3], an: 0, src: "Question générée", genere: true}); } catch (err){ console.warn(err); }
+  }
+  const l = [...choisies, ...sortie];
+  for (let i = l.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [l[i], l[j]] = [l[j], l[i]]; }
+  return l.map(q => ({...q, n: 0, matiere: nomLv(q) + " · " + (q.theme || "Entraînement")}));
+}
 // Série : questions jamais vues d'abord, puis ratées, puis les plus anciennes ; complétée par des questions générées
 function construireSerieBrevet(){
   const ex = choixBrevet.ex, mats = choixBrevet.mats[ex], N = 50, vues = (prog && prog.vuesB) || {};
@@ -6692,18 +6909,18 @@ Object.assign(INTERACTIFS, {
     monter(el, q){
       const texte = String(q.dictee || ""), phrases = texte.match(/[^.!?…]+[.!?…]+["»]?|[^.!?…]+$/g) || [texte], ponct = q.ponctuation !== false;
       let n = 0;
-      const ok = "speechSynthesis" in window;
+      const ok = "speechSynthesis" in window, voix = q.voix || "", lire = t => voix ? lireVoix(t, voix, .8) : lireTexte(t);
       el.innerHTML = `<div class="fr-dictee">${ok ? `<div class="rangee fr-lecteur"><button type="button" class="btn sec" data-tout>🔊 Écouter tout le texte</button>
           <span class="rangee" style="gap:4px"><button type="button" class="mini-btn" data-prec aria-label="Phrase précédente">◀</button><button type="button" class="mini-btn" data-phrase>🔊 Phrase <span data-num>1</span> / ${phrases.length}</button><button type="button" class="mini-btn" data-suiv aria-label="Phrase suivante">▶</button></span>
-          <label class="rangee doux" style="gap:6px;font-size:.84rem"><input type="checkbox" data-ponct ${ponct ? "checked" : ""}> Ponctuation dite</label></div>`
+          ${voix ? "" : `<label class="rangee doux" style="gap:6px;font-size:.84rem"><input type="checkbox" data-ponct ${ponct ? "checked" : ""}> Ponctuation dite</label>`}</div>`
         : `<p class="doux">La lecture audio n'est pas disponible sur cet appareil.</p>`}
         <textarea class="fr-saisie" rows="${Math.min(9, 3 + Math.ceil(texte.length / 80))}" spellcheck="false" autocapitalize="sentences" placeholder="Écris la dictée ici…"></textarea></div>`;
       const t = el.querySelector("textarea"), dire = () => el.querySelector("[data-ponct]")?.checked;
       if (ok){
-        el.querySelector("[data-tout]").onclick = () => lireTexte(dicteeLisible(texte, dire()));
-        el.querySelector("[data-phrase]").onclick = () => lireTexte(dicteeLisible(phrases[n].trim(), dire()));
-        el.querySelector("[data-prec]").onclick = () => { n = Math.max(0, n - 1); el.querySelector("[data-num]").textContent = n + 1; lireTexte(dicteeLisible(phrases[n].trim(), dire())); };
-        el.querySelector("[data-suiv]").onclick = () => { n = Math.min(phrases.length - 1, n + 1); el.querySelector("[data-num]").textContent = n + 1; lireTexte(dicteeLisible(phrases[n].trim(), dire())); };
+        el.querySelector("[data-tout]").onclick = () => lire(dicteeLisible(texte, dire()));
+        el.querySelector("[data-phrase]").onclick = () => lire(dicteeLisible(phrases[n].trim(), dire()));
+        el.querySelector("[data-prec]").onclick = () => { n = Math.max(0, n - 1); el.querySelector("[data-num]").textContent = n + 1; lire(dicteeLisible(phrases[n].trim(), dire())); };
+        el.querySelector("[data-suiv]").onclick = () => { n = Math.min(phrases.length - 1, n + 1); el.querySelector("[data-num]").textContent = n + 1; lire(dicteeLisible(phrases[n].trim(), dire())); };
       }
       return {
         verifier: () => { if ("speechSynthesis" in window) speechSynthesis.cancel(); t.disabled = true; const f = alignerJetons(jetonsFr(t.value), jetonsFr(texte)).fautes; t.classList.add(f ? "ko" : "ok"); return f === 0; },
@@ -7262,7 +7479,7 @@ const LG_COUL = {passe: "#e5484d", "passe-duree": "#e07b2c", parfait: "#a855c7",
 const LG_X = {passe: 200, "passe-duree": 200, parfait: 290, present: 400, "present-continu": 400, "futur-proche": 462, futur: 545};
 const LG_AY = 112, LG_N = 400;
 function lgOnde(x1, x2, y, a = 6, p = 24){ let d = `M${x1} ${y}`; for (let x = x1, s = 1; x < x2 - .1; x += p / 2, s = -s){ const xe = Math.min(x2, x + p / 2); d += `Q${(x + xe) / 2} ${y - a * s * 2} ${xe} ${y}`; } return d; }
-function lgGlyphe(k, L, u){
+function lgGlyphe(k, L, u, sansNom){
   const T = LG_TEMPS[L][k]; if (!T) return "";
   const c = LG_COUL[k], AY = LG_AY, N = LG_N, m = `marker-end="url(#${u}m-${k})"`;
   const pt = (x, r = 8, delai = 0) => `<circle cx="${x}" cy="${AY}" r="${r}" fill="${c}" stroke="#fff" stroke-width="2.5" class="lg-pop" style="animation-delay:${delai}s"/>`;
@@ -7278,9 +7495,10 @@ function lgGlyphe(k, L, u){
     case "futur-proche": s = pt(N, 6) + tr(`M${N} ${AY - 6}Q434 ${AY - 72} 470 ${AY - 14}`, m); break;
     case "futur": s = tr(`M545 ${AY - 48}V${AY - 13}`, m) + pt(545); break;
   }
+  if (sansNom) return s;
   return s + `<text x="${k === "futur-proche" ? 500 : Math.max(90, Math.min(550, LG_X[k]))}" y="28" text-anchor="middle" class="lg-g-nom lg-apparait" fill="${c}">${esc(T.nom)}</text>`;
 }
-function lgFriseSvg(L, k, u){
+function lgFriseSvg(L, k, u, sansNom){
   const AY = LG_AY, N = LG_N, lab = L === "es" ? ["PASADO", "AHORA", "FUTURO"] : ["PAST", "NOW", "FUTURE"];
   const marq = Object.entries(LG_COUL).map(([t, c]) => `<marker id="${u}m-${t}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker>`).join("");
   let g = "";
@@ -7290,7 +7508,7 @@ function lgFriseSvg(L, k, u){
     <line x1="${N}" y1="46" x2="${N}" y2="${AY + 22}" stroke="#5b5446" stroke-width="2" stroke-dasharray="4 4"/>
     <line x1="22" y1="${AY}" x2="614" y2="${AY}" stroke="#5b5446" stroke-width="3.5" marker-end="url(#${u}ax)"/>${g}
     <text x="140" y="${AY + 48}" class="lg-f-lab">◀ ${lab[0]}</text><text x="${N}" y="${AY + 48}" class="lg-f-lab now">${lab[1]}</text><text x="530" y="${AY + 48}" class="lg-f-lab">${lab[2]} ▶</text>
-    <g data-zone="glyphe">${k ? lgGlyphe(k, L, u) : ""}</g>
+    <g data-zone="glyphe">${k ? lgGlyphe(k, L, u, sansNom) : ""}</g>
     <g class="lg-pin" style="transform:translateX(${k ? LG_X[k] : N}px);opacity:${k ? 1 : 0}"><path d="M0 ${AY + 9}l-8 13h16z" fill="#f2ae02" stroke="#5b5446" stroke-width="1.5" stroke-linejoin="round"/></g></svg>`;
 }
 function lgInfoTemps(L, k, texte){
@@ -7306,6 +7524,7 @@ function lgQuizFrise(L, p, n, tot, score){
 }
 function htmlFriseTemps(o){
   const L = lgL(o), ph = lgPhrasesValides(o), u = "lg" + (++lgUid) + "-", quiz = o.mode === "quiz";
+  if (o.statique) return `<div class="lg-mod lg-frise lg-statique"><div class="lg-papier">${lgFriseSvg(L, LG_TEMPS[L][o.montrer] ? o.montrer : "", u, true)}</div></div>`;
   const sel = !quiz && ph[0] ? ph[0].temps : "";
   return `<div class="lg-mod lg-frise" data-lg="frise" data-u="${u}" data-o="${encoderObjet(o)}">
     ${lgTete(o, o.titre || "Frise des temps", quiz ? "Exercice : trouve le temps de chaque phrase." : "Clique sur une phrase : elle se place sur la frise.")}
@@ -7392,6 +7611,7 @@ function lgPhrasePrep(L, p, trad){
 }
 function htmlPrepositions(o){
   const L = lgL(o), u = "lg" + (++lgUid) + "-", quiz = o.mode === "quiz", pos = quiz ? "under" : (LG_PREPS[o.depart] ? o.depart : "on"), trad = o.traduction !== false;
+  if (o.statique) return `<div class="lg-mod lg-prep lg-statique"><div class="lg-papier">${lgScenePrep(u, pos)}</div></div>`;
   const question = L === "es" ? "¿Dónde está el gato?" : "Where is the cat?";
   return `<div class="lg-mod lg-prep" data-lg="prep" data-u="${u}" data-o="${encoderObjet(o)}">
     ${lgTete(o, o.titre || "Prépositions de lieu", quiz ? "Exercice : regarde où est le chat et choisis la bonne préposition." : "Clique sur une préposition : le chat se déplace.")}
@@ -7572,6 +7792,32 @@ MODULES.splice(MODULES.findIndex(m => m.id === "declinaison") + 1, 0,
       CHAMP("traduction", "Traduction au clic", "case")],
     rendu: htmlDialogue, surLangue: o => { const a = LG_DEF_DIALOGUE[o.langue === "es" ? "en" : "es"]; if (lgPareil(o.lignes, a.lignes)) Object.assign(o, lgCopie(LG_DEF_DIALOGUE[lgL(o)])); }}
 );
+
+/* ---------- Genre de question « écoute » : le navigateur lit un texte en anglais ou en espagnol, puis QCM ---------- */
+function lireVoix(t, lang = "fr-FR", vitesse = .9){
+  if (!("speechSynthesis" in window)) return false;
+  speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = lang; u.rate = vitesse;
+  const pre = lang.slice(0, 2).toLowerCase(), voix = speechSynthesis.getVoices();
+  const v = voix.find(x => x.lang.replace("_", "-").toLowerCase() === lang.toLowerCase()) || voix.find(x => x.lang.toLowerCase().startsWith(pre)); if (v) u.voice = v;
+  speechSynthesis.speak(u); return true;
+}
+INTERACTIFS.ecoute = {
+  monter(el, q){
+    const ok = "speechSynthesis" in window, lang = q.voix || "en-GB", choix = q.choix || [];
+    let pris = -1, ecoutes = 0;
+    el.innerHTML = `<div class="ec-bloc">${ok ? `<div class="rangee ec-lecteur"><button type="button" class="btn sec" data-ecoute="normal">🔊 Écouter</button><button type="button" class="mini-btn" data-ecoute="lent">🐢 Plus lentement</button><span class="doux ec-compte">Écoute autant de fois que tu veux.</span></div>`
+      : `<p class="doux">La lecture audio n'est pas disponible sur cet appareil : voici le texte.</p><p class="ec-texte">${esc(q.audio)}</p>`}
+      <div class="choix ec-choix">${choix.map((c, k) => `<button type="button" data-k="${k}">${esc(c)}</button>`).join("")}</div></div>`;
+    if (ok) el.querySelectorAll("[data-ecoute]").forEach(b => b.onclick = () => { lireVoix(q.audio, lang, b.dataset.ecoute === "lent" ? .65 : .9); ecoutes++;
+      el.querySelector(".ec-compte").textContent = ecoutes === 1 ? "1 écoute" : ecoutes + " écoutes"; });
+    const bts = [...el.querySelectorAll(".ec-choix button")];
+    bts.forEach(b => b.onclick = () => { pris = +b.dataset.k; bts.forEach(x => x.classList.toggle("choisi", x === b)); });
+    return {
+      verifier: () => { if ("speechSynthesis" in window) speechSynthesis.cancel(); bts.forEach(x => { x.disabled = true; if (+x.dataset.k === q.bonne) x.classList.add("juste"); }); if (pris >= 0 && pris !== q.bonne) bts[pris].classList.add("faux"); return pris === q.bonne; },
+      solution: () => el.insertAdjacentHTML("beforeend", `<details class="ec-transcription"><summary>Lire le texte entendu</summary><p>${esc(q.audio)}</p></details>`)
+    };
+  }
+};
 /* ===================== GÉRANT : ÉDITEUR D'EXERCICES (simplifié) ===================== */
 /* Une question à la fois : on choisit le type, on écrit l'énoncé, on donne la réponse.
    Les options (difficulté, rappel, explication, illustration) sont repliées. Aperçu élève en direct. */
@@ -9366,7 +9612,7 @@ function lancerQuiz(questions, ctx){
       retour = "brevet"; libRetour = "Nouvelle série"; rejouer = false;
       const pct = Math.round(score / questions.length * 100);
       gain = score * 4;
-      const cle = ctx.brevet === "bia" ? "bia" : "serie";
+      const cle = ctx.brevet === "bia" ? "bia" : ctx.brevet === "langues" ? "langues" : "serie";
       if (!prog.brevet[cle] || pct > prog.brevet[cle]){ if (prog.brevet[cle]) note = "Nouveau record : " + pct + " %."; prog.brevet[cle] = pct; }
       else note = pct + " % de bonnes réponses.";
     } else if (ctx.lecon){
