@@ -854,21 +854,21 @@ a.lien{color:var(--accent)}
 @keyframes lg-secoue{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .lg-cube-fond{opacity:0;transition:opacity .35s}.lg-scene.verre .lg-cube-fond{opacity:1}.lg-cube>*{transition:opacity .35s}.lg-scene.verre .lg-cube>*{opacity:.35}
 .lg-lecteur{display:flex;flex-direction:column;gap:8px}
-.lg-scene-bd{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--ligne);cursor:pointer;outline:none;user-select:none}
+.lg-scene-bd{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--ligne);background:#0e0e0f;cursor:pointer;outline:none;user-select:none}
 .lg-scene-bd:focus-visible{box-shadow:0 0 0 3px var(--accent)}
 .lg-bd-svg{display:block;width:100%;height:auto}
-.lg-nom-bd{font:800 15px var(--f-texte),Arial,sans-serif;text-anchor:middle;fill:#3b3326}.lg-scene-bd.nuit .lg-nom-bd{fill:#e8e8ea}
+.lg-nom-bd{font:800 15px var(--f-texte),Arial,sans-serif;text-anchor:middle;fill:#e8e8ea;letter-spacing:.04em}
 .lg-forme{animation:lg-derive 7s ease-in-out infinite alternate}
 .lg-corps{transform-box:fill-box;transform-origin:50% 100%;animation:lg-respire 2.8s ease-in-out infinite}
-.lg-perso .b-ouverte{opacity:0}.lg-perso.bouche .b-ouverte{opacity:1}.lg-perso.bouche .b-fermee{opacity:0}
-.lg-perso{transition:opacity .25s}.lg-perso.ecoute{opacity:.88}
-.lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:3px solid #1d1f24;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.82rem,2.3vw,1.02rem);line-height:1.42;box-shadow:0 4px 0 rgba(0,0,0,.14);text-align:left;cursor:pointer}
+.lg-perso .b-ouverte,.lg-perso .b-triste{opacity:0}.lg-perso.triste .b-triste{opacity:1}.lg-perso.triste .b-content{opacity:0}.lg-perso.bouche .b-ouverte{opacity:1}.lg-perso.bouche .b-content,.lg-perso.bouche .b-triste{opacity:0}
+.lg-perso{transition:filter .25s}.lg-perso.ecoute{filter:brightness(.82)}
+.lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:3px solid #fff;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.82rem,2.3vw,1.02rem);line-height:1.42;box-shadow:0 4px 0 var(--accent);text-align:left;cursor:pointer}
 .lg-bulle-bd.q1{left:4%}.lg-bulle-bd.q2{right:4%}
 .lg-bulle-bd::after,.lg-bulle-bd::before{content:"";position:absolute}
-.lg-bulle-bd::after{bottom:-17px;width:26px;height:17px;background:#1d1f24}.lg-bulle-bd::before{bottom:-11px;width:17px;height:12px;background:#fff;z-index:1}
+.lg-bulle-bd::after{bottom:-17px;width:26px;height:17px;background:#fff}.lg-bulle-bd::before{display:none}
 .lg-bulle-bd.q1::after{left:16%;clip-path:polygon(0 0,100% 0,15% 100%)}.lg-bulle-bd.q1::before{left:calc(16% + 4px);clip-path:polygon(0 0,100% 0,12% 100%)}
 .lg-bulle-bd.q2::after{right:16%;clip-path:polygon(0 0,100% 0,85% 100%)}.lg-bulle-bd.q2::before{right:calc(16% + 4px);clip-path:polygon(0 0,100% 0,88% 100%)}
-.lg-bulle-bd .lg-qui{color:#8a7f6a}.lg-bulle-bd.q1 .lg-qui{color:#c23a3f}.lg-bulle-bd.q2 .lg-qui{color:#2a6aa3}
+.lg-bulle-bd .lg-qui{color:#8a7f6a}.lg-bulle-bd.q1 .lg-qui{color:color-mix(in srgb,var(--accent) 70%,#000)}.lg-bulle-bd.q2 .lg-qui{color:#5a5751}
 .lg-dit{display:block;min-height:1.42em;white-space:pre-wrap}
 .lg-bulle-bd .lg-fr{margin-top:5px;padding-top:4px;border-top:1px dashed #c9bda5;color:#6b5f4a;font-size:.86em}
 .lg-indic{position:absolute;right:9px;bottom:2px;font-size:.62rem;color:#8a7f6a;opacity:0}.lg-bulle-bd.fini .lg-indic{opacity:1;animation:lg-clignote 1s steps(2) infinite}
@@ -3586,7 +3586,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.60";
+const VERSION_SITE = "0.61";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7746,33 +7746,31 @@ const LG_DEF_DIALOGUE = {
 };
 const lgSansCrochets = t => String(t || "").replace(/\[([^\]]*)\]/g, (_, a) => a.split(/[|/]/)[0].trim());
 const lgLignes = o => (o.lignes || []).filter(l => l && String(l.texte || "").trim());
-// fond : uniquement des formes pleines (ronds, carrés, triangles) qui flottent doucement
-function lgFondFormes(fond){
-  const P = LG_PALETTES[fond] || LG_PALETTES.jour; let r = 11; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
-  let s = `<rect width="600" height="340" fill="${P.bg}"/>`;
+// fond noir avec des formes pleines aux couleurs des formes du site (ambre du thème, blanc cassé, gris)
+function lgFondFormes(){
+  const C = [["var(--accent)", .32], ["#f4f2ed", .1], ["#5a5751", .55], ["var(--accent)", .2]]; let r = 11; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+  let s = `<rect width="600" height="340" fill="#0e0e0f"/>`;
   for (let i = 0; i < 18; i++){
-    const x = Math.round(rnd() * 600), y = Math.round(14 + rnd() * 240), t = Math.round(10 + rnd() * 26), c = P.formes[i % P.formes.length], a = Math.round(rnd() * 360), k = i % 3, d = (rnd() * 6).toFixed(1);
-    const forme = k === 0 ? `<circle r="${t}"/>` : k === 1 ? `<rect x="${-t}" y="${-t}" width="${2 * t}" height="${2 * t}" rx="${Math.round(t / 4)}"/>` : `<path d="M0 ${-t}L${(t * .87).toFixed(1)} ${(t * .5).toFixed(1)}H${(-t * .87).toFixed(1)}Z"/>`;
-    s += `<g transform="translate(${x} ${y}) rotate(${a})"><g class="lg-forme" fill="${c}" opacity="${P.op}" style="animation-delay:-${d}s">${forme}</g></g>`;
+    const x = Math.round(rnd() * 600), y = Math.round(14 + rnd() * 250), t = Math.round(9 + rnd() * 24), [c, op] = C[i % C.length], a = Math.round(rnd() * 360), k = i % 3, d = (rnd() * 6).toFixed(1);
+    const forme = k === 0 ? `<circle r="${t}"/>` : k === 1 ? `<rect x="${-t}" y="${-t}" width="${2 * t}" height="${2 * t}" rx="${Math.round(t / 5)}"/>` : `<path d="M0 ${-t}L${(t * .87).toFixed(1)} ${(t * .5).toFixed(1)}H${(-t * .87).toFixed(1)}Z"/>`;
+    s += `<g transform="translate(${x} ${y}) rotate(${a})"><g class="lg-forme" fill="${c}" opacity="${op}" style="animation-delay:-${d}s">${forme}</g></g>`;
   }
-  return s + `<path d="M0 296Q150 284 300 292T600 288V340H0Z" fill="${P.sol}"/>`;
+  return s;
 }
-// personnage rond et simple (q = 1 rouge, regarde à droite ; q = 2 bleu)
+// personnage simple : une tête ronde et des épaules ; visage :) ou :( décalé vers l'autre personnage
 function lgBonhomme(q){
-  const c = q === 1 ? {corps: "#e5484d", ombre: "#b8353a", ventre: "#f37e82"} : {corps: "#3d8fd1", ombre: "#2a6aa3", ventre: "#76b6ea"};
-  const deco = q === 1 ? `<path d="M-8 -116L6 -142L14 -112Z" fill="${c.ombre}"/>` : `<rect x="-2" y="-138" width="5" height="26" rx="2.5" fill="${c.ombre}"/><circle cx="0" cy="-140" r="8" fill="#f2ae02"/>`;
-  return `${deco}<path d="M-42 -6Q-48 -78 -30 -106Q0 -132 30 -106Q48 -78 42 -6Q0 4 -42 -6Z" fill="${c.corps}"/><ellipse cx="2" cy="-36" rx="24" ry="22" fill="${c.ventre}"/>
-    <ellipse cx="-17" cy="-2" rx="14" ry="6" fill="${c.ombre}"/><ellipse cx="19" cy="-2" rx="14" ry="6" fill="${c.ombre}"/>
-    <ellipse cx="-3" cy="-82" rx="12" ry="14" fill="#fff"/><ellipse cx="23" cy="-82" rx="12" ry="14" fill="#fff"/><circle cx="2" cy="-80" r="6" fill="#1d1f24"/><circle cx="28" cy="-80" r="6" fill="#1d1f24"/>
-    <circle cx="-16" cy="-60" r="6" fill="#ff9aa8" opacity=".55"/><circle cx="36" cy="-60" r="6" fill="#ff9aa8" opacity=".55"/>
-    <rect class="b-fermee" x="3" y="-62" width="18" height="5" rx="2.5" fill="#1d1f24"/><ellipse class="b-ouverte" cx="12" cy="-58" rx="9" ry="8" fill="#1d1f24"/>`;
+  const c = q === 1 ? "var(--accent)" : "#f4f2ed", dx = 9, trait = `fill="none" stroke="#0e0e0f" stroke-width="4.5" stroke-linecap="round"`;
+  return `<path d="M-64 0V-34Q-64 -78 -18 -78H18Q64 -78 64 -34V0Z" fill="${c}"/><circle cy="-124" r="38" fill="${c}"/>
+    <circle cx="${dx - 11}" cy="-130" r="4.6" fill="#0e0e0f"/><circle cx="${dx + 11}" cy="-130" r="4.6" fill="#0e0e0f"/>
+    <path class="b-content" d="M${dx - 12} -114Q${dx} -102 ${dx + 12} -114" ${trait}/><path class="b-triste" d="M${dx - 12} -106Q${dx} -118 ${dx + 12} -106" ${trait}/>
+    <ellipse class="b-ouverte" cx="${dx}" cy="-110" rx="7" ry="7" fill="#0e0e0f"/>`;
 }
 function lgBDHtml(o, lignes){
-  const noms = [o.perso1 || "A", o.perso2 || "B"], l0 = lignes[0], q0 = l0 && l0.qui === "2" ? 2 : 1, nuit = o.fond === "nuit";
-  return `<div class="lg-lecteur"><div class="lg-scene-bd${nuit ? " nuit" : ""}" tabindex="0" role="group" aria-label="Bande dessinée : clique ou appuie sur → pour la réplique suivante">
-      <svg viewBox="0 0 600 340" class="lg-bd-svg" aria-hidden="true">${lgFondFormes(o.fond)}
-        <g transform="translate(150 316)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1)}</g></g></g>
-        <g transform="translate(450 316) scale(-1 1)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2)}</g></g></g>
+  const noms = [o.perso1 || "A", o.perso2 || "B"], l0 = lignes[0], q0 = l0 && l0.qui === "2" ? 2 : 1;
+  return `<div class="lg-lecteur"><div class="lg-scene-bd" tabindex="0" role="group" aria-label="Bande dessinée : clique ou appuie sur → pour la réplique suivante">
+      <svg viewBox="0 0 600 340" class="lg-bd-svg" aria-hidden="true">${lgFondFormes()}
+        <g transform="translate(150 312)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1)}</g></g></g>
+        <g transform="translate(450 312) scale(-1 1)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2)}</g></g></g>
         <text x="150" y="333" class="lg-nom-bd">${esc(noms[0])}</text><text x="450" y="333" class="lg-nom-bd">${esc(noms[1])}</text></svg>
       ${l0 ? `<div class="lg-bulle-bd q${q0}"><span class="lg-qui">${esc(noms[q0 - 1])}</span><span class="lg-dit">${esc(lgSansCrochets(l0.texte))}</span><span class="lg-fr" hidden></span><span class="lg-indic" aria-hidden="true">▼</span></div>` : ""}</div>
     <div class="lg-nav"><button type="button" class="mini-btn" data-nav="-1" aria-label="Réplique précédente">◀</button><span class="lg-compteur">1 / ${lignes.length}</span><button type="button" class="mini-btn lg-suivant" data-nav="1">Suivant ▶</button>
@@ -7836,6 +7834,7 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
     bulle.className = `lg-bulle-bd q${qActif}`; qui.textContent = noms[qActif - 1]; dit.textContent = "";
     fr.textContent = l.fr || ""; fr.hidden = !(etat.trad && l.fr);
     persos.forEach((p, k) => { p.classList.remove("bouche"); p.classList.toggle("ecoute", k + 1 !== qActif); });
+    persos[qActif - 1].classList.toggle("triste", l.humeur === "triste");
     let n = 0; file = [];
     (mode === "trous" ? morceauxTrous(String(l.texte)) : [{t: lgSansCrochets(l.texte)}]).forEach(m => { if (m.trou !== undefined) file.push({trou: m.trou, n: n++}); else for (const ch of m.t) file.push({ch}); });
     j = 0; fini = false; compteur.textContent = `${i + 1} / ${lignes.length}`; prec.disabled = i === 0; suiv.disabled = false;
@@ -7916,8 +7915,8 @@ MODULES.splice(MODULES.findIndex(m => m.id === "declinaison") + 1, 0,
     rendu: htmlPrepositions},
   {id: "dialogue", nom: "Dialogue en BD", cat: "Langues", icone: "❝", defaut: () => ({langue: "en", mode: "lecture", traduction: true, ...lgCopie(LG_DEF_DIALOGUE.en)}),
     champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["lecture", "Lecture (les bulles défilent une par une)"], ["trous", "Texte à trous (les mots entre crochets)"], ["ordre", "Remettre les répliques dans l'ordre"]]}),
-      CHAMP("titre", "Titre (facultatif)"), CHAMP("fond", "Fond", "choix", {options: LG_FONDS}), CHAMP("perso1", "Personnage 1 (à gauche)"), CHAMP("perso2", "Personnage 2 (à droite)"),
-      CHAMP("lignes", "Répliques — mets entre [crochets] les mots à trouver en texte à trous", "liste", {sous: [CHAMP("qui", "Qui parle", "choix", {options: [["1", "Personnage 1"], ["2", "Personnage 2"]]}), CHAMP("texte", "Réplique"), CHAMP("fr", "Traduction (facultatif)")], max: 12, neuf: () => ({qui: "1", texte: "", fr: ""})}),
+      CHAMP("titre", "Titre (facultatif)"), CHAMP("perso1", "Personnage 1 (à gauche)"), CHAMP("perso2", "Personnage 2 (à droite)"),
+      CHAMP("lignes", "Répliques — mets entre [crochets] les mots à trouver en texte à trous", "liste", {sous: [CHAMP("qui", "Qui parle", "choix", {options: [["1", "Personnage 1"], ["2", "Personnage 2"]]}), CHAMP("humeur", "Visage", "choix", {options: [["content", ":)"], ["triste", ":("]]}), CHAMP("texte", "Réplique"), CHAMP("fr", "Traduction (facultatif)")], max: 12, neuf: () => ({qui: "1", humeur: "content", texte: "", fr: ""})}),
       CHAMP("traduction", "Bouton de traduction (FR)", "case")],
     rendu: htmlDialogue, surLangue: o => { const a = LG_DEF_DIALOGUE[o.langue === "es" ? "en" : "es"]; if (lgPareil(o.lignes, a.lignes)) Object.assign(o, lgCopie(LG_DEF_DIALOGUE[lgL(o)])); }}
 );
