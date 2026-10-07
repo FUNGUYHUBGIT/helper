@@ -3595,7 +3595,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.64";
+const VERSION_SITE = "0.65";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5789,7 +5789,7 @@ const MODULES = [
       CHAMP("liens", "Liaisons", "liste", {sous: [CHAMP("de", "De", "appareil"), CHAMP("vers", "Vers", "appareil"), CHAMP("type", "Type", "choix", {options: [["cable","Câble"],["wifi","Wi-Fi"]]}), CHAMP("texte", "Texte")], max: 24, neuf: () => ({de: 0, vers: 1, type: "cable", texte: ""})})], rendu: svgReseau, glisser: true},
   {id: "scratch", nom: "Blocs Scratch", cat: "Technologie", icone: "⧠", defaut: () => ({langue: "fr", code: "quand le drapeau vert pressé\nrépéter (4) fois\n  avancer de (100) pas\n  tourner droite de (90) degrés\nfin"}),
     champs: [CHAMP("langue", "Langue des blocs", "choix", {options: [["fr","Français"],["en","Anglais"]]}), CHAMP("code", "Programme (une instruction par ligne)", "zone", {aide: "Syntaxe scratchblocks : « quand le drapeau vert pressé », « avancer de (10) pas », « si <…> alors », « fin »…"})], rendu: htmlScratch, async: true},
-  {id: "code", nom: "Code Python / console", cat: "Technologie", icone: "</>", defaut: () => ({langage: "python", titre: "", code: "for i in range(3):\n    print(\"Bonjour\", i)", sortie: "Bonjour 0\nBonjour 1\nBonjour 2"}),
+  {id: "code", nom: "Code Python / console", cat: "Technologie", icone: "&lt;/&gt;", defaut: () => ({langage: "python", titre: "", code: "for i in range(3):\n    print(\"Bonjour\", i)", sortie: "Bonjour 0\nBonjour 1\nBonjour 2"}),
     champs: [CHAMP("langage", "Langage", "choix", {options: [["python","Python"],["console","Console / terminal"],["html","HTML"],["js","JavaScript"]]}), CHAMP("titre", "Titre (facultatif)"), CHAMP("code", "Code", "zone"), CHAMP("sortie", "Résultat affiché (facultatif)", "zone")], rendu: htmlCode}
 ];
 const moduleDe = id => MODULES.find(m => m.id === id);
@@ -7983,7 +7983,7 @@ MODULES.splice(MODULES.findIndex(m => m.id === "declinaison") + 1, 0,
       CHAMP("mode", "Utilisation", "choix", {options: [["explorer", "Découverte : on clique sur une préposition"], ["quiz", "Exercice : l'élève trouve la bonne préposition"]]}), CHAMP("titre", "Titre (facultatif)"),
       CHAMP("depart", "Position de départ", "choix", {options: LG_PREP_ORDRE.map(k => [k, `${LG_PREP_MOTS.en[k]} / ${LG_PREP_MOTS.es[k]}`]), si: o => o.mode !== "quiz"}), CHAMP("traduction", "Traduction en français", "case")],
     rendu: htmlPrepositions},
-  {id: "dialogue", nom: "Dialogue en BD", cat: "Langues", icone: "💬", defaut: () => ({langue: "en", mode: "lecture", traduction: true, ...lgCopie(LG_DEF_DIALOGUE.en)}),
+  {id: "dialogue", nom: "Dialogue en BD", cat: "Langues", icone: `<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" style="vertical-align:-.12em"><path d="M4 3h16a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-8l-5.5 4.2c-.5.4-1.2 0-1.2-.6V18H4a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3z"/></svg>`, defaut: () => ({langue: "en", mode: "lecture", traduction: true, ...lgCopie(LG_DEF_DIALOGUE.en)}),
     champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["lecture", "Lecture (les bulles défilent une par une)"], ["trous", "Texte à trous (les mots entre crochets)"], ["ordre", "Remettre les répliques dans l'ordre"]]}),
       CHAMP("titre", "Titre (facultatif)"), CHAMP("perso1", "Personnage 1 (à gauche)"), CHAMP("perso2", "Personnage 2 (à droite)"),
       CHAMP("lignes", "Répliques", "liste", {aide: "En mode texte à trous, mets entre [crochets] les mots à trouver : I [went] to the cinema.", max: 12,
