@@ -3300,7 +3300,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.56";
+const VERSION_SITE = "0.57";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6935,134 +6935,10 @@ function svgUrbain(o){
       axes: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#6f6a63" stroke-width="6" stroke-linecap="round"/><line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#f7f3e8" stroke-width="1.4" stroke-dasharray="4 4"/>`,
       commerces: (x, y) => `<rect x="${x + 2}" y="${y - 8}" width="16" height="15" rx="2" fill="#7d55c7"/><rect x="${x + 18}" y="${y - 8}" width="9" height="15" fill="#c9c4cc"/>`,
       pendulaires: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" stroke="#2f7fd1" stroke-width="2.8" marker-end="${mk("#2f7fd1")}"/>`};
-  } else if (sc === SCHEMAS_URBAINS.gentrification){
-    /* ---------- GENTRIFICATION : « Avant » fixe, « Après » qui se transforme ---------- */
-    const D = 12, sol = 404;
-    s += `<defs><linearGradient id="${u}ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe3f1"/><stop offset="1" stop-color="#f6efe1"/></linearGradient>
-      <clipPath id="${u}pg"><rect x="12" y="22" width="262" height="486" rx="12"/></clipPath><clipPath id="${u}pd"><rect x="296" y="22" width="262" height="486" rx="12"/></clipPath></defs>`;
-    const rue = ox => `<rect x="${ox}" y="22" width="262" height="486" fill="url(#${u}ciel)"/><rect x="${ox}" y="${sol}" width="262" height="14" fill="#cfc6b6"/><rect x="${ox}" y="${sol + 14}" width="262" height="90" fill="#8f8b84"/>${[0, 1, 2, 3, 4].map(k => `<rect x="${ox + 10 + k * 56}" y="${sol + 56}" width="30" height="4" fill="#f1ede4"/>`).join("")}`;
-    const fen = (x, y, w, h, c, cadre) => `<rect x="${F(x)}" y="${F(y)}" width="${w}" height="${h}" fill="${c}" stroke="${cadre}" stroke-width=".8"/>`;
-    const immeuble = (x, w, h, neuf) => {
-      let g = `<rect x="${x}" y="${sol - h}" width="${w}" height="${h}" fill="${neuf ? "#f1c48f" : "#a9a196"}" stroke="${neuf ? "#c98d4f" : "#7b746a"}" stroke-width="1.2"/>`;
-      g += `<rect x="${x - 3}" y="${sol - h - 6}" width="${w + 6}" height="6" fill="${neuf ? "#c98d4f" : "#6e675e"}"/>`;
-      for (let yy = sol - h + 14, r = 0; yy < sol - 34; yy += 26, r++) for (let xx = x + 8, c = 0; xx < x + w - 13; xx += 19, c++){
-        const ferme = !neuf && (r + c * 2) % 3 === 0;
-        g += fen(xx, yy, 11, 15, neuf ? "#cfe8f7" : ferme ? "#6b5a4a" : "#4d4a45", neuf ? "#fff" : "#3a3631");
-        if (neuf && c === 0 && r % 2 === 0) g += `<rect x="${xx - 3}" y="${yy + 15}" width="${w - 10}" height="3" fill="#6d6d6d"/><circle cx="${xx + 2}" cy="${yy + 13}" r="3" fill="#5aa64e"/><circle cx="${xx + 10}" cy="${yy + 13}" r="2.6" fill="#6fbf73"/>`;
-      }
-      if (!neuf) g += `<path d="M${x + 10} ${sol - h + 30}l9 12l-5 9l7 10" fill="none" stroke="#3a3631" stroke-width="1.4"/><line x1="${x + 6}" y1="${sol - h + 86}" x2="${x + w - 6}" y2="${sol - h + 92}" stroke="#555" stroke-width=".8"/>${[0, 1, 2].map(k => `<rect x="${x + 12 + k * 14}" y="${sol - h + 88 + k}" width="7" height="9" fill="${["#e5484d", "#f1ede4", "#3d8fd1"][k]}"/>`).join("")}`;
-      else g += `<rect x="${x + 4}" y="${sol - h - 16}" width="${w - 8}" height="10" fill="#7fbf6a" rx="3"/><path d="M${x + w - 18} ${sol - h - 6}v-18" stroke="#555" stroke-width="1.2"/><path d="M${x + w - 30} ${sol - h - 24}q12 -10 24 0z" fill="#e5484d"/>`;
-      return g;
-    };
-    const atelier = (x, neuf) => {
-      const c = neuf ? "#e08a5c" : "#9a6a52", ct = neuf ? "#b8653a" : "#6e4a38";
-      let g = `<path d="M${x} ${sol}V${sol - 92}l30 -26v26l30 -26v26l30 -26v118z" fill="${c}" stroke="${ct}" stroke-width="1.2"/>`;
-      g += `<rect x="${x + 74}" y="${sol - 190}" width="14" height="80" fill="${c}" stroke="${ct}" stroke-width="1"/>`;
-      if (neuf){ g += [0, 1, 2].map(k => `<rect x="${x + 8 + k * 36}" y="${sol - 76}" width="28" height="48" fill="#bfe3f5" stroke="#fff" stroke-width="1.4"/><line x1="${x + 22 + k * 36}" y1="${sol - 76}" x2="${x + 22 + k * 36}" y2="${sol - 28}" stroke="#fff"/>`).join("") + [0, 1, 2].map(k => `<path d="M${x + 4 + k * 30} ${sol - 94}l24 -21" stroke="#2b4c7e" stroke-width="5"/>`).join(""); }
-      else { g += [0, 1, 2].map(k => `<rect x="${x + 10 + k * 36}" y="${sol - 66}" width="16" height="16" fill="#4d4a45"/>`).join("") + `<rect x="${x + 40}" y="${sol - 34}" width="32" height="34" fill="#5e5852"/>`;
-        g += [0, 1, 2].map(k => `<circle cx="${x + 81 + k * 6}" cy="${sol - 198 - k * 13}" r="${7 + k * 3}" fill="#b8b4ae" opacity="${.8 - k * .2}">${anim ? `<animate attributeName="cy" values="${sol - 198 - k * 13};${sol - 214 - k * 13}" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="${.8 - k * .2};0" dur="3s" repeatCount="indefinite"/>` : ""}</circle>`).join(""); }
-      return g;
-    };
-    const boutiqueVieille = x => `<rect x="${x}" y="${sol - 30}" width="56" height="30" fill="#7b746a"/><rect x="${x + 4}" y="${sol - 26}" width="48" height="16" fill="#9a958c"/>${[0, 1, 2, 3].map(k => `<line x1="${x + 4}" y1="${sol - 24 + k * 4}" x2="${x + 52}" y2="${sol - 24 + k * 4}" stroke="#6b665e"/>`).join("")}`;
-    const cafe = x => `<rect x="${x}" y="${sol - 30}" width="56" height="30" fill="#6b3f2a"/><rect x="${x + 4}" y="${sol - 26}" width="48" height="22" fill="#ffe7b3"/><path d="M${x - 3} ${sol - 34}h62l-6 10h-50z" fill="#e5484d"/>${[0, 1, 2, 3, 4].map(k => `<rect x="${x + 1 + k * 11}" y="${sol - 34}" width="5.5" height="10" fill="#fff" opacity=".95"/>`).join("")}`
-      + `<g><circle cx="${x + 12}" cy="${sol + 8}" r="4.5" fill="#2b2f36"/><circle cx="${x + 40}" cy="${sol + 8}" r="4.5" fill="#2b2f36"/><path d="M${x + 4} ${sol - 2}q8 -8 16 0z" fill="#3d8fd1"/><path d="M${x + 32} ${sol - 2}q8 -8 16 0z" fill="#3d8fd1"/></g>`;
-    // panneau gauche : avant
-    s += `<g clip-path="url(#${u}pg)">${rue(12)}${immeuble(24, 66, 246, false)}${atelier(98, false)}${immeuble(210, 56, 196, false)}${boutiqueVieille(214)}`;
-    [[34, 1], [62, 0], [116, 1], [150, 0], [188, 1], [238, 0]].forEach(([x, k]) => s += personne(x, sol + 40 + k * 4, "#3d8fd1"));
-    s += `</g><rect x="12" y="22" width="262" height="486" rx="12" fill="none" stroke="#c9bfa8"/>`;
-    ancre.anciens = [57, sol - 268]; ancre.modestes = [143, sol + 70];
-    // panneau droit : après (se transforme)
-    const ox = 284;
-    s += `<g clip-path="url(#${u}pd)">${rue(296)}`;
-    // état ancien, qui disparaît
-    if (anim) s += `<g>${A("opacity", "1;1;0;0", "0;.28;.46;1", D)}${immeuble(ox + 24, 66, 246, false)}${atelier(ox + 98, false)}${immeuble(ox + 210, 56, 196, false)}${boutiqueVieille(ox + 214)}</g>`;
-    // échafaudages pendant les travaux
-    if (anim){ let e = ""; [[ox + 20, 74, 252], [ox + 206, 64, 202]].forEach(([x, w, h]) => { for (let k = 0; k <= w; k += 18) e += `<line x1="${x + k}" y1="${sol}" x2="${x + k}" y2="${sol - h}" stroke="#a87a3c" stroke-width="2"/>`; for (let yy = sol - 20; yy > sol - h; yy -= 26) e += `<line x1="${x}" y1="${yy}" x2="${x + w}" y2="${yy}" stroke="#a87a3c" stroke-width="2"/><rect x="${x}" y="${yy - 3}" width="${w}" height="3" fill="#d9b26a"/>`; e += `<rect x="${x}" y="${sol - h}" width="${w}" height="${h}" fill="#3d8fd1" opacity=".12"/>`; });
-      s += `<g opacity="0">${A("opacity", "0;0;1;1;0;0", "0;.14;.2;.48;.55;1", D)}${e}</g>`; }
-    // état rénové
-    s += `<g opacity="${anim ? 0 : 1}">${A("opacity", "0;0;1;1", "0;.36;.5;1", D)}${immeuble(ox + 24, 66, 246, true)}${atelier(ox + 98, true)}${immeuble(ox + 210, 56, 196, true)}</g>`;
-    s += `<g opacity="${anim ? 0 : 1}">${A("opacity", "0;0;1;1", "0;.5;.58;1", D)}${cafe(ox + 214)}<rect x="${ox + 30}" y="${sol - 30}" width="54" height="30" fill="#2b2f36"/><rect x="${ox + 34}" y="${sol - 26}" width="46" height="22" fill="#f4f1ea"/><rect x="${ox + 40}" y="${sol - 22}" width="12" height="14" fill="#e0569b"/><rect x="${ox + 58}" y="${sol - 20}" width="16" height="10" fill="#14a6a6"/></g>`;
-    ancre.rehab = [ox + 57, sol - 268]; ancre.commerces = [ox + 242, sol - 52];
-    // habitants : les modestes partent, les aisés arrivent
-    if (anim) [[ox + 40, 1], [ox + 80, 0], [ox + 150, 1]].forEach(([x, k], i) => { s += `<g>${A("opacity", "1;1;0;0", `0;${F2(.3 + i * .04)};${F2(.38 + i * .04)};1`, D)}${personne(x, sol + 40 + k * 4, "#3d8fd1")}</g>`; });
-    [[ox + 36, 1], [ox + 76, 0], [ox + 118, 1], [ox + 160, 0]].forEach(([x, k], i) => { s += `<g opacity="${anim ? 0 : 1}">${apparait(.56 + i * .05, D)}${personne(x, sol + 40 + k * 4, "#d4a017", i % 2 === 0)}</g>`; });
-    ancre.aises = [ox + 98, sol + 72];
-    // départ d'un habitant modeste vers la périphérie
-    s += `<path d="M${ox + 204} ${sol + 30}H${ox + 272}" stroke="#3d8fd1" stroke-width="3" stroke-dasharray="6 4" fill="none" marker-end="${mk("#3d8fd1")}"/>`;
-    s += `<g>${anim ? `<animateTransform attributeName="transform" type="translate" values="0 0;0 0;62 0;62 0" keyTimes="0;.45;.85;1" dur="${D}s" repeatCount="indefinite"/>` : ""}${personne(ox + 196, sol + 44, "#3d8fd1", true)}</g>`;
-    ancre.depart = [ox + 250, sol + 58];
-    // hausse des prix
-    s += `<g filter="url(#${u}ombre)"><rect x="${ox + 152}" y="34" width="96" height="66" rx="8" fill="#fff" stroke="#e1d6c3"/><text x="${ox + 162}" y="56" font-family="Arial,sans-serif" font-size="17" font-weight="900" fill="#e5484d">€</text>
-      <path d="M${ox + 162} 90 L${ox + 184} 84 L${ox + 202} 76 L${ox + 222} 60 L${ox + 236} 48" fill="none" stroke="#e5484d" stroke-width="3.2" stroke-linejoin="round" stroke-dasharray="110" stroke-dashoffset="${anim ? 110 : 0}" marker-end="${mk("#e5484d")}">${A("stroke-dashoffset", "110;110;0;0", "0;.1;.85;1", D)}</path></g>`;
-    ancre.prix = [ox + 144, 44];
-    // années (étapes de la transformation)
-    if (anim) [["Années 1990", 0, .2], ["Années 2000 : travaux", .2, .5], ["Aujourd'hui", .5, 1]].forEach(([t, a, b]) => {
-      s += `<text x="${ox + 143}" y="122" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#5a4a2a" opacity="${a === 0 ? 1 : 0}"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;${F2(Math.max(0, a - .001))};${F2(a + .001)};${F2(b - .001)};${F2(b)};1" dur="${D}s" repeatCount="indefinite"/>${t}</text>`; });
-    s += `</g><rect x="296" y="22" width="262" height="486" rx="12" fill="none" stroke="#c9bfa8"/>`;
-    // titres et flèche du temps
-    s += `<g font-family="Arial,sans-serif" font-weight="800" font-size="15" fill="#3b3326" text-anchor="middle"><rect x="103" y="34" width="80" height="24" rx="12" fill="#fffaf0" opacity=".9"/><text x="143" y="51">Avant</text><rect x="${ox + 22}" y="34" width="80" height="24" rx="12" fill="#fffaf0" opacity=".9"/><text x="${ox + 62}" y="51">Après</text></g>`;
-    s += `<circle cx="285" cy="200" r="16" fill="#7d55c7"/><path d="M277 200h14m-5 -5l6 5l-6 5" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-    symb = {anciens: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="16" height="22" fill="#a9a196" stroke="#7b746a"/><rect x="${x + 9}" y="${y - 7}" width="4" height="5" fill="#4d4a45"/><rect x="${x + 15}" y="${y - 7}" width="4" height="5" fill="#6b5a4a"/>`, modestes: (x, y) => personne(x + 14, y + 10, "#3d8fd1"),
-      rehab: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="16" height="22" fill="#f1c48f" stroke="#c98d4f"/><rect x="${x + 9}" y="${y - 7}" width="4" height="5" fill="#cfe8f7"/><rect x="${x + 15}" y="${y - 7}" width="4" height="5" fill="#cfe8f7"/><rect x="${x + 6}" y="${y + 2}" width="16" height="2" fill="#5aa64e"/>`, aises: (x, y) => personne(x + 14, y + 10, "#d4a017"),
-      commerces: (x, y) => `<path d="M${x + 1} ${y - 7}h26l-4 8h-18z" fill="#e5484d"/><rect x="${x + 6}" y="${y - 7}" width="4" height="8" fill="#fff"/><rect x="${x + 16}" y="${y - 7}" width="4" height="8" fill="#fff"/>`, prix: (x, y) => `<path d="M${x} ${y + 8}L${x + 12} ${y + 2}L${x + 24} ${y - 8}" fill="none" stroke="#e5484d" stroke-width="3" marker-end="${mk("#e5484d")}"/>`,
-      depart: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" stroke="#3d8fd1" stroke-width="3" stroke-dasharray="5 3" marker-end="${mk("#3d8fd1")}"/>`};
   } else {
-    /* ---------- MÉTROPOLISATION : une métropole connectée (flux en mouvement) ---------- */
-    const cx = 270, cy = 286, D = 9;
-    s += `<g clip-path="url(#${u}cadre)"><rect x="12" y="22" width="546" height="486" fill="#e9ecdf"/>`;
-    for (let x = 12; x < 558; x += 28) s += `<line x1="${x}" y1="22" x2="${x}" y2="508" stroke="#dde1d2" stroke-width=".8"/>`;
-    for (let y = 22; y < 508; y += 28) s += `<line x1="12" y1="${y}" x2="558" y2="${y}" stroke="#dde1d2" stroke-width=".8"/>`;
-    const riv = "M12 400 C 120 380, 180 340, 250 330 S 380 360, 440 420 S 520 500, 540 508";
-    s += `<path d="${riv}" fill="none" stroke="#9cc8e6" stroke-width="10" stroke-linecap="round"/>`;
-    // autres métropoles et liaisons (réseau)
-    const autres = [[500, 74], [516, 452], [52, 470], [44, 226]];
-    autres.forEach(([x, y]) => { s += `<path d="M${cx} ${cy}L${x} ${y}" stroke="#a7a39a" stroke-width="5" stroke-linecap="round"/><path d="M${cx} ${cy}L${x} ${y}" stroke="#e5484d" stroke-width="2.6" stroke-dasharray="3 7" stroke-linecap="round" fill="none">${anim ? `<animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite"/>` : ""}</path>`; });
-    autres.forEach(([x, y]) => { s += `<g filter="url(#${u}ombre)"><ellipse cx="${x}" cy="${y}" rx="22" ry="16" fill="#f2c08a" stroke="#e08a3c"/>${[[-8, 18], [0, 26], [8, 14]].map(([dx, h]) => `<rect x="${x + dx - 3}" y="${y - h + 6}" width="7" height="${h}" fill="#e5484d" stroke="#fff" stroke-width=".7"/>`).join("")}</g>`; });
-    ancre.reseau = [500, 112];
-    // agglomération (concentration) qui attire population et emplois
-    const tache = `M${cx - 160} ${cy - 16}C${cx - 150} ${cy - 128} ${cx + 40} ${cy - 160} ${cx + 138} ${cy - 92}C${cx + 200} ${cy - 40} ${cx + 172} ${cy + 96} ${cx + 74} ${cy + 132}C${cx - 32} ${cy + 168} ${cx - 172} ${cy + 96} ${cx - 160} ${cy - 16}z`;
-    s += `<path d="${tache}" fill="#f2c08a" fill-opacity=".9" stroke="#e08a3c" stroke-width="2">${anim ? `<animateTransform attributeName="transform" type="scale" values="1;1.04;1" dur="${D}s" repeatCount="indefinite" additive="sum"/>` : ""}</path>`;
-    let pts = "";
-    for (let k = 0; k < 140; k++){ const a = R() * 6.28, r = 40 + R() * 110, x = cx + Math.cos(a) * r * 1.05, y = cy + Math.sin(a) * r * .8; pts += `<rect x="${F(x)}" y="${F(y)}" width="5" height="4" fill="${R() < .5 ? "#e3a066" : "#d9935a"}"/>`; }
-    s += `<g opacity=".85">${pts}</g>`;
-    if (anim) [[30, 470], [540, 260], [300, 30], [120, 506], [470, 506]].forEach(([x, y], i) => { const chem = `M${x} ${y}Q${(x + cx) / 2 + 30} ${(y + cy) / 2 - 30} ${cx} ${cy}`;
-      [0, 1.5].forEach(dec => { s += `<g opacity=".9"><circle r="4" fill="#5a6cd6" stroke="#fff" stroke-width="1"/><animateMotion path="${chem}" dur="4s" begin="${(i * .7 + dec).toFixed(1)}s" repeatCount="indefinite"/></g>`; }); });
-    ancre.dense = [cx - 128, cy + 108];
-    // LGV et gare, avec un TGV qui passe
-    const lgv = `M12 ${cy + 64}L${cx + 46} ${cy + 6}L558 ${cy - 74}`;
-    s += `<path d="${lgv}" fill="none" stroke="#3b3f46" stroke-width="7"/><path d="${lgv}" fill="none" stroke="#f7f7f2" stroke-width="2.6" stroke-dasharray="8 7"/>`;
-    s += `<g filter="url(#${u}ombre)"><rect x="${cx + 30}" y="${cy - 4}" width="34" height="18" rx="3" fill="#3b3f46" stroke="#fff" stroke-width="1.5"/><path d="M${cx + 36} ${cy + 4}h22" stroke="#9cc8e6" stroke-width="3"/></g>`;
-    if (anim) s += `<g><path d="M-18 -4h30a6 4 0 0 1 0 8h-30z" fill="#fff" stroke="#3b3f46" stroke-width="1"/><rect x="-16" y="-1" width="28" height="2" fill="#e5484d"/><animateMotion path="${lgv}" dur="5s" repeatCount="indefinite" rotate="auto"/></g>`;
-    ancre.lgv = [cx + 52, cy + 38];
-    // quartier d'affaires : tours en volume
-    const tour = (x, h, c) => `<path d="M${x} ${cy - h}l10 -5v${h}l-10 5z" fill="${c[1]}"/><rect x="${x - 12}" y="${cy - h}" width="12" height="${h}" fill="${c[0]}" stroke="#fff" stroke-width=".6"/><path d="M${x - 12} ${cy - h}l10 -5h10l-10 5z" fill="${c[2]}"/>${Array.from({length: Math.floor(h / 9)}, (_, k) => `<rect x="${x - 10}" y="${cy - h + 4 + k * 9}" width="8" height="3" fill="#bfe3f5" opacity=".85"/>`).join("")}`;
-    s += `<g filter="url(#${u}ombre)">${[[-34, 50], [-18, 78], [-2, 96], [14, 66], [30, 54], [-26, 34], [6, 40]].map(([dx, h], i) => tour(cx + dx, h, i % 2 ? ["#5577b0", "#3a5788", "#8fa9d6"] : ["#3d5a8a", "#2b4470", "#7f98c6"])).join("")}
-      <line x1="${cx - 8}" y1="${cy - 101}" x2="${cx - 8}" y2="${cy - 116}" stroke="#555" stroke-width="1.4"/><circle cx="${cx - 8}" cy="${cy - 117}" r="2.6" fill="#e5484d">${anim ? `<animate attributeName="opacity" values="1;.1;1" dur="1.4s" repeatCount="indefinite"/>` : ""}</circle></g>`;
-    ancre.cbd = [cx + 2, cy - 136];
-    // technopôle : campus, laboratoires, verdure
-    const tx = cx + 104, ty = cy - 72;
-    s += `<g filter="url(#${u}ombre)"><rect x="${tx - 34}" y="${ty - 24}" width="68" height="48" rx="12" fill="#b9dba0" stroke="#7fb06a"/>
-      <rect x="${tx - 26}" y="${ty - 12}" width="22" height="14" fill="#fff" stroke="#6f8f5e"/><rect x="${tx - 24}" y="${ty - 8}" width="18" height="3" fill="#7cc4e8"/>
-      <rect x="${tx + 2}" y="${ty - 16}" width="24" height="18" fill="#fff" stroke="#6f8f5e"/><path d="M${tx + 4} ${ty - 16}a10 8 0 0 1 20 0z" fill="#d6e9f5" stroke="#6f8f5e"/>
-      ${[[-28, 14], [-14, 16], [10, 15], [24, 13]].map(([dx, dy]) => `<circle cx="${tx + dx}" cy="${ty + dy}" r="4" fill="#5aa64e"/>`).join("")}
-      <circle cx="${tx + 30}" cy="${ty - 22}" r="9" fill="#14a6a6" stroke="#fff" stroke-width="1.2"/><ellipse cx="${tx + 30}" cy="${ty - 22}" rx="6" ry="2.4" fill="none" stroke="#fff"/><ellipse cx="${tx + 30}" cy="${ty - 22}" rx="6" ry="2.4" fill="none" stroke="#fff" transform="rotate(60 ${tx + 30} ${ty - 22})"/><ellipse cx="${tx + 30}" cy="${ty - 22}" rx="6" ry="2.4" fill="none" stroke="#fff" transform="rotate(-60 ${tx + 30} ${ty - 22})"/></g>`;
-    ancre.technopole = [tx + 48, ty + 18];
-    // aéroport international : pistes, aérogare, avions qui décollent
-    const ax = cx - 140, ay = cy - 146;
-    s += `<g filter="url(#${u}ombre)"><rect x="${ax - 60}" y="${ay - 8}" width="120" height="16" rx="3" fill="#8a8f98" transform="rotate(-22 ${ax} ${ay})"/><line x1="${ax - 54}" y1="${ay}" x2="${ax + 54}" y2="${ay}" stroke="#fff" stroke-width="1.6" stroke-dasharray="7 6" transform="rotate(-22 ${ax} ${ay})"/>
-      <rect x="${ax - 40}" y="${ay - 6}" width="80" height="12" rx="3" fill="#9aa0a8" transform="rotate(38 ${ax} ${ay})"/>
-      <rect x="${ax - 18}" y="${ay + 24}" width="40" height="12" rx="3" fill="#dfe3e8" stroke="#6b7280"/><rect x="${ax + 26}" y="${ay + 14}" width="5" height="20" fill="#6b7280"/><rect x="${ax + 23}" y="${ay + 10}" width="11" height="6" rx="2" fill="#9cc8e6" stroke="#6b7280"/></g>`;
-    const vol = (d, dec) => `<g><path d="M0 -7l2.4 6.5 8 3v2.6l-8 -1.4 -.7 5 2.4 1.6v1.8l-4.1 -.9 -4.1 .9v-1.8l2.4 -1.6 -.7 -5 -8 1.4v-2.6l8 -3z" fill="#2b2f36" transform="rotate(90)"/><animateMotion path="${d}" dur="6s" begin="${dec}s" repeatCount="indefinite" rotate="auto"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.85;1" dur="6s" begin="${dec}s" repeatCount="indefinite"/></g>`;
-    const m1 = `M${ax - 10} ${ay - 6}Q${ax - 60} ${ay - 70} ${ax - 116} ${ay - 104}`, m2 = `M${ax + 14} ${ay - 10}Q${ax + 70} ${ay - 90} ${ax + 160} ${ay - 112}`;
-    s += `<path d="${m1}" fill="none" stroke="#7d55c7" stroke-width="3" stroke-dasharray="7 5" marker-end="${mk("#7d55c7")}">${anim ? `<animate attributeName="stroke-dashoffset" values="0;-24" dur="1.2s" repeatCount="indefinite"/>` : ""}</path><path d="${m2}" fill="none" stroke="#7d55c7" stroke-width="3" stroke-dasharray="7 5" marker-end="${mk("#7d55c7")}">${anim ? `<animate attributeName="stroke-dashoffset" values="0;-24" dur="1.2s" repeatCount="indefinite"/>` : ""}</path>`;
-    if (anim) s += vol(m1, 0) + vol(m2, 3);
-    ancre.aeroport = [ax - 4, ay + 52]; ancre.mondial = [ax + 120, ay - 80];
-    s += `</g>`;
-    symb = {dense: (x, y) => `<rect x="${x}" y="${y - 9}" width="28" height="18" rx="7" fill="#f2c08a" stroke="#e08a3c"/>`, cbd: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="7" height="22" fill="#3d5a8a"/><rect x="${x + 15}" y="${y - 5}" width="7" height="16" fill="#5577b0"/>`,
-      technopole: (x, y) => `<rect x="${x + 1}" y="${y - 10}" width="26" height="20" rx="6" fill="#b9dba0" stroke="#7fb06a"/><circle cx="${x + 14}" cy="${y}" r="5" fill="#14a6a6"/>`, aeroport: (x, y) => `<rect x="${x}" y="${y - 4}" width="28" height="8" rx="2" fill="#8a8f98"/><line x1="${x + 3}" y1="${y}" x2="${x + 25}" y2="${y}" stroke="#fff" stroke-dasharray="4 3"/>`,
-      lgv: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#3b3f46" stroke-width="6"/><line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#fff" stroke-width="2" stroke-dasharray="5 4"/>`,
-      reseau: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 20}" y2="${y}" stroke="#e5484d" stroke-width="2.6" stroke-dasharray="3 4"/><circle cx="${x + 23}" cy="${y}" r="6" fill="#e5484d" stroke="#fff" stroke-width="1.5"/>`,
-      mondial: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" stroke="#7d55c7" stroke-width="3" stroke-dasharray="6 4" marker-end="${mk("#7d55c7")}"/>`};
+    const ctx = {u, anim, A, apparait, F, F2, mk, R, personne};
+    const r = sc === SCHEMAS_URBAINS.gentrification ? urGentrification(ctx) : urMetropole(ctx);
+    s += r.s; Object.assign(ancre, r.ancre); symb = r.symb;
   }
   if (inc && ancre[inc]){ const [x, y] = ancre[inc]; s += `<g class="ur-q"><circle cx="${F(x)}" cy="${F(y)}" r="14"/><text x="${F(x)}" y="${F(y)}" dy=".36em" text-anchor="middle">?</text></g>`; }
   // légende
@@ -7076,6 +6952,189 @@ function svgUrbain(o){
 // petite maison (mur + toit)
 function maisonUr(x, y, toit){
   return `<rect x="${(x - 3.2).toFixed(1)}" y="${(y - 2).toFixed(1)}" width="6.4" height="5" fill="#fff4dc" stroke="#8c6b45" stroke-width=".5"/><path d="M${(x - 4.2).toFixed(1)} ${(y - 1.8).toFixed(1)}L${x.toFixed(1)} ${(y - 5.4).toFixed(1)}L${(x + 4.2).toFixed(1)} ${(y - 1.8).toFixed(1)}z" fill="${toit}"/>`;
+}
+
+/* ---------- GENTRIFICATION : une rue qui se transforme (animé) / avant-après empilés (fixe) ---------- */
+function urGentrification({u, anim, A, F, F2, mk}){
+  const D = 15, ancre = {};
+  let s = `<defs><linearGradient id="${u}ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcd9ee"/><stop offset="1" stop-color="#f7efe2"/></linearGradient></defs>`;
+  const pers = (x, y, c, opt = {}) => { const k = 1.35;
+    return `<g transform="translate(${F(x)} ${F(y)}) scale(${k})"><circle cx="0" cy="-23" r="5" fill="#f1c9a5"/><path d="M-5 -26a5 5 0 0 1 10 0v-1.5a5 5 0 0 0-10 0z" fill="${opt.cheveux || "#4a3424"}"/>
+      <path d="M-6 -16q6 -3 12 0l1.5 10h-15z" fill="${c}"/><rect x="-5" y="-6" width="4" height="9" rx="1.5" fill="#3a3f4a"/><rect x="1" y="-6" width="4" height="9" rx="1.5" fill="#3a3f4a"/>
+      ${opt.sac ? `<rect x="6" y="-11" width="7" height="9" rx="1.5" fill="#7a5230"/><path d="M7.5 -11v-2h4v2" fill="none" stroke="#7a5230" stroke-width="1.2"/>` : ""}${opt.valise ? `<rect x="7" y="-10" width="9" height="12" rx="2" fill="#5b6b8a"/><path d="M9.5 -10v-2.5h4v2.5" fill="none" stroke="#5b6b8a" stroke-width="1.4"/>` : ""}</g>`; };
+  // dessin de la rue dans un repère 546 × 380 (sol à y = 300)
+  const SOL = 300;
+  const fenetre = (x, y, neuf, ferme, fleurs) => {
+    let g = `<rect x="${x}" y="${y}" width="14" height="20" fill="${neuf ? "#cfe8f7" : ferme ? "#6b5640" : "#3f3c38"}" stroke="${neuf ? "#fff" : "#5a5349"}" stroke-width="1.2"/>`;
+    if (ferme && !neuf) g += `<path d="M${x + 7} ${y}v20M${x} ${y + 7}h14M${x} ${y + 14}h14" stroke="#54432f" stroke-width=".8"/>`;
+    else g += `<rect x="${x - 5}" y="${y}" width="4.5" height="20" fill="${neuf ? "#7d9d6c" : "#7a6650"}"/><rect x="${x + 14.5}" y="${y}" width="4.5" height="20" fill="${neuf ? "#7d9d6c" : "#7a6650"}"/>`;
+    if (neuf && fleurs) g += `<rect x="${x - 2}" y="${y + 20}" width="18" height="4" fill="#8a5a3a"/><circle cx="${x + 2}" cy="${y + 19}" r="2.6" fill="#5aa64e"/><circle cx="${x + 7}" cy="${y + 18}" r="2.4" fill="#e0569b"/><circle cx="${x + 12}" cy="${y + 19}" r="2.6" fill="#5aa64e"/>`;
+    return g;
+  };
+  const immeuble = (x, w, h, neuf, coul) => {
+    let g = `<rect x="${x}" y="${SOL - h}" width="${w}" height="${h}" fill="${coul}" stroke="${neuf ? "#c9a37e" : "#7d746a"}" stroke-width="1.2"/>`;
+    g += `<rect x="${x - 4}" y="${SOL - h - 7}" width="${w + 8}" height="7" fill="${neuf ? "#d9b48c" : "#6e675e"}"/>`;
+    const n = Math.max(2, Math.floor((w - 10) / 34)), pas = (w - 10) / n;
+    for (let y = SOL - h + 14, et = 0; y < SOL - 60; y += 34, et++){
+      g += `<line x1="${x}" y1="${y - 7}" x2="${x + w}" y2="${y - 7}" stroke="${neuf ? "#e2c6a4" : "#8c8378"}" stroke-width="2"/>`;
+      for (let i = 0; i < n; i++) g += fenetre(F(x + 5 + pas * i + pas / 2 - 7), y, neuf, !neuf && (et * 3 + i) % 4 === 1, neuf && (et + i) % 2 === 0);
+    }
+    if (!neuf) g += `<ellipse cx="${x + w * .3}" cy="${SOL - h * .55}" rx="${w * .18}" ry="16" fill="#3a3631" opacity=".12"/><ellipse cx="${x + w * .75}" cy="${SOL - h * .25}" rx="${w * .15}" ry="12" fill="#3a3631" opacity=".1"/><path d="M${x + w * .62} ${SOL - h + 20}l7 11-4 8 6 12" fill="none" stroke="#3a3631" stroke-width="1.3"/>`;
+    return g;
+  };
+  const rez = (x, w, type) => {
+    if (type === "rideau") return `<rect x="${x}" y="${SOL - 40}" width="${w}" height="40" fill="#6e675e"/><rect x="${x + 6}" y="${SOL - 34}" width="${w - 12}" height="34" fill="#9b968d"/>${Array.from({length: 8}, (_, k) => `<line x1="${x + 6}" y1="${SOL - 30 + k * 4}" x2="${x + w - 6}" y2="${SOL - 30 + k * 4}" stroke="#7f7a72"/>`).join("")}<path d="M${x + 14} ${SOL - 22}q10 -8 20 2" fill="none" stroke="#c45" stroke-width="2.2" opacity=".7"/>`;
+    if (type === "epicerie") return `<rect x="${x}" y="${SOL - 40}" width="${w}" height="40" fill="#7a6a58"/><rect x="${x + 6}" y="${SOL - 32}" width="${w * .55}" height="26" fill="#d8cdb4"/><rect x="${x + w * .7}" y="${SOL - 34}" width="${w * .22}" height="34" fill="#4a4038"/><rect x="${x + 8}" y="${SOL - 12}" width="${w * .5}" height="6" fill="#e0a83c"/>`;
+    if (type === "cafe") return `<rect x="${x}" y="${SOL - 40}" width="${w}" height="40" fill="#5b3a28"/><rect x="${x + 6}" y="${SOL - 30}" width="${w - 12}" height="24" fill="#ffe7b3"/><path d="M${x - 6} ${SOL - 44}h${w + 12}l-8 14h-${w - 4}z" fill="#e5484d"/>${Array.from({length: Math.floor((w + 12) / 12)}, (_, k) => `<rect x="${x - 4 + k * 12}" y="${SOL - 44}" width="6" height="14" fill="#fff" opacity=".95"/>`).join("")}`;
+    if (type === "galerie") return `<rect x="${x}" y="${SOL - 40}" width="${w}" height="40" fill="#2b2f36"/><rect x="${x + 6}" y="${SOL - 34}" width="${w - 12}" height="30" fill="#fbfaf6"/><rect x="${x + 14}" y="${SOL - 28}" width="16" height="12" fill="#e0569b"/><rect x="${x + 36}" y="${SOL - 30}" width="14" height="16" fill="#14a6a6"/><circle cx="${x + w - 22}" cy="${SOL - 21}" r="7" fill="#f2ae02"/>`;
+    return `<rect x="${x}" y="${SOL - 40}" width="${w}" height="40" fill="#3f6b45"/><rect x="${x + 6}" y="${SOL - 32}" width="${w - 12}" height="26" fill="#eaf4e2"/><path d="M${x - 4} ${SOL - 44}h${w + 8}l-6 10h-${w - 4}z" fill="#5aa64e"/>${[0, 1, 2].map(k => `<circle cx="${x + 18 + k * 16}" cy="${SOL - 14}" r="5" fill="${["#e5484d", "#f2ae02", "#7fbf6a"][k]}"/>`).join("")}`;
+  };
+  const usine = (x, neuf) => {
+    const w = 172, h = 128, c = neuf ? "#c9714f" : "#86523e", ct = neuf ? "#a8573a" : "#5e3a2c";
+    let g = `<rect x="${x + 128}" y="${SOL - h - 96}" width="18" height="100" fill="${c}" stroke="${ct}"/><rect x="${x + 125}" y="${SOL - h - 100}" width="24" height="8" fill="${ct}"/>`;
+    g += `<path d="M${x} ${SOL}V${SOL - h + 30}${[0, 1, 2, 3].map(k => `l${w / 4} -30v30`).join("")}V${SOL}z" fill="${c}" stroke="${ct}" stroke-width="1.4"/>`;
+    for (let k = 0; k < 4; k++) g += `<path d="M${x + k * w / 4 + w / 4} ${SOL - h}v30" stroke="${ct}"/>${neuf ? `<path d="M${F(x + k * w / 4 + 3)} ${SOL - h + 28}l${F(w / 4 - 6)} -25v25z" fill="#9cc8e6" opacity=".9"/>` : ""}`;
+    for (let r = 0; r < 6; r++) g += `<line x1="${x}" y1="${SOL - 14 - r * 14}" x2="${x + w}" y2="${SOL - 14 - r * 14}" stroke="${ct}" stroke-width=".6" opacity=".6"/>`;
+    if (neuf) g += [0, 1, 2].map(k => `<rect x="${x + 12 + k * 54}" y="${SOL - 84}" width="42" height="56" fill="#cfe8f7" stroke="#fff" stroke-width="2"/><path d="M${x + 33 + k * 54} ${SOL - 84}v56M${x + 12 + k * 54} ${SOL - 56}h42" stroke="#fff" stroke-width="1.4"/>`).join("") + `<path d="M${x + 126} ${SOL - h - 98}q11 -12 22 0" fill="#5aa64e"/>`;
+    else { g += [0, 1, 2].map(k => `<rect x="${x + 18 + k * 54}" y="${SOL - 80}" width="26" height="22" fill="#3a332e"/><path d="M${x + 22 + k * 54} ${SOL - 80}l8 10 6 -6" fill="none" stroke="#9a948c" stroke-width="1"/>`).join("") + `<rect x="${x + 64}" y="${SOL - 46}" width="44" height="46" fill="#4d443c"/>`;
+      g += [0, 1, 2].map(k => `<circle cx="${x + 137 + k * 8}" cy="${SOL - h - 108 - k * 16}" r="${8 + k * 4}" fill="#b8b4ae" opacity="${.75 - k * .2}">${anim ? `<animate attributeName="cy" values="${SOL - h - 108 - k * 16};${SOL - h - 128 - k * 16}" dur="3s" repeatCount="indefinite"/>` : ""}</circle>`).join(""); }
+    return g;
+  };
+  const arbre = x => `<rect x="${x - 3}" y="${SOL - 24}" width="6" height="26" fill="#7a5230"/><circle cx="${x}" cy="${SOL - 34}" r="17" fill="#5aa64e"/><circle cx="${x - 9}" cy="${SOL - 28}" r="10" fill="#6fbf73"/><circle cx="${x + 10}" cy="${SOL - 29}" r="11" fill="#4e9a52"/>`;
+  const velo = x => `<g fill="none" stroke="#2b2f36" stroke-width="2"><circle cx="${x}" cy="${SOL + 30}" r="8"/><circle cx="${x + 24}" cy="${SOL + 30}" r="8"/><path d="M${x} ${SOL + 30}l9 -13h12l3 13M${x + 9} ${SOL + 17}l-2 -4h-4M${x + 21} ${SOL + 17}l1 -5h4" stroke="#e5484d"/></g>`;
+  const fond = () => `<rect x="0" y="0" width="546" height="${SOL}" fill="url(#${u}ciel)"/>${[[0, 70], [40, 110], [90, 80], [150, 120], [210, 90], [270, 130], [330, 95], [380, 115], [440, 85], [500, 125]].map(([x, h]) => `<rect x="${x}" y="${SOL - h - 120}" width="52" height="${h}" fill="#c9d6e2" opacity=".55"/>`).join("")}
+    <rect x="0" y="${SOL}" width="546" height="20" fill="#d8d0c2"/><line x1="0" y1="${SOL + 20}" x2="546" y2="${SOL + 20}" stroke="#b9b0a0" stroke-width="2"/><rect x="0" y="${SOL + 20}" width="546" height="60" fill="#8f8b84"/>${[0, 1, 2, 3, 4, 5].map(k => `<rect x="${12 + k * 96}" y="${SOL + 50}" width="48" height="4" fill="#f1ede4"/>`).join("")}`;
+  const BAT = [[12, 118, 220, ["#a39a8c", "#f3dcc0"]], [324, 92, 178, ["#b5a493", "#bcd8e8"]], [424, 112, 236, ["#9e978d", "#f2c6a8"]]];
+  const vieux = () => BAT.map(([x, w, h, c]) => immeuble(x, w, h, false, c[0])).join("") + usine(140, false) + rez(12, 118, "rideau") + rez(324, 92, "epicerie") + rez(424, 112, "rideau") + `<path d="M20 ${SOL - 140}l100 6" stroke="#555" stroke-width=".8"/>${[0, 1, 2, 3].map(k => `<rect x="${30 + k * 20}" y="${SOL - 138 + k * 1.2}" width="10" height="13" fill="${["#e5484d", "#f1ede4", "#3d8fd1", "#f2ae02"][k]}"/>`).join("")}`;
+  const neuf = () => BAT.map(([x, w, h, c]) => immeuble(x, w, h, true, c[1])).join("") + usine(140, true) + `<rect x="18" y="${SOL - 238}" width="106" height="12" rx="4" fill="#7fbf6a"/><path d="M106 ${SOL - 228}v-22" stroke="#555" stroke-width="1.6"/><path d="M90 ${SOL - 250}q16 -14 32 0z" fill="#f2ae02"/>`;
+  const commerces = () => rez(12, 118, "bio") + rez(324, 92, "cafe") + rez(424, 112, "galerie") + `<g><circle cx="342" cy="${SOL + 12}" r="6" fill="#2b2f36"/><path d="M332 ${SOL + 4}q10 -10 20 0z" fill="#e5484d"/><circle cx="388" cy="${SOL + 12}" r="6" fill="#2b2f36"/><path d="M378 ${SOL + 4}q10 -10 20 0z" fill="#e5484d"/></g>`;
+  const verdure = () => arbre(136) + arbre(316) + arbre(416) + `<rect x="0" y="${SOL + 22}" width="546" height="7" fill="#7fbf6a" opacity=".8"/>` + velo(60) + velo(250);
+  const modestes = [[44, 0], [96, 1], [176, 0], [232, 1], [290, 0], [470, 1]], aises = [[70, 1], [200, 0], [268, 1], [360, 0], [480, 1]];
+  const groupePers = (l, c, sac) => l.map(([x, k], i) => pers(x, SOL + 18 + k * 6, c, {sac: sac && i % 2 === 0, cheveux: i % 2 ? "#c9a36a" : "#4a3424"})).join("");
+  const barres = (x, y, w, h, anime) => { const v = [.32, .6, 1];
+    return `<g filter="url(#${u}ombre)"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="#fff" stroke="#e1d6c3"/><text x="${x + 10}" y="${y + 20}" font-family="Arial,sans-serif" font-size="13" font-weight="800" fill="#e5484d">€ / m²</text>
+      ${v.map((p, i) => { const bw = (w - 40) / 3, bx = x + 12 + i * (bw + 8), bh = (h - 44) * p, by = y + h - 12 - bh;
+        const an = anime && i > 0 ? `<animate attributeName="height" values="0;0;${F(bh)};${F(bh)}" keyTimes="0;${i === 1 ? ".28;.5" : ".52;.8"};1" dur="${D}s" repeatCount="indefinite"/><animate attributeName="y" values="${F(y + h - 12)};${F(y + h - 12)};${F(by)};${F(by)}" keyTimes="0;${i === 1 ? ".28;.5" : ".52;.8"};1" dur="${D}s" repeatCount="indefinite"/>` : "";
+        return `<rect x="${F(bx)}" y="${F(by)}" width="${F(bw)}" height="${F(bh)}" rx="2" fill="${["#f2a6a8", "#ec7a7e", "#e5484d"][i]}">${an}</rect>`; }).join("")}
+      <line x1="${x + 10}" y1="${y + h - 12}" x2="${x + w - 10}" y2="${y + h - 12}" stroke="#bbb"/></g>`; };
+  s += `<defs><filter id="${u}ombre" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.6" flood-opacity=".3"/></filter></defs>`;
+  if (anim){
+    /* --- une seule rue qui se transforme en trois étapes --- */
+    const op = (vals, kt) => A("opacity", vals, kt, D);
+    s += `<clipPath id="${u}rue"><rect x="12" y="22" width="546" height="486" rx="14"/></clipPath><g clip-path="url(#${u}rue)"><rect x="12" y="22" width="546" height="486" fill="#bcd9ee"/>
+      <g transform="translate(12 128)">${fond()}
+        <g>${op("1;1;0;0", "0;.48;.58;1")}${vieux()}</g>
+        <g opacity="0">${op("0;0;1;1;0;0", "0;.24;.3;.5;.58;1")}${[[8, 126, 228], [320, 100, 186], [420, 120, 244]].map(([x, w, h]) => { let e = `<rect x="${x}" y="${SOL - h}" width="${w}" height="${h}" fill="#3d8fd1" opacity=".1"/>`; for (let k = 0; k <= w; k += 21) e += `<line x1="${x + k}" y1="${SOL}" x2="${x + k}" y2="${SOL - h}" stroke="#a87a3c" stroke-width="2.4"/>`; for (let y = SOL - 18; y > SOL - h; y -= 30) e += `<rect x="${x}" y="${y - 3}" width="${w}" height="4" fill="#d9b26a"/>`; return e; }).join("")}</g>
+        <g opacity="0">${op("0;0;1;1", "0;.48;.58;1")}${neuf()}</g>
+        <g opacity="0">${op("0;0;1;1", "0;.56;.62;1")}${commerces()}</g>
+        <g opacity="0">${op("0;0;1;1", "0;.58;.66;1")}${verdure()}</g>
+        ${modestes.map(([x, k], i) => `<g>${op("1;1;0;0", `0;${F2(.36 + i * .03)};${F2(.42 + i * .03)};1`)}${pers(x, SOL + 18 + k * 6, "#3d8fd1")}</g>`).join("")}
+        ${aises.map(([x, k], i) => `<g opacity="0">${op("0;0;1;1", `0;${F2(i < 2 ? .34 + i * .04 : .6 + i * .03)};${F2(i < 2 ? .38 + i * .04 : .64 + i * .03)};1`)}${pers(x, SOL + 18 + k * 6, "#d4a017", {sac: i % 2 === 0, cheveux: i % 2 ? "#c9a36a" : "#4a3424"})}</g>`).join("")}
+        <g opacity="0">${op("0;0;1;1;0;0", "0;.52;.56;.9;.93;1")}<animateTransform attributeName="transform" type="translate" values="0 0;0 0;150 0;150 0" keyTimes="0;.56;.9;1" dur="${D}s" repeatCount="indefinite"/>${pers(400, SOL + 26, "#3d8fd1", {valise: true})}</g>
+        <g opacity="0">${op("0;0;1;1;0;0", "0;.56;.6;.9;.93;1")}<path d="M430 ${SOL + 42}H540" stroke="#3d8fd1" stroke-width="3" stroke-dasharray="6 4" marker-end="${mk("#3d8fd1")}"/></g>
+      </g>`;
+    // frise des étapes + graphique des prix
+    const etapes = [["1990", .0, .28], ["2005", .28, .55], ["2020", .55, 1]];
+    s += `<g font-family="Arial,sans-serif"><rect x="24" y="34" width="248" height="58" rx="12" fill="#fffaf0" opacity=".95" filter="url(#${u}ombre)"/><line x1="52" y1="60" x2="244" y2="60" stroke="#d9cdb4" stroke-width="4" stroke-linecap="round"/>
+      ${etapes.map(([t, a, b], i) => `<circle cx="${52 + i * 96}" cy="60" r="8" fill="#d9cdb4"/><circle cx="${52 + i * 96}" cy="60" r="8" fill="#7d55c7" opacity="${i ? 0 : 1}"><animate attributeName="opacity" values="0;0;1;1${i < 2 ? ";0;0" : ""}" keyTimes="0;${F2(Math.max(0, a - .001))};${F2(a + .001)};${i < 2 ? `${F2(b - .001)};${F2(b)};1` : "1"}" dur="${D}s" repeatCount="indefinite"/></circle><text x="${52 + i * 96}" y="84" text-anchor="middle" font-size="12" font-weight="800" fill="#3b3326">${t}</text>`).join("")}
+      <circle cx="52" cy="60" r="4" fill="#fff"><animate attributeName="cx" values="52;52;148;148;244;244" keyTimes="0;.26;.3;.53;.57;1" dur="${D}s" repeatCount="indefinite"/></circle></g>`;
+    s += barres(410, 32, 136, 92, true) + `</g>`;
+  } else {
+    /* --- version fixe : avant / après empilés --- */
+    const k = .62, panneau = (oy, etat) => `<clipPath id="${u}p${etat}"><rect x="12" y="${oy}" width="546" height="236" rx="12"/></clipPath><g clip-path="url(#${u}p${etat})"><rect x="12" y="${oy}" width="546" height="236" fill="#f7efe2"/>
+      <g transform="translate(12 ${oy}) scale(${k})">${fond()}${etat === "avant" ? vieux() + groupePers(modestes, "#3d8fd1") : neuf() + commerces() + verdure() + groupePers(aises, "#d4a017", true) + pers(500, SOL + 26, "#3d8fd1", {valise: true}) + `<path d="M520 ${SOL + 42}H548" stroke="#3d8fd1" stroke-width="3" stroke-dasharray="6 4" marker-end="${mk("#3d8fd1")}"/>`}</g></g>
+      <rect x="12" y="${oy}" width="546" height="236" rx="12" fill="none" stroke="#c9bfa8"/>`;
+    s += panneau(22, "avant") + panneau(272, "apres");
+    s += `<g font-family="Arial,sans-serif" font-weight="800" fill="#3b3326"><rect x="364" y="34" width="182" height="58" rx="10" fill="#fffaf0" stroke="#e1d6c3"/><text x="455" y="60" text-anchor="middle" font-size="18">Avant</text><text x="455" y="80" text-anchor="middle" font-size="12" fill="#6b5e46">années 1990</text>
+      <rect x="364" y="284" width="182" height="40" rx="10" fill="#fffaf0" stroke="#e1d6c3"/><text x="455" y="309" text-anchor="middle" font-size="18">Après</text></g>`;
+    s += barres(376, 334, 158, 112, false);
+    s += `<path d="M352 474H436" stroke="#3d8fd1" stroke-width="3.5" stroke-dasharray="7 4" fill="none" marker-end="${mk("#3d8fd1")}"/>`;
+    s += `<circle cx="285" cy="265" r="15" fill="#7d55c7" stroke="#fff" stroke-width="2"/><path d="M285 257v15m-5 -5l5 6 5 -6" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const P = (x, y, oy) => [12 + x * k, oy + y * k];
+    ancre.anciens = P(70, SOL - 236, 22); ancre.modestes = P(232, SOL + 52, 22); ancre.rehab = P(480, SOL - 252, 272); ancre.aises = P(268, SOL + 54, 272);
+    ancre.commerces = P(372, SOL - 64, 272); ancre.prix = [376, 346]; ancre.depart = [394, 456];
+  }
+  const symb = {anciens: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="16" height="22" fill="#a39a8c" stroke="#7d746a"/><rect x="${x + 9}" y="${y - 7}" width="4" height="5" fill="#3f3c38"/><rect x="${x + 15}" y="${y - 7}" width="4" height="5" fill="#6b5640"/>`,
+    modestes: (x, y) => `<g transform="translate(${x + 14} ${y + 11}) scale(.58)">${pers(0, 0, "#3d8fd1")}</g>`,
+    rehab: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="16" height="22" fill="#f3dcc0" stroke="#c9a37e"/><rect x="${x + 9}" y="${y - 7}" width="4" height="5" fill="#cfe8f7"/><rect x="${x + 15}" y="${y - 7}" width="4" height="5" fill="#cfe8f7"/><circle cx="${x + 11}" cy="${y + 1}" r="2" fill="#5aa64e"/>`,
+    aises: (x, y) => `<g transform="translate(${x + 14} ${y + 11}) scale(.58)">${pers(0, 0, "#d4a017")}</g>`,
+    commerces: (x, y) => `<path d="M${x + 1} ${y - 7}h26l-4 8h-18z" fill="#e5484d"/><rect x="${x + 6}" y="${y - 7}" width="4" height="8" fill="#fff"/><rect x="${x + 16}" y="${y - 7}" width="4" height="8" fill="#fff"/>`,
+    prix: (x, y) => `<rect x="${x + 2}" y="${y + 2}" width="6" height="7" fill="#f2a6a8"/><rect x="${x + 10}" y="${y - 3}" width="6" height="12" fill="#ec7a7e"/><rect x="${x + 18}" y="${y - 9}" width="6" height="18" fill="#e5484d"/>`,
+    depart: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" stroke="#3d8fd1" stroke-width="3" stroke-dasharray="5 3" marker-end="${mk("#3d8fd1")}"/>`};
+  return {s, ancre, symb};
+}
+
+/* ---------- MÉTROPOLISATION : croquis de métropole, pictogrammes et flux animés ---------- */
+function urMetropole({u, anim, F, mk}){
+  const C = [292, 292], ancre = {};
+  // contour arrondi irrégulier (agglomération)
+  const tache = (cx, cy, r, ph = 0) => { const n = 14, pts = Array.from({length: n}, (_, i) => { const a = i / n * 6.283, rr = r * (1 + .11 * Math.sin(3 * a + ph) + .06 * Math.sin(5 * a + 2 * ph)); return [cx + Math.cos(a) * rr * 1.12, cy + Math.sin(a) * rr * .9]; });
+    let d = `M${F(pts[0][0])} ${F(pts[0][1])}`;
+    for (let i = 0; i < n; i++){ const p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+      d += `C${F(p1[0] + (p2[0] - p0[0]) / 6)} ${F(p1[1] + (p2[1] - p0[1]) / 6)} ${F(p2[0] - (p3[0] - p1[0]) / 6)} ${F(p2[1] - (p3[1] - p1[1]) / 6)} ${F(p2[0])} ${F(p2[1])}`; }
+    return d + "z"; };
+  const badge = (x, y, c, picto, r = 19) => `<g filter="url(#${u}ombre)"><circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${c}" stroke-width="3.2"/><g transform="translate(${x} ${y})">${picto}</g></g>`;
+  const P_SKY = `<rect x="-11" y="-4" width="6" height="14" fill="#2b4470"/><rect x="-4" y="-12" width="7" height="22" fill="#3d5a8a"/><rect x="4" y="-7" width="7" height="17" fill="#5577b0"/>${[-9, -1, 6].map(x => `<rect x="${x}" y="-2" width="2" height="2" fill="#cfe8f7"/><rect x="${x}" y="3" width="2" height="2" fill="#cfe8f7"/>`).join("")}`;
+  const P_AVION = `<path d="M0 -12l2.6 7.5 9.4 4.2v3l-9.4 -2 -.7 6.2 3 2v2.2l-4.9 -1.1 -4.9 1.1v-2.2l3 -2 -.7 -6.2 -9.4 2v-3l9.4 -4.2z" fill="#4b5563"/>`;
+  const P_TRAIN = `<rect x="-9" y="-11" width="18" height="19" rx="5" fill="#2f343b"/><rect x="-6" y="-8" width="12" height="7" rx="1.5" fill="#9cc8e6"/><circle cx="-4.5" cy="3" r="1.8" fill="#f2ae02"/><circle cx="4.5" cy="3" r="1.8" fill="#f2ae02"/><path d="M-7 8l-3 4M7 8l3 4" stroke="#2f343b" stroke-width="2"/>`;
+  const P_ATOME = `<circle r="2.6" fill="#14a6a6"/>${[0, 60, -60].map(a => `<ellipse rx="11" ry="4.2" fill="none" stroke="#14a6a6" stroke-width="1.8" transform="rotate(${a})"/>`).join("")}`;
+  let s = `<defs><filter id="${u}ombre" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="1.8" stdDeviation="1.8" flood-opacity=".3"/></filter>
+    <pattern id="${u}rues" width="13" height="13" patternUnits="userSpaceOnUse" patternTransform="rotate(14)"><path d="M0 0H13M0 0V13" stroke="#fff" stroke-opacity=".55" stroke-width="1.3"/></pattern>
+    <clipPath id="${u}cadre2"><rect x="12" y="22" width="546" height="486" rx="14"/></clipPath>
+    <radialGradient id="${u}terre" cx="50%" cy="55%" r="70%"><stop offset="0" stop-color="#f3f1e6"/><stop offset="1" stop-color="#e2e6d5"/></radialGradient></defs>
+    <g clip-path="url(#${u}cadre2)"><rect x="12" y="22" width="546" height="486" fill="url(#${u}terre)"/>`;
+  // fleuve
+  const fl = "M12 418 C 110 396, 186 352, 262 344 S 392 368, 452 426 S 528 500, 552 508";
+  s += `<path d="${fl}" fill="none" stroke="#9cc8e6" stroke-width="12" stroke-linecap="round"/><path d="${fl}" fill="none" stroke="#c4e0f2" stroke-width="4" stroke-linecap="round"/>`;
+  // flux internationaux (vers le monde)
+  const m1 = `M${C[0] - 150} ${C[1] - 140}Q 120 80 54 64`, m2 = `M${C[0] - 128} ${C[1] - 148}Q 230 44 334 52`;
+  s += `<g fill="none" stroke-linecap="round">${[m1, m2].map(d => `<path d="${d}" stroke="#7d55c7" stroke-width="6" opacity=".18"/><path d="${d}" stroke="#7d55c7" stroke-width="3" stroke-dasharray="8 6" marker-end="${mk("#7d55c7")}">${anim ? `<animate attributeName="stroke-dashoffset" values="0;-28" dur="1.2s" repeatCount="indefinite"/>` : ""}</path>`).join("")}</g>`;
+  s += [[42, 54], [350, 50]].map(([x, y]) => `<g filter="url(#${u}ombre)"><circle cx="${x}" cy="${y}" r="13" fill="#9cc8e6" stroke="#fff" stroke-width="2"/><path d="M${x - 6} ${y - 6}q5 3 3 7q-3 3 1 6M${x + 3} ${y - 10}q-2 5 4 6q3 2 1 6" fill="none" stroke="#5aa64e" stroke-width="3" stroke-linecap="round"/></g>`).join("");
+  if (anim) [m1, m2].forEach((d, i) => { s += `<g>${`<path d="M0 -7l2 6 7 3v2.4l-7 -1.4 -.6 4.6 2.2 1.5v1.6l-3.6 -.8 -3.6 .8v-1.6l2.2 -1.5 -.6 -4.6 -7 1.4v-2.4l7 -3z" fill="#3b2f63" transform="rotate(90)"/>`}<animateMotion path="${d}" dur="5s" begin="${i * 2.5}s" repeatCount="indefinite" rotate="auto"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.85;1" dur="5s" begin="${i * 2.5}s" repeatCount="indefinite"/></g>`; });
+  ancre.mondial = [208, 92];
+  // réseau des métropoles
+  const autres = [[492, 78], [508, 452], [62, 466], [52, 236]];
+  autres.forEach(([x, y], i) => { const d = `M${C[0]} ${C[1]}L${x} ${y}`;
+    s += `<path d="${d}" stroke="#e5484d" stroke-width="5" stroke-linecap="round" opacity=".85"/><path d="${d}" stroke="#fff" stroke-width="1.4" stroke-dasharray="5 6" opacity=".9"/>`;
+    if (anim) [0, 1].forEach(sens => { s += `<circle r="4.5" fill="#fff" stroke="#e5484d" stroke-width="2"><animateMotion path="${sens ? `M${x} ${y}L${C[0]} ${C[1]}` : d}" dur="3s" begin="${(i * .6 + sens * 1.5).toFixed(1)}s" repeatCount="indefinite"/></circle>`; }); });
+  autres.forEach(([x, y], i) => { s += `<g filter="url(#${u}ombre)"><path d="${tache(x, y, 26, i)}" fill="#f7dfb5" stroke="#e9b56e"/><path d="${tache(x, y, 13, i + 1)}" fill="#e79b5c"/></g>`; });
+  ancre.reseau = [494, 116];
+  // agglomération : périurbain, banlieue, cœur dense
+  s += `<path d="${tache(C[0], C[1], 178, .4)}" fill="#f7dfb5" stroke="#e9b56e" stroke-width="1.6" stroke-dasharray="6 4"/>
+    <path d="${tache(C[0], C[1], 118, 1.2)}" fill="#f2c48c"/><path d="${tache(C[0], C[1], 118, 1.2)}" fill="url(#${u}rues)"/>
+    <path d="${tache(C[0], C[1], 58, 2)}" fill="#e79b5c"/><path d="${tache(C[0], C[1], 58, 2)}" fill="url(#${u}rues)"/>`;
+  if (anim) s += `<ellipse cx="${C[0]}" cy="${C[1]}" rx="60" ry="48" fill="none" stroke="#e08a3c" stroke-width="3"><animate attributeName="rx" values="200;60" dur="3s" repeatCount="indefinite"/><animate attributeName="ry" values="160;48" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;.8;0" keyTimes="0;.7;1" dur="3s" repeatCount="indefinite"/></ellipse>`;
+  ancre.dense = [C[0] - 150, C[1] + 92];
+  // rocade et autoroutes
+  s += `<ellipse cx="${C[0]}" cy="${C[1]}" rx="92" ry="74" fill="none" stroke="#8f8a80" stroke-width="4" opacity=".8"/>`;
+  // LGV + gare + TGV
+  const lgv = `M12 ${C[1] + 70}L${C[0] + 36} ${C[1] + 14}L558 ${C[1] - 66}`;
+  s += `<path d="${lgv}" fill="none" stroke="#2f343b" stroke-width="7"/><path d="${lgv}" fill="none" stroke="#f4f4ef" stroke-width="2.4" stroke-dasharray="9 7"/>`;
+  if (anim) s += `<g><path d="M-22 -4.5h34a7 4.5 0 0 1 0 9h-34z" fill="#fff" stroke="#2f343b" stroke-width="1.2"/><rect x="-20" y="-1" width="32" height="2" fill="#e5484d"/><animateMotion path="${lgv}" dur="5s" repeatCount="indefinite" rotate="auto"/></g>`;
+  s += badge(C[0] + 52, C[1] + 44, "#2f343b", P_TRAIN, 17) + `<line x1="${C[0] + 40}" y1="${C[1] + 30}" x2="${C[0] + 37}" y2="${C[1] + 16}" stroke="#2f343b" stroke-width="2"/>`;
+  ancre.lgv = [C[0] + 82, C[1] + 54];
+  // quartier d'affaires (cœur)
+  s += badge(C[0] - 8, C[1] - 14, "#3d5a8a", P_SKY, 22);
+  ancre.cbd = [C[0] - 8, C[1] - 56];
+  // technopôle
+  const tx = C[0] + 118, ty = C[1] - 96;
+  s += `<rect x="${tx - 34}" y="${ty - 22}" width="68" height="44" rx="14" fill="#cfe6bd" stroke="#8fbf76"/>${[[-24, 10], [-12, 14], [14, 12], [26, 9]].map(([dx, dy]) => `<circle cx="${tx + dx}" cy="${ty + dy}" r="4.5" fill="#6fae58"/>`).join("")}<rect x="${tx - 22}" y="${ty - 14}" width="16" height="10" fill="#fff" stroke="#8fbf76"/><rect x="${tx + 6}" y="${ty - 16}" width="18" height="12" fill="#fff" stroke="#8fbf76"/>`;
+  s += badge(tx, ty - 34, "#14a6a6", P_ATOME, 17);
+  ancre.technopole = [tx + 50, ty];
+  // aéroport international
+  const ax = C[0] - 150, ay = C[1] - 132;
+  s += `<g transform="rotate(-24 ${ax} ${ay})"><rect x="${ax - 58}" y="${ay - 7}" width="116" height="14" rx="3" fill="#9aa0a8"/><line x1="${ax - 50}" y1="${ay}" x2="${ax + 50}" y2="${ay}" stroke="#fff" stroke-width="1.6" stroke-dasharray="8 6"/></g><g transform="rotate(36 ${ax} ${ay})"><rect x="${ax - 40}" y="${ay - 6}" width="80" height="12" rx="3" fill="#a9aeb6"/></g>`;
+  s += badge(ax + 2, ay + 34, "#6b7280", P_AVION, 18);
+  ancre.aeroport = [ax - 36, ay + 40];
+  s += `</g>`;
+  const symb = {dense: (x, y) => `<rect x="${x}" y="${y - 10}" width="28" height="20" rx="8" fill="#f2c48c"/><rect x="${x + 7}" y="${y - 5}" width="14" height="10" rx="4" fill="#e79b5c"/>`,
+    cbd: (x, y) => `<g transform="translate(${x + 14} ${y}) scale(.75)"><circle r="17" fill="#fff" stroke="#3d5a8a" stroke-width="3"/>${P_SKY}</g>`,
+    technopole: (x, y) => `<g transform="translate(${x + 14} ${y}) scale(.75)"><circle r="17" fill="#fff" stroke="#14a6a6" stroke-width="3"/>${P_ATOME}</g>`,
+    aeroport: (x, y) => `<g transform="translate(${x + 14} ${y}) scale(.75)"><circle r="17" fill="#fff" stroke="#6b7280" stroke-width="3"/>${P_AVION}</g>`,
+    lgv: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#2f343b" stroke-width="6"/><line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#fff" stroke-width="2" stroke-dasharray="5 4"/>`,
+    reseau: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 20}" y2="${y}" stroke="#e5484d" stroke-width="5" stroke-linecap="round"/><circle cx="${x + 23}" cy="${y}" r="6" fill="#e79b5c" stroke="#e9b56e" stroke-width="2"/>`,
+    mondial: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" stroke="#7d55c7" stroke-width="3" stroke-dasharray="6 4" marker-end="${mk("#7d55c7")}"/>`};
+  return {s, ancre, symb};
 }
 /* ===================== GÉRANT : ÉDITEUR D'EXERCICES (simplifié) ===================== */
 /* Une question à la fois : on choisit le type, on écrit l'énoncé, on donne la réponse.
