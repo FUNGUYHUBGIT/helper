@@ -3300,7 +3300,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.55";
+const VERSION_SITE = "0.56";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6827,73 +6827,244 @@ const SCHEMAS_URBAINS = {
     ["dense", "Concentration de la population et des emplois"], ["cbd", "Quartier d'affaires (CBD) : sièges sociaux, banques"], ["technopole", "Technopôle : recherche, universités, entreprises innovantes"],
     ["aeroport", "Aéroport international"], ["lgv", "Gare et ligne à grande vitesse (LGV)"], ["reseau", "Liaisons avec les autres métropoles (réseau)"], ["mondial", "Flux internationaux : ouverture sur le monde"]]}
 };
+// rendu : voir js-urbain.js
+MODULES.splice(MODULES.findIndex(m => m.id === "frise"), 0,
+  {id: "urbain", nom: "Dynamiques urbaines", cat: "Histoire-Géo", icone: "▦", defaut: () => ({schema: "aire", legende: "complete", titre: "", anime: true}),
+    champs: [CHAMP("schema", "Schéma", "choix", {options: Object.entries(SCHEMAS_URBAINS).map(([k, v]) => [k, v.nom])}), CHAMP("legende", "Légende", "choix", {options: [["complete", "Complète"], ["numeros", "Numérotée (à compléter par l'élève)"]]}), CHAMP("titre", "Titre (vide = titre par défaut)"), CHAMP("anime", "Animation (évolution dans le temps)", "case")],
+    rendu: o => svgUrbain(o)}
+);
+/* ===================== SCHÉMAS DES DYNAMIQUES URBAINES (dessin + animations d'évolution) ===================== */
+/* Trois schémas : aire d'attraction (périurbanisation), gentrification, métropolisation.
+   Animation SVG (SMIL) en boucle : la ville s'étale, le quartier se transforme, les flux circulent.
+   Les identifiants internes sont préfixés pour que plusieurs schémas puissent cohabiter sur une page. */
+let urUid = 0;
 function svgUrbain(o){
   const sc = SCHEMAS_URBAINS[o.schema] || SCHEMAS_URBAINS.aire, num = o.legende === "numeros", inc = o.inconnue;
-  const legEls = o.elements ? sc.elements.filter(e => o.elements.includes(e[0])) : sc.elements;
-  const rnd = (() => { let g = 7; return () => (g = (g * 9301 + 49297) % 233280) / 233280; })();
-  const pers = (x, y, cls) => `<g class="${cls}"><circle cx="${f1(x)}" cy="${f1(y - 17)}" r="5"/><path d="M${f1(x - 6.5)} ${f1(y)}v-6a6.5 6.5 0 0 1 13 0v6z"/></g>`;
+  const anim = o.anime !== false && !inc;
+  const u = "ur" + (++urUid) + "-", legEls = o.elements ? sc.elements.filter(e => o.elements.includes(e[0])) : sc.elements;
+  let graine = 11; const R = () => (graine = (graine * 9301 + 49297) % 233280) / 233280;
+  const F = v => (+v).toFixed(1);
+  // animation en boucle : valeurs + instants (0 → 1) sur une durée commune
+  const A = (attr, values, temps, dur, extra = "") => anim ? `<animate attributeName="${attr}" values="${values}" keyTimes="${temps}" dur="${dur}s" repeatCount="indefinite" calcMode="linear" ${extra}/>` : "";
+  const apparait = (t, dur, fin = 1) => anim ? A("opacity", `0;0;1;1${fin < 1 ? ";0;0" : ""}`, `0;${F2(t)};${F2(Math.min(.99, t + .04))};${fin < 1 ? `${F2(fin)};${F2(Math.min(.999, fin + .03))};1` : "1"}`, dur) : "";
+  const F2 = v => (+v).toFixed(3);
+  const fleche = c => `<marker id="${u}f${c.slice(1)}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker>`;
+  const mk = c => `url(#${u}f${c.slice(1)})`;
   const ancre = {}; let s = "", symb = {};
-  s += `<defs>${MARQ_MOD("#2f7fd1")}${MARQ_MOD("#7d55c7")}${MARQ_MOD("#3d8fd1")}${MARQ_MOD("#e5484d")}<clipPath id="ur-cadre"><rect x="12" y="22" width="546" height="486" rx="14"/></clipPath><pattern id="ur-champs" patternUnits="userSpaceOnUse" width="26" height="26" patternTransform="rotate(20)"><rect width="26" height="26" class="ur-champ-a"/><rect width="13" height="26" class="ur-champ-b"/></pattern></defs>`;
+  s += `<defs><clipPath id="${u}cadre"><rect x="12" y="22" width="546" height="486" rx="14"/></clipPath>
+    <filter id="${u}ombre" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.4" flood-color="#000" flood-opacity=".35"/></filter>
+    ${["#2f7fd1", "#7d55c7", "#3d8fd1", "#e5484d", "#d4a017"].map(fleche).join("")}</defs>`;
+  const personne = (x, y, c, sac = false) => `<g fill="${c}"><circle cx="${F(x)}" cy="${F(y - 17)}" r="4.6"/><path d="M${F(x - 6)} ${F(y)}v-6.5a6 6 0 0 1 12 0v6.5z"/>${sac ? `<rect x="${F(x + 6)}" y="${F(y - 7)}" width="6" height="7" rx="1.2" fill="#7a5230"/>` : ""}</g>`;
+
   if (sc === SCHEMAS_URBAINS.aire){
-    const cx = 285, cy = 268, A = [15, 75, 140, 200, 255, 320];
-    s += `<rect x="12" y="22" width="546" height="486" rx="14" fill="url(#ur-champs)" class="ur-rural"/>`; ancre.rural = [52, 60];
-    s += `<circle cx="${cx}" cy="${cy}" r="205" class="ur-periu"/>`;
-    for (let i = 0; i < 26; i++){ const a = rnd() * 6.283, d = 140 + rnd() * 55, x = cx + Math.cos(a) * d, y = cy + Math.sin(a) * d; s += `<rect x="${f1(x - 3.5)}" y="${f1(y - 3.5)}" width="7" height="7" rx="1.5" class="ur-maison"/><rect x="${f1(x + 5)}" y="${f1(y - 1)}" width="6" height="6" rx="1.5" class="ur-maison"/>`; }
-    ancre.periurbain = [cx + 120, cy - 128];
-    s += `<circle cx="${cx}" cy="${cy}" r="122" class="ur-banl"/>`; ancre.banlieue = [cx - 92, cy + 40];
-    s += `<g clip-path="url(#ur-cadre)">`; A.forEach(a => { const r = a * Math.PI / 180; s += `<line x1="${f1(cx + Math.cos(r) * 50)}" y1="${f1(cy + Math.sin(r) * 50)}" x2="${f1(cx + Math.cos(r) * 268)}" y2="${f1(cy + Math.sin(r) * 268)}" class="ur-route"/>`; }); s += `</g>`;
-    s += `<circle cx="${cx}" cy="${cy}" r="88" class="ur-route rocade"/>`; ancre.axes = [cx + Math.cos(-.5) * 245, cy + Math.sin(-.5) * 245 + 22];
-    s += `<circle cx="${cx}" cy="${cy}" r="50" class="ur-centre"/>`;
-    [[-22, -18, 12, 26], [-6, -26, 13, 34], [10, -14, 11, 22], [-16, 8, 14, 16], [6, 10, 16, 14]].forEach(([x, y, w, h]) => { s += `<rect x="${cx + x}" y="${cy + y}" width="${w}" height="${h}" class="ur-immeuble"/>`; }); ancre.centre = [cx + 2, cy - 60];
-    [75, 200, 320].forEach(a => { const r = a * Math.PI / 180, x = cx + Math.cos(r) * 136, y = cy + Math.sin(r) * 136; s += `<rect x="${f1(x - 13)}" y="${f1(y - 9)}" width="26" height="18" rx="2" class="ur-zc"/>`; }); ancre.commerces = [cx + Math.cos(75 * Math.PI / 180) * 136 + 24, cy + Math.sin(75 * Math.PI / 180) * 136 + 22];
-    [45, 108, 170, 228, 290, 350].forEach(a => { const r = a * Math.PI / 180; s += `<path d="M${f1(cx + Math.cos(r) * 190)} ${f1(cy + Math.sin(r) * 190)} Q${f1(cx + Math.cos(r + .18) * 125)} ${f1(cy + Math.sin(r + .18) * 125)} ${f1(cx + Math.cos(r) * 62)} ${f1(cy + Math.sin(r) * 62)}" class="ur-pendu" marker-end="url(#fm-2f7fd1)"/>`; });
-    ancre.pendulaires = [cx + Math.cos(170 * Math.PI / 180) * 175, cy + Math.sin(170 * Math.PI / 180) * 175 - 22];
-    symb = {centre: (x, y) => `<rect x="${x}" y="${y - 9}" width="28" height="18" rx="3" class="ur-centre"/>`, banlieue: (x, y) => `<rect x="${x}" y="${y - 9}" width="28" height="18" rx="3" class="ur-banl"/>`,
-      periurbain: (x, y) => `<rect x="${x}" y="${y - 9}" width="28" height="18" rx="3" class="ur-periu"/><rect x="${x + 6}" y="${y - 3}" width="6" height="6" class="ur-maison"/><rect x="${x + 16}" y="${y - 3}" width="6" height="6" class="ur-maison"/>`,
-      rural: (x, y) => `<rect x="${x}" y="${y - 9}" width="28" height="18" rx="3" fill="url(#ur-champs)" class="ur-rural"/>`, axes: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" class="ur-route"/>`,
-      commerces: (x, y) => `<rect x="${x + 4}" y="${y - 8}" width="20" height="16" rx="2" class="ur-zc"/>`, pendulaires: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" class="ur-pendu" marker-end="url(#fm-2f7fd1)"/>`};
+    /* ---------- AIRE D'ATTRACTION D'UNE VILLE : la ville s'étale de 1960 à aujourd'hui ---------- */
+    const cx = 285, cy = 262, D = 14, rad = d => d * Math.PI / 180, P = (a, r) => [cx + Math.cos(rad(a)) * r, cy + Math.sin(rad(a)) * r];
+    const tDist = d => .08 + Math.max(0, Math.min(1, (d - 95) / 110)) * .62;   // instant d'apparition selon la distance au centre
+    s += `<g clip-path="url(#${u}cadre)"><rect x="12" y="22" width="546" height="486" fill="#e7e0c3"/>`;
+    // parcellaire agricole
+    const CH = ["#d8e4a8", "#cfe09c", "#e6dca4", "#c4d898", "#dfe6b4", "#e9d99a", "#d2dfa2", "#cbd890"];
+    let champs = "";
+    for (let i = -3; i < 19; i++) for (let j = -3; j < 19; j++){ const x = -40 + i * 38 + (j % 2) * 12, y = -40 + j * 33; champs += `<rect x="${x}" y="${y}" width="${F(31 + R() * 10)}" height="${F(26 + R() * 8)}" fill="${CH[Math.floor(R() * CH.length)]}" stroke="#bdb486" stroke-width=".7"/>`; }
+    s += `<g transform="rotate(14 ${cx} ${cy})">${champs}</g>`;
+    // bois
+    [[58, 70, 40, 26], [515, 96, 36, 30], [62, 470, 44, 24], [508, 478, 40, 26], [520, 300, 22, 34]].forEach(([x, y, rx, ry]) => {
+      s += `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#9cc07a" stroke="#86ab66" stroke-width="1"/>`;
+      for (let k = 0; k < 9; k++){ const a = R() * 6.28, d = R() * .75; s += `<circle cx="${F(x + Math.cos(a) * rx * d)}" cy="${F(y + Math.sin(a) * ry * d)}" r="${F(4 + R() * 3)}" fill="#7fa65e"/>`; }
+    });
+    // rivière
+    const riviere = "M12 128 C 110 146, 170 222, 248 246 S 352 300, 420 358 S 520 432, 558 452";
+    s += `<path d="${riviere}" fill="none" stroke="#7fb5dc" stroke-width="13" stroke-linecap="round"/><path d="${riviere}" fill="none" stroke="#a9d1ee" stroke-width="5" stroke-linecap="round"/>`;
+    // villages (déjà là en 1960)
+    [[300, 236], [20, 238], [100, 250], [220, 232], [160, 240]].forEach(([a, r]) => { const [x, y] = P(a, r);
+      s += `<g filter="url(#${u}ombre)"><rect x="${F(x - 2.5)}" y="${F(y - 11)}" width="5" height="11" fill="#e8dcc0" stroke="#8a7350" stroke-width=".6"/><path d="M${F(x - 3.5)} ${F(y - 11)}L${F(x)} ${F(y - 17)}L${F(x + 3.5)} ${F(y - 11)}z" fill="#8a5a3a"/>`;
+      for (let k = 0; k < 5; k++){ const hx = x - 12 + (k % 3) * 9 + R() * 3, hy = y + 2 + Math.floor(k / 3) * 8; s += maisonUr(hx, hy, "#9a6a45"); }
+      s += `</g>`; });
+    // couronne périurbaine qui s'élargit
+    s += `<circle cx="${cx}" cy="${cy}" r="205" fill="#f6d26e" fill-opacity=".34" stroke="#d29b16" stroke-width="1.6" stroke-dasharray="7 5">${A("r", "95;95;205;205", "0;.08;.72;1", D)}</circle>`;
+    // lotissements pavillonnaires (apparaissent de plus en plus loin)
+    for (let k = 0; k < 10; k++){
+      const a = 12 + k * 36 + R() * 14, r = 140 + R() * 52, [x, y] = P(a, r), t = tDist(r);
+      let g = `<path d="M${F(x - 16)} ${F(y + 2)} Q ${F(x)} ${F(y - 12)} ${F(x + 16)} ${F(y + 2)}" fill="none" stroke="#f6f1e2" stroke-width="2.6" stroke-linecap="round"/>`;
+      for (let m = 0; m < 8; m++){ const hx = x - 15 + m * 4.3, hy = y + (m % 2 ? 6 : -4) + Math.abs(m - 3.5) * 1.2; g += maisonUr(hx, hy, "#c8553d"); }
+      s += `<g filter="url(#${u}ombre)" opacity="${anim ? 0 : 1}">${apparait(t, D)}${g}</g>`;
+    }
+    ancre.periurbain = P(-58, 172); ancre.rural = [56, 120];
+    // banlieue : immeubles et grands ensembles, découverts à mesure que la ville grandit
+    s += `<clipPath id="${u}banl"><circle cx="${cx}" cy="${cy}" r="122">${A("r", "64;64;122;122", "0;.05;.45;1", D)}</circle></clipPath>`;
+    s += `<circle cx="${cx}" cy="${cy}" r="122" fill="#eda872" fill-opacity=".62">${A("r", "64;64;122;122", "0;.05;.45;1", D)}</circle>`;
+    let blocs = "";
+    for (let x = cx - 124; x < cx + 124; x += 10) for (let y = cy - 124; y < cy + 124; y += 10){
+      const d = Math.hypot(x + 4 - cx, y + 4 - cy); if (d < 54 || d > 122 || R() < .28) continue;
+      const tour = R() < .12; blocs += `<rect x="${F(x)}" y="${F(y)}" width="${tour ? 6 : 7.5}" height="${tour ? 9 : 6.5}" fill="${tour ? "#a59e96" : R() < .5 ? "#cf8c62" : "#c47d58"}" stroke="#9c6446" stroke-width=".4"/>`; }
+    s += `<g clip-path="url(#${u}banl)" filter="url(#${u}ombre)">${blocs}</g>`;
+    ancre.banlieue = P(160, 100);
+    // routes : radiales et rocade
+    const route = d => `<path d="${d}" fill="none" stroke="#6f6a63" stroke-width="7" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#f7f3e8" stroke-width="1.6" stroke-dasharray="6 6"/>`;
+    const RAD = [15, 75, 140, 200, 255, 320];
+    RAD.forEach(a => { const [x1, y1] = P(a, 50), [x2, y2] = P(a, 320); s += route(`M${F(x1)} ${F(y1)}L${F(x2)} ${F(y2)}`); });
+    s += route(`M${cx + 88} ${cy}A88 88 0 1 1 ${cx + 88} ${cy - .01}`);
+    RAD.forEach(a => { const [x, y] = P(a, 88); s += `<circle cx="${F(x)}" cy="${F(y)}" r="5" fill="#f7f3e8" stroke="#6f6a63" stroke-width="2"/>`; });
+    ancre.axes = P(-28, 255);
+    // zones commerciales et d'activités, près des sorties de rocade
+    [[75, 136], [200, 136], [320, 136]].forEach(([a, r], i) => { const [x, y] = P(a + 10, r);
+      s += `<g filter="url(#${u}ombre)" opacity="${anim ? 0 : 1}">${apparait(.38 + i * .06, D)}<rect x="${F(x - 15)}" y="${F(y - 9)}" width="22" height="15" rx="2" fill="#7d55c7" stroke="#fff" stroke-width="1"/><rect x="${F(x - 12)}" y="${F(y - 6)}" width="16" height="3" fill="#a98be0"/><rect x="${F(x + 8)}" y="${F(y - 9)}" width="14" height="15" fill="#c9c4cc" stroke="#fff" stroke-width=".8"/>${[0, 1, 2].map(m => `<line x1="${F(x + 9)}" y1="${F(y - 5 + m * 4)}" x2="${F(x + 21)}" y2="${F(y - 5 + m * 4)}" stroke="#fff" stroke-width=".8"/>`).join("")}</g>`; });
+    ancre.commerces = P(75, 168);
+    // ville-centre : vieille ville dense, cathédrale
+    s += `<clipPath id="${u}centre"><circle cx="${cx}" cy="${cy}" r="49"/></clipPath><circle cx="${cx}" cy="${cy}" r="50" fill="#c9403b" stroke="#fff" stroke-width="2.4"/>`;
+    let vieux = "";
+    for (let x = cx - 50; x < cx + 50; x += 8) for (let y = cy - 50; y < cy + 50; y += 8) vieux += `<rect x="${F(x + R() * 1.5)}" y="${F(y + R() * 1.5)}" width="${F(5 + R() * 1.6)}" height="${F(5 + R() * 1.6)}" fill="${R() < .5 ? "#a8302c" : "#b8403a"}"/>`;
+    s += `<g clip-path="url(#${u}centre)">${vieux}<path d="M${cx - 50} ${cy + 6}Q${cx} ${cy - 12} ${cx + 50} ${cy + 4}M${cx - 6} ${cy - 50}Q${cx + 8} ${cy} ${cx - 2} ${cy + 50}" stroke="#f4d9d2" stroke-width="2.2" fill="none"/></g>`;
+    s += `<g filter="url(#${u}ombre)"><path d="M${cx - 3} ${cy - 16}h6v8h8v6h-8v14h-6v-14h-8v-6h8z" fill="#fff4e8" stroke="#7a2420" stroke-width=".8"/></g>`;
+    ancre.centre = [cx + 8, cy - 64];
+    // mobilités pendulaires : flèches + voitures qui roulent vers le centre
+    [45, 108, 170, 228, 290, 350].forEach(a => { const [x1, y1] = P(a, 196), [xm, ym] = P(a + 12, 128), [x2, y2] = P(a, 64);
+      s += `<path d="M${F(x1)} ${F(y1)} Q${F(xm)} ${F(ym)} ${F(x2)} ${F(y2)}" fill="none" stroke="#2f7fd1" stroke-width="2.8" marker-end="${mk("#2f7fd1")}" opacity=".9"/>`; });
+    if (anim) RAD.forEach((a, i) => { const [x1, y1] = P(a, 300), [x2, y2] = P(a, 56);
+      [0, 1.6].forEach(dec => { s += `<rect x="-4.5" y="-2.6" width="9" height="5.2" rx="1.8" fill="#2f7fd1" stroke="#fff" stroke-width="1"><animateMotion path="M${F(x1)} ${F(y1)}L${F(x2)} ${F(y2)}" dur="3.2s" begin="${(i * .45 + dec).toFixed(2)}s" repeatCount="indefinite" rotate="auto"/></rect>`; }); });
+    ancre.pendulaires = P(186, 186);
+    // frise du temps
+    if (anim){
+      const ans = [["1960", 0, .2], ["1980", .2, .42], ["2000", .42, .64], ["Aujourd'hui", .64, 1]];
+      s += `<g><rect x="402" y="460" width="146" height="40" rx="9" fill="#fffaf0" fill-opacity=".92" stroke="#c9bf9a"/>${ans.map(([t, a, b]) => `<text x="475" y="478" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#5a4a2a" opacity="${a === 0 ? 1 : 0}"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;${F2(Math.max(0, a - .001))};${F2(a + .001)};${F2(b - .001)};${F2(b)};1" dur="${D}s" repeatCount="indefinite"/>${t}</text>`).join("")}
+        <rect x="414" y="487" width="122" height="5" rx="2.5" fill="#e3dac0"/><rect x="414" y="487" width="122" height="5" rx="2.5" fill="#d29b16">${A("width", "0;0;122;122", "0;.04;.74;1", D)}</rect></g>`;
+    }
+    s += `</g>`;
+    symb = {centre: (x, y) => `<circle cx="${x + 14}" cy="${y}" r="9" fill="#c9403b" stroke="#fff" stroke-width="1.5"/>`, banlieue: (x, y) => `<rect x="${x}" y="${y - 9}" width="28" height="18" rx="3" fill="#eda872"/><rect x="${x + 4}" y="${y - 5}" width="6" height="5" fill="#c47d58"/><rect x="${x + 13}" y="${y - 2}" width="6" height="5" fill="#c47d58"/>`,
+      periurbain: (x, y) => `<rect x="${x}" y="${y - 9}" width="28" height="18" rx="3" fill="#f6d26e" fill-opacity=".7" stroke="#d29b16" stroke-dasharray="3 2"/>${maisonUr(x + 9, y + 3, "#c8553d")}${maisonUr(x + 19, y + 3, "#c8553d")}`,
+      rural: (x, y) => `<rect x="${x}" y="${y - 9}" width="14" height="18" fill="#cfe09c"/><rect x="${x + 14}" y="${y - 9}" width="14" height="18" fill="#e6dca4"/><rect x="${x}" y="${y - 9}" width="28" height="18" fill="none" stroke="#bdb486"/>`,
+      axes: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#6f6a63" stroke-width="6" stroke-linecap="round"/><line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#f7f3e8" stroke-width="1.4" stroke-dasharray="4 4"/>`,
+      commerces: (x, y) => `<rect x="${x + 2}" y="${y - 8}" width="16" height="15" rx="2" fill="#7d55c7"/><rect x="${x + 18}" y="${y - 8}" width="9" height="15" fill="#c9c4cc"/>`,
+      pendulaires: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" stroke="#2f7fd1" stroke-width="2.8" marker-end="${mk("#2f7fd1")}"/>`};
   } else if (sc === SCHEMAS_URBAINS.gentrification){
-    const sol = 430, bat = (x, w, h, cls, fen) => { let b = `<rect x="${x}" y="${sol - h}" width="${w}" height="${h}" class="${cls}"/>`;
-      for (let yy = sol - h + 14; yy < sol - 26; yy += 26) for (let xx = x + 9; xx < x + w - 14; xx += 20) b += `<rect x="${xx}" y="${yy}" width="10" height="13" class="${fen}"/>`; return b; };
-    const usine = (x, cls, fen) => `<g transform="translate(${x} ${sol}) scale(1.3 1.6) translate(${-x} ${-sol})"><path d="M${x} ${sol}V${sol - 70}l25 -22v22l25 -22v22l25 -22v92z" class="${cls}"/><rect x="${x + 60}" y="${sol - 150}" width="12" height="62" class="${cls}"/>` + [0, 1, 2].map(i => `<rect x="${x + 10 + i * 24}" y="${sol - 52}" width="${fen === "ur-fen-loft" ? 18 : 12}" height="${fen === "ur-fen-loft" ? 30 : 14}" class="${fen}"/>`).join("") + `</g>`;
-    s += `<rect x="12" y="22" width="262" height="486" rx="12" class="ur-panneau"/><rect x="296" y="22" width="262" height="486" rx="12" class="ur-panneau"/>`;
-    s += `<text x="143" y="52" text-anchor="middle" class="ur-titre-p">Avant</text><text x="427" y="52" text-anchor="middle" class="ur-titre-p">Après</text>`;
-    s += `<path d="M263 110h40" class="ur-fleche-t" marker-end="url(#fm-7d55c7)"/>`;
-    s += `<line x1="12" y1="${sol}" x2="274" y2="${sol}" class="ur-sol"/><line x1="296" y1="${sol}" x2="558" y2="${sol}" class="ur-sol"/>`;
-    // avant
-    s += bat(24, 66, 250, "ur-vieux", "ur-fen-v") + usine(96, "ur-vieux", "ur-fen-v") + bat(196, 66, 200, "ur-vieux", "ur-fen-v");
-    s += `<path d="M40 ${sol - 200}l10 14l-6 10M222 ${sol - 150}l8 12" class="ur-fissure"/>`; ancre.anciens = [57, sol - 272];
-    [[40, sol + 40], [70, sol + 44], [120, sol + 40], [160, sol + 44], [205, sol + 40], [240, sol + 44]].forEach(([x, y]) => s += pers(x, y, "ur-modeste")); ancre.modestes = [143, sol + 64];
-    // après
-    s += bat(308, 66, 250, "ur-neuf", "ur-fen-n") + usine(380, "ur-loft", "ur-fen-loft") + bat(480, 66, 200, "ur-neuf", "ur-fen-n");
-    s += `<path d="M328 ${sol - 182}h26M328 ${sol - 104}h26M500 ${sol - 130}h26M500 ${sol - 78}h26" class="ur-balcon"/>`; ancre.rehab = [430, sol - 200];
-    [[308, 66], [480, 66]].forEach(([x, w]) => { s += `<path d="M${x - 2} ${sol - 26}h${w + 4}l-6 10h-${w - 8}z" class="ur-store"/>` + [0, 1, 2, 3].map(i => `<rect x="${x + 2 + i * 15}" y="${sol - 26}" width="7.5" height="10" class="ur-store-b"/>`).join(""); });
-    s += `<circle cx="352" cy="${sol - 7}" r="4" class="ur-table"/><circle cx="526" cy="${sol - 7}" r="4" class="ur-table"/>`; ancre.commerces = [298, sol - 46];
-    [[320, sol + 40], [360, sol + 44], [400, sol + 40], [445, sol + 44]].forEach(([x, y]) => s += pers(x, y, "ur-aise")); ancre.aises = [383, sol + 66];
-    s += pers(488, sol + 40, "ur-modeste") + `<path d="M500 ${sol + 30}H560" class="ur-depart" marker-end="url(#fm-3d8fd1)"/>`; ancre.depart = [540, sol + 52];
-    s += `<g class="ur-prix"><rect x="440" y="66" width="104" height="70" rx="8" class="ur-prix-f"/><path d="M452 122L476 112L496 102L520 84L534 74" class="ur-prix-c" marker-end="url(#fm-e5484d)"/><text x="456" y="90" class="ur-euro">€</text></g>`; ancre.prix = [428, 70];
-    symb = {anciens: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="16" height="22" class="ur-vieux"/><path d="M${x + 9} ${y - 6}l4 5l-2 4" class="ur-fissure"/>`, modestes: (x, y) => pers(x + 14, y + 10, "ur-modeste"),
-      rehab: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="16" height="22" class="ur-neuf"/><path d="M${x + 8} ${y}h12" class="ur-balcon"/>`, aises: (x, y) => pers(x + 14, y + 10, "ur-aise"),
-      commerces: (x, y) => `<path d="M${x + 2} ${y - 6}h24l-4 8h-16z" class="ur-store"/>`, prix: (x, y) => `<path d="M${x} ${y + 8}L${x + 12} ${y + 2}L${x + 24} ${y - 8}" class="ur-prix-c" marker-end="url(#fm-e5484d)"/>`,
-      depart: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" class="ur-depart" marker-end="url(#fm-3d8fd1)"/>`};
+    /* ---------- GENTRIFICATION : « Avant » fixe, « Après » qui se transforme ---------- */
+    const D = 12, sol = 404;
+    s += `<defs><linearGradient id="${u}ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe3f1"/><stop offset="1" stop-color="#f6efe1"/></linearGradient>
+      <clipPath id="${u}pg"><rect x="12" y="22" width="262" height="486" rx="12"/></clipPath><clipPath id="${u}pd"><rect x="296" y="22" width="262" height="486" rx="12"/></clipPath></defs>`;
+    const rue = ox => `<rect x="${ox}" y="22" width="262" height="486" fill="url(#${u}ciel)"/><rect x="${ox}" y="${sol}" width="262" height="14" fill="#cfc6b6"/><rect x="${ox}" y="${sol + 14}" width="262" height="90" fill="#8f8b84"/>${[0, 1, 2, 3, 4].map(k => `<rect x="${ox + 10 + k * 56}" y="${sol + 56}" width="30" height="4" fill="#f1ede4"/>`).join("")}`;
+    const fen = (x, y, w, h, c, cadre) => `<rect x="${F(x)}" y="${F(y)}" width="${w}" height="${h}" fill="${c}" stroke="${cadre}" stroke-width=".8"/>`;
+    const immeuble = (x, w, h, neuf) => {
+      let g = `<rect x="${x}" y="${sol - h}" width="${w}" height="${h}" fill="${neuf ? "#f1c48f" : "#a9a196"}" stroke="${neuf ? "#c98d4f" : "#7b746a"}" stroke-width="1.2"/>`;
+      g += `<rect x="${x - 3}" y="${sol - h - 6}" width="${w + 6}" height="6" fill="${neuf ? "#c98d4f" : "#6e675e"}"/>`;
+      for (let yy = sol - h + 14, r = 0; yy < sol - 34; yy += 26, r++) for (let xx = x + 8, c = 0; xx < x + w - 13; xx += 19, c++){
+        const ferme = !neuf && (r + c * 2) % 3 === 0;
+        g += fen(xx, yy, 11, 15, neuf ? "#cfe8f7" : ferme ? "#6b5a4a" : "#4d4a45", neuf ? "#fff" : "#3a3631");
+        if (neuf && c === 0 && r % 2 === 0) g += `<rect x="${xx - 3}" y="${yy + 15}" width="${w - 10}" height="3" fill="#6d6d6d"/><circle cx="${xx + 2}" cy="${yy + 13}" r="3" fill="#5aa64e"/><circle cx="${xx + 10}" cy="${yy + 13}" r="2.6" fill="#6fbf73"/>`;
+      }
+      if (!neuf) g += `<path d="M${x + 10} ${sol - h + 30}l9 12l-5 9l7 10" fill="none" stroke="#3a3631" stroke-width="1.4"/><line x1="${x + 6}" y1="${sol - h + 86}" x2="${x + w - 6}" y2="${sol - h + 92}" stroke="#555" stroke-width=".8"/>${[0, 1, 2].map(k => `<rect x="${x + 12 + k * 14}" y="${sol - h + 88 + k}" width="7" height="9" fill="${["#e5484d", "#f1ede4", "#3d8fd1"][k]}"/>`).join("")}`;
+      else g += `<rect x="${x + 4}" y="${sol - h - 16}" width="${w - 8}" height="10" fill="#7fbf6a" rx="3"/><path d="M${x + w - 18} ${sol - h - 6}v-18" stroke="#555" stroke-width="1.2"/><path d="M${x + w - 30} ${sol - h - 24}q12 -10 24 0z" fill="#e5484d"/>`;
+      return g;
+    };
+    const atelier = (x, neuf) => {
+      const c = neuf ? "#e08a5c" : "#9a6a52", ct = neuf ? "#b8653a" : "#6e4a38";
+      let g = `<path d="M${x} ${sol}V${sol - 92}l30 -26v26l30 -26v26l30 -26v118z" fill="${c}" stroke="${ct}" stroke-width="1.2"/>`;
+      g += `<rect x="${x + 74}" y="${sol - 190}" width="14" height="80" fill="${c}" stroke="${ct}" stroke-width="1"/>`;
+      if (neuf){ g += [0, 1, 2].map(k => `<rect x="${x + 8 + k * 36}" y="${sol - 76}" width="28" height="48" fill="#bfe3f5" stroke="#fff" stroke-width="1.4"/><line x1="${x + 22 + k * 36}" y1="${sol - 76}" x2="${x + 22 + k * 36}" y2="${sol - 28}" stroke="#fff"/>`).join("") + [0, 1, 2].map(k => `<path d="M${x + 4 + k * 30} ${sol - 94}l24 -21" stroke="#2b4c7e" stroke-width="5"/>`).join(""); }
+      else { g += [0, 1, 2].map(k => `<rect x="${x + 10 + k * 36}" y="${sol - 66}" width="16" height="16" fill="#4d4a45"/>`).join("") + `<rect x="${x + 40}" y="${sol - 34}" width="32" height="34" fill="#5e5852"/>`;
+        g += [0, 1, 2].map(k => `<circle cx="${x + 81 + k * 6}" cy="${sol - 198 - k * 13}" r="${7 + k * 3}" fill="#b8b4ae" opacity="${.8 - k * .2}">${anim ? `<animate attributeName="cy" values="${sol - 198 - k * 13};${sol - 214 - k * 13}" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="${.8 - k * .2};0" dur="3s" repeatCount="indefinite"/>` : ""}</circle>`).join(""); }
+      return g;
+    };
+    const boutiqueVieille = x => `<rect x="${x}" y="${sol - 30}" width="56" height="30" fill="#7b746a"/><rect x="${x + 4}" y="${sol - 26}" width="48" height="16" fill="#9a958c"/>${[0, 1, 2, 3].map(k => `<line x1="${x + 4}" y1="${sol - 24 + k * 4}" x2="${x + 52}" y2="${sol - 24 + k * 4}" stroke="#6b665e"/>`).join("")}`;
+    const cafe = x => `<rect x="${x}" y="${sol - 30}" width="56" height="30" fill="#6b3f2a"/><rect x="${x + 4}" y="${sol - 26}" width="48" height="22" fill="#ffe7b3"/><path d="M${x - 3} ${sol - 34}h62l-6 10h-50z" fill="#e5484d"/>${[0, 1, 2, 3, 4].map(k => `<rect x="${x + 1 + k * 11}" y="${sol - 34}" width="5.5" height="10" fill="#fff" opacity=".95"/>`).join("")}`
+      + `<g><circle cx="${x + 12}" cy="${sol + 8}" r="4.5" fill="#2b2f36"/><circle cx="${x + 40}" cy="${sol + 8}" r="4.5" fill="#2b2f36"/><path d="M${x + 4} ${sol - 2}q8 -8 16 0z" fill="#3d8fd1"/><path d="M${x + 32} ${sol - 2}q8 -8 16 0z" fill="#3d8fd1"/></g>`;
+    // panneau gauche : avant
+    s += `<g clip-path="url(#${u}pg)">${rue(12)}${immeuble(24, 66, 246, false)}${atelier(98, false)}${immeuble(210, 56, 196, false)}${boutiqueVieille(214)}`;
+    [[34, 1], [62, 0], [116, 1], [150, 0], [188, 1], [238, 0]].forEach(([x, k]) => s += personne(x, sol + 40 + k * 4, "#3d8fd1"));
+    s += `</g><rect x="12" y="22" width="262" height="486" rx="12" fill="none" stroke="#c9bfa8"/>`;
+    ancre.anciens = [57, sol - 268]; ancre.modestes = [143, sol + 70];
+    // panneau droit : après (se transforme)
+    const ox = 284;
+    s += `<g clip-path="url(#${u}pd)">${rue(296)}`;
+    // état ancien, qui disparaît
+    if (anim) s += `<g>${A("opacity", "1;1;0;0", "0;.28;.46;1", D)}${immeuble(ox + 24, 66, 246, false)}${atelier(ox + 98, false)}${immeuble(ox + 210, 56, 196, false)}${boutiqueVieille(ox + 214)}</g>`;
+    // échafaudages pendant les travaux
+    if (anim){ let e = ""; [[ox + 20, 74, 252], [ox + 206, 64, 202]].forEach(([x, w, h]) => { for (let k = 0; k <= w; k += 18) e += `<line x1="${x + k}" y1="${sol}" x2="${x + k}" y2="${sol - h}" stroke="#a87a3c" stroke-width="2"/>`; for (let yy = sol - 20; yy > sol - h; yy -= 26) e += `<line x1="${x}" y1="${yy}" x2="${x + w}" y2="${yy}" stroke="#a87a3c" stroke-width="2"/><rect x="${x}" y="${yy - 3}" width="${w}" height="3" fill="#d9b26a"/>`; e += `<rect x="${x}" y="${sol - h}" width="${w}" height="${h}" fill="#3d8fd1" opacity=".12"/>`; });
+      s += `<g opacity="0">${A("opacity", "0;0;1;1;0;0", "0;.14;.2;.48;.55;1", D)}${e}</g>`; }
+    // état rénové
+    s += `<g opacity="${anim ? 0 : 1}">${A("opacity", "0;0;1;1", "0;.36;.5;1", D)}${immeuble(ox + 24, 66, 246, true)}${atelier(ox + 98, true)}${immeuble(ox + 210, 56, 196, true)}</g>`;
+    s += `<g opacity="${anim ? 0 : 1}">${A("opacity", "0;0;1;1", "0;.5;.58;1", D)}${cafe(ox + 214)}<rect x="${ox + 30}" y="${sol - 30}" width="54" height="30" fill="#2b2f36"/><rect x="${ox + 34}" y="${sol - 26}" width="46" height="22" fill="#f4f1ea"/><rect x="${ox + 40}" y="${sol - 22}" width="12" height="14" fill="#e0569b"/><rect x="${ox + 58}" y="${sol - 20}" width="16" height="10" fill="#14a6a6"/></g>`;
+    ancre.rehab = [ox + 57, sol - 268]; ancre.commerces = [ox + 242, sol - 52];
+    // habitants : les modestes partent, les aisés arrivent
+    if (anim) [[ox + 40, 1], [ox + 80, 0], [ox + 150, 1]].forEach(([x, k], i) => { s += `<g>${A("opacity", "1;1;0;0", `0;${F2(.3 + i * .04)};${F2(.38 + i * .04)};1`, D)}${personne(x, sol + 40 + k * 4, "#3d8fd1")}</g>`; });
+    [[ox + 36, 1], [ox + 76, 0], [ox + 118, 1], [ox + 160, 0]].forEach(([x, k], i) => { s += `<g opacity="${anim ? 0 : 1}">${apparait(.56 + i * .05, D)}${personne(x, sol + 40 + k * 4, "#d4a017", i % 2 === 0)}</g>`; });
+    ancre.aises = [ox + 98, sol + 72];
+    // départ d'un habitant modeste vers la périphérie
+    s += `<path d="M${ox + 204} ${sol + 30}H${ox + 272}" stroke="#3d8fd1" stroke-width="3" stroke-dasharray="6 4" fill="none" marker-end="${mk("#3d8fd1")}"/>`;
+    s += `<g>${anim ? `<animateTransform attributeName="transform" type="translate" values="0 0;0 0;62 0;62 0" keyTimes="0;.45;.85;1" dur="${D}s" repeatCount="indefinite"/>` : ""}${personne(ox + 196, sol + 44, "#3d8fd1", true)}</g>`;
+    ancre.depart = [ox + 250, sol + 58];
+    // hausse des prix
+    s += `<g filter="url(#${u}ombre)"><rect x="${ox + 152}" y="34" width="96" height="66" rx="8" fill="#fff" stroke="#e1d6c3"/><text x="${ox + 162}" y="56" font-family="Arial,sans-serif" font-size="17" font-weight="900" fill="#e5484d">€</text>
+      <path d="M${ox + 162} 90 L${ox + 184} 84 L${ox + 202} 76 L${ox + 222} 60 L${ox + 236} 48" fill="none" stroke="#e5484d" stroke-width="3.2" stroke-linejoin="round" stroke-dasharray="110" stroke-dashoffset="${anim ? 110 : 0}" marker-end="${mk("#e5484d")}">${A("stroke-dashoffset", "110;110;0;0", "0;.1;.85;1", D)}</path></g>`;
+    ancre.prix = [ox + 144, 44];
+    // années (étapes de la transformation)
+    if (anim) [["Années 1990", 0, .2], ["Années 2000 : travaux", .2, .5], ["Aujourd'hui", .5, 1]].forEach(([t, a, b]) => {
+      s += `<text x="${ox + 143}" y="122" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#5a4a2a" opacity="${a === 0 ? 1 : 0}"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;${F2(Math.max(0, a - .001))};${F2(a + .001)};${F2(b - .001)};${F2(b)};1" dur="${D}s" repeatCount="indefinite"/>${t}</text>`; });
+    s += `</g><rect x="296" y="22" width="262" height="486" rx="12" fill="none" stroke="#c9bfa8"/>`;
+    // titres et flèche du temps
+    s += `<g font-family="Arial,sans-serif" font-weight="800" font-size="15" fill="#3b3326" text-anchor="middle"><rect x="103" y="34" width="80" height="24" rx="12" fill="#fffaf0" opacity=".9"/><text x="143" y="51">Avant</text><rect x="${ox + 22}" y="34" width="80" height="24" rx="12" fill="#fffaf0" opacity=".9"/><text x="${ox + 62}" y="51">Après</text></g>`;
+    s += `<circle cx="285" cy="200" r="16" fill="#7d55c7"/><path d="M277 200h14m-5 -5l6 5l-6 5" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+    symb = {anciens: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="16" height="22" fill="#a9a196" stroke="#7b746a"/><rect x="${x + 9}" y="${y - 7}" width="4" height="5" fill="#4d4a45"/><rect x="${x + 15}" y="${y - 7}" width="4" height="5" fill="#6b5a4a"/>`, modestes: (x, y) => personne(x + 14, y + 10, "#3d8fd1"),
+      rehab: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="16" height="22" fill="#f1c48f" stroke="#c98d4f"/><rect x="${x + 9}" y="${y - 7}" width="4" height="5" fill="#cfe8f7"/><rect x="${x + 15}" y="${y - 7}" width="4" height="5" fill="#cfe8f7"/><rect x="${x + 6}" y="${y + 2}" width="16" height="2" fill="#5aa64e"/>`, aises: (x, y) => personne(x + 14, y + 10, "#d4a017"),
+      commerces: (x, y) => `<path d="M${x + 1} ${y - 7}h26l-4 8h-18z" fill="#e5484d"/><rect x="${x + 6}" y="${y - 7}" width="4" height="8" fill="#fff"/><rect x="${x + 16}" y="${y - 7}" width="4" height="8" fill="#fff"/>`, prix: (x, y) => `<path d="M${x} ${y + 8}L${x + 12} ${y + 2}L${x + 24} ${y - 8}" fill="none" stroke="#e5484d" stroke-width="3" marker-end="${mk("#e5484d")}"/>`,
+      depart: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" stroke="#3d8fd1" stroke-width="3" stroke-dasharray="5 3" marker-end="${mk("#3d8fd1")}"/>`};
   } else {
-    const cx = 270, cy = 280;
-    s += `<rect x="12" y="22" width="546" height="486" rx="14" class="ur-fond"/>`;
-    const autres = [[505, 70], [520, 455], [48, 470], [34, 236]];
-    autres.forEach(([x, y]) => { s += `<path d="M${cx} ${cy}L${x} ${y}" class="ur-reseau"/>`; });
-    autres.forEach(([x, y]) => { s += `<circle cx="${x}" cy="${y}" r="12" class="ur-autre"/>`; }); ancre.reseau = [505, 104];
-    s += `<path d="M${cx - 150} ${cy - 20}C${cx - 140} ${cy - 120} ${cx + 40} ${cy - 150} ${cx + 130} ${cy - 90}C${cx + 190} ${cy - 40} ${cx + 160} ${cy + 90} ${cx + 70} ${cy + 125}C${cx - 30} ${cy + 160} ${cx - 160} ${cy + 90} ${cx - 150} ${cy - 20}z" class="ur-dense"/>`; ancre.dense = [cx - 110, cy + 98];
-    s += `<path d="M24 ${cy + 60}L${cx} ${cy + 10}L556 ${cy - 70}" class="ur-lgv-f"/><path d="M24 ${cy + 60}L${cx} ${cy + 10}L556 ${cy - 70}" class="ur-lgv"/><rect x="${cx + 34}" y="${cy - 8}" width="30" height="16" rx="3" class="ur-gare"/>`; ancre.lgv = [cx + 50, cy + 30];
-    [[-30, 60], [-14, 86], [2, 72], [18, 96], [34, 54]].forEach(([dx, h], i) => { s += `<rect x="${cx + dx - 6}" y="${cy - h}" width="14" height="${h}" class="ur-tour${i % 2 ? " b" : ""}"/>`; }); ancre.cbd = [cx + 2, cy - 118];
-    const tx = cx + 95, ty = cy - 70; s += `<rect x="${tx - 24}" y="${ty - 18}" width="48" height="36" rx="10" class="ur-techno"/><ellipse cx="${tx}" cy="${ty}" rx="15" ry="6" class="ur-atome"/><ellipse cx="${tx}" cy="${ty}" rx="15" ry="6" class="ur-atome" transform="rotate(60 ${tx} ${ty})"/><ellipse cx="${tx}" cy="${ty}" rx="15" ry="6" class="ur-atome" transform="rotate(-60 ${tx} ${ty})"/>`; ancre.technopole = [tx + 32, ty - 18];
-    const ax = cx - 135, ay = cy - 150; s += `<g class="ur-aero" transform="translate(${ax} ${ay}) scale(1.8) translate(${-ax} ${-ay})"><rect x="${ax - 28}" y="${ay - 6}" width="56" height="12" rx="3" transform="rotate(-25 ${ax} ${ay})"/><path d="M${ax} ${ay - 14}l3 9l11 4v3l-11 -2l-1 7l3 2v2l-5 -1l-5 1v-2l3 -2l-1 -7l-11 2v-3l11 -4z" class="ur-avion"/></g>`; ancre.aeroport = [ax + 6, ay + 38];
-    s += `<path d="M${ax - 20} ${ay - 30}Q${ax - 60} ${ay - 80} ${ax - 105} ${ay - 98}" class="ur-mondial" marker-end="url(#fm-7d55c7)"/><path d="M${ax + 22} ${ay - 30}Q${ax + 60} ${ay - 90} ${ax + 140} ${ay - 105}" class="ur-mondial" marker-end="url(#fm-7d55c7)"/>`; ancre.mondial = [ax + 120, ay - 76];
-    symb = {dense: (x, y) => `<rect x="${x}" y="${y - 9}" width="28" height="18" rx="6" class="ur-dense"/>`, cbd: (x, y) => `<rect x="${x + 6}" y="${y - 10}" width="7" height="20" class="ur-tour"/><rect x="${x + 15}" y="${y - 4}" width="7" height="14" class="ur-tour b"/>`,
-      technopole: (x, y) => `<rect x="${x + 2}" y="${y - 10}" width="24" height="20" rx="6" class="ur-techno"/>`, aeroport: (x, y) => `<rect x="${x}" y="${y - 4}" width="28" height="8" rx="2" class="ur-aero-p"/>`,
-      lgv: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" class="ur-lgv-f"/><line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" class="ur-lgv"/>`, reseau: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 20}" y2="${y}" class="ur-reseau"/><circle cx="${x + 22}" cy="${y}" r="6" class="ur-autre"/>`,
-      mondial: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" class="ur-mondial" marker-end="url(#fm-7d55c7)"/>`};
+    /* ---------- MÉTROPOLISATION : une métropole connectée (flux en mouvement) ---------- */
+    const cx = 270, cy = 286, D = 9;
+    s += `<g clip-path="url(#${u}cadre)"><rect x="12" y="22" width="546" height="486" fill="#e9ecdf"/>`;
+    for (let x = 12; x < 558; x += 28) s += `<line x1="${x}" y1="22" x2="${x}" y2="508" stroke="#dde1d2" stroke-width=".8"/>`;
+    for (let y = 22; y < 508; y += 28) s += `<line x1="12" y1="${y}" x2="558" y2="${y}" stroke="#dde1d2" stroke-width=".8"/>`;
+    const riv = "M12 400 C 120 380, 180 340, 250 330 S 380 360, 440 420 S 520 500, 540 508";
+    s += `<path d="${riv}" fill="none" stroke="#9cc8e6" stroke-width="10" stroke-linecap="round"/>`;
+    // autres métropoles et liaisons (réseau)
+    const autres = [[500, 74], [516, 452], [52, 470], [44, 226]];
+    autres.forEach(([x, y]) => { s += `<path d="M${cx} ${cy}L${x} ${y}" stroke="#a7a39a" stroke-width="5" stroke-linecap="round"/><path d="M${cx} ${cy}L${x} ${y}" stroke="#e5484d" stroke-width="2.6" stroke-dasharray="3 7" stroke-linecap="round" fill="none">${anim ? `<animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite"/>` : ""}</path>`; });
+    autres.forEach(([x, y]) => { s += `<g filter="url(#${u}ombre)"><ellipse cx="${x}" cy="${y}" rx="22" ry="16" fill="#f2c08a" stroke="#e08a3c"/>${[[-8, 18], [0, 26], [8, 14]].map(([dx, h]) => `<rect x="${x + dx - 3}" y="${y - h + 6}" width="7" height="${h}" fill="#e5484d" stroke="#fff" stroke-width=".7"/>`).join("")}</g>`; });
+    ancre.reseau = [500, 112];
+    // agglomération (concentration) qui attire population et emplois
+    const tache = `M${cx - 160} ${cy - 16}C${cx - 150} ${cy - 128} ${cx + 40} ${cy - 160} ${cx + 138} ${cy - 92}C${cx + 200} ${cy - 40} ${cx + 172} ${cy + 96} ${cx + 74} ${cy + 132}C${cx - 32} ${cy + 168} ${cx - 172} ${cy + 96} ${cx - 160} ${cy - 16}z`;
+    s += `<path d="${tache}" fill="#f2c08a" fill-opacity=".9" stroke="#e08a3c" stroke-width="2">${anim ? `<animateTransform attributeName="transform" type="scale" values="1;1.04;1" dur="${D}s" repeatCount="indefinite" additive="sum"/>` : ""}</path>`;
+    let pts = "";
+    for (let k = 0; k < 140; k++){ const a = R() * 6.28, r = 40 + R() * 110, x = cx + Math.cos(a) * r * 1.05, y = cy + Math.sin(a) * r * .8; pts += `<rect x="${F(x)}" y="${F(y)}" width="5" height="4" fill="${R() < .5 ? "#e3a066" : "#d9935a"}"/>`; }
+    s += `<g opacity=".85">${pts}</g>`;
+    if (anim) [[30, 470], [540, 260], [300, 30], [120, 506], [470, 506]].forEach(([x, y], i) => { const chem = `M${x} ${y}Q${(x + cx) / 2 + 30} ${(y + cy) / 2 - 30} ${cx} ${cy}`;
+      [0, 1.5].forEach(dec => { s += `<g opacity=".9"><circle r="4" fill="#5a6cd6" stroke="#fff" stroke-width="1"/><animateMotion path="${chem}" dur="4s" begin="${(i * .7 + dec).toFixed(1)}s" repeatCount="indefinite"/></g>`; }); });
+    ancre.dense = [cx - 128, cy + 108];
+    // LGV et gare, avec un TGV qui passe
+    const lgv = `M12 ${cy + 64}L${cx + 46} ${cy + 6}L558 ${cy - 74}`;
+    s += `<path d="${lgv}" fill="none" stroke="#3b3f46" stroke-width="7"/><path d="${lgv}" fill="none" stroke="#f7f7f2" stroke-width="2.6" stroke-dasharray="8 7"/>`;
+    s += `<g filter="url(#${u}ombre)"><rect x="${cx + 30}" y="${cy - 4}" width="34" height="18" rx="3" fill="#3b3f46" stroke="#fff" stroke-width="1.5"/><path d="M${cx + 36} ${cy + 4}h22" stroke="#9cc8e6" stroke-width="3"/></g>`;
+    if (anim) s += `<g><path d="M-18 -4h30a6 4 0 0 1 0 8h-30z" fill="#fff" stroke="#3b3f46" stroke-width="1"/><rect x="-16" y="-1" width="28" height="2" fill="#e5484d"/><animateMotion path="${lgv}" dur="5s" repeatCount="indefinite" rotate="auto"/></g>`;
+    ancre.lgv = [cx + 52, cy + 38];
+    // quartier d'affaires : tours en volume
+    const tour = (x, h, c) => `<path d="M${x} ${cy - h}l10 -5v${h}l-10 5z" fill="${c[1]}"/><rect x="${x - 12}" y="${cy - h}" width="12" height="${h}" fill="${c[0]}" stroke="#fff" stroke-width=".6"/><path d="M${x - 12} ${cy - h}l10 -5h10l-10 5z" fill="${c[2]}"/>${Array.from({length: Math.floor(h / 9)}, (_, k) => `<rect x="${x - 10}" y="${cy - h + 4 + k * 9}" width="8" height="3" fill="#bfe3f5" opacity=".85"/>`).join("")}`;
+    s += `<g filter="url(#${u}ombre)">${[[-34, 50], [-18, 78], [-2, 96], [14, 66], [30, 54], [-26, 34], [6, 40]].map(([dx, h], i) => tour(cx + dx, h, i % 2 ? ["#5577b0", "#3a5788", "#8fa9d6"] : ["#3d5a8a", "#2b4470", "#7f98c6"])).join("")}
+      <line x1="${cx - 8}" y1="${cy - 101}" x2="${cx - 8}" y2="${cy - 116}" stroke="#555" stroke-width="1.4"/><circle cx="${cx - 8}" cy="${cy - 117}" r="2.6" fill="#e5484d">${anim ? `<animate attributeName="opacity" values="1;.1;1" dur="1.4s" repeatCount="indefinite"/>` : ""}</circle></g>`;
+    ancre.cbd = [cx + 2, cy - 136];
+    // technopôle : campus, laboratoires, verdure
+    const tx = cx + 104, ty = cy - 72;
+    s += `<g filter="url(#${u}ombre)"><rect x="${tx - 34}" y="${ty - 24}" width="68" height="48" rx="12" fill="#b9dba0" stroke="#7fb06a"/>
+      <rect x="${tx - 26}" y="${ty - 12}" width="22" height="14" fill="#fff" stroke="#6f8f5e"/><rect x="${tx - 24}" y="${ty - 8}" width="18" height="3" fill="#7cc4e8"/>
+      <rect x="${tx + 2}" y="${ty - 16}" width="24" height="18" fill="#fff" stroke="#6f8f5e"/><path d="M${tx + 4} ${ty - 16}a10 8 0 0 1 20 0z" fill="#d6e9f5" stroke="#6f8f5e"/>
+      ${[[-28, 14], [-14, 16], [10, 15], [24, 13]].map(([dx, dy]) => `<circle cx="${tx + dx}" cy="${ty + dy}" r="4" fill="#5aa64e"/>`).join("")}
+      <circle cx="${tx + 30}" cy="${ty - 22}" r="9" fill="#14a6a6" stroke="#fff" stroke-width="1.2"/><ellipse cx="${tx + 30}" cy="${ty - 22}" rx="6" ry="2.4" fill="none" stroke="#fff"/><ellipse cx="${tx + 30}" cy="${ty - 22}" rx="6" ry="2.4" fill="none" stroke="#fff" transform="rotate(60 ${tx + 30} ${ty - 22})"/><ellipse cx="${tx + 30}" cy="${ty - 22}" rx="6" ry="2.4" fill="none" stroke="#fff" transform="rotate(-60 ${tx + 30} ${ty - 22})"/></g>`;
+    ancre.technopole = [tx + 48, ty + 18];
+    // aéroport international : pistes, aérogare, avions qui décollent
+    const ax = cx - 140, ay = cy - 146;
+    s += `<g filter="url(#${u}ombre)"><rect x="${ax - 60}" y="${ay - 8}" width="120" height="16" rx="3" fill="#8a8f98" transform="rotate(-22 ${ax} ${ay})"/><line x1="${ax - 54}" y1="${ay}" x2="${ax + 54}" y2="${ay}" stroke="#fff" stroke-width="1.6" stroke-dasharray="7 6" transform="rotate(-22 ${ax} ${ay})"/>
+      <rect x="${ax - 40}" y="${ay - 6}" width="80" height="12" rx="3" fill="#9aa0a8" transform="rotate(38 ${ax} ${ay})"/>
+      <rect x="${ax - 18}" y="${ay + 24}" width="40" height="12" rx="3" fill="#dfe3e8" stroke="#6b7280"/><rect x="${ax + 26}" y="${ay + 14}" width="5" height="20" fill="#6b7280"/><rect x="${ax + 23}" y="${ay + 10}" width="11" height="6" rx="2" fill="#9cc8e6" stroke="#6b7280"/></g>`;
+    const vol = (d, dec) => `<g><path d="M0 -7l2.4 6.5 8 3v2.6l-8 -1.4 -.7 5 2.4 1.6v1.8l-4.1 -.9 -4.1 .9v-1.8l2.4 -1.6 -.7 -5 -8 1.4v-2.6l8 -3z" fill="#2b2f36" transform="rotate(90)"/><animateMotion path="${d}" dur="6s" begin="${dec}s" repeatCount="indefinite" rotate="auto"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.85;1" dur="6s" begin="${dec}s" repeatCount="indefinite"/></g>`;
+    const m1 = `M${ax - 10} ${ay - 6}Q${ax - 60} ${ay - 70} ${ax - 116} ${ay - 104}`, m2 = `M${ax + 14} ${ay - 10}Q${ax + 70} ${ay - 90} ${ax + 160} ${ay - 112}`;
+    s += `<path d="${m1}" fill="none" stroke="#7d55c7" stroke-width="3" stroke-dasharray="7 5" marker-end="${mk("#7d55c7")}">${anim ? `<animate attributeName="stroke-dashoffset" values="0;-24" dur="1.2s" repeatCount="indefinite"/>` : ""}</path><path d="${m2}" fill="none" stroke="#7d55c7" stroke-width="3" stroke-dasharray="7 5" marker-end="${mk("#7d55c7")}">${anim ? `<animate attributeName="stroke-dashoffset" values="0;-24" dur="1.2s" repeatCount="indefinite"/>` : ""}</path>`;
+    if (anim) s += vol(m1, 0) + vol(m2, 3);
+    ancre.aeroport = [ax - 4, ay + 52]; ancre.mondial = [ax + 120, ay - 80];
+    s += `</g>`;
+    symb = {dense: (x, y) => `<rect x="${x}" y="${y - 9}" width="28" height="18" rx="7" fill="#f2c08a" stroke="#e08a3c"/>`, cbd: (x, y) => `<rect x="${x + 6}" y="${y - 11}" width="7" height="22" fill="#3d5a8a"/><rect x="${x + 15}" y="${y - 5}" width="7" height="16" fill="#5577b0"/>`,
+      technopole: (x, y) => `<rect x="${x + 1}" y="${y - 10}" width="26" height="20" rx="6" fill="#b9dba0" stroke="#7fb06a"/><circle cx="${x + 14}" cy="${y}" r="5" fill="#14a6a6"/>`, aeroport: (x, y) => `<rect x="${x}" y="${y - 4}" width="28" height="8" rx="2" fill="#8a8f98"/><line x1="${x + 3}" y1="${y}" x2="${x + 25}" y2="${y}" stroke="#fff" stroke-dasharray="4 3"/>`,
+      lgv: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#3b3f46" stroke-width="6"/><line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="#fff" stroke-width="2" stroke-dasharray="5 4"/>`,
+      reseau: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 20}" y2="${y}" stroke="#e5484d" stroke-width="2.6" stroke-dasharray="3 4"/><circle cx="${x + 23}" cy="${y}" r="6" fill="#e5484d" stroke="#fff" stroke-width="1.5"/>`,
+      mondial: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" stroke="#7d55c7" stroke-width="3" stroke-dasharray="6 4" marker-end="${mk("#7d55c7")}"/>`};
   }
-  if (inc && ancre[inc]){ const [x, y] = ancre[inc]; s += `<g class="ur-q"><circle cx="${f1(x)}" cy="${f1(y)}" r="14"/><text x="${f1(x)}" y="${f1(y)}" dy=".36em" text-anchor="middle">?</text></g>`; }
+  if (inc && ancre[inc]){ const [x, y] = ancre[inc]; s += `<g class="ur-q"><circle cx="${F(x)}" cy="${F(y)}" r="14"/><text x="${F(x)}" y="${F(y)}" dy=".36em" text-anchor="middle">?</text></g>`; }
   // légende
   const lx = 24, ly = 556, lignes = inc ? sc.elements.filter(e => e[0] === inc) : legEls;
   const titre = o.sansTitre ? "Légende" : (o.titre || sc.titre), H = ly + 26 + lignes.length * 34;
@@ -6902,11 +7073,10 @@ function svgUrbain(o){
     return `${symb[k] ? symb[k](lx, y) : ""}<text x="${lx + 42}" y="${y}" dy=".35em" class="ur-leg">${txt}</text>`; }).join("")}</g>`;
   return `<svg viewBox="0 0 570 ${H}" class="mod-svg mod-urbain" role="img" aria-label="${esc(sc.titre)}">${s}</svg>`;
 }
-MODULES.splice(MODULES.findIndex(m => m.id === "frise"), 0,
-  {id: "urbain", nom: "Dynamiques urbaines", cat: "Histoire-Géo", icone: "▦", defaut: () => ({schema: "aire", legende: "complete", titre: ""}),
-    champs: [CHAMP("schema", "Schéma", "choix", {options: Object.entries(SCHEMAS_URBAINS).map(([k, v]) => [k, v.nom])}), CHAMP("legende", "Légende", "choix", {options: [["complete", "Complète"], ["numeros", "Numérotée (à compléter par l'élève)"]]}), CHAMP("titre", "Titre (vide = titre par défaut)")],
-    rendu: o => svgUrbain(o)}
-);
+// petite maison (mur + toit)
+function maisonUr(x, y, toit){
+  return `<rect x="${(x - 3.2).toFixed(1)}" y="${(y - 2).toFixed(1)}" width="6.4" height="5" fill="#fff4dc" stroke="#8c6b45" stroke-width=".5"/><path d="M${(x - 4.2).toFixed(1)} ${(y - 1.8).toFixed(1)}L${x.toFixed(1)} ${(y - 5.4).toFixed(1)}L${(x + 4.2).toFixed(1)} ${(y - 1.8).toFixed(1)}z" fill="${toit}"/>`;
+}
 /* ===================== GÉRANT : ÉDITEUR D'EXERCICES (simplifié) ===================== */
 /* Une question à la fois : on choisit le type, on écrit l'énoncé, on donne la réponse.
    Les options (difficulté, rappel, explication, illustration) sont repliées. Aperçu élève en direct. */
