@@ -856,12 +856,12 @@ a.lien{color:var(--accent)}
 .lg-lecteur{display:flex;flex-direction:column;gap:8px}
 .lg-scene-bd{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--ligne);background:#0e0e0f;cursor:pointer;outline:none;user-select:none}
 .lg-scene-bd:focus-visible{box-shadow:0 0 0 3px var(--accent)}
-.lg-bd-svg{display:block;width:100%;height:auto}
+.lg-bd-svg{display:block;width:100%;height:auto;position:relative}.lg-bd-cv{position:absolute;inset:0;width:100%;height:100%;display:block}
 .lg-nom-bd{font:800 15px var(--f-texte),Arial,sans-serif;text-anchor:middle;fill:#e8e8ea;letter-spacing:.04em}
 .lg-forme{animation:lg-derive 7s ease-in-out infinite alternate}
 .lg-corps{transform-box:fill-box;transform-origin:50% 100%;animation:lg-respire 2.8s ease-in-out infinite}
 .lg-perso .b-ouverte,.lg-perso .b-triste{opacity:0}.lg-perso.triste .b-triste{opacity:1}.lg-perso.triste .b-content{opacity:0}.lg-perso.bouche .b-ouverte{opacity:1}.lg-perso.bouche .b-content,.lg-perso.bouche .b-triste{opacity:0}
-.lg-perso{transition:filter .25s}.lg-perso.ecoute{filter:brightness(.82)}
+.lg-perso{transition:filter .3s}.lg-perso.ecoute{filter:brightness(.5)}
 .lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:3px solid #fff;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.82rem,2.3vw,1.02rem);line-height:1.42;box-shadow:0 4px 0 var(--accent);text-align:left;cursor:pointer}
 .lg-bulle-bd.q1{left:4%}.lg-bulle-bd.q2{right:4%}
 .lg-bulle-bd::after,.lg-bulle-bd::before{content:"";position:absolute}
@@ -3586,7 +3586,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.61";
+const VERSION_SITE = "0.62";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7746,31 +7746,69 @@ const LG_DEF_DIALOGUE = {
 };
 const lgSansCrochets = t => String(t || "").replace(/\[([^\]]*)\]/g, (_, a) => a.split(/[|/]/)[0].trim());
 const lgLignes = o => (o.lignes || []).filter(l => l && String(l.texte || "").trim());
-// fond noir avec des formes pleines aux couleurs des formes du site (ambre du thème, blanc cassé, gris)
-function lgFondFormes(){
-  const C = [["var(--accent)", .32], ["#f4f2ed", .1], ["#5a5751", .55], ["var(--accent)", .2]]; let r = 11; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
-  let s = `<rect width="600" height="340" fill="#0e0e0f"/>`;
-  for (let i = 0; i < 18; i++){
-    const x = Math.round(rnd() * 600), y = Math.round(14 + rnd() * 250), t = Math.round(9 + rnd() * 24), [c, op] = C[i % C.length], a = Math.round(rnd() * 360), k = i % 3, d = (rnd() * 6).toFixed(1);
-    const forme = k === 0 ? `<circle r="${t}"/>` : k === 1 ? `<rect x="${-t}" y="${-t}" width="${2 * t}" height="${2 * t}" rx="${Math.round(t / 5)}"/>` : `<path d="M0 ${-t}L${(t * .87).toFixed(1)} ${(t * .5).toFixed(1)}H${(-t * .87).toFixed(1)}Z"/>`;
-    s += `<g transform="translate(${x} ${y}) rotate(${a})"><g class="lg-forme" fill="${c}" opacity="${op}" style="animation-delay:-${d}s">${forme}</g></g>`;
-  }
-  return s;
-}
 // personnage simple : une tête ronde et des épaules ; visage :) ou :( décalé vers l'autre personnage
-function lgBonhomme(q){
-  const c = q === 1 ? "var(--accent)" : "#f4f2ed", dx = 9, trait = `fill="none" stroke="#0e0e0f" stroke-width="4.5" stroke-linecap="round"`;
+function lgBonhomme(q, u){
+  const c = `url(#${u}p${q})`, dx = 9, trait = `fill="none" stroke="#0e0e0f" stroke-width="4.5" stroke-linecap="round"`;
   return `<path d="M-64 0V-34Q-64 -78 -18 -78H18Q64 -78 64 -34V0Z" fill="${c}"/><circle cy="-124" r="38" fill="${c}"/>
     <circle cx="${dx - 11}" cy="-130" r="4.6" fill="#0e0e0f"/><circle cx="${dx + 11}" cy="-130" r="4.6" fill="#0e0e0f"/>
     <path class="b-content" d="M${dx - 12} -114Q${dx} -102 ${dx + 12} -114" ${trait}/><path class="b-triste" d="M${dx - 12} -106Q${dx} -118 ${dx + 12} -106" ${trait}/>
     <ellipse class="b-ouverte" cx="${dx}" cy="-110" rx="7" ry="7" fill="#0e0e0f"/>`;
 }
+// couleurs des personnages : la couleur du thème décalée vers le rouge (perso 1) et dans le sens opposé, vers le vert (perso 2)
+const LG_DECALAGE = 50;
+function lgHsl(c){
+  let r, g, b; const m = /^#?([0-9a-f]{6})$/i.exec(c.trim()), n = /rgba?\(([^)]+)\)/.exec(c);
+  if (m){ const v = parseInt(m[1], 16); r = v >> 16; g = v >> 8 & 255; b = v & 255; } else if (n){ [r, g, b] = n[1].split(",").map(x => parseFloat(x)); } else return [43, 98, 48];
+  r /= 255; g /= 255; b /= 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+  let h = 0; if (d){ h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; if (h < 0) h += 360; }
+  return [h, d ? d / (1 - Math.abs(2 * l - 1)) * 100 : 0, l * 100];
+}
+function lgCouleursPersos(scene){
+  const acc = getComputedStyle(scene).getPropertyValue("--accent") || "#f2ae02", [h, sat, l] = lgHsl(acc), S = Math.min(80, Math.max(45, sat)), Lm = Math.min(58, Math.max(46, l));
+  [[1, h - LG_DECALAGE], [2, h + LG_DECALAGE]].forEach(([q, t]) => { t = (t + 360) % 360;
+    scene.style.setProperty(`--lg-p${q}c`, `hsl(${t.toFixed(0)} ${S.toFixed(0)}% ${(Lm + 14).toFixed(0)}%)`);
+    scene.style.setProperty(`--lg-p${q}f`, `hsl(${t.toFixed(0)} ${S.toFixed(0)}% ${(Lm - 16).toFixed(0)}%)`); });
+  return acc;
+}
+// fond animé : formes pleines aux couleurs du site qui dérivent et se relient quand elles sont proches
+function lgFondAnime(scene, acc){
+  const cv = scene.querySelector(".lg-bd-cv"); if (!cv) return;
+  const cx = cv.getContext("2d"), [h, sat, l] = lgHsl(acc), calme = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const COUL = [`hsl(${h.toFixed(0)} ${sat.toFixed(0)}% ${l.toFixed(0)}%)`, "rgb(244,242,237)", "rgb(90,87,81)"], ALPHA = [.55, .32, .75], TYPES = ["cercle", "carre", "triangle"];
+  let L = 0, H = 0, formes = [], avant = performance.now();
+  const taille = () => { const dpr = Math.min(devicePixelRatio || 1, 2); L = cv.clientWidth; H = cv.clientHeight; cv.width = L * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  taille();
+  const k = L / 600 || 1;
+  formes = Array.from({length: 16}, (_, i) => { const a = Math.random() * 6.28, v = (14 + Math.random() * 26) * k;
+    return {x: Math.random() * L, y: Math.random() * H * .85, vx: Math.cos(a) * v, vy: Math.sin(a) * v, s: (12 + Math.random() * 30) * k, r: Math.random() * 6.28, vr: (Math.random() - .5) * .8, t: TYPES[i % 3], c: i % 4 === 3 ? 2 : i % 2}; });
+  const image = t => {
+    if (!cv.isConnected) return;
+    if (cv.clientWidth !== L || cv.clientHeight !== H) taille();
+    const dt = Math.min(.05, (t - avant) / 1000); avant = t;
+    cx.clearRect(0, 0, L, H); cx.lineWidth = 1; cx.strokeStyle = COUL[1];
+    const lim = 130 * (L / 600 || 1);
+    for (let i = 0; i < formes.length; i++) for (let j = i + 1; j < formes.length; j++){
+      const a = formes[i], b = formes[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < lim){ cx.globalAlpha = (1 - d / lim) * .28; cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y); cx.stroke(); }
+    }
+    formes.forEach(f => {
+      if (!calme){ f.x += f.vx * dt; f.y += f.vy * dt; f.r += f.vr * dt; const m = f.s + 10;
+        if (f.x < -m) f.x = L + m; else if (f.x > L + m) f.x = -m; if (f.y < -m) f.y = H + m; else if (f.y > H + m) f.y = -m; }
+      cx.save(); cx.translate(f.x, f.y); cx.rotate(f.r); cx.globalAlpha = ALPHA[f.c]; cx.fillStyle = COUL[f.c]; cx.beginPath(); const s = f.s / 2;
+      if (f.t === "cercle") cx.arc(0, 0, s, 0, 6.283); else if (f.t === "carre") cx.rect(-s, -s, f.s, f.s); else { cx.moveTo(0, -s); cx.lineTo(s * .87, s * .5); cx.lineTo(-s * .87, s * .5); cx.closePath(); }
+      cx.fill(); cx.restore();
+    });
+    cx.globalAlpha = 1;
+    if (!calme) requestAnimationFrame(image);
+  };
+  requestAnimationFrame(image);
+}
 function lgBDHtml(o, lignes){
-  const noms = [o.perso1 || "A", o.perso2 || "B"], l0 = lignes[0], q0 = l0 && l0.qui === "2" ? 2 : 1;
+  const u = "lg" + (++lgUid) + "-", noms = [o.perso1 || "A", o.perso2 || "B"], l0 = lignes[0], q0 = l0 && l0.qui === "2" ? 2 : 1;
   return `<div class="lg-lecteur"><div class="lg-scene-bd" tabindex="0" role="group" aria-label="Bande dessinée : clique ou appuie sur → pour la réplique suivante">
-      <svg viewBox="0 0 600 340" class="lg-bd-svg" aria-hidden="true">${lgFondFormes()}
-        <g transform="translate(150 312)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1)}</g></g></g>
-        <g transform="translate(450 312) scale(-1 1)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2)}</g></g></g>
+      <canvas class="lg-bd-cv" aria-hidden="true"></canvas><svg viewBox="0 0 600 340" class="lg-bd-svg" aria-hidden="true"><defs>${[1, 2].map(q => `<linearGradient id="${u}p${q}" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" style="stop-color:var(--lg-p${q}c,${q === 1 ? "#f2707a" : "#a6e36a"})"/><stop offset="1" style="stop-color:var(--lg-p${q}f,${q === 1 ? "#a3132a" : "#3f7d14"})"/></linearGradient>`).join("")}</defs>
+        <g transform="translate(150 312)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1, u)}</g></g></g>
+        <g transform="translate(450 312) scale(-1 1)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2, u)}</g></g></g>
         <text x="150" y="333" class="lg-nom-bd">${esc(noms[0])}</text><text x="450" y="333" class="lg-nom-bd">${esc(noms[1])}</text></svg>
       ${l0 ? `<div class="lg-bulle-bd q${q0}"><span class="lg-qui">${esc(noms[q0 - 1])}</span><span class="lg-dit">${esc(lgSansCrochets(l0.texte))}</span><span class="lg-fr" hidden></span><span class="lg-indic" aria-hidden="true">▼</span></div>` : ""}</div>
     <div class="lg-nav"><button type="button" class="mini-btn" data-nav="-1" aria-label="Réplique précédente">◀</button><span class="lg-compteur">1 / ${lignes.length}</span><button type="button" class="mini-btn lg-suivant" data-nav="1">Suivant ▶</button>
@@ -7803,6 +7841,7 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
   const prec = racine.querySelector('[data-nav="-1"]'), suiv = racine.querySelector('[data-nav="1"]'), btTrad = racine.querySelector("[data-trad]"), btSon = racine.querySelector("[data-son]");
   const persos = [racine.querySelector('.lg-perso[data-q="1"]'), racine.querySelector('.lg-perso[data-q="2"]')], corps = persos.map(p => p.querySelector(".lg-corps"));
   const calme = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  lgFondAnime(scene, lgCouleursPersos(scene));
   let idx = 0, file = [], j = 0, minut = null, qActif = 1, fini = true;
   etat.trad = etat.trad || false; etat.son = etat.son || false;
   const ajouterTrou = (a, i) => {
