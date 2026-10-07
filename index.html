@@ -867,6 +867,7 @@ a.lien{color:var(--accent)}
 .lg-nom-bd{font:800 15px var(--f-texte),Arial,sans-serif;text-anchor:middle;fill:#e8e8ea;letter-spacing:.04em}
 .lg-forme{animation:lg-derive 7s ease-in-out infinite alternate}
 .lg-corps{transform-box:fill-box;transform-origin:50% 100%;animation:lg-respire 2.8s ease-in-out infinite}
+.lg-perso .b-croix{opacity:0}.lg-perso.croix .b-croix{opacity:1}.lg-perso.croix .b-yeux{opacity:0}.lg-perso.croix .lg-corps{animation:lg-tremble .18s 4}.lg-perso.saute .lg-corps{animation:lg-saute .5s ease-out}
 .lg-perso .b-ouverte,.lg-perso .b-triste{opacity:0}.lg-perso.triste .b-triste{opacity:1}.lg-perso.triste .b-content{opacity:0}.lg-perso.bouche .b-ouverte{opacity:1}.lg-perso.bouche .b-content,.lg-perso.bouche .b-triste{opacity:0}
 .lg-perso{transform-box:fill-box;transform-origin:50% 100%;transition:transform .4s cubic-bezier(.3,1.5,.5,1),filter .3s}.lg-perso.parle{transform:scale(1.12)}.lg-perso.ecoute{transform:scale(.84);filter:brightness(.55)}
 .lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:0;transition:background .3s,color .3s;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.82rem,2.3vw,1.02rem);line-height:1.42;box-shadow:0 5px 14px rgba(0,0,0,.45);text-align:left;cursor:pointer}
@@ -886,6 +887,8 @@ a.lien{color:var(--accent)}
 .lg-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.lg-nav-droite{margin-left:auto;display:flex;gap:6px}
 .lg-compteur{font:700 .78rem var(--f-mono);color:var(--doux);min-width:46px;text-align:center}
 .lg-nav [aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+@keyframes lg-tremble{25%{transform:translateX(-5px) rotate(-3deg)}75%{transform:translateX(5px) rotate(3deg)}}
+@keyframes lg-saute{40%{transform:translateY(-16px) scale(1.04,.97)}}
 @keyframes lg-respire{50%{transform:scale(1.025,.975)}}
 @keyframes lg-derive{to{transform:translate(8px,-10px) rotate(14deg)}}
 @keyframes lg-clignote{50%{opacity:0}}
@@ -895,6 +898,14 @@ a.lien{color:var(--accent)}
 .ec-texte{padding:10px 12px;border-left:3px solid var(--accent);background:var(--surface-2);border-radius:8px}
 .ec-transcription{margin-top:8px;font-size:.9rem}.ec-transcription summary{cursor:pointer;color:var(--accent)}.ec-transcription p{margin:.4em 0 0;font-style:italic}
 .fig-exo .obj-doc:has(.lg-dialogue){width:100%}
+.ft-bloc{display:flex;flex-direction:column;gap:8px}.ft-aide{font-size:.85rem;margin:0}
+.ft-ligne{display:flex;gap:10px;align-items:baseline;padding:8px 12px;border-radius:12px;background:var(--surface-2);border-left:4px solid var(--accent);line-height:1.9}
+.ft-ligne.q2{border-left-color:var(--doux);margin-left:24px}
+.ft-qui{font:700 .7rem var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--doux);flex:none;min-width:64px}
+.ft-mot{font:inherit;color:var(--texte);background:none;border:0;border-bottom:1.5px dashed transparent;padding:0 1px;cursor:pointer;border-radius:3px}
+.ft-mot:hover:not(:disabled){border-bottom-color:var(--accent)}.ft-mot.choisi{background:color-mix(in srgb,var(--accent) 28%,transparent);border-bottom-color:var(--accent)}
+.ft-mot.ok{background:color-mix(in srgb,#6fbf73 30%,transparent)}.ft-mot.ko{background:color-mix(in srgb,#e5484d 30%,transparent);text-decoration:line-through}.ft-mot.juste{outline:2px solid #6fbf73}
+.ft-mot:disabled{cursor:default}.ft-correction{display:flex;flex-direction:column;gap:6px;max-width:320px}.ft-saisie{text-align:left}
 .lv-bloc .lv-tete{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .nav-chantier{margin-left:auto;font:600 .6rem/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:4px;color:#1a1300;background:repeating-linear-gradient(-45deg,#f2ae02 0 6px,#ffd35a 6px 12px);white-space:nowrap}
 .bandeau-chantier{display:flex;gap:12px;align-items:center;padding:12px 16px;margin:0 0 18px;border-radius:10px;border:1.5px dashed #f2ae02;background:repeating-linear-gradient(-45deg,color-mix(in srgb,#f2ae02 10%,transparent) 0 14px,transparent 14px 28px);font-size:.92rem}
@@ -2831,7 +2842,7 @@ const BANQUE_LANGUES = [
   LQ("es", "Vocabulaire", {genre: "associer", q: "Associe chaque mot interrogatif à sa traduction.", paires: [["¿Dónde?", "Où ?"], ["¿Cuándo?", "Quand ?"], ["¿Por qué?", "Pourquoi ?"], ["¿Cuánto?", "Combien ?"]], exp: "Les mots interrogatifs portent toujours un accent écrit."}),
   LQ("es", "Conjugaison", {genre: "tableau", entete: true, q: "Complète le tableau du verbe « hablar ».", lignes: [["", "Presente", "Indefinido", "Futuro"], ["yo", "hablo", "hablé", "hablaré"], ["tú", "hablas", "hablaste", "hablarás"], ["él / ella", "habla", "habló", "hablará"], ["nosotros", "hablamos", "hablamos", "hablaremos"]], trous: ["1:2", "2:1", "2:3", "3:2", "4:3"], exp: "Indefinido : -é, -aste, -ó, -amos. Futuro : infinitif + -é, -ás, -á, -emos."}),
   LQ("es", "Conjugaison", {genre: "tableau", entete: true, q: "Ser et ir : complète le tableau.", lignes: [["", "Ser (presente)", "Ir (presente)", "Ser / ir (indefinido)"], ["yo", "soy", "voy", "fui"], ["tú", "eres", "vas", "fuiste"], ["él / ella", "es", "va", "fue"], ["ellos", "son", "van", "fueron"]], trous: ["1:1", "2:2", "2:3", "3:3", "4:2", "4:3"], exp: "Au pretérito indefinido, ser et ir ont exactement les mêmes formes : fui, fuiste, fue… fueron."}),
-  LQ("es", "Dialogue en BD", {fig: FIG_LG({type: "dialogue", langue: "es", mode: "lecture", traduction: false, ...LG_DEF_BD_ES()}), q: "Lee el cómic. ¿Qué hizo Pablo el fin de semana?", choix: ["Fue al cine con su prima", "Fue a la playa", "Jugó al fútbol", "Visitó a Lucía"], bonne: 0, exp: "« Fui al cine con mi prima »."}),
+  LQ("es", "Dialogue en BD", {fig: FIG_LG({type: "dialogue", langue: "es", mode: "lecture", traduction: false, ...LG_DEF_BD_ES()}), q: "Lee el cómic. ¿Qué hizo Pablo el fin de semana?", choix: ["Fue al cine con su prima", "Fue a la playa", "Jugó al fútbol", "Visitó a su abuela"], bonne: 0, exp: "« Fui al cine con mi prima »."}),
   LQ("es", "Dialogue en BD", {fig: FIG_LG({type: "dialogue", langue: "es", mode: "lecture", traduction: false, ...LG_DEF_BD_ES()}), q: "Lee el cómic. ¿Cuándo va a ver Lucía la película?", choix: ["El sábado que viene", "Esta noche", "El domingo pasado", "Nunca"], bonne: 0, exp: "« Yo voy a verla el sábado que viene » (ir a + infinitif)."}),
   LQ("es", "Frise des temps", {fig: FIG_LG({type: "frise-temps", langue: "es", statique: true, montrer: "passe-duree"}), q: "Ce schéma montre une habitude ou une description dans le passé. Quelle phrase lui correspond ?", choix: ["Cuando era niño, jugaba en el parque.", "Ayer jugué en el parque.", "Mañana jugaré en el parque.", "Ahora estoy jugando en el parque."], bonne: 0, exp: "Pretérito imperfecto (era, jugaba) : habitude dans le passé."}),
   LQ("es", "Frise des temps", {fig: FIG_LG({type: "frise-temps", langue: "es", statique: true, montrer: "futur-proche"}), q: "Quelle phrase correspond à ce schéma (un projet proche, décidé maintenant) ?", choix: ["Esta tarde voy a estudiar.", "Ayer estudié mucho.", "Estudiaba todos los días.", "He estudiado esta mañana."], bonne: 0, exp: "ir a + infinitif : futur proche (voy a estudiar)."}),
@@ -2906,6 +2917,52 @@ GENERATEURS.push(
     const paire = {es: "está", "está": "es", somos: "estamos", "están": "son", eres: "estás", estoy: "soy"}[r];
     return qcm({q: `Ser ou estar ? Complète : « ${ph} »`, exp: "ser : identité, origine, profession, matière, date, lieu d'un événement. estar : état passager, localisation.", theme: "Grammaire"}, r, [paire, ...melanger(formes.filter(x => x !== r && x !== paire))]); }, "es"]
 );
+
+/* ----- Les personnages de la BD dans les questions : compréhension et « trouve l'erreur » ----- */
+// faute : {l: n° de réplique, de: mot juste, vers: mot faux, exp}
+const BD_LANGUES = {
+  en: [
+    {titre: "Weekend plans", perso1: "Sam", perso2: "Alex", lignes: ["1|Hey Alex! Are you free on Saturday?", "2|Yes, I am. Why?", "1|There's a skate contest in the park. Do you want to come?", "2|Sure! What time does it start?", "1|At two o'clock. My brother is going to take part.", "2|Cool! I'll bring my camera."],
+      questions: [["Where is the skate contest?", ["In the park", "At school", "At the beach", "In a gym"], "« There's a skate contest in the park »."], ["Who is going to take part in the contest?", ["Sam's brother", "Sam's sister", "Sam's father", "Sam's cousin"], "« My brother is going to take part » : c'est Sam qui parle."], ["What will Alex bring?", ["A camera", "A skateboard", "Some food", "His brother"], "« I'll bring my camera »."]],
+      fautes: [{l: 3, de: "does", vers: "do", exp: "Avec « it » (3e personne du singulier), l'auxiliaire est does : What time does it start?"}, {l: 0, de: "Are", vers: "Is", exp: "Avec « you », be se conjugue are : Are you free?"}, {l: 4, de: "is", vers: "are", exp: "« My brother » est singulier : my brother is going to…"}]},
+    {titre: "At school", perso1: "Mia", perso2: "Tom", lignes: ["1|Did you finish the history homework?", "2|Not yet. I started it yesterday but it was very long.", "1|I can help you after lunch if you want.", "2|Thanks! You're the best.", "1|No problem. We can work in the library."],
+      questions: [["Why hasn't Tom finished his homework?", ["It was very long", "He forgot it", "He was ill", "He lost his book"], "« I started it yesterday but it was very long »."], ["Where can they work?", ["In the library", "In the canteen", "At Mia's house", "In the playground"], "« We can work in the library »."], ["When can Mia help Tom?", ["After lunch", "Before school", "On Sunday", "Tonight"], "« I can help you after lunch »."]],
+      fautes: [{l: 1, de: "started", vers: "start", exp: "« yesterday » indique le passé : I started (past simple)."}, {l: 0, de: "finish", vers: "finished", exp: "Après « did », le verbe reste à la base verbale : Did you finish…?"}, {l: 2, de: "help", vers: "helps", exp: "Après un modal (can), jamais de -s : I can help."}]},
+    {titre: "Holidays", perso1: "Lily", perso2: "Ben", lignes: ["1|Where did you go last summer?", "2|We went to Scotland. It rained every day!", "1|Oh no! What did you do?", "2|We visited castles and we ate a lot of fish and chips.", "1|I have never been to Scotland.", "2|You should go. It's beautiful."],
+      questions: [["What was the weather like in Scotland?", ["It rained every day", "It was hot and sunny", "It snowed", "It was windy but dry"], "« It rained every day! »"], ["What does Ben advise Lily to do?", ["To go to Scotland", "To eat less fish", "To stay at home", "To visit London"], "« You should go » : should sert à donner un conseil."]],
+      fautes: [{l: 1, de: "went", vers: "goed", exp: "go est irrégulier : go – went – gone."}, {l: 4, de: "been", vers: "be", exp: "Present perfect : have + participe passé. be → been."}, {l: 3, de: "ate", vers: "eated", exp: "eat est irrégulier : eat – ate – eaten."}]},
+    {titre: "In a shop", perso1: "Zoe", perso2: "Max", lignes: ["1|How much is this T-shirt?", "2|It's fifteen pounds. It's cheaper than the blue one.", "1|I like it, but it's too big for me.", "2|Try the small size. It's on the left.", "1|Perfect! I'll take it."],
+      questions: [["Why doesn't Zoe take the first T-shirt?", ["It's too big", "It's too expensive", "She doesn't like the colour", "It's dirty"], "« it's too big for me »."], ["How much is the T-shirt?", ["£15", "£50", "£5", "£25"], "« It's fifteen pounds » : 15 livres."]],
+      fautes: [{l: 1, de: "than", vers: "that", exp: "Le comparatif se construit avec than : cheaper than."}, {l: 0, de: "much", vers: "many", exp: "Pour un prix, on dit How much…? (How many sert à compter des objets)."}]}
+  ],
+  es: [
+    {titre: "El sábado", perso1: "Sara", perso2: "Diego", lignes: ["1|¿Qué vas a hacer el sábado?", "2|Voy a ir al partido de fútbol con mi padre.", "1|¡Qué suerte! ¿A qué hora empieza?", "2|A las cinco. ¿Quieres venir con nosotros?", "1|¡Sí! Me encanta el fútbol."],
+      questions: [["¿Con quién va Diego al partido?", ["Con su padre", "Con su hermano", "Con su madre", "Solo"], "« Voy a ir al partido de fútbol con mi padre »."], ["¿A qué hora empieza el partido?", ["A las cinco", "A las cuatro", "A las siete", "A las tres"], "« A las cinco »."]],
+      fautes: [{l: 4, de: "encanta", vers: "encantan", exp: "Ce qui plaît est « el fútbol » (singulier) : me encanta el fútbol."}, {l: 1, de: "mi", vers: "mis", exp: "« padre » est singulier : mi padre."}]},
+    {titre: "En el colegio", perso1: "Marta", perso2: "Leo", lignes: ["1|¿Has hecho los deberes de inglés?", "2|No, ayer estaba muy cansado y me acosté temprano.", "1|Si quieres, te ayudo en el recreo.", "2|¡Gracias! Eres muy simpática."],
+      questions: [["¿Por qué Leo no ha hecho los deberes?", ["Porque estaba muy cansado", "Porque no tenía el libro", "Porque estaba en el hospital", "Porque jugó al fútbol"], "« Ayer estaba muy cansado y me acosté temprano »."], ["¿Cuándo puede ayudarle Marta?", ["En el recreo", "Esta noche", "Mañana por la mañana", "El domingo"], "« Te ayudo en el recreo »."]],
+      fautes: [{l: 1, de: "estaba", vers: "era", exp: "La fatigue est un état passager : on emploie estar (estaba cansado)."}, {l: 1, de: "acosté", vers: "acostó", exp: "C'est Leo qui parle de lui (yo) : me acosté."}]},
+    {titre: "Las vacaciones", perso1: "Elena", perso2: "Hugo", lignes: ["1|¿Adónde fuiste el verano pasado?", "2|Fui a México con mi familia. Hacía mucho calor.", "1|¿Qué visitasteis?", "2|Visitamos las pirámides y comimos tacos todos los días.", "1|¡Qué envidia! Yo nunca he ido a México."],
+      questions: [["¿Qué tiempo hacía en México?", ["Hacía mucho calor", "Llovía todos los días", "Hacía frío", "Nevaba"], "« Hacía mucho calor »."], ["¿Qué comían todos los días?", ["Tacos", "Paella", "Pizza", "Pescado"], "« Comimos tacos todos los días »."]],
+      fautes: [{l: 4, de: "ido", vers: "fui", exp: "Pretérito perfecto : haber + participe passé. ir → ido (he ido)."}, {l: 1, de: "mucho", vers: "muy", exp: "« calor » est un nom : mucho calor (muy s'emploie devant un adjectif)."}, {l: 1, de: "Fui", vers: "Fue", exp: "Hugo parle de lui (yo) : fui."}]},
+    {titre: "De compras", perso1: "Nora", perso2: "Iván", lignes: ["1|¿Cuánto cuesta esta camiseta?", "2|Cuesta doce euros. Es más barata que la roja.", "1|Me gusta, pero es demasiado grande para mí.", "2|Aquí tienes la talla pequeña.", "1|¡Perfecto! Me la llevo."],
+      questions: [["¿Por qué no compra Nora la primera camiseta?", ["Porque es demasiado grande", "Porque es muy cara", "Porque no le gusta el color", "Porque está sucia"], "« Es demasiado grande para mí »."], ["¿Cuánto cuesta la camiseta?", ["Doce euros", "Dos euros", "Veinte euros", "Diez euros"], "« Cuesta doce euros »."]],
+      fautes: [{l: 2, de: "gusta", vers: "gustan", exp: "Ce qui plaît est « la camiseta » (singulier) : me gusta."}, {l: 1, de: "que", vers: "como", exp: "Le comparatif de supériorité : más … que."}]}
+  ]
+};
+const bdLignes = d => d.lignes.map(x => { const [qui, texte] = x.split("|"); return {qui, texte}; });
+const bdFig = (lv, d, lignes) => FIG_LG({type: "dialogue", langue: lv, mode: "lecture", traduction: false, titre: d.titre, perso1: d.perso1, perso2: d.perso2, lignes});
+function bdFaute(lv, d, f){
+  const lignes = bdLignes(d), l = lignes[f.l], mots = String(l.texte).match(/[\p{L}\p{N}'’-]+/gu) || [], n = mots.indexOf(f.de);
+  if (n < 0) return null;
+  let k = -1; l.texte = l.texte.replace(/[\p{L}\p{N}'’-]+/gu, m => (++k === n ? f.vers : m));
+  return LQ(lv, "Corrige la conversation", {fig: bdFig(lv, d, lignes), genre: "fautes", lignes, perso1: d.perso1, perso2: d.perso2, cible: [f.l, n], bon: [f.de],
+    q: lv === "es" ? `${d.perso1} y ${d.perso2} hablan, pero hay un error en su conversación. Encuéntralo y corrígelo.` : `${d.perso1} and ${d.perso2} are talking, but there is a mistake in their conversation. Find it and correct it.`, exp: `« ${f.vers} » → « ${f.de} ». ${f.exp}`});
+}
+Object.entries(BD_LANGUES).forEach(([lv, ds]) => ds.forEach(d => {
+  d.questions.forEach(([q, choix, exp]) => BANQUE_LANGUES.push(LQ(lv, "Dialogue en BD", {fig: bdFig(lv, d, bdLignes(d)), q: (lv === "es" ? "Lee el cómic. " : "Lis la BD. ") + q, choix, bonne: 0, exp})));
+  d.fautes.forEach(f => { const q = bdFaute(lv, d, f); if (q) BANQUE_LANGUES.push(q); });
+}));
 
 /* ===================== OUTILS ===================== */
 const $ = s => document.querySelector(s);
@@ -3595,7 +3652,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.65";
+const VERSION_SITE = "0.66";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7768,7 +7825,8 @@ const lgLignes = o => (o.lignes || []).filter(l => l && String(l.texte || "").tr
 function lgBonhomme(q, u){
   const c = `var(--lg-p${q},${q === 1 ? "#d92b3a" : "#5fb81c"})`, dx = 9, trait = `fill="none" stroke="#0e0e0f" stroke-width="4.5" stroke-linecap="round"`;
   return `<path d="M-64 0V-34Q-64 -78 -18 -78H18Q64 -78 64 -34V0Z" fill="${c}"/><circle cy="-124" r="38" fill="${c}"/>
-    <circle cx="${dx - 11}" cy="-130" r="4.6" fill="#0e0e0f"/><circle cx="${dx + 11}" cy="-130" r="4.6" fill="#0e0e0f"/>
+    <g class="b-yeux"><circle cx="${dx - 11}" cy="-130" r="4.6" fill="#0e0e0f"/><circle cx="${dx + 11}" cy="-130" r="4.6" fill="#0e0e0f"/></g>
+    <g class="b-croix" ${trait}>${[dx - 11, dx + 11].map(x => `<path d="M${x - 6} -136L${x + 6} -124M${x + 6} -136L${x - 6} -124"/>`).join("")}</g>
     <path class="b-content" d="M${dx - 12} -114Q${dx} -102 ${dx + 12} -114" ${trait}/><path class="b-triste" d="M${dx - 12} -106Q${dx} -118 ${dx + 12} -106" ${trait}/>
     <ellipse class="b-ouverte" cx="${dx}" cy="-110" rx="7" ry="7" fill="#0e0e0f"/>`;
 }
@@ -7919,6 +7977,16 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
   if (btTrad) btTrad.onclick = () => { etat.trad = !etat.trad; btTrad.setAttribute("aria-pressed", etat.trad); fr.hidden = !(etat.trad && lignes[idx].fr); };
   if (btSon) btSon.onclick = () => { etat.son = !etat.son; btSon.setAttribute("aria-pressed", etat.son); btSon.textContent = etat.son ? "🔊 Son" : "🔇 Son"; };
   etat.redessiner = () => dire(idx, true);
+  // dans une question : les personnages réagissent à la réponse (X puis :( si c'est faux, petit saut si c'est juste)
+  const reagir = ev => {
+    if (!scene.isConnected) return document.removeEventListener("helper-reponse", reagir);
+    if (!scene.closest(".fig-exo")) return;
+    terminer(); persos.forEach(p => p.classList.remove("croix", "saute", "bouche"));
+    if (ev.detail && ev.detail.juste){ persos.forEach(p => { p.classList.remove("triste"); p.getBoundingClientRect(); p.classList.add("saute"); }); return; }
+    persos.forEach(p => { p.getBoundingClientRect(); p.classList.add("croix"); });
+    setTimeout(() => persos.forEach(p => { p.classList.remove("croix"); p.classList.add("triste"); }), 950);
+  };
+  document.addEventListener("helper-reponse", reagir);
   dire(0);
 }
 function brancherDialogue(el, o){
@@ -8016,6 +8084,28 @@ INTERACTIFS.ecoute = {
     return {
       verifier: () => { if ("speechSynthesis" in window) speechSynthesis.cancel(); bts.forEach(x => { x.disabled = true; if (+x.dataset.k === q.bonne) x.classList.add("juste"); }); if (pris >= 0 && pris !== q.bonne) bts[pris].classList.add("faux"); return pris === q.bonne; },
       solution: () => el.insertAdjacentHTML("beforeend", `<details class="ec-transcription"><summary>Lire le texte entendu</summary><p>${esc(q.audio)}</p></details>`)
+    };
+  }
+};
+
+/* ---------- Genre de question « fautes » : trouver le mot faux dans la conversation, puis le corriger ---------- */
+const lgMots = t => { const out = [], re = /[\p{L}\p{N}'’-]+/gu; let i = 0, m; while ((m = re.exec(t))){ if (m.index > i) out.push({t: t.slice(i, m.index)}); out.push({mot: m[0]}); i = m.index + m[0].length; } if (i < t.length) out.push({t: t.slice(i)}); return out; };
+INTERACTIFS.fautes = {
+  monter(el, q){
+    const noms = [q.perso1 || "Perso-01", q.perso2 || "Perso-02"], lignes = q.lignes || [];
+    let choix = null, k = 0;
+    el.innerHTML = `<div class="ft-bloc"><p class="doux ft-aide">Clique sur le mot faux, puis écris la bonne forme.</p>
+      ${lignes.map((l, i) => { let n = 0; return `<div class="ft-ligne q${l.qui === "2" ? 2 : 1}"><span class="ft-qui">${esc(noms[l.qui === "2" ? 1 : 0])}</span><span class="ft-texte">${lgMots(String(l.texte)).map(m => m.mot ? `<button type="button" class="ft-mot" data-l="${i}" data-n="${n++}">${esc(m.mot)}</button>` : esc(m.t)).join("")}</span></div>`; }).join("")}
+      <div class="ft-correction" hidden><label class="fr-label" for="ft-saisie">Correction de « <b class="ft-choisi"></b> »</label><input id="ft-saisie" class="int-trou ft-saisie" type="text" autocomplete="off" spellcheck="false"></div></div>`;
+    const zone = el.querySelector(".ft-correction"), inp = el.querySelector(".ft-saisie"), mots = [...el.querySelectorAll(".ft-mot")];
+    mots.forEach(b => b.onclick = () => { choix = b; mots.forEach(x => x.classList.toggle("choisi", x === b)); zone.hidden = false; el.querySelector(".ft-choisi").textContent = b.textContent; inp.focus(); });
+    inp.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); el.closest(".bloc")?.querySelector("[data-valider]")?.click(); } });
+    const juste = () => mots.find(b => +b.dataset.l === q.cible[0] && +b.dataset.n === q.cible[1]);
+    return {
+      verifier: () => { mots.forEach(b => b.disabled = true); inp.disabled = true;
+        const bonMot = choix && choix === juste(), bonne = bonMot && bonneValeur(inp.value, q.bon.join("|"));
+        if (choix) choix.classList.add(bonMot ? "ok" : "ko"); inp.classList.add(bonne ? "ok" : "ko"); return !!bonne; },
+      solution: () => { const j = juste(); if (j){ j.classList.add("juste"); j.insertAdjacentHTML("afterend", `<span class="int-correction">${esc(q.bon[0])}</span>`); } }
     };
   }
 };
@@ -9764,6 +9854,7 @@ function lancerQuiz(questions, ctx){
     remplirImages(zone()); masquerFigure(zone(), q); Promise.resolve(remplirObjets(zone())).then(() => masquerFigure(zone(), q));
     $("#prevenir").onclick = () => fenetrePrevenir(q, ctx, i + 1, capturerZone());
     const repondre = juste => {
+      document.dispatchEvent(new CustomEvent("helper-reponse", {detail: {juste}})); // les personnages des BD réagissent
       if (juste) score++;
       if (ctx.brevet && q.cleB && prog){ // mémorise les questions vues et ratées
         prog.vuesB = prog.vuesB || {};
