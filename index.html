@@ -692,7 +692,7 @@ a.lien{color:var(--accent)}
 .mod-catalogue button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;background:var(--surface-2);border:1px solid var(--ligne);border-radius:10px;color:var(--texte);cursor:pointer;font:inherit;font-size:.84rem;text-align:center;transition:border-color .15s,transform .15s}
 .mod-catalogue button:hover{border-color:var(--accent);transform:translateY(-2px)}
 .mod-ico{font-size:1.5rem;line-height:1;color:var(--accent);font-family:var(--f-texte)}
-.mod-edition{display:grid;grid-template-columns:minmax(260px,.85fr) minmax(320px,1.5fr);gap:14px;align-items:start}
+.mod-edition{display:grid;grid-template-columns:minmax(300px,1fr) minmax(320px,1.35fr);gap:14px;align-items:start}
 @media (max-width:760px){.mod-edition{grid-template-columns:1fr}}
 .mod-champs{display:flex;flex-direction:column;gap:10px;max-height:62vh;overflow:auto;padding-right:4px}
 .mod-champs input[type=text],.mod-champs input[type=number],.mod-champs select,.mod-champs textarea{width:100%;padding:7px 9px;background:var(--surface-2);border:1px solid var(--ligne);border-radius:4px;color:var(--texte);font:inherit;font-size:.88rem}
@@ -703,6 +703,13 @@ a.lien{color:var(--accent)}
 .mod-ligne{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;padding-bottom:6px;border-bottom:1px dashed var(--ligne)}
 .champ-mini{display:flex;flex-direction:column;gap:2px;font-size:.72rem;color:var(--doux);flex:1 1 90px;min-width:80px}
 .champ-mini input[type=color]{width:34px;height:30px;padding:0;border:0;background:none}
+.mod-cartes{gap:10px;padding:12px}.mod-cartes-tete{display:flex;flex-direction:column;gap:3px}.mod-cartes-tete .aide{font-size:.78rem;color:var(--doux);line-height:1.4}
+.mod-carte{border:1px solid var(--ligne);border-radius:10px;background:color-mix(in srgb,var(--surface-2) 55%,transparent)}
+.mod-carte-tete{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--ligne);font-size:.86rem}
+.mod-carte-corps{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;padding:10px 12px 12px}
+.champ-carte{display:flex;flex-direction:column;gap:5px;font-size:.78rem;color:var(--doux);min-width:0}.champ-carte.large{grid-column:1/-1}
+.mod-champs .champ-carte textarea{resize:vertical;min-height:2.9em;line-height:1.4}
+.mod-ajout-carte{align-self:flex-start;padding:7px 12px}
 .app-reseau{cursor:grab}
 .mod-cases{display:flex;flex-direction:column;border:1px solid var(--ligne);border-radius:10px;padding:8px 12px 4px;background:var(--surface-2)}
 .mod-cases>.mono{margin-bottom:4px}
@@ -3588,7 +3595,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.63";
+const VERSION_SITE = "0.64";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5840,7 +5847,8 @@ function fenetreModule(depart, valider){
       case "couleur": return `<input type="color" id="${id}" value="${esc(v || "#f2ae02")}">`;
       case "case": return `<input type="checkbox" id="${id}" ${v !== false ? "checked" : ""}>`;
       case "zone": return `<textarea id="${id}" rows="6" spellcheck="false" class="mono-zone">${esc(v ?? "")}</textarea>`;
-      case "choix": return `<select id="${id}">${c.options.map(([k, t]) => `<option value="${esc(k)}" ${String(v) === String(k) ? "selected" : ""}>${esc(t)}</option>`).join("")}</select>`;
+      case "lignes": return `<textarea id="${id}" rows="2">${esc(v ?? "")}</textarea>`;
+      case "choix": return `<select id="${id}">${(typeof c.options === "function" ? c.options(o) : c.options).map(([k, t]) => `<option value="${esc(k)}" ${String(v) === String(k) ? "selected" : ""}>${esc(t)}</option>`).join("")}</select>`;
       case "appareil": return `<select id="${id}">${(o.appareils || []).map((a, k) => `<option value="${k}" ${+v === k ? "selected" : ""}>${esc(a.nom || (APPAREILS.find(x => x[0] === a.type) || [, "Appareil"])[1])} (${k + 1})</option>`).join("")}</select>`;
       default: return `<input type="text" id="${id}" value="${esc(v ?? "")}">`;
     }
@@ -5859,6 +5867,12 @@ function fenetreModule(depart, valider){
     viderCases();
     z.innerHTML = html;
     function champUn(c){ return [c].map((c, ci) => {
+      if (c.t === "liste" && c.cartes){ const n = (o[c.k] || []).length;
+        return `<div class="mod-liste mod-cartes"><div class="mod-cartes-tete"><span class="mono">${esc(c.label)}</span>${c.aide ? `<span class="aide">${esc(c.aide)}</span>` : ""}</div>
+        ${(o[c.k] || []).map((it, i) => `<div class="mod-carte"><div class="mod-carte-tete"><b>${esc(c.cartes.titre(it, i, o))}</b><span class="rangee" style="gap:4px">
+          <button type="button" class="mini-btn" data-monte="${c.k}:${i}" ${i ? "" : "disabled"} aria-label="Monter">↑</button><button type="button" class="mini-btn" data-descend="${c.k}:${i}" ${i < n - 1 ? "" : "disabled"} aria-label="Descendre">↓</button><button type="button" class="mini-btn" data-retire="${c.k}:${i}" aria-label="Retirer">×</button></span></div>
+          <div class="mod-carte-corps">${c.sous.map(s => `<label class="champ-carte${s.large ? " large" : ""}"><span>${esc(s.label)}</span>${champHtml(s, it[s.k], `ml-${c.k}-${i}-${s.k}`)}</label>`).join("")}</div></div>`).join("")}
+        ${n < (c.max || 10) ? `<button type="button" class="mini-btn mod-ajout-carte" data-ajoute="${c.k}">+ ${esc(c.cartes.ajout || "Ajouter")}</button>` : ""}</div>`; }
       if (c.t === "liste") return `<div class="mod-liste"><span class="mono">${esc(c.label)}</span>${(o[c.k] || []).map((it, i) => `<div class="mod-ligne">${c.sous.map((s, si) => `<label class="champ-mini"><span>${esc(s.label)}</span>${champHtml(s, it[s.k], `ml-${c.k}-${i}-${s.k}`)}</label>`).join("")}<button type="button" class="mini-btn" data-retire="${c.k}:${i}" aria-label="Retirer">×</button></div>`).join("")}
         ${(o[c.k] || []).length < (c.max || 10) ? `<button type="button" class="mini-btn" data-ajoute="${c.k}">+ Ajouter</button>` : ""}</div>`;
       if (c.t === "temps") return `<div class="champ"><span class="mono">${esc(c.label)}</span><div class="filtres" id="mod-temps">${(TEMPS_CONJ[o.langue] || []).map(([k, t]) => `<button type="button" data-tp="${k}" aria-pressed="${(o.temps || []).includes(k)}">${t}</button>`).join("")}</div></div>`;
@@ -5871,7 +5885,7 @@ function fenetreModule(depart, valider){
     m.champs.forEach(c => {
       if (c.t === "liste"){
         (o[c.k] || []).forEach((it, i) => c.sous.forEach(s => { const x = z.querySelector(`#ml-${c.k}-${i}-${s.k}`); if (!x) return;
-          x.addEventListener(x.tagName === "SELECT" || x.type === "checkbox" ? "change" : "input", () => { it[s.k] = lireValeur(s, x); if (c.k === "appareils" && s.k === "nom") { champs(); } apercu(); }); }));
+          x.addEventListener(x.tagName === "SELECT" || x.type === "checkbox" ? "change" : "input", () => { it[s.k] = lireValeur(s, x); if ((c.k === "appareils" && s.k === "nom") || (c.cartes && s.t === "choix")) { champs(); } apercu(); }); }));
         return;
       }
       const x = z.querySelector("#mc-" + c.k); if (!x) return;
@@ -5883,7 +5897,7 @@ function fenetreModule(depart, valider){
         if (c.k === "langue" && o.type === "conjugaison"){ o.temps = (TEMPS_CONJ[o.langue] || []).slice(0, 3).map(t => t[0]); if (o.langue === "la"){ const d = LA_DEFAUT[o.modele || "1"]; o.radical = d[0]; o.radicalParfait = d[1]; } else if (o.verbe === "" || o.langue !== "fr") o.verbe = {en: "play", es: "hablar", fr: "chanter"}[o.langue] || o.verbe; }
         if (c.k === "modele" && o.type === "conjugaison"){ const d = LA_DEFAUT[o.modele]; o.radical = d[0]; o.radicalParfait = d[1]; }
         if (c.k === "modele" && o.type === "declinaison"){ const d = DECL_MODELES.find(x => x[0] === o.modele); o.nominatif = d[4]; o.genitif = d[5]; }
-        if (["langue","verbe","modele","radical","radicalParfait","nominatif","genitif"].includes(c.k)){ regenerer(); champs(); el.querySelector("#mc-" + c.k)?.focus(); if (c.t === "texte"){ const y = el.querySelector("#mc-" + c.k); y.setSelectionRange(y.value.length, y.value.length); } }
+        if (["langue","verbe","modele","radical","radicalParfait","nominatif","genitif","perso1","perso2"].includes(c.k)){ regenerer(); champs(); el.querySelector("#mc-" + c.k)?.focus(); if (c.t === "texte"){ const y = el.querySelector("#mc-" + c.k); y.setSelectionRange(y.value.length, y.value.length); } }
         else if (["mode","montage","epoque","transition","phenomene","scenario"].includes(c.k)){ if (c.k === "epoque" && o.type === "carte"){ o.surligner = []; if (!o.epoque2 || +o.epoque2 <= +o.epoque) o.epoque2 = String(ANNEES_HISTO.find(a => a > +o.epoque) || ANNEES_HISTO.at(-1)); } champs(); }
         apercu();
       });
@@ -5891,6 +5905,8 @@ function fenetreModule(depart, valider){
     z.querySelectorAll("[data-tp]").forEach(b => b.onclick = () => { const t = b.dataset.tp, l = o.temps || []; o.temps = l.includes(t) ? l.filter(x => x !== t) : l.length < 4 ? [...l, t] : l; const ordre = (TEMPS_CONJ[o.langue] || []).map(x => x[0]); o.temps.sort((a, b) => ordre.indexOf(a) - ordre.indexOf(b)); regenerer(); champs(); apercu(); });
     z.querySelectorAll("[data-gr]").forEach(x => x.oninput = () => { const [i, k] = x.dataset.gr.split(":").map(Number); o.grille[i][k] = x.value; apercu(); });
     const gen = z.querySelector("#mod-generer"); if (gen) gen.onclick = () => { regenerer(); champs(); apercu(); };
+    z.querySelectorAll("[data-monte],[data-descend]").forEach(b => b.onclick = () => { const [k, i] = (b.dataset.monte || b.dataset.descend).split(":"), a = +i, d = b.dataset.monte ? a - 1 : a + 1, l = o[k];
+      if (d < 0 || d >= l.length) return; [l[a], l[d]] = [l[d], l[a]]; champs(); apercu(); });
     z.querySelectorAll("[data-ajoute]").forEach(b => b.onclick = () => { const c = m.champs.find(x => x.k === b.dataset.ajoute); o[c.k] = [...(o[c.k] || []), c.neuf()]; champs(); apercu(); });
     z.querySelectorAll("[data-retire]").forEach(b => b.onclick = () => { const [k, i] = b.dataset.retire.split(":"); o[k].splice(+i, 1);
       if (k === "appareils") o.liens = (o.liens || []).filter(l => +l.de !== +i && +l.vers !== +i).map(l => ({...l, de: +l.de > +i ? +l.de - 1 : +l.de, vers: +l.vers > +i ? +l.vers - 1 : +l.vers}));
@@ -7967,10 +7983,13 @@ MODULES.splice(MODULES.findIndex(m => m.id === "declinaison") + 1, 0,
       CHAMP("mode", "Utilisation", "choix", {options: [["explorer", "Découverte : on clique sur une préposition"], ["quiz", "Exercice : l'élève trouve la bonne préposition"]]}), CHAMP("titre", "Titre (facultatif)"),
       CHAMP("depart", "Position de départ", "choix", {options: LG_PREP_ORDRE.map(k => [k, `${LG_PREP_MOTS.en[k]} / ${LG_PREP_MOTS.es[k]}`]), si: o => o.mode !== "quiz"}), CHAMP("traduction", "Traduction en français", "case")],
     rendu: htmlPrepositions},
-  {id: "dialogue", nom: "Dialogue en BD", cat: "Langues", icone: "❝", defaut: () => ({langue: "en", mode: "lecture", traduction: true, ...lgCopie(LG_DEF_DIALOGUE.en)}),
+  {id: "dialogue", nom: "Dialogue en BD", cat: "Langues", icone: "💬", defaut: () => ({langue: "en", mode: "lecture", traduction: true, ...lgCopie(LG_DEF_DIALOGUE.en)}),
     champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["lecture", "Lecture (les bulles défilent une par une)"], ["trous", "Texte à trous (les mots entre crochets)"], ["ordre", "Remettre les répliques dans l'ordre"]]}),
       CHAMP("titre", "Titre (facultatif)"), CHAMP("perso1", "Personnage 1 (à gauche)"), CHAMP("perso2", "Personnage 2 (à droite)"),
-      CHAMP("lignes", "Répliques — mets entre [crochets] les mots à trouver en texte à trous", "liste", {sous: [CHAMP("qui", "Qui parle", "choix", {options: [["1", "Personnage 1"], ["2", "Personnage 2"]]}), CHAMP("humeur", "Visage", "choix", {options: [["content", ":)"], ["triste", ":("]]}), CHAMP("texte", "Réplique"), CHAMP("fr", "Traduction (facultatif)")], max: 12, neuf: () => ({qui: "1", humeur: "content", texte: "", fr: ""})}),
+      CHAMP("lignes", "Répliques", "liste", {aide: "En mode texte à trous, mets entre [crochets] les mots à trouver : I [went] to the cinema.", max: 12,
+        cartes: {titre: (it, i, o) => `Réplique ${i + 1} · ${it.qui === "2" ? (o.perso2 || "Perso-02") : (o.perso1 || "Perso-01")}`, ajout: "Ajouter une réplique"},
+        sous: [CHAMP("qui", "Qui parle", "choix", {options: o => [["1", o.perso1 || "Perso-01"], ["2", o.perso2 || "Perso-02"]]}), CHAMP("humeur", "Visage", "choix", {options: [["content", ":)  content"], ["triste", ":(  triste"]]}),
+          CHAMP("texte", "Texte de la bulle", "lignes", {large: true}), CHAMP("fr", "Traduction en français (facultatif)", "lignes", {large: true})], neuf: () => ({qui: "1", humeur: "content", texte: "", fr: ""})}),
       CHAMP("traduction", "Bouton de traduction (FR)", "case")],
     rendu: htmlDialogue, surLangue: o => { const a = LG_DEF_DIALOGUE[o.langue === "es" ? "en" : "es"]; if (lgPareil(o.lignes, a.lignes)) Object.assign(o, lgCopie(LG_DEF_DIALOGUE[lgL(o)])); }}
 );
