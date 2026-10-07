@@ -861,17 +861,19 @@ a.lien{color:var(--accent)}
 .lg-forme{animation:lg-derive 7s ease-in-out infinite alternate}
 .lg-corps{transform-box:fill-box;transform-origin:50% 100%;animation:lg-respire 2.8s ease-in-out infinite}
 .lg-perso .b-ouverte,.lg-perso .b-triste{opacity:0}.lg-perso.triste .b-triste{opacity:1}.lg-perso.triste .b-content{opacity:0}.lg-perso.bouche .b-ouverte{opacity:1}.lg-perso.bouche .b-content,.lg-perso.bouche .b-triste{opacity:0}
-.lg-perso{transition:filter .3s}.lg-perso.ecoute{filter:brightness(.5)}
-.lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:3px solid #fff;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.82rem,2.3vw,1.02rem);line-height:1.42;box-shadow:0 4px 0 var(--accent);text-align:left;cursor:pointer}
-.lg-bulle-bd.q1{left:4%}.lg-bulle-bd.q2{right:4%}
+.lg-perso{transform-box:fill-box;transform-origin:50% 100%;transition:transform .4s cubic-bezier(.3,1.5,.5,1),filter .3s}.lg-perso.parle{transform:scale(1.12)}.lg-perso.ecoute{transform:scale(.84);filter:brightness(.55)}
+.lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:0;transition:background .3s,color .3s;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.82rem,2.3vw,1.02rem);line-height:1.42;box-shadow:0 5px 14px rgba(0,0,0,.45);text-align:left;cursor:pointer}
+.lg-bulle-bd.q1{background:var(--lg-p1,#d92b3a);color:var(--lg-t1,#fff)}.lg-bulle-bd.q2{background:var(--lg-p2,#5fb81c);color:var(--lg-t2,#111214)}
+.lg-queue{position:absolute;left:0;top:100%;width:100%;height:26px;overflow:visible;pointer-events:none}.lg-bulle-bd.q1 .lg-queue path{fill:var(--lg-p1,#d92b3a)}.lg-bulle-bd.q2 .lg-queue path{fill:var(--lg-p2,#5fb81c)}
+.lg-bulle-bd.q1{left:3%}.lg-bulle-bd.q2{right:3%}
 .lg-bulle-bd::after,.lg-bulle-bd::before{content:"";position:absolute}
-.lg-bulle-bd::after{bottom:-17px;width:26px;height:17px;background:#fff}.lg-bulle-bd::before{display:none}
+.lg-bulle-bd::after,.lg-bulle-bd::before{display:none}
 .lg-bulle-bd.q1::after{left:16%;clip-path:polygon(0 0,100% 0,15% 100%)}.lg-bulle-bd.q1::before{left:calc(16% + 4px);clip-path:polygon(0 0,100% 0,12% 100%)}
 .lg-bulle-bd.q2::after{right:16%;clip-path:polygon(0 0,100% 0,85% 100%)}.lg-bulle-bd.q2::before{right:calc(16% + 4px);clip-path:polygon(0 0,100% 0,88% 100%)}
-.lg-bulle-bd .lg-qui{color:#8a7f6a}.lg-bulle-bd.q1 .lg-qui{color:color-mix(in srgb,var(--accent) 70%,#000)}.lg-bulle-bd.q2 .lg-qui{color:#5a5751}
+.lg-bulle-bd .lg-qui{color:inherit;opacity:.75}
 .lg-dit{display:block;min-height:1.42em;white-space:pre-wrap}
-.lg-bulle-bd .lg-fr{margin-top:5px;padding-top:4px;border-top:1px dashed #c9bda5;color:#6b5f4a;font-size:.86em}
-.lg-indic{position:absolute;right:9px;bottom:2px;font-size:.62rem;color:#8a7f6a;opacity:0}.lg-bulle-bd.fini .lg-indic{opacity:1;animation:lg-clignote 1s steps(2) infinite}
+.lg-bulle-bd .lg-fr{margin-top:5px;padding-top:4px;border-top:1px dashed currentColor;color:inherit;opacity:.85;font-size:.86em}
+.lg-indic{position:absolute;right:9px;bottom:2px;font-size:.62rem;color:inherit;opacity:0}.lg-bulle-bd.fini .lg-indic{opacity:.7;animation:lg-clignote 1s steps(2) infinite}
 .lg-bulle-bd .int-trou{padding:0 4px;background:#fff6dc;color:#1d1f24;border-color:#d9b25a;font-size:.95em}
 .lg-bulle-bd .int-trou.ok{background:#e2f3e2;border-color:#6fbf73}.lg-bulle-bd .int-trou.ko{background:#fbe2e2;border-color:#e5484d;text-decoration:line-through}
 .lg-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.lg-nav-droite{margin-left:auto;display:flex;gap:6px}
@@ -3586,7 +3588,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.62";
+const VERSION_SITE = "0.63";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7729,15 +7731,15 @@ const LG_PALETTES = {
   nuit: {bg: "#1f2340", sol: "#2c315a", formes: ["#f2ae02", "#5fa8d3", "#e86f9a", "#7cc47f"], op: .42}
 };
 const LG_DEF_DIALOGUE = {
-  en: {titre: "At the café", fond: "jour", perso1: "Emma", perso2: "Leo", lignes: [
-    {qui: "1", texte: "Hi Leo! What [did] you do last weekend?", fr: "Salut Leo ! Qu'est-ce que tu as fait le week-end dernier ?"},
+  en: {titre: "At the café", fond: "jour", perso1: "Perso-01", perso2: "Perso-02", lignes: [
+    {qui: "1", texte: "Hi! What [did] you do last weekend?", fr: "Salut ! Qu'est-ce que tu as fait le week-end dernier ?"},
     {qui: "2", texte: "I [went] to the cinema with my cousin.", fr: "Je suis allé au cinéma avec mon cousin."},
     {qui: "1", texte: "Cool! Which film did you [see]?", fr: "Cool ! Quel film as-tu vu ?"},
     {qui: "2", texte: "A science-fiction film. It [was] amazing!", fr: "Un film de science-fiction. C'était génial !"},
     {qui: "1", texte: "I'm [going] to watch it next Saturday.", fr: "Je vais le regarder samedi prochain."},
     {qui: "2", texte: "You [will] love it, I promise!", fr: "Tu vas l'adorer, promis !"}]},
-  es: {titre: "En la calle", fond: "soir", perso1: "Lucía", perso2: "Pablo", lignes: [
-    {qui: "1", texte: "¡Hola, Pablo! ¿Qué [hiciste] el fin de semana?", fr: "Salut Pablo ! Qu'est-ce que tu as fait ce week-end ?"},
+  es: {titre: "En la calle", fond: "soir", perso1: "Perso-01", perso2: "Perso-02", lignes: [
+    {qui: "1", texte: "¡Hola! ¿Qué [hiciste] el fin de semana?", fr: "Salut ! Qu'est-ce que tu as fait ce week-end ?"},
     {qui: "2", texte: "[Fui] al cine con mi prima.", fr: "Je suis allé au cinéma avec ma cousine."},
     {qui: "1", texte: "¡Qué guay! ¿Qué película [viste]?", fr: "Trop bien ! Quel film as-tu vu ?"},
     {qui: "2", texte: "Una película de ciencia ficción. ¡[Fue] genial!", fr: "Un film de science-fiction. C'était génial !"},
@@ -7748,7 +7750,7 @@ const lgSansCrochets = t => String(t || "").replace(/\[([^\]]*)\]/g, (_, a) => a
 const lgLignes = o => (o.lignes || []).filter(l => l && String(l.texte || "").trim());
 // personnage simple : une tête ronde et des épaules ; visage :) ou :( décalé vers l'autre personnage
 function lgBonhomme(q, u){
-  const c = `url(#${u}p${q})`, dx = 9, trait = `fill="none" stroke="#0e0e0f" stroke-width="4.5" stroke-linecap="round"`;
+  const c = `var(--lg-p${q},${q === 1 ? "#d92b3a" : "#5fb81c"})`, dx = 9, trait = `fill="none" stroke="#0e0e0f" stroke-width="4.5" stroke-linecap="round"`;
   return `<path d="M-64 0V-34Q-64 -78 -18 -78H18Q64 -78 64 -34V0Z" fill="${c}"/><circle cy="-124" r="38" fill="${c}"/>
     <circle cx="${dx - 11}" cy="-130" r="4.6" fill="#0e0e0f"/><circle cx="${dx + 11}" cy="-130" r="4.6" fill="#0e0e0f"/>
     <path class="b-content" d="M${dx - 12} -114Q${dx} -102 ${dx + 12} -114" ${trait}/><path class="b-triste" d="M${dx - 12} -106Q${dx} -118 ${dx + 12} -106" ${trait}/>
@@ -7763,18 +7765,21 @@ function lgHsl(c){
   let h = 0; if (d){ h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; if (h < 0) h += 360; }
   return [h, d ? d / (1 - Math.abs(2 * l - 1)) * 100 : 0, l * 100];
 }
+const lgRgb = (h, S, L) => { S /= 100; L /= 100; const k = n => (n + h / 30) % 12, a = S * Math.min(L, 1 - L), f = n => L - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1)); return [f(0), f(8), f(4)]; };
 function lgCouleursPersos(scene){
-  const acc = getComputedStyle(scene).getPropertyValue("--accent") || "#f2ae02", [h, sat, l] = lgHsl(acc), S = Math.min(80, Math.max(45, sat)), Lm = Math.min(58, Math.max(46, l));
-  [[1, h - LG_DECALAGE], [2, h + LG_DECALAGE]].forEach(([q, t]) => { t = (t + 360) % 360;
-    scene.style.setProperty(`--lg-p${q}c`, `hsl(${t.toFixed(0)} ${S.toFixed(0)}% ${(Lm + 14).toFixed(0)}%)`);
-    scene.style.setProperty(`--lg-p${q}f`, `hsl(${t.toFixed(0)} ${S.toFixed(0)}% ${(Lm - 16).toFixed(0)}%)`); });
-  return acc;
+  const acc = getComputedStyle(scene).getPropertyValue("--accent") || "#f2ae02", [h, sat, l] = lgHsl(acc), S = Math.min(80, Math.max(45, sat)), Lm = Math.min(56, Math.max(46, l)), couleurs = [];
+  [[1, h - LG_DECALAGE], [2, h + LG_DECALAGE]].forEach(([q, t]) => { t = (t + 360) % 360; couleurs.push([t, S, Lm]);
+    const [r, g, b] = lgRgb(t, S, Lm), lum = .2126 * r + .7152 * g + .0722 * b;
+    scene.style.setProperty(`--lg-p${q}`, `hsl(${t.toFixed(0)} ${S.toFixed(0)}% ${Lm.toFixed(0)}%)`);
+    scene.style.setProperty(`--lg-t${q}`, lum > .42 ? "#111214" : "#ffffff"); });
+  return {acc, couleurs};
 }
 // fond animé : formes pleines aux couleurs du site qui dérivent et se relient quand elles sont proches
 function lgFondAnime(scene, acc){
-  const cv = scene.querySelector(".lg-bd-cv"); if (!cv) return;
+  const cv = scene.querySelector(".lg-bd-cv"); if (!cv) return {teinte(){}};
   const cx = cv.getContext("2d"), [h, sat, l] = lgHsl(acc), calme = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const COUL = [`hsl(${h.toFixed(0)} ${sat.toFixed(0)}% ${l.toFixed(0)}%)`, "rgb(244,242,237)", "rgb(90,87,81)"], ALPHA = [.55, .32, .75], TYPES = ["cercle", "carre", "triangle"];
+  const COUL = [`hsl(${h.toFixed(0)} ${sat.toFixed(0)}% ${l.toFixed(0)}%)`, "rgb(244,242,237)", "rgb(90,87,81)"], ALPHA = [.6, .3, .75], TYPES = ["cercle", "carre", "triangle"];
+  const teinte = [h, sat, l], cible = [h, sat, l];
   let L = 0, H = 0, formes = [], avant = performance.now();
   const taille = () => { const dpr = Math.min(devicePixelRatio || 1, 2); L = cv.clientWidth; H = cv.clientHeight; cv.width = L * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
   taille();
@@ -7785,6 +7790,9 @@ function lgFondAnime(scene, acc){
     if (!cv.isConnected) return;
     if (cv.clientWidth !== L || cv.clientHeight !== H) taille();
     const dt = Math.min(.05, (t - avant) / 1000); avant = t;
+    let dh = ((cible[0] - teinte[0] + 540) % 360) - 180; const v = calme ? 1 : Math.min(1, dt * 4);
+    teinte[0] = (teinte[0] + dh * v + 360) % 360; teinte[1] += (cible[1] - teinte[1]) * v; teinte[2] += (cible[2] - teinte[2]) * v;
+    COUL[0] = `hsl(${teinte[0].toFixed(1)} ${teinte[1].toFixed(1)}% ${teinte[2].toFixed(1)}%)`;
     cx.clearRect(0, 0, L, H); cx.lineWidth = 1; cx.strokeStyle = COUL[1];
     const lim = 130 * (L / 600 || 1);
     for (let i = 0; i < formes.length; i++) for (let j = i + 1; j < formes.length; j++){
@@ -7799,23 +7807,24 @@ function lgFondAnime(scene, acc){
       cx.fill(); cx.restore();
     });
     cx.globalAlpha = 1;
-    if (!calme) requestAnimationFrame(image);
+    if (!calme || Math.abs(dh) > .5) requestAnimationFrame(image);
   };
   requestAnimationFrame(image);
+  return {teinte(c){ cible[0] = c[0]; cible[1] = c[1]; cible[2] = c[2]; if (calme) requestAnimationFrame(image); }};
 }
 function lgBDHtml(o, lignes){
-  const u = "lg" + (++lgUid) + "-", noms = [o.perso1 || "A", o.perso2 || "B"], l0 = lignes[0], q0 = l0 && l0.qui === "2" ? 2 : 1;
+  const u = "lg" + (++lgUid) + "-", noms = [o.perso1 || "Perso-01", o.perso2 || "Perso-02"], l0 = lignes[0], q0 = l0 && l0.qui === "2" ? 2 : 1;
   return `<div class="lg-lecteur"><div class="lg-scene-bd" tabindex="0" role="group" aria-label="Bande dessinée : clique ou appuie sur → pour la réplique suivante">
-      <canvas class="lg-bd-cv" aria-hidden="true"></canvas><svg viewBox="0 0 600 340" class="lg-bd-svg" aria-hidden="true"><defs>${[1, 2].map(q => `<linearGradient id="${u}p${q}" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" style="stop-color:var(--lg-p${q}c,${q === 1 ? "#f2707a" : "#a6e36a"})"/><stop offset="1" style="stop-color:var(--lg-p${q}f,${q === 1 ? "#a3132a" : "#3f7d14"})"/></linearGradient>`).join("")}</defs>
+      <canvas class="lg-bd-cv" aria-hidden="true"></canvas><svg viewBox="0 0 600 340" class="lg-bd-svg" aria-hidden="true">
         <g transform="translate(150 312)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1, u)}</g></g></g>
         <g transform="translate(450 312) scale(-1 1)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2, u)}</g></g></g>
         <text x="150" y="333" class="lg-nom-bd">${esc(noms[0])}</text><text x="450" y="333" class="lg-nom-bd">${esc(noms[1])}</text></svg>
-      ${l0 ? `<div class="lg-bulle-bd q${q0}"><span class="lg-qui">${esc(noms[q0 - 1])}</span><span class="lg-dit">${esc(lgSansCrochets(l0.texte))}</span><span class="lg-fr" hidden></span><span class="lg-indic" aria-hidden="true">▼</span></div>` : ""}</div>
+      ${l0 ? `<div class="lg-bulle-bd q${q0}"><span class="lg-qui">${esc(noms[q0 - 1])}</span><span class="lg-dit">${esc(lgSansCrochets(l0.texte))}</span><span class="lg-fr" hidden></span><span class="lg-indic" aria-hidden="true">▼</span><svg class="lg-queue" aria-hidden="true"><path d=""/></svg></div>` : ""}</div>
     <div class="lg-nav"><button type="button" class="mini-btn" data-nav="-1" aria-label="Réplique précédente">◀</button><span class="lg-compteur">1 / ${lignes.length}</span><button type="button" class="mini-btn lg-suivant" data-nav="1">Suivant ▶</button>
       <span class="lg-nav-droite">${o.traduction !== false && lignes.some(l => l.fr) ? `<button type="button" class="mini-btn" data-trad aria-pressed="false">FR</button>` : ""}<button type="button" class="mini-btn" data-son aria-pressed="false">🔇 Son</button></span></div></div>`;
 }
 function htmlDialogue(o){
-  const lignes = lgLignes(o), mode = ["trous", "ordre"].includes(o.mode) ? o.mode : "lecture", noms = [o.perso1 || "A", o.perso2 || "B"];
+  const lignes = lgLignes(o), mode = ["trous", "ordre"].includes(o.mode) ? o.mode : "lecture", noms = [o.perso1 || "Perso-01", o.perso2 || "Perso-02"];
   const consigne = mode === "trous" ? "Fais défiler les répliques et complète les mots qui manquent, puis vérifie." : mode === "ordre" ? "Clique sur les répliques dans le bon ordre." : "Clique sur la case (ou « Suivant ») pour faire parler les personnages.";
   let corps;
   if (mode === "ordre"){
@@ -7835,13 +7844,18 @@ function lgBip(q){
 }
 // lecteur : une réplique à la fois, texte qui s'écrit lettre par lettre, le personnage s'écrase à chaque lettre
 function lgLecteurBD(racine, o, lignes, mode, etat){
-  const noms = [o.perso1 || "A", o.perso2 || "B"], scene = racine.querySelector(".lg-scene-bd"), bulle = racine.querySelector(".lg-bulle-bd");
+  const noms = [o.perso1 || "Perso-01", o.perso2 || "Perso-02"], scene = racine.querySelector(".lg-scene-bd"), bulle = racine.querySelector(".lg-bulle-bd");
   if (!scene || !bulle) return;
   const dit = bulle.querySelector(".lg-dit"), qui = bulle.querySelector(".lg-qui"), fr = bulle.querySelector(".lg-fr"), compteur = racine.querySelector(".lg-compteur");
   const prec = racine.querySelector('[data-nav="-1"]'), suiv = racine.querySelector('[data-nav="1"]'), btTrad = racine.querySelector("[data-trad]"), btSon = racine.querySelector("[data-son]");
   const persos = [racine.querySelector('.lg-perso[data-q="1"]'), racine.querySelector('.lg-perso[data-q="2"]')], corps = persos.map(p => p.querySelector(".lg-corps"));
   const calme = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  lgFondAnime(scene, lgCouleursPersos(scene));
+  const coul = lgCouleursPersos(scene), fond = lgFondAnime(scene, coul.acc), queue = bulle.querySelector(".lg-queue path");
+  // la pointe de la bulle vise toujours la tête de celui qui parle
+  const placerQueue = () => { if (!queue) return; const sr = scene.getBoundingClientRect(), br = bulle.getBoundingClientRect(); if (!br.width) return;
+    const tete = sr.left + sr.width * (qActif === 1 ? 150 : 450) / 600 - br.left, base = Math.max(22, Math.min(br.width - 22, tete)), bout = Math.max(base - 34, Math.min(base + 34, tete));
+    queue.setAttribute("d", `M${(base - 12).toFixed(1)} -3L${(base + 12).toFixed(1)} -3L${bout.toFixed(1)} 24Z`); };
+  if (window.ResizeObserver) new ResizeObserver(placerQueue).observe(scene);
   let idx = 0, file = [], j = 0, minut = null, qActif = 1, fini = true;
   etat.trad = etat.trad || false; etat.son = etat.son || false;
   const ajouterTrou = (a, i) => {
@@ -7858,13 +7872,13 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
   const terminer = () => {
     clearTimeout(minut);
     while (j < file.length){ const a = file[j++]; if (a.trou !== undefined) ajouterTrou(a, idx); else dit.appendChild(document.createTextNode(a.ch)); }
-    fini = true; persos.forEach(p => p.classList.remove("bouche")); bulle.classList.add("fini");
+    fini = true; persos.forEach(p => p.classList.remove("bouche")); bulle.classList.add("fini"); placerQueue();
   };
   const pas = () => {
     if (j >= file.length) return terminer();
     const a = file[j++];
     if (a.trou !== undefined){ ajouterTrou(a, idx); return pas(); }
-    dit.appendChild(document.createTextNode(a.ch));
+    dit.appendChild(document.createTextNode(a.ch)); placerQueue();
     if (/\S/.test(a.ch)){ ecraser(qActif); if (etat.son) lgBip(qActif); }
     minut = setTimeout(pas, /[.!?…]/.test(a.ch) ? 220 : /[,;:]/.test(a.ch) ? 140 : 34);
   };
@@ -7872,7 +7886,8 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
     clearTimeout(minut); idx = i; const l = lignes[i]; qActif = l.qui === "2" ? 2 : 1;
     bulle.className = `lg-bulle-bd q${qActif}`; qui.textContent = noms[qActif - 1]; dit.textContent = "";
     fr.textContent = l.fr || ""; fr.hidden = !(etat.trad && l.fr);
-    persos.forEach((p, k) => { p.classList.remove("bouche"); p.classList.toggle("ecoute", k + 1 !== qActif); });
+    persos.forEach((p, k) => { p.classList.remove("bouche"); p.classList.toggle("ecoute", k + 1 !== qActif); p.classList.toggle("parle", k + 1 === qActif); });
+    fond.teinte(coul.couleurs[qActif - 1]);
     persos[qActif - 1].classList.toggle("triste", l.humeur === "triste");
     let n = 0; file = [];
     (mode === "trous" ? morceauxTrous(String(l.texte)) : [{t: lgSansCrochets(l.texte)}]).forEach(m => { if (m.trou !== undefined) file.push({trou: m.trou, n: n++}); else for (const ch of m.t) file.push({ch}); });
