@@ -781,6 +781,78 @@ a.lien{color:var(--accent)}
 .ur-aero rect,.ur-aero-p{fill:#6b7280;stroke:#fff;stroke-width:1}.ur-avion{fill:#2b2f36}:root:not([data-theme=light]) .ur-avion{fill:#e8e8ea}
 .ur-mondial{fill:none;stroke:#7d55c7;stroke-width:3;stroke-dasharray:7 5}
 .ur-q circle{fill:var(--accent);stroke:#0e0e0f;stroke-width:2}.ur-q text{fill:#0e0e0f;font:900 17px var(--f-texte)}
+/* ---- Modules de langues (frise des temps, prépositions, dialogue en BD) ---- */
+.obj-doc:has(.lg-mod){width:min(680px,100%)}
+.lg-mod{display:flex;flex-direction:column;gap:10px;color:var(--texte);text-align:left;font-family:var(--f-texte);line-height:1.4}
+.lg-tete{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap}
+.lg-tete b{font-size:1.02rem}
+.lg-drapeau{font:700 .7rem var(--f-mono);padding:3px 7px;border-radius:6px;background:var(--accent);color:#111;letter-spacing:.08em}
+.lg-consigne{flex-basis:100%;font-size:.83rem;color:var(--doux)}
+.lg-papier{border-radius:14px;overflow:hidden;border:1px solid var(--ligne);background:#fbf6ec}
+.lg-papier svg{display:block;width:100%;height:auto}
+.lg-mod mark{background:color-mix(in srgb,var(--c,var(--accent)) 32%,transparent);color:inherit;border-radius:4px;padding:0 3px;font-weight:700}
+.lg-chips,.lg-choix{display:flex;flex-wrap:wrap;gap:6px}
+.lg-choix-centre{justify-content:center}
+.lg-chip,.lg-choix button{font:inherit;font-size:.86rem;padding:6px 12px;border-radius:999px;border:1.5px solid color-mix(in srgb,var(--c,var(--accent)) 55%,var(--ligne));background:var(--surface-2);color:var(--texte);cursor:pointer;transition:background .15s,transform .15s,border-color .15s}
+.lg-chip:hover:not(:disabled),.lg-choix button:hover:not(:disabled){transform:translateY(-1px);border-color:var(--c,var(--accent))}
+.lg-chip.actif,.lg-choix button.actif{background:color-mix(in srgb,var(--c,var(--accent)) 26%,var(--surface-2));border-color:var(--c,var(--accent));font-weight:700}
+.lg-choix button.ok{background:color-mix(in srgb,#6fbf73 30%,var(--surface-2));border-color:#6fbf73;font-weight:700}
+.lg-choix button.ko{background:color-mix(in srgb,#e5484d 26%,var(--surface-2));border-color:#e5484d;animation:lg-secoue .35s}
+.lg-choix button:disabled{cursor:default;opacity:.75}.lg-choix button.ok:disabled,.lg-choix button.ko:disabled{opacity:1}
+.lg-info{border-left:4px solid var(--c);background:var(--surface-2);border-radius:10px;padding:10px 14px;animation:lg-entre .35s ease-out}
+.lg-info-tete{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.lg-info-tete b{color:var(--c);font-size:1.05rem}.lg-info-tete span{font-size:.8rem;color:var(--doux)}
+.lg-info-phrase{margin:.35em 0 .5em;font-size:1rem}
+.lg-info dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:0;font-size:.86rem}
+.lg-info dt{font:700 .68rem var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--doux);padding-top:3px}.lg-info dd{margin:0}
+.lg-q-tete{display:flex;justify-content:space-between;font:700 .72rem var(--f-mono);color:var(--doux);text-transform:uppercase;letter-spacing:.06em}
+.lg-q-phrase{font-size:1.06rem;font-weight:600;margin:.25em 0 .6em}
+.lg-pied{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}.lg-pied-centre{justify-content:center}
+.lg-res{font-size:.86rem;color:var(--doux)}.lg-bien{color:#6fbf73}.lg-rate{color:#e5484d}
+.lg-fin{font-size:1.02rem;padding:10px 0}
+.lg-f-lab{font:800 13px var(--f-mono),monospace;fill:#8a7f6a;text-anchor:middle;letter-spacing:.12em}.lg-f-lab.now{fill:#3b3326}
+.lg-g-nom{font:800 15px var(--f-texte),Arial,sans-serif}
+.lg-pin{transition:transform .65s cubic-bezier(.5,0,.25,1),opacity .3s}
+.lg-trace{animation:lg-trace .8s ease-out both}
+.lg-pop{transform-box:fill-box;transform-origin:center;animation:lg-pop .45s cubic-bezier(.3,1.6,.5,1) both}
+.lg-apparait{animation:lg-entre .5s ease-out both}
+.lg-pulse{transform-box:fill-box;transform-origin:center;animation:lg-pulse 1.6s ease-out infinite}
+.lg-phrase-prep{text-align:center;font-size:1.06rem;min-height:2.7em}.lg-phrase-prep .lg-pp{display:block;font-weight:600}
+.lg-mod .lg-fr{display:block;font-size:.82rem;color:var(--doux);font-style:italic}
+.lg-chat-pos{transition:transform .7s cubic-bezier(.5,0,.3,1)}
+.lg-chat-saut.saut{animation:lg-saut .7s ease-in-out}
+.lg-chat-saut.flotte{animation:lg-flotte 1.4s ease-in-out infinite}
+.lg-yeux{transform-box:fill-box;transform-origin:center;animation:lg-cligne 4.5s infinite}
+.lg-bd{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.lg-case{display:flex;flex-direction:column;justify-content:space-between;background:#fbf6ec;border:2.5px solid #2b2f36;border-radius:6px;overflow:hidden;color:#2b2f36}
+.lg-bulles{display:flex;flex-direction:column;gap:12px;padding:10px 10px 12px}
+.lg-bulle{position:relative;max-width:88%;background:#fff;border:2px solid #2b2f36;border-radius:16px;padding:5px 11px 7px;font-size:.88rem;line-height:1.4}
+.lg-bulle.q1{align-self:flex-start}.lg-bulle.q2{align-self:flex-end}
+.lg-bulle::after{content:"";position:absolute;bottom:-8px;width:12px;height:12px;background:#fff;border-right:2px solid #2b2f36;border-bottom:2px solid #2b2f36;transform:rotate(45deg)}
+.lg-bulle.q1::after{left:24px}.lg-bulle.q2::after{right:24px}
+.lg-bulle.traduit{cursor:pointer}.lg-bulle.traduit:hover{background:#fffaf0}
+.lg-qui{display:block;font:700 .64rem var(--f-mono);text-transform:uppercase;letter-spacing:.07em;color:#7a6e5a}.lg-qui i{font-style:normal;color:#b4882a}
+.lg-bulle .lg-fr{margin-top:4px;padding-top:4px;border-top:1px dashed #c9bda5;color:#6b5f4a}
+.lg-case-svg{display:block;width:100%;height:auto}
+.lg-bulle .int-trou{padding:1px 4px;background:#fff6dc;color:#2b2f36;border-color:#d9b25a}
+.lg-bulle .int-trou.ok{background:#e2f3e2;border-color:#6fbf73}.lg-bulle .int-trou.ko{background:#fbe2e2;border-color:#e5484d;text-decoration:line-through}
+.lg-corr{margin-left:4px;font-weight:700;color:#3f8f45}
+.lg-ordre{display:flex;flex-direction:column;gap:6px}
+.lg-bulle-o{display:flex;gap:10px;align-items:center;text-align:left;font:inherit;font-size:.9rem;padding:8px 12px;border-radius:12px;border:1.5px solid var(--ligne);background:var(--surface-2);color:var(--texte);cursor:pointer;transition:border-color .15s,background .15s}
+.lg-bulle-o.q2{margin-left:28px}.lg-bulle-o.q1{margin-right:28px}
+.lg-bulle-o:hover:not(:disabled){border-color:var(--accent)}
+.lg-num{flex:none;width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;background:var(--surface);border:1.5px dashed var(--ligne);font:700 .76rem var(--f-mono)}
+.lg-bulle-o.choisi .lg-num{background:var(--accent);color:#111;border-style:solid;border-color:var(--accent)}
+.lg-bulle-o.ok{border-color:#6fbf73;background:color-mix(in srgb,#6fbf73 14%,var(--surface-2))}.lg-bulle-o.ko{border-color:#e5484d;background:color-mix(in srgb,#e5484d 12%,var(--surface-2))}
+.lg-bulle-o:disabled{cursor:default}
+@keyframes lg-trace{from{stroke-dasharray:1;stroke-dashoffset:1}to{stroke-dasharray:1;stroke-dashoffset:0}}
+@keyframes lg-pop{from{transform:scale(0)}}
+@keyframes lg-entre{from{opacity:0;transform:translateY(4px)}}
+@keyframes lg-pulse{from{transform:scale(1);opacity:.9}to{transform:scale(2.4);opacity:0}}
+@keyframes lg-saut{50%{transform:translateY(-44px)}}
+@keyframes lg-flotte{50%{transform:translateY(-8px)}}
+@keyframes lg-cligne{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes lg-secoue{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){.lg-mod *{animation:none!important;transition:none!important}}
 .nav-chantier{margin-left:auto;font:600 .6rem/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:4px;color:#1a1300;background:repeating-linear-gradient(-45deg,#f2ae02 0 6px,#ffd35a 6px 12px);white-space:nowrap}
 .bandeau-chantier{display:flex;gap:12px;align-items:center;padding:12px 16px;margin:0 0 18px;border-radius:10px;border:1.5px dashed #f2ae02;background:repeating-linear-gradient(-45deg,color-mix(in srgb,#f2ae02 10%,transparent) 0 14px,transparent 14px 28px);font-size:.92rem}
 .bandeau-chantier-ico{font-size:1.5rem}
@@ -3300,7 +3372,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.57";
+const VERSION_SITE = "0.58";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4481,7 +4553,7 @@ const svgObjet = o => !o ? "" : o.kind === "module" ? rendreModule(o) : o.kind =
 function remplirObjets(racine){
   racine.querySelectorAll("figure.obj-doc[data-obj], div.obj-doc[data-obj]").forEach(async f => {
     const r = svgObjet(lireObjet(f.dataset.obj));
-    if (typeof r === "string"){ f.innerHTML = r; return; }
+    if (typeof r === "string"){ f.innerHTML = r; if (typeof brancherTransitions === "function") brancherTransitions(f); return; }
     f.innerHTML = `<p class="doux" style="line-height:1.4">Chargement…</p>`; const h = await r; f.innerHTML = h;
     if (typeof brancherTransitions === "function") brancherTransitions(f);
   });
@@ -5330,6 +5402,7 @@ function brancherTransitions(racine){
     };
     maj();
   });
+  if (typeof brancherLangues === "function") brancherLangues(racine);
 }
 
 /* ---------- Tableaux de conjugaison / déclinaison ---------- */
@@ -5559,7 +5632,8 @@ function fenetreModule(depart, valider){
         o[c.k] = lireValeur(c, x);
         const v = z.querySelector(`[data-val-de="mc-${c.k}"]`); if (v) v.textContent = x.value + (v.dataset.unite || "");
         if (c.t === "curseur") x.style.setProperty("--pc", ((x.value - c.min) / (c.max - c.min) * 100).toFixed(1) + "%");
-        if (c.k === "langue"){ o.temps = (TEMPS_CONJ[o.langue] || []).slice(0, 3).map(t => t[0]); if (o.langue === "la"){ const d = LA_DEFAUT[o.modele || "1"]; o.radical = d[0]; o.radicalParfait = d[1]; } else if (o.verbe === "" || o.langue !== "fr") o.verbe = {en: "play", es: "hablar", fr: "chanter"}[o.langue] || o.verbe; }
+        if (c.k === "langue" && m.surLangue) m.surLangue(o);
+        if (c.k === "langue" && o.type === "conjugaison"){ o.temps = (TEMPS_CONJ[o.langue] || []).slice(0, 3).map(t => t[0]); if (o.langue === "la"){ const d = LA_DEFAUT[o.modele || "1"]; o.radical = d[0]; o.radicalParfait = d[1]; } else if (o.verbe === "" || o.langue !== "fr") o.verbe = {en: "play", es: "hablar", fr: "chanter"}[o.langue] || o.verbe; }
         if (c.k === "modele" && o.type === "conjugaison"){ const d = LA_DEFAUT[o.modele]; o.radical = d[0]; o.radicalParfait = d[1]; }
         if (c.k === "modele" && o.type === "declinaison"){ const d = DECL_MODELES.find(x => x[0] === o.modele); o.nominatif = d[4]; o.genitif = d[5]; }
         if (["langue","verbe","modele","radical","radicalParfait","nominatif","genitif"].includes(c.k)){ regenerer(); champs(); el.querySelector("#mc-" + c.k)?.focus(); if (c.t === "texte"){ const y = el.querySelector("#mc-" + c.k); y.setSelectionRange(y.value.length, y.value.length); } }
@@ -7136,6 +7210,368 @@ function urMetropole({u, anim, F, mk}){
     mondial: (x, y) => `<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y}" stroke="#7d55c7" stroke-width="3" stroke-dasharray="6 4" marker-end="${mk("#7d55c7")}"/>`};
   return {s, ancre, symb};
 }
+/* ===================== MODULES DE LANGUES : frise des temps, prépositions de lieu, dialogue en BD ===================== */
+/* Chaque module rend du HTML ; brancherLangues() ajoute l'interactivité (clics, exercice) après l'affichage. */
+let lgUid = 0;
+const LG_LANGUES = [["en", "Anglais"], ["es", "Espagnol"]];
+const lgL = o => o && o.langue === "es" ? "es" : "en";
+const lgCopie = v => JSON.parse(JSON.stringify(v));
+const lgPareil = (a, b) => JSON.stringify(a || []) === JSON.stringify(b || []);
+const lgTete = (o, titre, consigne) => `<div class="lg-tete"><span class="lg-drapeau">${lgL(o).toUpperCase()}</span><b>${esc(titre)}</b>${consigne ? `<span class="lg-consigne">${consigne}</span>` : ""}</div>`;
+// surligne les mots indices dans une phrase
+function lgSurligne(t, mots){
+  t = String(t || "");
+  const ms = (mots || []).filter(Boolean).sort((a, b) => b.length - a.length).map(m => m.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  if (!ms.length) return esc(t);
+  const re = new RegExp(`(^|[^\\p{L}\\d])(${ms.join("|")})(?=[^\\p{L}\\d]|$)`, "giu");
+  let h = "", i = 0, m;
+  while ((m = re.exec(t))){ const d = m.index + m[1].length; h += esc(t.slice(i, d)) + `<mark>${esc(m[2])}</mark>`; i = d + m[2].length; re.lastIndex = i; }
+  return h + esc(t.slice(i));
+}
+
+/* ---------- 1. FRISE DES TEMPS ---------- */
+const LG_TEMPS = {
+  en: {
+    passe: {nom: "Past simple", fr: "prétérit", emploi: "Action terminée, à un moment précis du passé.", forme: "base verbale + -ed (played) ou forme irrégulière (went, saw). Négation : didn't + base verbale.", indices: "yesterday, last week, two days ago, in 2010", mots: ["yesterday", "last", "ago"]},
+    "passe-duree": {nom: "Past continuous", fr: "passé en be + -ing", emploi: "Action en cours à un moment du passé, souvent interrompue par une autre action (au past simple).", forme: "was / were + verbe-ing (I was watching).", indices: "while, when, at that moment, at 8 o'clock yesterday", mots: ["while", "when", "at that moment"]},
+    parfait: {nom: "Present perfect", fr: "lien entre le passé et le présent", emploi: "Action commencée dans le passé qui dure encore, ou bilan au moment où l'on parle.", forme: "have / has + participe passé (I have lived, she has seen).", indices: "since, for, already, never, ever, just, yet", mots: ["since", "for", "already", "never", "ever", "just", "yet"]},
+    present: {nom: "Present simple", fr: "présent simple", emploi: "Habitude, généralité, vérité générale.", forme: "base verbale ; + -s à la 3e personne (she plays). Négation : don't / doesn't.", indices: "every day, usually, often, always, on Saturdays", mots: ["every", "usually", "often", "always", "sometimes"]},
+    "present-continu": {nom: "Present continuous", fr: "présent en be + -ing", emploi: "Action en train de se dérouler, maintenant.", forme: "am / is / are + verbe-ing (I am reading).", indices: "now, right now, at the moment, Look! Listen!", mots: ["now", "at the moment", "look", "listen"]},
+    "futur-proche": {nom: "Be going to", fr: "futur proche, intention", emploi: "Intention, projet déjà décidé, ou prévision fondée sur ce que l'on voit.", forme: "am / is / are going to + base verbale (I'm going to study).", indices: "tonight, this weekend, soon, next week", mots: ["tonight", "this weekend", "soon"]},
+    futur: {nom: "Future with will", fr: "futur avec will", emploi: "Prédiction, décision prise sur le moment, promesse.", forme: "will + base verbale (it will rain). Négation : won't.", indices: "tomorrow, next year, one day, in 2050", mots: ["tomorrow", "next", "one day", "in the future"]}
+  },
+  es: {
+    passe: {nom: "Pretérito indefinido", fr: "passé simple / passé composé", emploi: "Action terminée, datée dans le passé.", forme: "-ar : -é, -aste, -ó, -amos, -asteis, -aron ; -er / -ir : -í, -iste, -ió, -imos, -isteis, -ieron. Irréguliers : fui, hice, tuve.", indices: "ayer, anoche, el año pasado, hace dos días, en 2010", mots: ["ayer", "anoche", "pasado", "pasada", "hace"]},
+    "passe-duree": {nom: "Pretérito imperfecto", fr: "imparfait", emploi: "Description, habitude ou action en cours dans le passé.", forme: "-ar : -aba, -abas, -aba, -ábamos, -abais, -aban ; -er / -ir : -ía, -ías, -ía… Irréguliers : era, iba, veía.", indices: "antes, cuando era niño, de pequeño, siempre, todos los días", mots: ["antes", "cuando era", "de pequeño", "de pequeña", "siempre"]},
+    parfait: {nom: "Pretérito perfecto", fr: "passé composé (lien avec le présent)", emploi: "Action passée dans une période pas encore terminée (hoy, esta semana) ou expérience.", forme: "haber au présent (he, has, ha, hemos, habéis, han) + participe passé (-ado / -ido).", indices: "hoy, esta mañana, esta semana, ya, todavía no, nunca", mots: ["hoy", "esta mañana", "esta semana", "ya", "todavía", "nunca"]},
+    present: {nom: "Presente", fr: "présent", emploi: "Habitude, vérité générale, action actuelle.", forme: "-ar : -o, -as, -a, -amos, -áis, -an ; -er : -o, -es, -e, -emos, -éis, -en ; -ir : -o, -es, -e, -imos, -ís, -en.", indices: "todos los días, normalmente, a menudo, los sábados", mots: ["todos los días", "normalmente", "a menudo", "los sábados", "los domingos"]},
+    "present-continu": {nom: "Estar + gerundio", fr: "être en train de", emploi: "Action en train de se dérouler.", forme: "estar au présent (estoy, estás, está…) + gérondif en -ando / -iendo (estoy hablando).", indices: "ahora, ahora mismo, en este momento", mots: ["ahora", "en este momento"]},
+    "futur-proche": {nom: "Ir a + infinitivo", fr: "futur proche", emploi: "Projet ou intention dans un futur proche.", forme: "ir au présent (voy, vas, va, vamos, vais, van) + a + infinitif (voy a estudiar).", indices: "esta tarde, esta noche, pronto", mots: ["esta tarde", "esta noche", "pronto"]},
+    futur: {nom: "Futuro", fr: "futur simple", emploi: "Action future, prévision, promesse.", forme: "infinitif + -é, -ás, -á, -emos, -éis, -án (hablaré). Irréguliers : tendré, haré, diré.", indices: "mañana, el año que viene, la semana próxima, dentro de diez años", mots: ["mañana", "que viene", "próxima", "próximo", "dentro de"]}
+  }
+};
+const LG_TEMPS_OPTIONS = [["passe", "Passé ponctuel (past simple / indefinido)"], ["passe-duree", "Passé en cours ou habitude (past continuous / imperfecto)"], ["parfait", "Lien passé-présent (present perfect / pretérito perfecto)"],
+  ["present", "Présent d'habitude (present simple / presente)"], ["present-continu", "En train de (present continuous / estar + gerundio)"], ["futur-proche", "Futur proche (going to / ir a)"], ["futur", "Futur (will / futuro)"]];
+const LG_DEF_PHRASES = {
+  en: [{texte: "I visited London last summer.", temps: "passe"}, {texte: "I was watching TV when you called.", temps: "passe-duree"}, {texte: "I have lived here since 2015.", temps: "parfait"},
+    {texte: "She plays football every Saturday.", temps: "present"}, {texte: "Look! It is raining.", temps: "present-continu"}, {texte: "I'm going to study tonight.", temps: "futur-proche"}, {texte: "One day, people will live on Mars.", temps: "futur"}],
+  es: [{texte: "Ayer fui al cine con mis amigos.", temps: "passe"}, {texte: "Cuando era pequeño, vivía en Sevilla.", temps: "passe-duree"}, {texte: "Esta mañana he desayunado tarde.", temps: "parfait"},
+    {texte: "Mi hermana juega al baloncesto los sábados.", temps: "present"}, {texte: "Ahora estoy haciendo los deberes.", temps: "present-continu"}, {texte: "Esta tarde voy a estudiar.", temps: "futur-proche"}, {texte: "El año que viene viajaré a México.", temps: "futur"}]
+};
+const LG_COUL = {passe: "#e5484d", "passe-duree": "#e07b2c", parfait: "#a855c7", present: "#3d8fd1", "present-continu": "#119c9c", "futur-proche": "#4f9d3a", futur: "#2c7a5a"};
+const LG_X = {passe: 200, "passe-duree": 200, parfait: 290, present: 400, "present-continu": 400, "futur-proche": 462, futur: 545};
+const LG_AY = 112, LG_N = 400;
+function lgOnde(x1, x2, y, a = 6, p = 24){ let d = `M${x1} ${y}`; for (let x = x1, s = 1; x < x2 - .1; x += p / 2, s = -s){ const xe = Math.min(x2, x + p / 2); d += `Q${(x + xe) / 2} ${y - a * s * 2} ${xe} ${y}`; } return d; }
+function lgGlyphe(k, L, u){
+  const T = LG_TEMPS[L][k]; if (!T) return "";
+  const c = LG_COUL[k], AY = LG_AY, N = LG_N, m = `marker-end="url(#${u}m-${k})"`;
+  const pt = (x, r = 8, delai = 0) => `<circle cx="${x}" cy="${AY}" r="${r}" fill="${c}" stroke="#fff" stroke-width="2.5" class="lg-pop" style="animation-delay:${delai}s"/>`;
+  const tr = (d, extra = "") => `<path d="${d}" fill="none" stroke="${c}" stroke-width="4" stroke-linecap="round" pathLength="1" class="lg-trace" ${extra}/>`;
+  let s = "";
+  switch (k){
+    case "passe": s = tr(`M200 ${AY - 48}V${AY - 13}`, m) + pt(200); break;
+    case "passe-duree": s = tr(lgOnde(100, 300, AY - 26)) + `<path d="M100 ${AY - 26}V${AY}M300 ${AY - 26}V${AY}" stroke="${c}" stroke-width="1.8" stroke-dasharray="3 3" class="lg-apparait"/>`
+      + (L === "en" ? `<path d="M247 ${AY - 60}l-9 15h10l-9 16" fill="none" stroke="#e5484d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" class="lg-apparait" style="animation-delay:.6s"/>` + `<circle cx="240" cy="${AY}" r="6" fill="#e5484d" stroke="#fff" stroke-width="2" class="lg-pop" style="animation-delay:.7s"/>` : ""); break;
+    case "parfait": s = pt(180, 6) + tr(`M180 ${AY - 6}Q290 ${AY - 96} ${N - 5} ${AY - 14}`, m); break;
+    case "present": for (let x = 60, i = 0; x <= 580; x += 40, i++) s += `<circle cx="${x}" cy="${AY - 18}" r="4.5" fill="${c}" class="lg-pop" style="animation-delay:${(i * .04).toFixed(2)}s"/>`; s += pt(N, 6, .6); break;
+    case "present-continu": s = tr(lgOnde(364, 436, AY - 26, 5, 18)) + `<circle cx="${N}" cy="${AY}" r="9" fill="none" stroke="${c}" stroke-width="3" class="lg-pulse"/>` + pt(N, 7); break;
+    case "futur-proche": s = pt(N, 6) + tr(`M${N} ${AY - 6}Q434 ${AY - 72} 470 ${AY - 14}`, m); break;
+    case "futur": s = tr(`M545 ${AY - 48}V${AY - 13}`, m) + pt(545); break;
+  }
+  return s + `<text x="${k === "futur-proche" ? 500 : Math.max(90, Math.min(550, LG_X[k]))}" y="28" text-anchor="middle" class="lg-g-nom lg-apparait" fill="${c}">${esc(T.nom)}</text>`;
+}
+function lgFriseSvg(L, k, u){
+  const AY = LG_AY, N = LG_N, lab = L === "es" ? ["PASADO", "AHORA", "FUTURO"] : ["PAST", "NOW", "FUTURE"];
+  const marq = Object.entries(LG_COUL).map(([t, c]) => `<marker id="${u}m-${t}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker>`).join("");
+  let g = "";
+  for (let x = 40; x <= 600; x += 40) if (x !== N) g += `<line x1="${x}" y1="${AY - 4}" x2="${x}" y2="${AY + 4}" stroke="#8b8170" stroke-width="1.5"/>`;
+  return `<svg viewBox="0 0 640 176" class="lg-frise-svg" role="img" aria-label="Frise des temps"><defs>${marq}<marker id="${u}ax" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10z" fill="#5b5446"/></marker></defs>
+    <rect width="${N}" height="176" fill="#f4eadb"/><rect x="${N}" width="${640 - N}" height="176" fill="#e5efe0"/>
+    <line x1="${N}" y1="46" x2="${N}" y2="${AY + 22}" stroke="#5b5446" stroke-width="2" stroke-dasharray="4 4"/>
+    <line x1="22" y1="${AY}" x2="614" y2="${AY}" stroke="#5b5446" stroke-width="3.5" marker-end="url(#${u}ax)"/>${g}
+    <text x="140" y="${AY + 48}" class="lg-f-lab">◀ ${lab[0]}</text><text x="${N}" y="${AY + 48}" class="lg-f-lab now">${lab[1]}</text><text x="530" y="${AY + 48}" class="lg-f-lab">${lab[2]} ▶</text>
+    <g data-zone="glyphe">${k ? lgGlyphe(k, L, u) : ""}</g>
+    <g class="lg-pin" style="transform:translateX(${k ? LG_X[k] : N}px);opacity:${k ? 1 : 0}"><path d="M0 ${AY + 9}l-8 13h16z" fill="#f2ae02" stroke="#5b5446" stroke-width="1.5" stroke-linejoin="round"/></g></svg>`;
+}
+function lgInfoTemps(L, k, texte){
+  const t = LG_TEMPS[L][k]; if (!t) return "";
+  return `<div class="lg-info" style="--c:${LG_COUL[k]}"><div class="lg-info-tete"><b>${esc(t.nom)}</b><span>${esc(t.fr)}</span></div>${texte ? `<p class="lg-info-phrase">« ${lgSurligne(texte, t.mots)} »</p>` : ""}
+    <dl><dt>Emploi</dt><dd>${esc(t.emploi)}</dd><dt>Formation</dt><dd>${esc(t.forme)}</dd><dt>Mots indices</dt><dd>${esc(t.indices)}</dd></dl></div>`;
+}
+const lgPhrasesValides = o => (o.phrases || []).filter(p => p && String(p.texte || "").trim() && LG_TEMPS.en[p.temps]);
+function lgQuizFrise(L, p, n, tot, score){
+  return `<div class="lg-q-tete"><span>Phrase ${n + 1} / ${tot}</span><span>Score : ${score}</span></div><p class="lg-q-phrase">« ${esc(p.texte)} »</p>
+    <div class="lg-choix">${Object.entries(LG_TEMPS[L]).map(([k, t]) => `<button type="button" data-t="${k}">${esc(t.nom)}</button>`).join("")}</div>
+    <div class="lg-pied"><span class="lg-res">Quel temps est utilisé ? Choisis-le, la phrase se placera sur la frise.</span><button type="button" class="mini-btn lg-suite" hidden>Phrase suivante →</button></div>`;
+}
+function htmlFriseTemps(o){
+  const L = lgL(o), ph = lgPhrasesValides(o), u = "lg" + (++lgUid) + "-", quiz = o.mode === "quiz";
+  const sel = !quiz && ph[0] ? ph[0].temps : "";
+  return `<div class="lg-mod lg-frise" data-lg="frise" data-u="${u}" data-o="${encoderObjet(o)}">
+    ${lgTete(o, o.titre || "Frise des temps", quiz ? "Exercice : trouve le temps de chaque phrase." : "Clique sur une phrase : elle se place sur la frise.")}
+    <div class="lg-papier">${lgFriseSvg(L, sel, u)}</div>
+    ${quiz ? `<div class="lg-quiz" data-zone="quiz">${ph.length ? lgQuizFrise(L, ph[0], 0, ph.length, 0) : `<p class="doux">Ajoute des phrases.</p>`}</div>`
+      : `<div class="lg-chips">${ph.map((p, i) => `<button type="button" class="lg-chip${i === 0 ? " actif" : ""}" data-i="${i}" style="--c:${LG_COUL[p.temps]}">${esc(p.texte)}</button>`).join("")}</div>`}
+    <div class="lg-info-zone">${sel ? lgInfoTemps(L, sel, ph[0].texte) : ""}</div></div>`;
+}
+function brancherFriseTemps(el, o){
+  const L = lgL(o), ph = lgPhrasesValides(o), u = el.dataset.u;
+  const g = el.querySelector("[data-zone=glyphe]"), pin = el.querySelector(".lg-pin"), info = el.querySelector(".lg-info-zone");
+  const montrer = (k, texte) => { g.innerHTML = k ? lgGlyphe(k, L, u) : ""; pin.style.opacity = k ? 1 : 0; if (k) pin.style.transform = `translateX(${LG_X[k]}px)`; info.innerHTML = k ? lgInfoTemps(L, k, texte) : ""; };
+  if (o.mode !== "quiz"){
+    el.querySelectorAll(".lg-chip").forEach(b => b.onclick = () => { el.querySelectorAll(".lg-chip").forEach(x => x.classList.toggle("actif", x === b)); const p = ph[+b.dataset.i]; montrer(p.temps, p.texte); });
+    return;
+  }
+  const z = el.querySelector("[data-zone=quiz]"); if (!ph.length) return;
+  let ordre = [], n = 0, score = 0;
+  const demarrer = () => { ordre = melanger(ph); n = 0; score = 0; question(); };
+  const question = () => {
+    montrer("");
+    if (n >= ordre.length){
+      z.innerHTML = `<div class="lg-fin"><b>Terminé !</b> Score : ${score} / ${ordre.length}${score === ordre.length ? " — parfait !" : ""}</div><div class="lg-pied"><button type="button" class="mini-btn lg-recom">↻ Recommencer</button></div>`;
+      z.querySelector(".lg-recom").onclick = demarrer; return;
+    }
+    const p = ordre[n]; z.innerHTML = lgQuizFrise(L, p, n, ordre.length, score);
+    const res = z.querySelector(".lg-res"), suite = z.querySelector(".lg-suite");
+    z.querySelectorAll("[data-t]").forEach(b => b.onclick = () => {
+      const ok = b.dataset.t === p.temps; if (ok) score++;
+      z.querySelectorAll("[data-t]").forEach(x => { x.disabled = true; if (x.dataset.t === p.temps) x.classList.add("ok"); });
+      if (!ok) b.classList.add("ko");
+      res.innerHTML = ok ? `<b class="lg-bien">Bien vu !</b>` : `<b class="lg-rate">Pas tout à fait :</b> c'est le ${esc(LG_TEMPS[L][p.temps].nom)}.`;
+      z.querySelector(".lg-q-tete span:last-child").textContent = "Score : " + score;
+      montrer(p.temps, p.texte); suite.hidden = false; suite.textContent = n + 1 < ordre.length ? "Phrase suivante →" : "Voir le score →"; suite.focus({preventScroll: true});
+    });
+    suite.onclick = () => { n++; question(); };
+  };
+  demarrer();
+}
+
+/* ---------- 2. PRÉPOSITIONS DE LIEU ---------- */
+// position du chat : x, y (sol), échelle, couche (b = derrière la face avant de la boîte, f = devant tout)
+const LG_PREPS = {on: [160, 168, .9, "f"], under: [160, 291, .8, "f"], in: [422, 248, .84, "b"], behind: [492, 272, .82, "b"], front: [420, 324, 1, "f"], next: [538, 292, .88, "f"], between: [312, 292, .88, "f"], above: [160, 136, .84, "f"]};
+const LG_PREP_TXT = {
+  en: {in: ["in", "The cat is in the box.", "Le chat est dans la boîte."], on: ["on", "The cat is on the table.", "Le chat est sur la table."], under: ["under", "The cat is under the table.", "Le chat est sous la table."],
+    behind: ["behind", "The cat is behind the box.", "Le chat est derrière la boîte."], front: ["in front of", "The cat is in front of the box.", "Le chat est devant la boîte."], next: ["next to", "The cat is next to the box.", "Le chat est à côté de la boîte."],
+    between: ["between", "The cat is between the table and the box.", "Le chat est entre la table et la boîte."], above: ["above", "The cat is above the table.", "Le chat est au-dessus de la table."]},
+  es: {in: ["dentro de", "El gato está dentro de la caja.", "Le chat est dans la boîte."], on: ["encima de", "El gato está encima de la mesa.", "Le chat est sur la table."], under: ["debajo de", "El gato está debajo de la mesa.", "Le chat est sous la table."],
+    behind: ["detrás de", "El gato está detrás de la caja.", "Le chat est derrière la boîte."], front: ["delante de", "El gato está delante de la caja.", "Le chat est devant la boîte."], next: ["al lado de", "El gato está al lado de la caja.", "Le chat est à côté de la boîte."],
+    between: ["entre", "El gato está entre la mesa y la caja.", "Le chat est entre la table et la boîte."], above: ["por encima de", "El gato salta por encima de la mesa.", "Le chat saute par-dessus la table."]}
+};
+const LG_PREP_ORDRE = ["in", "on", "under", "behind", "front", "next", "between", "above"];
+const LG_PREP_OPTIONS = LG_PREP_ORDRE.map(k => [k, `${LG_PREP_TXT.en[k][0]} / ${LG_PREP_TXT.es[k][0]}`]);
+function lgChat(){
+  return `<path d="M17 -8q30 -2 25 -30q-3 -11 -11 -8" fill="none" stroke="#e08a36" stroke-width="8" stroke-linecap="round"/>
+    <ellipse cx="0" cy="-23" rx="23" ry="23" fill="#f0a04b"/><ellipse cx="0" cy="-17" rx="12" ry="14" fill="#fbe3c4"/>
+    <path d="M-17 -58L-16 -79L-3 -67ZM17 -58L16 -79L3 -67Z" fill="#f0a04b"/><path d="M-14 -62L-14 -74L-6 -67ZM14 -62L14 -74L6 -67Z" fill="#f6b5b5"/>
+    <circle cx="0" cy="-53" r="19" fill="#f0a04b"/><path d="M-6 -71q6 4 12 0M-4 -66q4 2 8 0" stroke="#d07a2a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <g class="lg-yeux"><ellipse cx="-7" cy="-55" rx="2.8" ry="3.6" fill="#2b2f36"/><ellipse cx="7" cy="-55" rx="2.8" ry="3.6" fill="#2b2f36"/><circle cx="-6" cy="-56.5" r="1" fill="#fff"/><circle cx="8" cy="-56.5" r="1" fill="#fff"/></g>
+    <path d="M-2.5 -49h5l-2.5 3z" fill="#e57b8a"/><path d="M0 -46q-3 4 -6 2M0 -46q3 4 6 2" stroke="#7a3b2e" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <path d="M-9 -47h-14M-9 -45l-13 4M9 -47h14M9 -45l13 4" stroke="#7a5a40" stroke-width="1" opacity=".7"/>
+    <ellipse cx="-9" cy="-2" rx="7" ry="4.5" fill="#fbe3c4"/><ellipse cx="9" cy="-2" rx="7" ry="4.5" fill="#fbe3c4"/>`;
+}
+function lgScenePrep(u, pos){
+  const [x, y, k, c] = LG_PREPS[pos] || LG_PREPS.on, tr = `transform:translate(${x}px,${y}px) scale(${k})`;
+  const chat = couche => `<g class="lg-chat-pos" data-couche="${couche}" style="${tr};opacity:${couche === c ? 1 : 0}"><g class="lg-chat-saut${pos === "above" ? " flotte" : ""}">${lgChat()}</g></g>`;
+  return `<svg viewBox="0 0 600 336" class="lg-scene" role="img" aria-label="Où est le chat ?"><defs><linearGradient id="${u}mur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf4e3"/><stop offset="1" stop-color="#f5e1c3"/></linearGradient></defs>
+    <rect width="600" height="336" fill="url(#${u}mur)"/>
+    <rect x="404" y="34" width="118" height="100" rx="4" fill="#cfe8f7" stroke="#b98a58" stroke-width="6"/><path d="M463 34v100M404 84h118" stroke="#b98a58" stroke-width="4"/><circle cx="436" cy="58" r="10" fill="#fff7d1"/>
+    <g transform="translate(160 0)"><rect x="112" y="40" width="96" height="66" rx="3" fill="#fff" stroke="#8a6a44" stroke-width="5"/><path d="M118 100l26 -30 18 18 12 -12 28 24z" fill="#8fc27a"/><circle cx="186" cy="58" r="7" fill="#f2ae02"/></g>
+    <rect y="282" width="600" height="8" fill="#fff"/><rect y="290" width="600" height="46" fill="#d4ab7e"/><path d="M0 306H600M0 322H600" stroke="#c39967" stroke-width="1.5"/><path d="M90 290v16M260 306v16M430 290v16M520 306v16M170 322v14M350 322v14" stroke="#c39967" stroke-width="1.5"/>
+    <ellipse cx="160" cy="292" rx="96" ry="6" fill="#000" opacity=".1"/><ellipse cx="428" cy="293" rx="66" ry="6" fill="#000" opacity=".12"/>
+    <rect x="66" y="166" width="188" height="14" rx="3" fill="#a96d42"/><rect x="66" y="178" width="188" height="6" fill="#86532f"/><rect x="80" y="184" width="11" height="107" rx="2" fill="#93603a"/><rect x="229" y="184" width="11" height="107" rx="2" fill="#93603a"/>
+    <rect x="216" y="152" width="14" height="14" rx="2" fill="#fff" stroke="#c9c2b5" stroke-width="1.5"/><path d="M230 156q6 0 6 4t-6 4" fill="none" stroke="#c9c2b5" stroke-width="1.8"/>
+    <path d="M370 222L384 208H486L470 222Z" fill="#7d5128"/><path d="M384 208L390 178H480L486 208Z" fill="#c58f58" stroke="#a8733f" stroke-width="1.5"/>
+    ${chat("b")}
+    <rect x="370" y="222" width="100" height="70" fill="#d8a46a" stroke="#a8733f" stroke-width="1.5"/><path d="M470 222L486 208V278L470 292Z" fill="#b98448" stroke="#a8733f" stroke-width="1.5"/>
+    <rect x="410" y="222" width="20" height="70" fill="#ecc893" opacity=".75"/><path d="M370 222L352 240H392L398 222Z" fill="#e2b47d" stroke="#a8733f" stroke-width="1.5"/>
+    ${chat("f")}</svg>`;
+}
+function lgPhrasePrep(L, p, trad){
+  const [prep, ph, fr] = LG_PREP_TXT[L][p], i = ph.indexOf(" " + prep + " ") + 1;
+  return `<span class="lg-pp">${esc(ph.slice(0, i))}<mark>${esc(prep)}</mark>${esc(ph.slice(i + prep.length))}</span>${trad ? `<span class="lg-fr">${esc(fr)}</span>` : ""}`;
+}
+function htmlPrepositions(o){
+  const L = lgL(o), u = "lg" + (++lgUid) + "-", quiz = o.mode === "quiz", pos = quiz ? "under" : (LG_PREPS[o.depart] ? o.depart : "on"), trad = o.traduction !== false;
+  const question = L === "es" ? "¿Dónde está el gato?" : "Where is the cat?";
+  return `<div class="lg-mod lg-prep" data-lg="prep" data-u="${u}" data-o="${encoderObjet(o)}">
+    ${lgTete(o, o.titre || "Prépositions de lieu", quiz ? "Exercice : regarde où est le chat et choisis la bonne préposition." : "Clique sur une préposition : le chat se déplace.")}
+    <div class="lg-papier">${lgScenePrep(u, pos)}</div>
+    <div class="lg-phrase-prep">${quiz ? `<span class="lg-pp">${question}</span>` : lgPhrasePrep(L, pos, trad)}</div>
+    <div class="lg-choix lg-choix-centre">${LG_PREP_ORDRE.map(k => `<button type="button" data-p="${k}" class="${!quiz && k === pos ? "actif" : ""}">${esc(LG_PREP_TXT[L][k][0])}</button>`).join("")}</div>
+    ${quiz ? `<div class="lg-pied lg-pied-centre"><span class="lg-res">Score : 0 / 0</span><button type="button" class="mini-btn lg-suite" hidden>Autre position →</button></div>` : ""}</div>`;
+}
+function brancherPrep(el, o){
+  const L = lgL(o), trad = o.traduction !== false, quiz = o.mode === "quiz";
+  const fb = el.querySelector('.lg-chat-pos[data-couche="b"]'), ff = el.querySelector('.lg-chat-pos[data-couche="f"]'), sauts = [...el.querySelectorAll(".lg-chat-saut")];
+  const zp = el.querySelector(".lg-phrase-prep"), boutons = [...el.querySelectorAll("[data-p]")];
+  let pos = quiz ? "under" : (LG_PREPS[o.depart] ? o.depart : "on"), couche = LG_PREPS[pos][3], minut = null;
+  const placer = p => {
+    const [x, y, k, c] = LG_PREPS[p]; clearTimeout(minut);
+    [fb, ff].forEach(g => g.style.transform = `translate(${x}px,${y}px) scale(${k})`);
+    sauts.forEach(g => { g.classList.remove("saut", "flotte"); g.getBoundingClientRect(); g.classList.add("saut"); g.onanimationend = () => { g.classList.remove("saut"); if (pos === "above") g.classList.add("flotte"); }; });
+    if (c === "f"){ fb.style.opacity = 0; ff.style.opacity = 1; }
+    else if (couche === "f") minut = setTimeout(() => { fb.style.opacity = 1; ff.style.opacity = 0; }, 680);
+    couche = c; pos = p;
+  };
+  if (!quiz){
+    boutons.forEach(b => b.onclick = () => { boutons.forEach(x => x.classList.toggle("actif", x === b)); placer(b.dataset.p); zp.innerHTML = lgPhrasePrep(L, b.dataset.p, trad); });
+    return;
+  }
+  const res = el.querySelector(".lg-res"), suite = el.querySelector(".lg-suite"), question = L === "es" ? "¿Dónde está el gato?" : "Where is the cat?";
+  let score = 0, total = 0, repondu = false;
+  const nouvelle = () => {
+    const autres = LG_PREP_ORDRE.filter(k => k !== pos); placer(autres[Math.floor(Math.random() * autres.length)]);
+    repondu = false; boutons.forEach(b => { b.disabled = false; b.classList.remove("ok", "ko"); }); zp.innerHTML = `<span class="lg-pp">${question}</span>`; suite.hidden = true;
+  };
+  boutons.forEach(b => b.onclick = () => {
+    if (repondu) return; repondu = true; total++;
+    const ok = b.dataset.p === pos; if (ok) score++;
+    boutons.forEach(x => { x.disabled = true; if (x.dataset.p === pos) x.classList.add("ok"); }); if (!ok) b.classList.add("ko");
+    zp.innerHTML = lgPhrasePrep(L, pos, trad); res.innerHTML = `${ok ? `<b class="lg-bien">Bravo !</b>` : `<b class="lg-rate">Raté.</b>`} Score : ${score} / ${total}`;
+    suite.hidden = false; suite.focus({preventScroll: true});
+  });
+  suite.onclick = nouvelle;
+  nouvelle();
+}
+
+/* ---------- 3. DIALOGUE EN BD ---------- */
+const LG_DECORS = [["cafe", "Café"], ["classe", "Salle de classe"], ["rue", "Rue"], ["maison", "Maison"], ["parc", "Parc"]];
+const LG_DEF_DIALOGUE = {
+  en: {titre: "At the café", decor: "cafe", perso1: "Emma", perso2: "Leo", lignes: [
+    {qui: "1", texte: "Hi Leo! What [did] you do last weekend?", fr: "Salut Leo ! Qu'est-ce que tu as fait le week-end dernier ?"},
+    {qui: "2", texte: "I [went] to the cinema with my cousin.", fr: "Je suis allé au cinéma avec mon cousin."},
+    {qui: "1", texte: "Cool! Which film did you [see]?", fr: "Cool ! Quel film as-tu vu ?"},
+    {qui: "2", texte: "A science-fiction film. It [was] amazing!", fr: "Un film de science-fiction. C'était génial !"},
+    {qui: "1", texte: "I'm [going] to watch it next Saturday.", fr: "Je vais le regarder samedi prochain."},
+    {qui: "2", texte: "You [will] love it, I promise!", fr: "Tu vas l'adorer, promis !"}]},
+  es: {titre: "En la calle", decor: "rue", perso1: "Lucía", perso2: "Pablo", lignes: [
+    {qui: "1", texte: "¡Hola, Pablo! ¿Qué [hiciste] el fin de semana?", fr: "Salut Pablo ! Qu'est-ce que tu as fait ce week-end ?"},
+    {qui: "2", texte: "[Fui] al cine con mi prima.", fr: "Je suis allé au cinéma avec ma cousine."},
+    {qui: "1", texte: "¡Qué guay! ¿Qué película [viste]?", fr: "Trop bien ! Quel film as-tu vu ?"},
+    {qui: "2", texte: "Una película de ciencia ficción. ¡[Fue] genial!", fr: "Un film de science-fiction. C'était génial !"},
+    {qui: "1", texte: "Yo [voy] a verla el sábado que viene.", fr: "Moi, je vais le voir samedi prochain."},
+    {qui: "2", texte: "¡Te va a [encantar]!", fr: "Tu vas l'adorer !"}]}
+};
+const LG_PERSOS = [{peau: "#f1c9a5", cheveux: "#7a4a26", haut: "#e5484d", style: "long"}, {peau: "#c68863", cheveux: "#2b211b", haut: "#3d8fd1", style: "court"}];
+function lgPerso(x, p, parle, miroir){
+  const dos = p.style === "long" ? `<path d="M-23 -60Q-28 -24 -15 -20H15Q28 -24 23 -60Z" fill="${p.cheveux}"/>` : "";
+  const devant = p.style === "long" ? `<path d="M-21 -60Q-21 -86 1 -86Q22 -86 22 -60Q12 -74 -2 -71Q-13 -69 -21 -57Z" fill="${p.cheveux}"/>`
+    : `<path d="M-21 -58Q-23 -86 0 -86Q22 -86 21 -61Q18 -71 11 -74Q4 -68 -6 -75Q-12 -68 -21 -58Z" fill="${p.cheveux}"/>`;
+  const bouche = parle ? `<ellipse cx="6" cy="-51" rx="4.2" ry="3.4" fill="#7a2e2e"><animate attributeName="ry" values="3.4;1.2;3.4" dur=".55s" repeatCount="indefinite"/></ellipse>` : `<path d="M1 -52q5 4 10 0" fill="none" stroke="#7a2e2e" stroke-width="2" stroke-linecap="round"/>`;
+  return `<g transform="translate(${x} 120)${miroir ? " scale(-1 1)" : ""}">${dos}<path d="M-36 0Q-36 -32 -12 -38H12Q36 -32 36 0Z" fill="${p.haut}"/><path d="M-9 -38L0 -28L9 -38" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>
+    <rect x="-6" y="-46" width="12" height="10" fill="${p.peau}"/><circle cx="-17" cy="-60" r="4.5" fill="${p.peau}"/><circle cx="0" cy="-62" r="20" fill="${p.peau}"/>${devant}
+    <circle cx="1" cy="-63" r="2.4" fill="#2b2f36"/><circle cx="12" cy="-63" r="2.4" fill="#2b2f36"/><circle cx="-3" cy="-54" r="3.4" fill="#f29b9b" opacity=".45"/>${bouche}</g>`;
+}
+function lgDecor(d){
+  switch (d){
+    case "classe": return `<rect width="300" height="120" fill="#e9efe2"/><rect x="94" y="12" width="112" height="56" rx="3" fill="#2f5d46" stroke="#8a6a44" stroke-width="4"/><path d="M106 28h40M106 40h64M106 52h30" stroke="#e8f0e8" stroke-width="2.4" stroke-linecap="round" opacity=".8"/><rect x="128" y="86" width="44" height="34" fill="#c9a77c"/><rect y="108" width="300" height="12" fill="#bfa27c"/>`;
+    case "rue": return `<rect width="300" height="120" fill="#cfe8f7"/><rect x="-4" y="26" width="74" height="94" fill="#e8c9a0"/><rect x="232" y="16" width="72" height="104" fill="#d9a6a0"/><rect x="104" y="42" width="92" height="78" fill="#c3cfd9"/>`
+      + [[8, 36], [36, 36], [8, 62], [36, 62], [242, 28], [272, 28], [242, 56], [272, 56], [116, 52], [140, 52], [164, 52], [116, 76], [140, 76], [164, 76]].map(([x, y]) => `<rect x="${x}" y="${y}" width="16" height="14" fill="#fff" opacity=".7"/>`).join("") + `<rect y="104" width="300" height="16" fill="#b9b4aa"/>`;
+    case "maison": return `<rect width="300" height="120" fill="#f3e4ea"/>${Array.from({length: 15}, (_, i) => `<line x1="${i * 20 + 10}" y1="0" x2="${i * 20 + 10}" y2="120" stroke="#e2c6d2" stroke-width="5"/>`).join("")}<rect x="126" y="14" width="48" height="34" fill="#fff" stroke="#b48a5a" stroke-width="3"/><path d="M130 44l14 -16 10 9 6 -6 10 13z" fill="#8fc27a"/><rect x="10" y="80" width="280" height="40" rx="12" fill="#8a6fb3"/>`;
+    case "parc": return `<rect width="300" height="120" fill="#d6ecf7"/><circle cx="268" cy="20" r="11" fill="#f8d36a"/><path d="M0 90Q80 76 150 88T300 84V120H0Z" fill="#9fd08a"/><rect x="145" y="46" width="10" height="50" fill="#8a5a33"/><circle cx="150" cy="38" r="22" fill="#5aa64e"/><circle cx="134" cy="48" r="14" fill="#64b158"/><circle cx="166" cy="48" r="14" fill="#64b158"/>`;
+    default: return `<rect width="300" height="120" fill="#f5dfc4"/><rect x="112" y="16" width="76" height="46" rx="3" fill="#cfe8f7" stroke="#a0673f" stroke-width="4"/><path d="M150 16v46M112 39h76" stroke="#a0673f" stroke-width="3"/>`
+      + `<path d="M104 10h92l-6 10h-80z" fill="#e5484d"/>${[0, 1, 2, 3].map(i => `<path d="M${116 + i * 20} 10h10l-1.5 10h-7z" fill="#fff"/>`).join("")}<rect x="98" y="98" width="104" height="22" fill="#a0673f"/><rect x="98" y="96" width="104" height="5" fill="#86532f"/>`
+      + `<rect x="126" y="85" width="13" height="11" rx="2" fill="#fff" stroke="#c9c2b5"/><rect x="161" y="85" width="13" height="11" rx="2" fill="#fff" stroke="#c9c2b5"/>`;
+  }
+}
+const lgSansCrochets = t => String(t || "").replace(/\[([^\]]*)\]/g, (_, a) => a.split(/[|/]/)[0].trim());
+const lgLignes = o => (o.lignes || []).filter(l => l && String(l.texte || "").trim());
+function lgBulle(o, l, i, mode, trad){
+  const noms = [o.perso1 || "A", o.perso2 || "B"], q = l.qui === "2" ? 2 : 1;
+  const dit = mode === "trous" ? morceauxTrous(String(l.texte)).map(m => m.trou !== undefined ? `<input type="text" class="int-trou lg-trou" data-r="${esc(m.trou)}" style="width:${largeurTrou(m.trou)}ch" autocomplete="off" spellcheck="false" aria-label="Mot manquant">` : esc(m.t)).join("") : esc(lgSansCrochets(l.texte));
+  const fr = trad && l.fr ? `<span class="lg-fr" hidden>${esc(l.fr)}</span>` : "";
+  return `<div class="lg-bulle q${q}${fr ? " traduit" : ""}" data-l="${i}"><span class="lg-qui">${esc(noms[q - 1])}${fr ? ` <i>· FR</i>` : ""}</span><span class="lg-dit">${dit}</span>${fr}</div>`;
+}
+function lgCases(o, lignes, mode, trad){
+  let h = "";
+  for (let i = 0; i < lignes.length; i += 2){
+    const duo = lignes.slice(i, i + 2), p1 = duo.some(l => l.qui !== "2"), p2 = duo.some(l => l.qui === "2");
+    h += `<div class="lg-case"><div class="lg-bulles">${duo.map((l, k) => lgBulle(o, l, i + k, mode, trad)).join("")}</div>
+      <svg viewBox="0 0 300 120" class="lg-case-svg" aria-hidden="true">${lgDecor(o.decor)}${lgPerso(72, LG_PERSOS[0], p1, false)}${lgPerso(228, LG_PERSOS[1], p2, true)}</svg></div>`;
+  }
+  return h;
+}
+function htmlDialogue(o){
+  const L = lgL(o), lignes = lgLignes(o), mode = ["trous", "ordre"].includes(o.mode) ? o.mode : "lecture", trad = o.traduction !== false;
+  const noms = [o.perso1 || "A", o.perso2 || "B"];
+  const consigne = mode === "trous" ? "Complète les mots qui manquent, puis vérifie." : mode === "ordre" ? "Clique sur les répliques dans le bon ordre." : trad && lignes.some(l => l.fr) ? "Clique sur une bulle pour voir la traduction." : "";
+  let corps;
+  if (mode === "ordre"){
+    const idx = melanger(lignes.map((_, i) => i)); if (idx.length > 1 && idx.every((v, i) => v === i)) idx.push(idx.shift());
+    corps = `<div class="lg-ordre">${idx.map(i => `<button type="button" class="lg-bulle-o q${lignes[i].qui === "2" ? 2 : 1}" data-l="${i}"><span class="lg-num"></span><span><b>${esc(noms[lignes[i].qui === "2" ? 1 : 0])} :</b> ${esc(lgSansCrochets(lignes[i].texte))}</span></button>`).join("")}</div>
+      <div class="lg-pied"><button type="button" class="mini-btn lg-effacer">Effacer</button><span class="lg-res"></span><button type="button" class="mini-btn lg-solution" hidden>Voir le dialogue</button></div>
+      <div class="lg-bd" hidden>${lgCases(o, lignes, "lecture", trad)}</div>`;
+  } else corps = `<div class="lg-bd">${lgCases(o, lignes, mode, trad)}</div>${mode === "trous" ? `<div class="lg-pied"><button type="button" class="btn lg-verifier">Vérifier</button><span class="lg-res"></span></div>` : ""}`;
+  return `<div class="lg-mod lg-dialogue" data-lg="dialogue" data-o="${encoderObjet(o)}">${lgTete(o, o.titre || "Dialogue", consigne)}${lignes.length ? corps : `<p class="doux">Ajoute des répliques.</p>`}</div>`;
+}
+function brancherDialogue(el, o){
+  const lignes = lgLignes(o);
+  const brancherBulles = racine => racine.querySelectorAll(".lg-bulle.traduit").forEach(b => b.onclick = ev => { if (ev.target.closest("input")) return; const f = b.querySelector(".lg-fr"); f.hidden = !f.hidden; b.classList.toggle("ouvert", !f.hidden); });
+  brancherBulles(el);
+  if (o.mode === "trous"){
+    const btn = el.querySelector(".lg-verifier"), res = el.querySelector(".lg-res"), champs = [...el.querySelectorAll(".lg-trou")];
+    champs.forEach((c, i) => c.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); (champs[i + 1] || btn).focus(); } }));
+    let verifie = false;
+    btn.onclick = () => {
+      if (verifie){ champs.forEach(c => { c.value = ""; c.disabled = false; c.classList.remove("ok", "ko"); }); el.querySelectorAll(".lg-corr").forEach(x => x.remove()); res.textContent = ""; btn.textContent = "Vérifier"; verifie = false; champs[0]?.focus(); return; }
+      let bons = 0;
+      champs.forEach(c => { const ok = bonneValeur(c.value, c.dataset.r); if (ok) bons++; c.classList.add(ok ? "ok" : "ko"); c.disabled = true;
+        if (!ok) c.insertAdjacentHTML("afterend", `<span class="lg-corr">${esc(c.dataset.r.split(/[|/]/)[0].trim())}</span>`); });
+      res.innerHTML = bons === champs.length ? `<b class="lg-bien">Parfait : ${bons} / ${champs.length}</b>` : `${bons} / ${champs.length} mots justes — les corrections sont en vert.`;
+      btn.textContent = "↻ Recommencer"; verifie = true;
+    };
+    return;
+  }
+  if (o.mode !== "ordre") return;
+  const bts = [...el.querySelectorAll(".lg-bulle-o")], res = el.querySelector(".lg-res"), bd = el.querySelector(".lg-bd"), sol = el.querySelector(".lg-solution");
+  let choix = [];
+  const consigne = () => { res.textContent = `${choix.length} / ${lignes.length} répliques placées.`; };
+  const effacer = () => { choix = []; bts.forEach(b => { b.disabled = false; b.classList.remove("choisi", "ok", "ko"); b.querySelector(".lg-num").textContent = ""; }); sol.hidden = true; bd.hidden = true; consigne(); };
+  bts.forEach(b => b.onclick = () => {
+    const i = +b.dataset.l;
+    if (choix.includes(i)){ choix = choix.filter(x => x !== i); }
+    else choix.push(i);
+    bts.forEach(x => { const k = choix.indexOf(+x.dataset.l); x.classList.toggle("choisi", k >= 0); x.querySelector(".lg-num").textContent = k >= 0 ? k + 1 : ""; });
+    consigne();
+    if (choix.length === lignes.length){
+      let bons = 0;
+      bts.forEach(x => { const ok = choix.indexOf(+x.dataset.l) === +x.dataset.l; if (ok) bons++; x.classList.add(ok ? "ok" : "ko"); x.disabled = true; });
+      if (bons === lignes.length){ res.innerHTML = `<b class="lg-bien">Bravo, tout est dans l'ordre !</b>`; bd.hidden = false; brancherBulles(bd); }
+      else { res.innerHTML = `${bons} / ${lignes.length} répliques bien placées.`; sol.hidden = false; }
+    }
+  });
+  sol.onclick = () => { bd.hidden = false; sol.hidden = true; brancherBulles(bd); bd.scrollIntoView({behavior: "smooth", block: "nearest"}); };
+  el.querySelector(".lg-effacer").onclick = effacer;
+  consigne();
+}
+
+/* ---------- Branchement après affichage ---------- */
+function brancherLangues(racine){
+  if (!racine || !racine.querySelectorAll) return;
+  racine.querySelectorAll(".lg-mod[data-lg]").forEach(el => {
+    if (el.dataset.pret) return; el.dataset.pret = "1";
+    const o = lireObjet(el.dataset.o); if (!o) return;
+    try { ({frise: brancherFriseTemps, prep: brancherPrep, dialogue: brancherDialogue})[el.dataset.lg]?.(el, o); } catch (err){ console.warn(err); }
+  });
+}
+
+/* ---------- Catalogue ---------- */
+MODULES.splice(MODULES.findIndex(m => m.id === "declinaison") + 1, 0,
+  {id: "frise-temps", nom: "Frise des temps", cat: "Langues", icone: "⇢", defaut: () => ({langue: "en", mode: "explorer", titre: "", phrases: lgCopie(LG_DEF_PHRASES.en)}),
+    champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["explorer", "Découverte : on clique sur une phrase"], ["quiz", "Exercice : l'élève trouve le temps de chaque phrase"]]}), CHAMP("titre", "Titre (facultatif)"),
+      CHAMP("phrases", "Phrases", "liste", {sous: [CHAMP("texte", "Phrase"), CHAMP("temps", "Temps", "choix", {options: LG_TEMPS_OPTIONS})], max: 10, neuf: () => ({texte: "", temps: "passe"})})],
+    rendu: htmlFriseTemps, surLangue: o => { if (lgPareil(o.phrases, LG_DEF_PHRASES[o.langue === "es" ? "en" : "es"])) o.phrases = lgCopie(LG_DEF_PHRASES[lgL(o)]); }},
+  {id: "prepositions", nom: "Prépositions de lieu", cat: "Langues", icone: "⊡", defaut: () => ({langue: "en", mode: "explorer", titre: "", depart: "on", traduction: true}),
+    champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["explorer", "Découverte : on clique sur une préposition"], ["quiz", "Exercice : l'élève trouve où est le chat"]]}), CHAMP("titre", "Titre (facultatif)"),
+      CHAMP("depart", "Position de départ du chat", "choix", {options: LG_PREP_OPTIONS, si: o => o.mode !== "quiz"}), CHAMP("traduction", "Traduction en français", "case")],
+    rendu: htmlPrepositions},
+  {id: "dialogue", nom: "Dialogue en BD", cat: "Langues", icone: "❝", defaut: () => ({langue: "en", mode: "lecture", traduction: true, ...lgCopie(LG_DEF_DIALOGUE.en)}),
+    champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["lecture", "Lecture (clic sur une bulle = traduction)"], ["trous", "Texte à trous (les mots entre crochets)"], ["ordre", "Remettre les répliques dans l'ordre"]]}),
+      CHAMP("titre", "Titre (facultatif)"), CHAMP("decor", "Décor", "choix", {options: LG_DECORS}), CHAMP("perso1", "Personnage 1 (à gauche)"), CHAMP("perso2", "Personnage 2 (à droite)"),
+      CHAMP("lignes", "Répliques — mets entre [crochets] les mots à trouver en texte à trous", "liste", {sous: [CHAMP("qui", "Qui parle", "choix", {options: [["1", "Personnage 1"], ["2", "Personnage 2"]]}), CHAMP("texte", "Réplique"), CHAMP("fr", "Traduction (facultatif)")], max: 12, neuf: () => ({qui: "1", texte: "", fr: ""})}),
+      CHAMP("traduction", "Traduction au clic", "case")],
+    rendu: htmlDialogue, surLangue: o => { const a = LG_DEF_DIALOGUE[o.langue === "es" ? "en" : "es"]; if (lgPareil(o.lignes, a.lignes)) Object.assign(o, lgCopie(LG_DEF_DIALOGUE[lgL(o)])); }}
+);
 /* ===================== GÉRANT : ÉDITEUR D'EXERCICES (simplifié) ===================== */
 /* Une question à la fois : on choisit le type, on écrit l'énoncé, on donne la réponse.
    Les options (difficulté, rappel, explication, illustration) sont repliées. Aperçu élève en direct. */
