@@ -848,10 +848,38 @@ a.lien{color:var(--accent)}
 @keyframes lg-pop{from{transform:scale(0)}}
 @keyframes lg-entre{from{opacity:0;transform:translateY(4px)}}
 @keyframes lg-pulse{from{transform:scale(1);opacity:.9}to{transform:scale(2.4);opacity:0}}
-@keyframes lg-saut{50%{transform:translateY(-44px)}}
+@keyframes lg-saut{50%{transform:translateY(var(--saut,-44px))}}
 @keyframes lg-flotte{50%{transform:translateY(-8px)}}
 @keyframes lg-cligne{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
 @keyframes lg-secoue{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.lg-cube-fond{opacity:0;transition:opacity .35s}.lg-scene.verre .lg-cube-fond{opacity:1}.lg-cube>*{transition:opacity .35s}.lg-scene.verre .lg-cube>*{opacity:.35}
+.lg-lecteur{display:flex;flex-direction:column;gap:8px}
+.lg-scene-bd{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--ligne);cursor:pointer;outline:none;user-select:none}
+.lg-scene-bd:focus-visible{box-shadow:0 0 0 3px var(--accent)}
+.lg-bd-svg{display:block;width:100%;height:auto}
+.lg-nom-bd{font:800 15px var(--f-texte),Arial,sans-serif;text-anchor:middle;fill:#3b3326}.lg-scene-bd.nuit .lg-nom-bd{fill:#e8e8ea}
+.lg-forme{animation:lg-derive 7s ease-in-out infinite alternate}
+.lg-corps{transform-box:fill-box;transform-origin:50% 100%;animation:lg-respire 2.8s ease-in-out infinite}
+.lg-perso .b-ouverte{opacity:0}.lg-perso.bouche .b-ouverte{opacity:1}.lg-perso.bouche .b-fermee{opacity:0}
+.lg-perso{transition:opacity .25s}.lg-perso.ecoute{opacity:.88}
+.lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:3px solid #1d1f24;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.82rem,2.3vw,1.02rem);line-height:1.42;box-shadow:0 4px 0 rgba(0,0,0,.14);text-align:left;cursor:pointer}
+.lg-bulle-bd.q1{left:4%}.lg-bulle-bd.q2{right:4%}
+.lg-bulle-bd::after,.lg-bulle-bd::before{content:"";position:absolute}
+.lg-bulle-bd::after{bottom:-17px;width:26px;height:17px;background:#1d1f24}.lg-bulle-bd::before{bottom:-11px;width:17px;height:12px;background:#fff;z-index:1}
+.lg-bulle-bd.q1::after{left:16%;clip-path:polygon(0 0,100% 0,15% 100%)}.lg-bulle-bd.q1::before{left:calc(16% + 4px);clip-path:polygon(0 0,100% 0,12% 100%)}
+.lg-bulle-bd.q2::after{right:16%;clip-path:polygon(0 0,100% 0,85% 100%)}.lg-bulle-bd.q2::before{right:calc(16% + 4px);clip-path:polygon(0 0,100% 0,88% 100%)}
+.lg-bulle-bd .lg-qui{color:#8a7f6a}.lg-bulle-bd.q1 .lg-qui{color:#c23a3f}.lg-bulle-bd.q2 .lg-qui{color:#2a6aa3}
+.lg-dit{display:block;min-height:1.42em;white-space:pre-wrap}
+.lg-bulle-bd .lg-fr{margin-top:5px;padding-top:4px;border-top:1px dashed #c9bda5;color:#6b5f4a;font-size:.86em}
+.lg-indic{position:absolute;right:9px;bottom:2px;font-size:.62rem;color:#8a7f6a;opacity:0}.lg-bulle-bd.fini .lg-indic{opacity:1;animation:lg-clignote 1s steps(2) infinite}
+.lg-bulle-bd .int-trou{padding:0 4px;background:#fff6dc;color:#1d1f24;border-color:#d9b25a;font-size:.95em}
+.lg-bulle-bd .int-trou.ok{background:#e2f3e2;border-color:#6fbf73}.lg-bulle-bd .int-trou.ko{background:#fbe2e2;border-color:#e5484d;text-decoration:line-through}
+.lg-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.lg-nav-droite{margin-left:auto;display:flex;gap:6px}
+.lg-compteur{font:700 .78rem var(--f-mono);color:var(--doux);min-width:46px;text-align:center}
+.lg-nav [aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+@keyframes lg-respire{50%{transform:scale(1.025,.975)}}
+@keyframes lg-derive{to{transform:translate(8px,-10px) rotate(14deg)}}
+@keyframes lg-clignote{50%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.lg-mod *{animation:none!important;transition:none!important}}
 .ec-bloc{display:flex;flex-direction:column;gap:12px}.ec-lecteur{gap:10px;align-items:center}.ec-compte{font-size:.84rem}
 .ec-choix button.choisi{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--surface-2))}
@@ -2806,10 +2834,10 @@ const BANQUE_LANGUES = [
   LQ("es", "Culture", {q: "¿Cuál es la capital de Argentina?", choix: ["Buenos Aires", "Santiago", "Lima", "Montevideo"], bonne: 0, exp: "Santiago : Chili ; Lima : Pérou ; Montevideo : Uruguay."})
 ];
 // BD par défaut des modules (sans dépendre de l'ordre de chargement des fichiers)
-function LG_DEF_BD_EN(){ return {titre: "At the café", decor: "cafe", perso1: "Emma", perso2: "Leo", lignes: [
+function LG_DEF_BD_EN(){ return {titre: "At the café", fond: "jour", perso1: "Emma", perso2: "Leo", lignes: [
   {qui: "1", texte: "Hi Leo! What did you do last weekend?"}, {qui: "2", texte: "I went to the cinema with my cousin."}, {qui: "1", texte: "Cool! Which film did you see?"},
   {qui: "2", texte: "A science-fiction film. It was amazing!"}, {qui: "1", texte: "I'm going to watch it next Saturday."}, {qui: "2", texte: "You will love it, I promise!"}]}; }
-function LG_DEF_BD_ES(){ return {titre: "En la calle", decor: "rue", perso1: "Lucía", perso2: "Pablo", lignes: [
+function LG_DEF_BD_ES(){ return {titre: "En la calle", fond: "soir", perso1: "Lucía", perso2: "Pablo", lignes: [
   {qui: "1", texte: "¡Hola, Pablo! ¿Qué hiciste el fin de semana?"}, {qui: "2", texte: "Fui al cine con mi prima."}, {qui: "1", texte: "¡Qué guay! ¿Qué película viste?"},
   {qui: "2", texte: "Una película de ciencia ficción. ¡Fue genial!"}, {qui: "1", texte: "Yo voy a verla el sábado que viene."}, {qui: "2", texte: "¡Te va a encantar!"}]}; }
 
@@ -2848,8 +2876,8 @@ GENERATEURS.push(
     return qcm({q: `Quel temps est utilisé dans : « ${ph} » ?`, exp: `${nomTempsLg("en", k)} : ${LG_TEMPS.en[k].emploi}`, theme: "Les temps"}, nomTempsLg("en", k), melanger(autres).map(x => nomTempsLg("en", x))); }, "en"],
   ["dnb", "langues", () => { const k = prendre(Object.keys(LG_TEMPS.en)), bonne = prendre(TEMPS_PHRASES.en.filter(p => p[1] === k))[0], faux = melanger(TEMPS_PHRASES.en.filter(p => p[1] !== k && !(k.startsWith("present") && p[1].startsWith("present")))).slice(0, 3).map(p => p[0]);
     return qcm({q: "Quelle phrase correspond à ce schéma de la frise des temps ?", fig: FIG_LG({type: "frise-temps", langue: "en", statique: true, montrer: k}), exp: `Le schéma représente le ${nomTempsLg("en", k)} : ${LG_TEMPS.en[k].emploi}`, theme: "Frise des temps"}, bonne, faux); }, "en"],
-  ["dnb", "langues", () => { const p = prendre(LG_PREP_ORDRE), bonne = LG_PREP_TXT.en[p][0];
-    return qcm({q: "Where is the cat? Choisis la bonne préposition.", fig: FIG_LG({type: "prepositions", langue: "en", statique: true, depart: p}), exp: LG_PREP_TXT.en[p][1] + " — " + LG_PREP_TXT.en[p][2], theme: "Prépositions"}, bonne, melanger(LG_PREP_ORDRE.filter(x => x !== p)).map(x => LG_PREP_TXT.en[x][0])); }, "en"],
+  ["dnb", "langues", () => { const sid = prendre(Object.keys(LG_SCENES)), sc = LG_SCENES[sid], preps = lgPrepsDe(sc), p = prendre(preps), inf = lgPrepInfo(sid, "en", p);
+    return qcm({q: `${inf.question} Choisis la bonne préposition.`, fig: FIG_LG({type: "prepositions", langue: "en", scene: sid, statique: true, depart: p}), exp: inf.phrase + " — " + inf.fr, theme: "Prépositions"}, inf.mot, melanger(preps.filter(x => x !== p)).map(x => LG_PREP_MOTS.en[x])); }, "en"],
   ["dnb", "langues", () => { const [fr, en] = prendre(VOCAB_EN);
     return qcm({q: `Comment dit-on « ${fr} » en anglais ?`, exp: `${fr} = ${en}.`, theme: "Vocabulaire"}, en, melanger(VOCAB_EN.filter(x => x[1] !== en)).map(x => x[1])); }, "en"],
   ["dnb", "langues", () => { const [ph, r] = prendre(FOR_SINCE);
@@ -2861,8 +2889,8 @@ GENERATEURS.push(
     return qcm({q: `¿Qué tiempo se usa en: «${ph}»?`, exp: `${nomTempsLg("es", k)} : ${LG_TEMPS.es[k].emploi}`, theme: "Les temps"}, nomTempsLg("es", k), melanger(autres).map(x => nomTempsLg("es", x))); }, "es"],
   ["dnb", "langues", () => { const k = prendre(Object.keys(LG_TEMPS.es)), bonne = prendre(TEMPS_PHRASES.es.filter(p => p[1] === k))[0], faux = melanger(TEMPS_PHRASES.es.filter(p => p[1] !== k && !(k.startsWith("present") && p[1].startsWith("present")))).slice(0, 3).map(p => p[0]);
     return qcm({q: "¿Qué frase corresponde a este esquema de la línea del tiempo?", fig: FIG_LG({type: "frise-temps", langue: "es", statique: true, montrer: k}), exp: `Le schéma représente le ${nomTempsLg("es", k)} : ${LG_TEMPS.es[k].emploi}`, theme: "Frise des temps"}, bonne, faux); }, "es"],
-  ["dnb", "langues", () => { const p = prendre(LG_PREP_ORDRE), bonne = LG_PREP_TXT.es[p][0];
-    return qcm({q: "¿Dónde está el gato? Elige la preposición correcta.", fig: FIG_LG({type: "prepositions", langue: "es", statique: true, depart: p}), exp: LG_PREP_TXT.es[p][1] + " — " + LG_PREP_TXT.es[p][2], theme: "Prépositions"}, bonne, melanger(LG_PREP_ORDRE.filter(x => x !== p)).map(x => LG_PREP_TXT.es[x][0])); }, "es"],
+  ["dnb", "langues", () => { const sid = prendre(Object.keys(LG_SCENES)), sc = LG_SCENES[sid], preps = lgPrepsDe(sc), p = prendre(preps), inf = lgPrepInfo(sid, "es", p);
+    return qcm({q: `${inf.question} Elige la preposición correcta.`, fig: FIG_LG({type: "prepositions", langue: "es", scene: sid, statique: true, depart: p}), exp: inf.phrase + " — " + inf.fr, theme: "Prépositions"}, inf.mot, melanger(preps.filter(x => x !== p)).map(x => LG_PREP_MOTS.es[x])); }, "es"],
   ["dnb", "langues", () => { const [fr, es] = prendre(VOCAB_ES);
     return qcm({q: `Comment dit-on « ${fr} » en espagnol ?`, exp: `${fr} = ${es}.`, theme: "Vocabulaire"}, es, melanger(VOCAB_ES.filter(x => x[1] !== es)).map(x => x[1])); }, "es"],
   ["dnb", "langues", () => { const [ph, r] = prendre(SER_ESTAR), formes = ["es", "está", "somos", "estamos", "están", "son", "eres", "estás", "soy", "estoy"];
@@ -3558,7 +3586,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.59";
+const VERSION_SITE = "0.60";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7565,19 +7593,11 @@ function brancherFriseTemps(el, o){
   demarrer();
 }
 
-/* ---------- 2. PRÉPOSITIONS DE LIEU ---------- */
-// position du chat : x, y (sol), échelle, couche (b = derrière la face avant de la boîte, f = devant tout)
-const LG_PREPS = {on: [160, 168, .9, "f"], under: [160, 291, .8, "f"], in: [422, 248, .84, "b"], behind: [492, 272, .82, "b"], front: [420, 324, 1, "f"], next: [538, 292, .88, "f"], between: [312, 292, .88, "f"], above: [160, 136, .84, "f"]};
-const LG_PREP_TXT = {
-  en: {in: ["in", "The cat is in the box.", "Le chat est dans la boîte."], on: ["on", "The cat is on the table.", "Le chat est sur la table."], under: ["under", "The cat is under the table.", "Le chat est sous la table."],
-    behind: ["behind", "The cat is behind the box.", "Le chat est derrière la boîte."], front: ["in front of", "The cat is in front of the box.", "Le chat est devant la boîte."], next: ["next to", "The cat is next to the box.", "Le chat est à côté de la boîte."],
-    between: ["between", "The cat is between the table and the box.", "Le chat est entre la table et la boîte."], above: ["above", "The cat is above the table.", "Le chat est au-dessus de la table."]},
-  es: {in: ["dentro de", "El gato está dentro de la caja.", "Le chat est dans la boîte."], on: ["encima de", "El gato está encima de la mesa.", "Le chat est sur la table."], under: ["debajo de", "El gato está debajo de la mesa.", "Le chat est sous la table."],
-    behind: ["detrás de", "El gato está detrás de la caja.", "Le chat est derrière la boîte."], front: ["delante de", "El gato está delante de la caja.", "Le chat est devant la boîte."], next: ["al lado de", "El gato está al lado de la caja.", "Le chat est à côté de la boîte."],
-    between: ["entre", "El gato está entre la mesa y la caja.", "Le chat est entre la table et la boîte."], above: ["por encima de", "El gato salta por encima de la mesa.", "Le chat saute par-dessus la table."]}
-};
+/* ---------- 2. PRÉPOSITIONS DE LIEU : plusieurs scènes (le chat, la boule et le cube, la voiture) ---------- */
+// Couches du personnage mobile : a = derrière l'objet, b = dans l'objet, f = devant tout.
 const LG_PREP_ORDRE = ["in", "on", "under", "behind", "front", "next", "between", "above"];
-const LG_PREP_OPTIONS = LG_PREP_ORDRE.map(k => [k, `${LG_PREP_TXT.en[k][0]} / ${LG_PREP_TXT.es[k][0]}`]);
+const LG_PREP_MOTS = {en: {in: "in", on: "on", under: "under", behind: "behind", front: "in front of", next: "next to", between: "between", above: "above"},
+  es: {in: "dentro de", on: "encima de", under: "debajo de", behind: "detrás de", front: "delante de", next: "al lado de", between: "entre", above: "por encima de"}};
 function lgChat(){
   return `<path d="M17 -8q30 -2 25 -30q-3 -11 -11 -8" fill="none" stroke="#e08a36" stroke-width="8" stroke-linecap="round"/>
     <ellipse cx="0" cy="-23" rx="23" ry="23" fill="#f0a04b"/><ellipse cx="0" cy="-17" rx="12" ry="14" fill="#fbe3c4"/>
@@ -7588,83 +7608,135 @@ function lgChat(){
     <path d="M-9 -47h-14M-9 -45l-13 4M9 -47h14M9 -45l13 4" stroke="#7a5a40" stroke-width="1" opacity=".7"/>
     <ellipse cx="-9" cy="-2" rx="7" ry="4.5" fill="#fbe3c4"/><ellipse cx="9" cy="-2" rx="7" ry="4.5" fill="#fbe3c4"/>`;
 }
-function lgScenePrep(u, pos){
-  const [x, y, k, c] = LG_PREPS[pos] || LG_PREPS.on, tr = `transform:translate(${x}px,${y}px) scale(${k})`;
-  const chat = couche => `<g class="lg-chat-pos" data-couche="${couche}" style="${tr};opacity:${couche === c ? 1 : 0}"><g class="lg-chat-saut${pos === "above" ? " flotte" : ""}">${lgChat()}</g></g>`;
-  return `<svg viewBox="0 0 600 336" class="lg-scene" role="img" aria-label="Où est le chat ?"><defs><linearGradient id="${u}mur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf4e3"/><stop offset="1" stop-color="#f5e1c3"/></linearGradient></defs>
-    <rect width="600" height="336" fill="url(#${u}mur)"/>
-    <rect x="404" y="34" width="118" height="100" rx="4" fill="#cfe8f7" stroke="#b98a58" stroke-width="6"/><path d="M463 34v100M404 84h118" stroke="#b98a58" stroke-width="4"/><circle cx="436" cy="58" r="10" fill="#fff7d1"/>
-    <g transform="translate(160 0)"><rect x="112" y="40" width="96" height="66" rx="3" fill="#fff" stroke="#8a6a44" stroke-width="5"/><path d="M118 100l26 -30 18 18 12 -12 28 24z" fill="#8fc27a"/><circle cx="186" cy="58" r="7" fill="#f2ae02"/></g>
-    <rect y="282" width="600" height="8" fill="#fff"/><rect y="290" width="600" height="46" fill="#d4ab7e"/><path d="M0 306H600M0 322H600" stroke="#c39967" stroke-width="1.5"/><path d="M90 290v16M260 306v16M430 290v16M520 306v16M170 322v14M350 322v14" stroke="#c39967" stroke-width="1.5"/>
-    <ellipse cx="160" cy="292" rx="96" ry="6" fill="#000" opacity=".1"/><ellipse cx="428" cy="293" rx="66" ry="6" fill="#000" opacity=".12"/>
-    <rect x="66" y="166" width="188" height="14" rx="3" fill="#a96d42"/><rect x="66" y="178" width="188" height="6" fill="#86532f"/><rect x="80" y="184" width="11" height="107" rx="2" fill="#93603a"/><rect x="229" y="184" width="11" height="107" rx="2" fill="#93603a"/>
-    <rect x="216" y="152" width="14" height="14" rx="2" fill="#fff" stroke="#c9c2b5" stroke-width="1.5"/><path d="M230 156q6 0 6 4t-6 4" fill="none" stroke="#c9c2b5" stroke-width="1.8"/>
-    <path d="M370 222L384 208H486L470 222Z" fill="#7d5128"/><path d="M384 208L390 178H480L486 208Z" fill="#c58f58" stroke="#a8733f" stroke-width="1.5"/>
-    ${chat("b")}
-    <rect x="370" y="222" width="100" height="70" fill="#d8a46a" stroke="#a8733f" stroke-width="1.5"/><path d="M470 222L486 208V278L470 292Z" fill="#b98448" stroke="#a8733f" stroke-width="1.5"/>
-    <rect x="410" y="222" width="20" height="70" fill="#ecc893" opacity=".75"/><path d="M370 222L352 240H392L398 222Z" fill="#e2b47d" stroke="#a8733f" stroke-width="1.5"/>
-    ${chat("f")}</svg>`;
+const lgBoule = () => `<circle cy="-26" r="26" fill="#e5484d"/><path d="M-26 -26a26 26 0 0 0 52 0a30 22 0 0 1 -52 0z" fill="#c23a3f"/><circle cx="-9" cy="-36" r="8" fill="#fff" opacity=".55"/>`;
+const lgVoiture = () => `<path d="M-56 -14Q-58 -36 -40 -38L-26 -40Q-14 -60 6 -60H22Q36 -60 46 -40Q58 -38 58 -24V-14Z" fill="#3d8fd1"/>
+  <path d="M-18 -40Q-10 -54 2 -54V-40ZM8 -54H20Q30 -54 38 -40H8Z" fill="#cfe8f7"/><rect x="-56" y="-26" width="12" height="6" rx="2" fill="#f2ae02"/><rect x="50" y="-30" width="9" height="6" rx="2" fill="#ffe7a3"/>
+  <circle cx="-32" cy="-12" r="12" fill="#2b2f36"/><circle cx="-32" cy="-12" r="5" fill="#b9bec7"/><circle cx="32" cy="-12" r="12" fill="#2b2f36"/><circle cx="32" cy="-12" r="5" fill="#b9bec7"/>`;
+const LG_SCENES = {
+  chat: {nom: "Le chat (table et carton)", mobile: lgChat, saut: 44,
+    question: {en: "Where is the cat?", es: "¿Dónde está el gato?"},
+    pos: {on: [160, 168, .9, "f"], under: [160, 291, .8, "f"], in: [428, 254, .84, "b"], behind: [480, 234, .74, "a"], front: [420, 326, 1, "f"], next: [540, 292, .88, "f"], between: [312, 292, .88, "f"], above: [160, 126, .84, "f"]},
+    txt: {en: {in: "The cat is [in] the box.", on: "The cat is [on] the table.", under: "The cat is [under] the table.", behind: "The cat is [behind] the box.", front: "The cat is [in front of] the box.", next: "The cat is [next to] the box.", between: "The cat is [between] the table and the box.", above: "The cat is [above] the table."},
+      es: {in: "El gato está [dentro de] la caja.", on: "El gato está [encima de] la mesa.", under: "El gato está [debajo de] la mesa.", behind: "El gato está [detrás de] la caja.", front: "El gato está [delante de] la caja.", next: "El gato está [al lado de] la caja.", between: "El gato está [entre] la mesa y la caja.", above: "El gato salta [por encima de] la mesa."},
+      fr: {in: "Le chat est dans la boîte.", on: "Le chat est sur la table.", under: "Le chat est sous la table.", behind: "Le chat est derrière la boîte.", front: "Le chat est devant la boîte.", next: "Le chat est à côté de la boîte.", between: "Le chat est entre la table et la boîte.", above: "Le chat est au-dessus de la table."}},
+    dessin: u => ({
+      fond: `<defs><linearGradient id="${u}mur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf4e3"/><stop offset="1" stop-color="#f5e1c3"/></linearGradient></defs>
+        <rect width="600" height="336" fill="url(#${u}mur)"/>
+        <rect x="404" y="34" width="118" height="100" rx="4" fill="#cfe8f7" stroke="#b98a58" stroke-width="6"/><path d="M463 34v100M404 84h118" stroke="#b98a58" stroke-width="4"/><circle cx="436" cy="58" r="10" fill="#fff7d1"/>
+        <rect x="272" y="40" width="96" height="66" rx="3" fill="#fff" stroke="#8a6a44" stroke-width="5"/><path d="M278 100l26 -30 18 18 12 -12 28 24z" fill="#8fc27a"/><circle cx="346" cy="58" r="7" fill="#f2ae02"/>
+        <rect y="282" width="600" height="8" fill="#fff"/><rect y="290" width="600" height="46" fill="#d4ab7e"/><path d="M0 306H600M0 322H600" stroke="#c39967" stroke-width="1.5"/>
+        <ellipse cx="160" cy="292" rx="96" ry="6" fill="#000" opacity=".1"/><ellipse cx="428" cy="293" rx="66" ry="6" fill="#000" opacity=".12"/>
+        <rect x="66" y="166" width="188" height="14" rx="3" fill="#a96d42"/><rect x="66" y="178" width="188" height="6" fill="#86532f"/><rect x="80" y="184" width="11" height="107" rx="2" fill="#93603a"/><rect x="229" y="184" width="11" height="107" rx="2" fill="#93603a"/>
+        <rect x="216" y="152" width="14" height="14" rx="2" fill="#fff" stroke="#c9c2b5" stroke-width="1.5"/>`,
+      milieu: `<path d="M370 222L384 208H486L470 222Z" fill="#6e4521"/>`,
+      avant: `<rect x="370" y="222" width="100" height="70" fill="#d8a46a"/><path d="M470 222L486 208V278L470 292Z" fill="#b98448"/><rect x="410" y="222" width="20" height="70" fill="#ecc893" opacity=".75"/>
+        <path d="M370 222L350 242H392L398 222Z" fill="#e2b47d"/><path d="M470 222L494 238L500 216L486 208Z" fill="#c99556"/>`})},
+  formes: {nom: "La boule et le cube", mobile: lgBoule, saut: 50, verre: true,
+    question: {en: "Where is the ball?", es: "¿Dónde está la bola?"},
+    pos: {on: [307, 87, .9, "f"], under: [300, 302, .9, "f"], in: [306, 188, .78, "b"], behind: [392, 150, .8, "a"], front: [292, 244, 1.15, "f"], next: [158, 188, 1, "f"], between: [422, 178, .92, "f"], above: [307, 52, .85, "f"]},
+    txt: {en: {in: "The ball is [in] the cube.", on: "The ball is [on] the cube.", under: "The ball is [under] the cube.", behind: "The ball is [behind] the cube.", front: "The ball is [in front of] the cube.", next: "The ball is [next to] the cube.", between: "The ball is [between] the cube and the pyramid.", above: "The ball is [above] the cube."},
+      es: {in: "La bola está [dentro del] cubo.", on: "La bola está [encima del] cubo.", under: "La bola está [debajo del] cubo.", behind: "La bola está [detrás del] cubo.", front: "La bola está [delante del] cubo.", next: "La bola está [al lado del] cubo.", between: "La bola está [entre] el cubo y la pirámide.", above: "La bola está [por encima del] cubo."},
+      fr: {in: "La boule est dans le cube.", on: "La boule est sur le cube.", under: "La boule est sous le cube.", behind: "La boule est derrière le cube.", front: "La boule est devant le cube.", next: "La boule est à côté du cube.", between: "La boule est entre le cube et la pyramide.", above: "La boule est au-dessus du cube."}},
+    dessin: u => ({
+      fond: `<defs><linearGradient id="${u}ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef0ff"/><stop offset="1" stop-color="#e2e6fb"/></linearGradient></defs>
+        <rect width="600" height="336" fill="url(#${u}ciel)"/><path d="M0 262H600V336H0Z" fill="#d3d8f5"/><path d="M0 286H600V292H0ZM0 314H600V320H0Z" fill="#c6ccef"/>
+        <circle cx="70" cy="60" r="16" fill="#f2ae02" opacity=".35"/><rect x="520" y="40" width="26" height="26" rx="4" fill="#e86f9a" opacity=".3" transform="rotate(18 533 53)"/><path d="M60 230l14 -24 14 24z" fill="#5fa8d3" opacity=".3"/>
+        <ellipse cx="307" cy="302" rx="70" ry="9" fill="#9aa2d6" opacity=".55"/><ellipse cx="515" cy="302" rx="44" ry="7" fill="#9aa2d6" opacity=".45"/>
+        <path d="M470 200L515 110L560 200Z" fill="#4f9d3a"/><path d="M515 110L560 200L582 186Z" fill="#3b7d2b"/>`,
+      milieu: `<g class="lg-cube-fond"><path d="M274 74H374V174H274Z" fill="#2c4f86"/><path d="M240 200L274 174H374L340 200Z" fill="#355f9e"/></g>`,
+      avant: `<g class="lg-cube"><path d="M240 100L274 74H374L340 100Z" fill="#7fb2ea"/><path d="M340 100L374 74V174L340 200Z" fill="#2f73ad"/><rect x="240" y="100" width="100" height="100" fill="#3d8fd1"/></g>`})},
+  parking: {nom: "La voiture (pont et garage)", mobile: lgVoiture, saut: 0,
+    question: {en: "Where is the car?", es: "¿Dónde está el coche?"},
+    pos: {on: [135, 150, .78, "f"], under: [135, 262, .78, "f"], in: [430, 260, .7, "b"], behind: [506, 240, .6, "a"], front: [430, 322, 1, "f"], next: [552, 280, .78, "f"], between: [305, 280, .85, "f"]},
+    txt: {en: {in: "The car is [in] the garage.", on: "The car is [on] the bridge.", under: "The car is [under] the bridge.", behind: "The car is [behind] the garage.", front: "The car is [in front of] the garage.", next: "The car is [next to] the garage.", between: "The car is [between] the bridge and the garage."},
+      es: {in: "El coche está [dentro del] garaje.", on: "El coche está [encima del] puente.", under: "El coche está [debajo del] puente.", behind: "El coche está [detrás del] garaje.", front: "El coche está [delante del] garaje.", next: "El coche está [al lado del] garaje.", between: "El coche está [entre] el puente y el garaje."},
+      fr: {in: "La voiture est dans le garage.", on: "La voiture est sur le pont.", under: "La voiture est sous le pont.", behind: "La voiture est derrière le garage.", front: "La voiture est devant le garage.", next: "La voiture est à côté du garage.", between: "La voiture est entre le pont et le garage."}},
+    dessin: u => ({
+      fond: `<rect width="600" height="336" fill="#cfe8f7"/><circle cx="560" cy="44" r="20" fill="#f8d36a"/>
+        <rect x="250" y="120" width="44" height="142" fill="#b7c7d6"/><rect x="300" y="90" width="52" height="172" fill="#a9bacb"/><rect x="510" y="150" width="40" height="112" fill="#b7c7d6"/>
+        <rect y="262" width="600" height="74" fill="#8b8f96"/><rect y="256" width="600" height="8" fill="#c9c4ba"/><path d="M0 300H600V306H0Z" fill="#a4a8ae"/>${[40, 140, 240, 340, 440, 540].map(x => `<rect x="${x}" y="318" width="44" height="6" rx="2" fill="#fff" opacity=".85"/>`).join("")}
+        <rect x="48" y="168" width="16" height="94" fill="#9c8a73"/><rect x="206" y="168" width="16" height="94" fill="#9c8a73"/><rect x="20" y="150" width="230" height="18" fill="#b9a48a"/><rect x="20" y="140" width="230" height="5" fill="#8a7860"/>
+        ${[30, 70, 110, 150, 190, 230].map(x => `<rect x="${x}" y="140" width="4" height="12" fill="#8a7860"/>`).join("")}`,
+      milieu: `<rect x="385" y="190" width="90" height="72" fill="#3b3f47"/>`,
+      avant: `<path d="M360 150H500V262H360ZM385 190V262H475V190Z" fill="#e8a87c" fill-rule="evenodd"/><path d="M350 152L430 106L510 152Z" fill="#c9503f"/><rect x="385" y="190" width="90" height="10" fill="#b8bcc4"/><rect x="392" y="160" width="76" height="16" rx="3" fill="#fff" opacity=".8"/>`})}
+};
+const lgScene = o => LG_SCENES[o && o.scene] || LG_SCENES.chat;
+const lgPrepsDe = sc => LG_PREP_ORDRE.filter(p => sc.pos[p]);
+const lgPosDepart = (sc, p) => sc.pos[p] ? p : lgPrepsDe(sc)[0];
+// infos d'une préposition pour une scène : mot, phrase (avec [repère]), traduction
+const lgPrepInfo = (sceneId, lv, p) => { const sc = LG_SCENES[sceneId] || LG_SCENES.chat; return {mot: LG_PREP_MOTS[lv][p], phrase: sc.txt[lv][p].replace(/[[\]]/g, ""), fr: sc.txt.fr[p], question: sc.question[lv]}; };
+function lgScenePrep(sc, u, pos){
+  const [x, y, k, c] = sc.pos[pos], tr = `transform:translate(${x}px,${y}px) scale(${k})`, d = sc.dessin(u);
+  const mobile = couche => `<g class="lg-chat-pos" data-couche="${couche}" style="${tr};opacity:${couche === c ? 1 : 0}"><g class="lg-chat-saut${pos === "above" ? " flotte" : ""}">${sc.mobile()}</g></g>`;
+  return `<svg viewBox="0 0 600 336" class="lg-scene${sc.verre && pos === "in" ? " verre" : ""}" role="img" aria-label="${esc(sc.question.en)}">${d.fond}${mobile("a")}${d.milieu}${mobile("b")}${d.avant}${mobile("f")}</svg>`;
 }
-function lgPhrasePrep(L, p, trad){
-  const [prep, ph, fr] = LG_PREP_TXT[L][p], i = ph.indexOf(" " + prep + " ") + 1;
-  return `<span class="lg-pp">${esc(ph.slice(0, i))}<mark>${esc(prep)}</mark>${esc(ph.slice(i + prep.length))}</span>${trad ? `<span class="lg-fr">${esc(fr)}</span>` : ""}`;
+function lgPhrasePrep(sc, L, p, trad){
+  const t = esc(sc.txt[L][p]).replace(/\[([^\]]*)\]/, "<mark>$1</mark>");
+  return `<span class="lg-pp">${t}</span>${trad ? `<span class="lg-fr">${esc(sc.txt.fr[p])}</span>` : ""}`;
 }
 function htmlPrepositions(o){
-  const L = lgL(o), u = "lg" + (++lgUid) + "-", quiz = o.mode === "quiz", pos = quiz ? "under" : (LG_PREPS[o.depart] ? o.depart : "on"), trad = o.traduction !== false;
-  if (o.statique) return `<div class="lg-mod lg-prep lg-statique"><div class="lg-papier">${lgScenePrep(u, pos)}</div></div>`;
-  const question = L === "es" ? "¿Dónde está el gato?" : "Where is the cat?";
+  const L = lgL(o), sc = lgScene(o), u = "lg" + (++lgUid) + "-", quiz = o.mode === "quiz", preps = lgPrepsDe(sc), pos = quiz ? preps[2] : lgPosDepart(sc, o.depart), trad = o.traduction !== false;
+  if (o.statique) return `<div class="lg-mod lg-prep lg-statique"><div class="lg-papier">${lgScenePrep(sc, u, pos)}</div></div>`;
   return `<div class="lg-mod lg-prep" data-lg="prep" data-u="${u}" data-o="${encoderObjet(o)}">
-    ${lgTete(o, o.titre || "Prépositions de lieu", quiz ? "Exercice : regarde où est le chat et choisis la bonne préposition." : "Clique sur une préposition : le chat se déplace.")}
-    <div class="lg-papier">${lgScenePrep(u, pos)}</div>
-    <div class="lg-phrase-prep">${quiz ? `<span class="lg-pp">${question}</span>` : lgPhrasePrep(L, pos, trad)}</div>
-    <div class="lg-choix lg-choix-centre">${LG_PREP_ORDRE.map(k => `<button type="button" data-p="${k}" class="${!quiz && k === pos ? "actif" : ""}">${esc(LG_PREP_TXT[L][k][0])}</button>`).join("")}</div>
+    ${lgTete(o, o.titre || "Prépositions de lieu", quiz ? "Exercice : regarde la scène et choisis la bonne préposition." : "Clique sur une préposition : l'objet se déplace.")}
+    <div class="lg-papier">${lgScenePrep(sc, u, pos)}</div>
+    <div class="lg-phrase-prep">${quiz ? `<span class="lg-pp">${esc(sc.question[L])}</span>` : lgPhrasePrep(sc, L, pos, trad)}</div>
+    <div class="lg-choix lg-choix-centre">${preps.map(k => `<button type="button" data-p="${k}" class="${!quiz && k === pos ? "actif" : ""}">${esc(LG_PREP_MOTS[L][k])}</button>`).join("")}</div>
     ${quiz ? `<div class="lg-pied lg-pied-centre"><span class="lg-res">Score : 0 / 0</span><button type="button" class="mini-btn lg-suite" hidden>Autre position →</button></div>` : ""}</div>`;
 }
 function brancherPrep(el, o){
-  const L = lgL(o), trad = o.traduction !== false, quiz = o.mode === "quiz";
-  const fb = el.querySelector('.lg-chat-pos[data-couche="b"]'), ff = el.querySelector('.lg-chat-pos[data-couche="f"]'), sauts = [...el.querySelectorAll(".lg-chat-saut")];
+  const L = lgL(o), sc = lgScene(o), trad = o.traduction !== false, quiz = o.mode === "quiz", preps = lgPrepsDe(sc);
+  const svg = el.querySelector(".lg-scene"), couches = {a: el.querySelector('[data-couche="a"]'), b: el.querySelector('[data-couche="b"]'), f: el.querySelector('[data-couche="f"]')}, sauts = [...el.querySelectorAll(".lg-chat-saut")];
   const zp = el.querySelector(".lg-phrase-prep"), boutons = [...el.querySelectorAll("[data-p]")];
-  let pos = quiz ? "under" : (LG_PREPS[o.depart] ? o.depart : "on"), couche = LG_PREPS[pos][3], minut = null;
+  let pos = quiz ? preps[2] : lgPosDepart(sc, o.depart), couche = sc.pos[pos][3], minut = null;
+  const montrer = c => Object.entries(couches).forEach(([k, g]) => g.style.opacity = k === c ? 1 : 0);
   const placer = p => {
-    const [x, y, k, c] = LG_PREPS[p]; clearTimeout(minut);
-    [fb, ff].forEach(g => g.style.transform = `translate(${x}px,${y}px) scale(${k})`);
-    sauts.forEach(g => { g.classList.remove("saut", "flotte"); g.getBoundingClientRect(); g.classList.add("saut"); g.onanimationend = () => { g.classList.remove("saut"); if (pos === "above") g.classList.add("flotte"); }; });
-    if (c === "f"){ fb.style.opacity = 0; ff.style.opacity = 1; }
-    else if (couche === "f") minut = setTimeout(() => { fb.style.opacity = 1; ff.style.opacity = 0; }, 680);
+    const [x, y, k, c] = sc.pos[p]; clearTimeout(minut);
+    Object.values(couches).forEach(g => g.style.transform = `translate(${x}px,${y}px) scale(${k})`);
+    sauts.forEach(g => { g.classList.remove("saut", "flotte"); g.style.setProperty("--saut", -sc.saut + "px"); if (sc.saut){ g.getBoundingClientRect(); g.classList.add("saut"); }
+      g.onanimationend = () => { g.classList.remove("saut"); if (pos === "above") g.classList.add("flotte"); }; if (!sc.saut && p === "above") g.classList.add("flotte"); });
+    if (sc.verre) svg.classList.toggle("verre", p === "in");
+    // l'objet passe devant pendant le trajet, puis se range derrière ou dedans à l'arrivée
+    if (c === "f") montrer("f"); else { montrer(couche === c ? c : "f"); minut = setTimeout(() => montrer(c), 700); }
     couche = c; pos = p;
   };
   if (!quiz){
-    boutons.forEach(b => b.onclick = () => { boutons.forEach(x => x.classList.toggle("actif", x === b)); placer(b.dataset.p); zp.innerHTML = lgPhrasePrep(L, b.dataset.p, trad); });
+    boutons.forEach(b => b.onclick = () => { boutons.forEach(x => x.classList.toggle("actif", x === b)); placer(b.dataset.p); zp.innerHTML = lgPhrasePrep(sc, L, b.dataset.p, trad); });
     return;
   }
-  const res = el.querySelector(".lg-res"), suite = el.querySelector(".lg-suite"), question = L === "es" ? "¿Dónde está el gato?" : "Where is the cat?";
+  const res = el.querySelector(".lg-res"), suite = el.querySelector(".lg-suite");
   let score = 0, total = 0, repondu = false;
   const nouvelle = () => {
-    const autres = LG_PREP_ORDRE.filter(k => k !== pos); placer(autres[Math.floor(Math.random() * autres.length)]);
-    repondu = false; boutons.forEach(b => { b.disabled = false; b.classList.remove("ok", "ko"); }); zp.innerHTML = `<span class="lg-pp">${question}</span>`; suite.hidden = true;
+    const autres = preps.filter(k => k !== pos); placer(autres[Math.floor(Math.random() * autres.length)]);
+    repondu = false; boutons.forEach(b => { b.disabled = false; b.classList.remove("ok", "ko"); }); zp.innerHTML = `<span class="lg-pp">${esc(sc.question[L])}</span>`; suite.hidden = true;
   };
   boutons.forEach(b => b.onclick = () => {
     if (repondu) return; repondu = true; total++;
     const ok = b.dataset.p === pos; if (ok) score++;
     boutons.forEach(x => { x.disabled = true; if (x.dataset.p === pos) x.classList.add("ok"); }); if (!ok) b.classList.add("ko");
-    zp.innerHTML = lgPhrasePrep(L, pos, trad); res.innerHTML = `${ok ? `<b class="lg-bien">Bravo !</b>` : `<b class="lg-rate">Raté.</b>`} Score : ${score} / ${total}`;
+    zp.innerHTML = lgPhrasePrep(sc, L, pos, trad); res.innerHTML = `${ok ? `<b class="lg-bien">Bravo !</b>` : `<b class="lg-rate">Raté.</b>`} Score : ${score} / ${total}`;
     suite.hidden = false; suite.focus({preventScroll: true});
   });
   suite.onclick = nouvelle;
   nouvelle();
 }
 
-/* ---------- 3. DIALOGUE EN BD ---------- */
-const LG_DECORS = [["cafe", "Café"], ["classe", "Salle de classe"], ["rue", "Rue"], ["maison", "Maison"], ["parc", "Parc"]];
+/* ---------- 3. DIALOGUE EN BD : une seule case, un personnage rouge et un bleu, les bulles défilent ---------- */
+const LG_FONDS = [["jour", "Clair"], ["soir", "Coucher de soleil"], ["nuit", "Sombre"]];
+const LG_PALETTES = {
+  jour: {bg: "#fdf3e1", sol: "#f0dcc0", formes: ["#f2ae02", "#e86f9a", "#5fa8d3", "#7cc47f", "#b58ad6"], op: .3},
+  soir: {bg: "#ffe1c7", sol: "#f4c19b", formes: ["#ff8a5c", "#f2ae02", "#e86f9a", "#b58ad6"], op: .36},
+  nuit: {bg: "#1f2340", sol: "#2c315a", formes: ["#f2ae02", "#5fa8d3", "#e86f9a", "#7cc47f"], op: .42}
+};
 const LG_DEF_DIALOGUE = {
-  en: {titre: "At the café", decor: "cafe", perso1: "Emma", perso2: "Leo", lignes: [
+  en: {titre: "At the café", fond: "jour", perso1: "Emma", perso2: "Leo", lignes: [
     {qui: "1", texte: "Hi Leo! What [did] you do last weekend?", fr: "Salut Leo ! Qu'est-ce que tu as fait le week-end dernier ?"},
     {qui: "2", texte: "I [went] to the cinema with my cousin.", fr: "Je suis allé au cinéma avec mon cousin."},
     {qui: "1", texte: "Cool! Which film did you [see]?", fr: "Cool ! Quel film as-tu vu ?"},
     {qui: "2", texte: "A science-fiction film. It [was] amazing!", fr: "Un film de science-fiction. C'était génial !"},
     {qui: "1", texte: "I'm [going] to watch it next Saturday.", fr: "Je vais le regarder samedi prochain."},
     {qui: "2", texte: "You [will] love it, I promise!", fr: "Tu vas l'adorer, promis !"}]},
-  es: {titre: "En la calle", decor: "rue", perso1: "Lucía", perso2: "Pablo", lignes: [
+  es: {titre: "En la calle", fond: "soir", perso1: "Lucía", perso2: "Pablo", lignes: [
     {qui: "1", texte: "¡Hola, Pablo! ¿Qué [hiciste] el fin de semana?", fr: "Salut Pablo ! Qu'est-ce que tu as fait ce week-end ?"},
     {qui: "2", texte: "[Fui] al cine con mi prima.", fr: "Je suis allé au cinéma avec ma cousine."},
     {qui: "1", texte: "¡Qué guay! ¿Qué película [viste]?", fr: "Trop bien ! Quel film as-tu vu ?"},
@@ -7672,95 +7744,151 @@ const LG_DEF_DIALOGUE = {
     {qui: "1", texte: "Yo [voy] a verla el sábado que viene.", fr: "Moi, je vais le voir samedi prochain."},
     {qui: "2", texte: "¡Te va a [encantar]!", fr: "Tu vas l'adorer !"}]}
 };
-const LG_PERSOS = [{peau: "#f1c9a5", cheveux: "#7a4a26", haut: "#e5484d", style: "long"}, {peau: "#c68863", cheveux: "#2b211b", haut: "#3d8fd1", style: "court"}];
-function lgPerso(x, p, parle, miroir){
-  const dos = p.style === "long" ? `<path d="M-23 -60Q-28 -24 -15 -20H15Q28 -24 23 -60Z" fill="${p.cheveux}"/>` : "";
-  const devant = p.style === "long" ? `<path d="M-21 -60Q-21 -86 1 -86Q22 -86 22 -60Q12 -74 -2 -71Q-13 -69 -21 -57Z" fill="${p.cheveux}"/>`
-    : `<path d="M-21 -58Q-23 -86 0 -86Q22 -86 21 -61Q18 -71 11 -74Q4 -68 -6 -75Q-12 -68 -21 -58Z" fill="${p.cheveux}"/>`;
-  const bouche = parle ? `<ellipse cx="6" cy="-51" rx="4.2" ry="3.4" fill="#7a2e2e"><animate attributeName="ry" values="3.4;1.2;3.4" dur=".55s" repeatCount="indefinite"/></ellipse>` : `<path d="M1 -52q5 4 10 0" fill="none" stroke="#7a2e2e" stroke-width="2" stroke-linecap="round"/>`;
-  return `<g transform="translate(${x} 120)${miroir ? " scale(-1 1)" : ""}">${dos}<path d="M-36 0Q-36 -32 -12 -38H12Q36 -32 36 0Z" fill="${p.haut}"/><path d="M-9 -38L0 -28L9 -38" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>
-    <rect x="-6" y="-46" width="12" height="10" fill="${p.peau}"/><circle cx="-17" cy="-60" r="4.5" fill="${p.peau}"/><circle cx="0" cy="-62" r="20" fill="${p.peau}"/>${devant}
-    <circle cx="1" cy="-63" r="2.4" fill="#2b2f36"/><circle cx="12" cy="-63" r="2.4" fill="#2b2f36"/><circle cx="-3" cy="-54" r="3.4" fill="#f29b9b" opacity=".45"/>${bouche}</g>`;
-}
-function lgDecor(d){
-  switch (d){
-    case "classe": return `<rect width="300" height="120" fill="#e9efe2"/><rect x="94" y="12" width="112" height="56" rx="3" fill="#2f5d46" stroke="#8a6a44" stroke-width="4"/><path d="M106 28h40M106 40h64M106 52h30" stroke="#e8f0e8" stroke-width="2.4" stroke-linecap="round" opacity=".8"/><rect x="128" y="86" width="44" height="34" fill="#c9a77c"/><rect y="108" width="300" height="12" fill="#bfa27c"/>`;
-    case "rue": return `<rect width="300" height="120" fill="#cfe8f7"/><rect x="-4" y="26" width="74" height="94" fill="#e8c9a0"/><rect x="232" y="16" width="72" height="104" fill="#d9a6a0"/><rect x="104" y="42" width="92" height="78" fill="#c3cfd9"/>`
-      + [[8, 36], [36, 36], [8, 62], [36, 62], [242, 28], [272, 28], [242, 56], [272, 56], [116, 52], [140, 52], [164, 52], [116, 76], [140, 76], [164, 76]].map(([x, y]) => `<rect x="${x}" y="${y}" width="16" height="14" fill="#fff" opacity=".7"/>`).join("") + `<rect y="104" width="300" height="16" fill="#b9b4aa"/>`;
-    case "maison": return `<rect width="300" height="120" fill="#f3e4ea"/>${Array.from({length: 15}, (_, i) => `<line x1="${i * 20 + 10}" y1="0" x2="${i * 20 + 10}" y2="120" stroke="#e2c6d2" stroke-width="5"/>`).join("")}<rect x="126" y="14" width="48" height="34" fill="#fff" stroke="#b48a5a" stroke-width="3"/><path d="M130 44l14 -16 10 9 6 -6 10 13z" fill="#8fc27a"/><rect x="10" y="80" width="280" height="40" rx="12" fill="#8a6fb3"/>`;
-    case "parc": return `<rect width="300" height="120" fill="#d6ecf7"/><circle cx="268" cy="20" r="11" fill="#f8d36a"/><path d="M0 90Q80 76 150 88T300 84V120H0Z" fill="#9fd08a"/><rect x="145" y="46" width="10" height="50" fill="#8a5a33"/><circle cx="150" cy="38" r="22" fill="#5aa64e"/><circle cx="134" cy="48" r="14" fill="#64b158"/><circle cx="166" cy="48" r="14" fill="#64b158"/>`;
-    default: return `<rect width="300" height="120" fill="#f5dfc4"/><rect x="112" y="16" width="76" height="46" rx="3" fill="#cfe8f7" stroke="#a0673f" stroke-width="4"/><path d="M150 16v46M112 39h76" stroke="#a0673f" stroke-width="3"/>`
-      + `<path d="M104 10h92l-6 10h-80z" fill="#e5484d"/>${[0, 1, 2, 3].map(i => `<path d="M${116 + i * 20} 10h10l-1.5 10h-7z" fill="#fff"/>`).join("")}<rect x="98" y="98" width="104" height="22" fill="#a0673f"/><rect x="98" y="96" width="104" height="5" fill="#86532f"/>`
-      + `<rect x="126" y="85" width="13" height="11" rx="2" fill="#fff" stroke="#c9c2b5"/><rect x="161" y="85" width="13" height="11" rx="2" fill="#fff" stroke="#c9c2b5"/>`;
-  }
-}
 const lgSansCrochets = t => String(t || "").replace(/\[([^\]]*)\]/g, (_, a) => a.split(/[|/]/)[0].trim());
 const lgLignes = o => (o.lignes || []).filter(l => l && String(l.texte || "").trim());
-function lgBulle(o, l, i, mode, trad){
-  const noms = [o.perso1 || "A", o.perso2 || "B"], q = l.qui === "2" ? 2 : 1;
-  const dit = mode === "trous" ? morceauxTrous(String(l.texte)).map(m => m.trou !== undefined ? `<input type="text" class="int-trou lg-trou" data-r="${esc(m.trou)}" style="width:${largeurTrou(m.trou)}ch" autocomplete="off" spellcheck="false" aria-label="Mot manquant">` : esc(m.t)).join("") : esc(lgSansCrochets(l.texte));
-  const fr = trad && l.fr ? `<span class="lg-fr" hidden>${esc(l.fr)}</span>` : "";
-  return `<div class="lg-bulle q${q}${fr ? " traduit" : ""}" data-l="${i}"><span class="lg-qui">${esc(noms[q - 1])}${fr ? ` <i>· FR</i>` : ""}</span><span class="lg-dit">${dit}</span>${fr}</div>`;
-}
-function lgCases(o, lignes, mode, trad){
-  let h = "";
-  for (let i = 0; i < lignes.length; i += 2){
-    const duo = lignes.slice(i, i + 2), p1 = duo.some(l => l.qui !== "2"), p2 = duo.some(l => l.qui === "2");
-    h += `<div class="lg-case"><div class="lg-bulles">${duo.map((l, k) => lgBulle(o, l, i + k, mode, trad)).join("")}</div>
-      <svg viewBox="0 0 300 120" class="lg-case-svg" aria-hidden="true">${lgDecor(o.decor)}${lgPerso(72, LG_PERSOS[0], p1, false)}${lgPerso(228, LG_PERSOS[1], p2, true)}</svg></div>`;
+// fond : uniquement des formes pleines (ronds, carrés, triangles) qui flottent doucement
+function lgFondFormes(fond){
+  const P = LG_PALETTES[fond] || LG_PALETTES.jour; let r = 11; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+  let s = `<rect width="600" height="340" fill="${P.bg}"/>`;
+  for (let i = 0; i < 18; i++){
+    const x = Math.round(rnd() * 600), y = Math.round(14 + rnd() * 240), t = Math.round(10 + rnd() * 26), c = P.formes[i % P.formes.length], a = Math.round(rnd() * 360), k = i % 3, d = (rnd() * 6).toFixed(1);
+    const forme = k === 0 ? `<circle r="${t}"/>` : k === 1 ? `<rect x="${-t}" y="${-t}" width="${2 * t}" height="${2 * t}" rx="${Math.round(t / 4)}"/>` : `<path d="M0 ${-t}L${(t * .87).toFixed(1)} ${(t * .5).toFixed(1)}H${(-t * .87).toFixed(1)}Z"/>`;
+    s += `<g transform="translate(${x} ${y}) rotate(${a})"><g class="lg-forme" fill="${c}" opacity="${P.op}" style="animation-delay:-${d}s">${forme}</g></g>`;
   }
-  return h;
+  return s + `<path d="M0 296Q150 284 300 292T600 288V340H0Z" fill="${P.sol}"/>`;
+}
+// personnage rond et simple (q = 1 rouge, regarde à droite ; q = 2 bleu)
+function lgBonhomme(q){
+  const c = q === 1 ? {corps: "#e5484d", ombre: "#b8353a", ventre: "#f37e82"} : {corps: "#3d8fd1", ombre: "#2a6aa3", ventre: "#76b6ea"};
+  const deco = q === 1 ? `<path d="M-8 -116L6 -142L14 -112Z" fill="${c.ombre}"/>` : `<rect x="-2" y="-138" width="5" height="26" rx="2.5" fill="${c.ombre}"/><circle cx="0" cy="-140" r="8" fill="#f2ae02"/>`;
+  return `${deco}<path d="M-42 -6Q-48 -78 -30 -106Q0 -132 30 -106Q48 -78 42 -6Q0 4 -42 -6Z" fill="${c.corps}"/><ellipse cx="2" cy="-36" rx="24" ry="22" fill="${c.ventre}"/>
+    <ellipse cx="-17" cy="-2" rx="14" ry="6" fill="${c.ombre}"/><ellipse cx="19" cy="-2" rx="14" ry="6" fill="${c.ombre}"/>
+    <ellipse cx="-3" cy="-82" rx="12" ry="14" fill="#fff"/><ellipse cx="23" cy="-82" rx="12" ry="14" fill="#fff"/><circle cx="2" cy="-80" r="6" fill="#1d1f24"/><circle cx="28" cy="-80" r="6" fill="#1d1f24"/>
+    <circle cx="-16" cy="-60" r="6" fill="#ff9aa8" opacity=".55"/><circle cx="36" cy="-60" r="6" fill="#ff9aa8" opacity=".55"/>
+    <rect class="b-fermee" x="3" y="-62" width="18" height="5" rx="2.5" fill="#1d1f24"/><ellipse class="b-ouverte" cx="12" cy="-58" rx="9" ry="8" fill="#1d1f24"/>`;
+}
+function lgBDHtml(o, lignes){
+  const noms = [o.perso1 || "A", o.perso2 || "B"], l0 = lignes[0], q0 = l0 && l0.qui === "2" ? 2 : 1, nuit = o.fond === "nuit";
+  return `<div class="lg-lecteur"><div class="lg-scene-bd${nuit ? " nuit" : ""}" tabindex="0" role="group" aria-label="Bande dessinée : clique ou appuie sur → pour la réplique suivante">
+      <svg viewBox="0 0 600 340" class="lg-bd-svg" aria-hidden="true">${lgFondFormes(o.fond)}
+        <g transform="translate(150 316)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1)}</g></g></g>
+        <g transform="translate(450 316) scale(-1 1)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2)}</g></g></g>
+        <text x="150" y="333" class="lg-nom-bd">${esc(noms[0])}</text><text x="450" y="333" class="lg-nom-bd">${esc(noms[1])}</text></svg>
+      ${l0 ? `<div class="lg-bulle-bd q${q0}"><span class="lg-qui">${esc(noms[q0 - 1])}</span><span class="lg-dit">${esc(lgSansCrochets(l0.texte))}</span><span class="lg-fr" hidden></span><span class="lg-indic" aria-hidden="true">▼</span></div>` : ""}</div>
+    <div class="lg-nav"><button type="button" class="mini-btn" data-nav="-1" aria-label="Réplique précédente">◀</button><span class="lg-compteur">1 / ${lignes.length}</span><button type="button" class="mini-btn lg-suivant" data-nav="1">Suivant ▶</button>
+      <span class="lg-nav-droite">${o.traduction !== false && lignes.some(l => l.fr) ? `<button type="button" class="mini-btn" data-trad aria-pressed="false">FR</button>` : ""}<button type="button" class="mini-btn" data-son aria-pressed="false">🔇 Son</button></span></div></div>`;
 }
 function htmlDialogue(o){
-  const L = lgL(o), lignes = lgLignes(o), mode = ["trous", "ordre"].includes(o.mode) ? o.mode : "lecture", trad = o.traduction !== false;
-  const noms = [o.perso1 || "A", o.perso2 || "B"];
-  const consigne = mode === "trous" ? "Complète les mots qui manquent, puis vérifie." : mode === "ordre" ? "Clique sur les répliques dans le bon ordre." : trad && lignes.some(l => l.fr) ? "Clique sur une bulle pour voir la traduction." : "";
+  const lignes = lgLignes(o), mode = ["trous", "ordre"].includes(o.mode) ? o.mode : "lecture", noms = [o.perso1 || "A", o.perso2 || "B"];
+  const consigne = mode === "trous" ? "Fais défiler les répliques et complète les mots qui manquent, puis vérifie." : mode === "ordre" ? "Clique sur les répliques dans le bon ordre." : "Clique sur la case (ou « Suivant ») pour faire parler les personnages.";
   let corps;
   if (mode === "ordre"){
     const idx = melanger(lignes.map((_, i) => i)); if (idx.length > 1 && idx.every((v, i) => v === i)) idx.push(idx.shift());
     corps = `<div class="lg-ordre">${idx.map(i => `<button type="button" class="lg-bulle-o q${lignes[i].qui === "2" ? 2 : 1}" data-l="${i}"><span class="lg-num"></span><span><b>${esc(noms[lignes[i].qui === "2" ? 1 : 0])} :</b> ${esc(lgSansCrochets(lignes[i].texte))}</span></button>`).join("")}</div>
       <div class="lg-pied"><button type="button" class="mini-btn lg-effacer">Effacer</button><span class="lg-res"></span><button type="button" class="mini-btn lg-solution" hidden>Voir le dialogue</button></div>
-      <div class="lg-bd" hidden>${lgCases(o, lignes, "lecture", trad)}</div>`;
-  } else corps = `<div class="lg-bd">${lgCases(o, lignes, mode, trad)}</div>${mode === "trous" ? `<div class="lg-pied"><button type="button" class="btn lg-verifier">Vérifier</button><span class="lg-res"></span></div>` : ""}`;
+      <div class="lg-bd-zone" hidden>${lgBDHtml(o, lignes)}</div>`;
+  } else corps = lgBDHtml(o, lignes) + (mode === "trous" ? `<div class="lg-pied"><button type="button" class="btn lg-verifier">Vérifier</button><span class="lg-res"></span></div>` : "");
   return `<div class="lg-mod lg-dialogue" data-lg="dialogue" data-o="${encoderObjet(o)}">${lgTete(o, o.titre || "Dialogue", consigne)}${lignes.length ? corps : `<p class="doux">Ajoute des répliques.</p>`}</div>`;
 }
+// petit « bip » à chaque lettre (désactivé par défaut)
+let lgAudio = null;
+function lgBip(q){
+  try { lgAudio = lgAudio || new (window.AudioContext || window.webkitAudioContext)(); const t = lgAudio.currentTime, osc = lgAudio.createOscillator(), g = lgAudio.createGain();
+    osc.type = "square"; osc.frequency.value = q === 1 ? 560 : 340; g.gain.setValueAtTime(.035, t); g.gain.exponentialRampToValueAtTime(.0001, t + .05);
+    osc.connect(g).connect(lgAudio.destination); osc.start(t); osc.stop(t + .06); } catch {}
+}
+// lecteur : une réplique à la fois, texte qui s'écrit lettre par lettre, le personnage s'écrase à chaque lettre
+function lgLecteurBD(racine, o, lignes, mode, etat){
+  const noms = [o.perso1 || "A", o.perso2 || "B"], scene = racine.querySelector(".lg-scene-bd"), bulle = racine.querySelector(".lg-bulle-bd");
+  if (!scene || !bulle) return;
+  const dit = bulle.querySelector(".lg-dit"), qui = bulle.querySelector(".lg-qui"), fr = bulle.querySelector(".lg-fr"), compteur = racine.querySelector(".lg-compteur");
+  const prec = racine.querySelector('[data-nav="-1"]'), suiv = racine.querySelector('[data-nav="1"]'), btTrad = racine.querySelector("[data-trad]"), btSon = racine.querySelector("[data-son]");
+  const persos = [racine.querySelector('.lg-perso[data-q="1"]'), racine.querySelector('.lg-perso[data-q="2"]')], corps = persos.map(p => p.querySelector(".lg-corps"));
+  const calme = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let idx = 0, file = [], j = 0, minut = null, qActif = 1, fini = true;
+  etat.trad = etat.trad || false; etat.son = etat.son || false;
+  const ajouterTrou = (a, i) => {
+    const inp = document.createElement("input"); inp.type = "text"; inp.className = "int-trou lg-trou"; inp.autocomplete = "off"; inp.spellcheck = false; inp.setAttribute("aria-label", "Mot manquant");
+    inp.style.width = largeurTrou(a.trou) + "ch"; inp.value = (etat.rep[i] || [])[a.n] || "";
+    inp.oninput = () => { (etat.rep[i] = etat.rep[i] || [])[a.n] = inp.value; };
+    inp.onclick = ev => ev.stopPropagation(); inp.onkeydown = ev => ev.stopPropagation();
+    dit.appendChild(inp);
+    if (etat.verifie){ const ok = bonneValeur(inp.value, a.trou); inp.disabled = true; inp.classList.add(ok ? "ok" : "ko");
+      if (!ok) inp.insertAdjacentHTML("afterend", `<span class="lg-corr">${esc(a.trou.split(/[|/]/)[0].trim())}</span>`); }
+  };
+  const ecraser = q => { const c = corps[q - 1]; if (!calme && c.animate) c.animate([{transform: "scale(1, 1)"}, {transform: "scale(1.12, .84)"}, {transform: "scale(.97, 1.04)"}, {transform: "scale(1, 1)"}], {duration: 120, easing: "ease-out"});
+    persos[q - 1].classList.toggle("bouche"); };
+  const terminer = () => {
+    clearTimeout(minut);
+    while (j < file.length){ const a = file[j++]; if (a.trou !== undefined) ajouterTrou(a, idx); else dit.appendChild(document.createTextNode(a.ch)); }
+    fini = true; persos.forEach(p => p.classList.remove("bouche")); bulle.classList.add("fini");
+  };
+  const pas = () => {
+    if (j >= file.length) return terminer();
+    const a = file[j++];
+    if (a.trou !== undefined){ ajouterTrou(a, idx); return pas(); }
+    dit.appendChild(document.createTextNode(a.ch));
+    if (/\S/.test(a.ch)){ ecraser(qActif); if (etat.son) lgBip(qActif); }
+    minut = setTimeout(pas, /[.!?…]/.test(a.ch) ? 220 : /[,;:]/.test(a.ch) ? 140 : 34);
+  };
+  const dire = (i, instant) => {
+    clearTimeout(minut); idx = i; const l = lignes[i]; qActif = l.qui === "2" ? 2 : 1;
+    bulle.className = `lg-bulle-bd q${qActif}`; qui.textContent = noms[qActif - 1]; dit.textContent = "";
+    fr.textContent = l.fr || ""; fr.hidden = !(etat.trad && l.fr);
+    persos.forEach((p, k) => { p.classList.remove("bouche"); p.classList.toggle("ecoute", k + 1 !== qActif); });
+    let n = 0; file = [];
+    (mode === "trous" ? morceauxTrous(String(l.texte)) : [{t: lgSansCrochets(l.texte)}]).forEach(m => { if (m.trou !== undefined) file.push({trou: m.trou, n: n++}); else for (const ch of m.t) file.push({ch}); });
+    j = 0; fini = false; compteur.textContent = `${i + 1} / ${lignes.length}`; prec.disabled = i === 0; suiv.disabled = false;
+    suiv.textContent = i + 1 < lignes.length ? "Suivant ▶" : "Fin";
+    if (instant || calme) terminer(); else pas();
+  };
+  const avancer = () => { if (!fini) return terminer(); if (idx + 1 < lignes.length) dire(idx + 1); else suiv.disabled = true; };
+  const reculer = () => { if (idx > 0) dire(idx - 1, true); };
+  scene.onclick = ev => { if (ev.target.closest("input")) return; avancer(); };
+  scene.onkeydown = ev => { if (ev.key === "ArrowRight" || ev.key === " " || ev.key === "Enter"){ ev.preventDefault(); avancer(); } else if (ev.key === "ArrowLeft"){ ev.preventDefault(); reculer(); } };
+  suiv.onclick = avancer; prec.onclick = reculer;
+  if (btTrad) btTrad.onclick = () => { etat.trad = !etat.trad; btTrad.setAttribute("aria-pressed", etat.trad); fr.hidden = !(etat.trad && lignes[idx].fr); };
+  if (btSon) btSon.onclick = () => { etat.son = !etat.son; btSon.setAttribute("aria-pressed", etat.son); btSon.textContent = etat.son ? "🔊 Son" : "🔇 Son"; };
+  etat.redessiner = () => dire(idx, true);
+  dire(0);
+}
 function brancherDialogue(el, o){
-  const lignes = lgLignes(o);
-  const brancherBulles = racine => racine.querySelectorAll(".lg-bulle.traduit").forEach(b => b.onclick = ev => { if (ev.target.closest("input")) return; const f = b.querySelector(".lg-fr"); f.hidden = !f.hidden; b.classList.toggle("ouvert", !f.hidden); });
-  brancherBulles(el);
-  if (o.mode === "trous"){
-    const btn = el.querySelector(".lg-verifier"), res = el.querySelector(".lg-res"), champs = [...el.querySelectorAll(".lg-trou")];
-    champs.forEach((c, i) => c.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); (champs[i + 1] || btn).focus(); } }));
-    let verifie = false;
+  const lignes = lgLignes(o), mode = ["trous", "ordre"].includes(o.mode) ? o.mode : "lecture";
+  if (!lignes.length) return;
+  if (mode !== "ordre"){
+    const etat = {rep: []};
+    lgLecteurBD(el, o, lignes, mode, etat);
+    if (mode !== "trous") return;
+    const btn = el.querySelector(".lg-verifier"), res = el.querySelector(".lg-res");
+    const attendus = lignes.map(l => morceauxTrous(String(l.texte)).filter(m => m.trou !== undefined).map(m => m.trou));
     btn.onclick = () => {
-      if (verifie){ champs.forEach(c => { c.value = ""; c.disabled = false; c.classList.remove("ok", "ko"); }); el.querySelectorAll(".lg-corr").forEach(x => x.remove()); res.textContent = ""; btn.textContent = "Vérifier"; verifie = false; champs[0]?.focus(); return; }
-      let bons = 0;
-      champs.forEach(c => { const ok = bonneValeur(c.value, c.dataset.r); if (ok) bons++; c.classList.add(ok ? "ok" : "ko"); c.disabled = true;
-        if (!ok) c.insertAdjacentHTML("afterend", `<span class="lg-corr">${esc(c.dataset.r.split(/[|/]/)[0].trim())}</span>`); });
-      res.innerHTML = bons === champs.length ? `<b class="lg-bien">Parfait : ${bons} / ${champs.length}</b>` : `${bons} / ${champs.length} mots justes — les corrections sont en vert.`;
-      btn.textContent = "↻ Recommencer"; verifie = true;
+      if (etat.verifie){ etat.verifie = false; etat.rep = []; res.textContent = ""; btn.textContent = "Vérifier"; etat.redessiner(); return; }
+      let bons = 0, tot = 0;
+      attendus.forEach((ls, i) => ls.forEach((a, k) => { tot++; if (bonneValeur((etat.rep[i] || [])[k] || "", a)) bons++; }));
+      etat.verifie = true; etat.redessiner();
+      res.innerHTML = bons === tot ? `<b class="lg-bien">Parfait : ${bons} / ${tot}</b>` : `${bons} / ${tot} mots justes. Reviens sur les répliques : les corrections sont en vert.`;
+      btn.textContent = "↻ Recommencer";
     };
     return;
   }
-  if (o.mode !== "ordre") return;
-  const bts = [...el.querySelectorAll(".lg-bulle-o")], res = el.querySelector(".lg-res"), bd = el.querySelector(".lg-bd"), sol = el.querySelector(".lg-solution");
-  let choix = [];
+  const bts = [...el.querySelectorAll(".lg-bulle-o")], res = el.querySelector(".lg-res"), zone = el.querySelector(".lg-bd-zone"), sol = el.querySelector(".lg-solution");
+  let choix = [], lance = false;
+  const ouvrirBD = () => { zone.hidden = false; if (!lance){ lance = true; lgLecteurBD(zone, o, lignes, "lecture", {rep: []}); } };
   const consigne = () => { res.textContent = `${choix.length} / ${lignes.length} répliques placées.`; };
-  const effacer = () => { choix = []; bts.forEach(b => { b.disabled = false; b.classList.remove("choisi", "ok", "ko"); b.querySelector(".lg-num").textContent = ""; }); sol.hidden = true; bd.hidden = true; consigne(); };
+  const effacer = () => { choix = []; bts.forEach(b => { b.disabled = false; b.classList.remove("choisi", "ok", "ko"); b.querySelector(".lg-num").textContent = ""; }); sol.hidden = true; consigne(); };
   bts.forEach(b => b.onclick = () => {
     const i = +b.dataset.l;
-    if (choix.includes(i)){ choix = choix.filter(x => x !== i); }
-    else choix.push(i);
+    choix = choix.includes(i) ? choix.filter(x => x !== i) : [...choix, i];
     bts.forEach(x => { const k = choix.indexOf(+x.dataset.l); x.classList.toggle("choisi", k >= 0); x.querySelector(".lg-num").textContent = k >= 0 ? k + 1 : ""; });
     consigne();
     if (choix.length === lignes.length){
       let bons = 0;
       bts.forEach(x => { const ok = choix.indexOf(+x.dataset.l) === +x.dataset.l; if (ok) bons++; x.classList.add(ok ? "ok" : "ko"); x.disabled = true; });
-      if (bons === lignes.length){ res.innerHTML = `<b class="lg-bien">Bravo, tout est dans l'ordre !</b>`; bd.hidden = false; brancherBulles(bd); }
+      if (bons === lignes.length){ res.innerHTML = `<b class="lg-bien">Bravo, tout est dans l'ordre !</b>`; ouvrirBD(); }
       else { res.innerHTML = `${bons} / ${lignes.length} répliques bien placées.`; sol.hidden = false; }
     }
   });
-  sol.onclick = () => { bd.hidden = false; sol.hidden = true; brancherBulles(bd); bd.scrollIntoView({behavior: "smooth", block: "nearest"}); };
+  sol.onclick = () => { ouvrirBD(); sol.hidden = true; zone.scrollIntoView({behavior: "smooth", block: "nearest"}); };
   el.querySelector(".lg-effacer").onclick = effacer;
   consigne();
 }
@@ -7781,15 +7909,16 @@ MODULES.splice(MODULES.findIndex(m => m.id === "declinaison") + 1, 0,
     champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["explorer", "Découverte : on clique sur une phrase"], ["quiz", "Exercice : l'élève trouve le temps de chaque phrase"]]}), CHAMP("titre", "Titre (facultatif)"),
       CHAMP("phrases", "Phrases", "liste", {sous: [CHAMP("texte", "Phrase"), CHAMP("temps", "Temps", "choix", {options: LG_TEMPS_OPTIONS})], max: 10, neuf: () => ({texte: "", temps: "passe"})})],
     rendu: htmlFriseTemps, surLangue: o => { if (lgPareil(o.phrases, LG_DEF_PHRASES[o.langue === "es" ? "en" : "es"])) o.phrases = lgCopie(LG_DEF_PHRASES[lgL(o)]); }},
-  {id: "prepositions", nom: "Prépositions de lieu", cat: "Langues", icone: "⊡", defaut: () => ({langue: "en", mode: "explorer", titre: "", depart: "on", traduction: true}),
-    champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["explorer", "Découverte : on clique sur une préposition"], ["quiz", "Exercice : l'élève trouve où est le chat"]]}), CHAMP("titre", "Titre (facultatif)"),
-      CHAMP("depart", "Position de départ du chat", "choix", {options: LG_PREP_OPTIONS, si: o => o.mode !== "quiz"}), CHAMP("traduction", "Traduction en français", "case")],
+  {id: "prepositions", nom: "Prépositions de lieu", cat: "Langues", icone: "⊡", defaut: () => ({langue: "en", mode: "explorer", titre: "", scene: "chat", depart: "on", traduction: true}),
+    champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("scene", "Scène", "choix", {options: Object.entries(LG_SCENES).map(([k, v]) => [k, v.nom])}),
+      CHAMP("mode", "Utilisation", "choix", {options: [["explorer", "Découverte : on clique sur une préposition"], ["quiz", "Exercice : l'élève trouve la bonne préposition"]]}), CHAMP("titre", "Titre (facultatif)"),
+      CHAMP("depart", "Position de départ", "choix", {options: LG_PREP_ORDRE.map(k => [k, `${LG_PREP_MOTS.en[k]} / ${LG_PREP_MOTS.es[k]}`]), si: o => o.mode !== "quiz"}), CHAMP("traduction", "Traduction en français", "case")],
     rendu: htmlPrepositions},
   {id: "dialogue", nom: "Dialogue en BD", cat: "Langues", icone: "❝", defaut: () => ({langue: "en", mode: "lecture", traduction: true, ...lgCopie(LG_DEF_DIALOGUE.en)}),
-    champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["lecture", "Lecture (clic sur une bulle = traduction)"], ["trous", "Texte à trous (les mots entre crochets)"], ["ordre", "Remettre les répliques dans l'ordre"]]}),
-      CHAMP("titre", "Titre (facultatif)"), CHAMP("decor", "Décor", "choix", {options: LG_DECORS}), CHAMP("perso1", "Personnage 1 (à gauche)"), CHAMP("perso2", "Personnage 2 (à droite)"),
+    champs: [CHAMP("langue", "Langue", "choix", {options: LG_LANGUES}), CHAMP("mode", "Utilisation", "choix", {options: [["lecture", "Lecture (les bulles défilent une par une)"], ["trous", "Texte à trous (les mots entre crochets)"], ["ordre", "Remettre les répliques dans l'ordre"]]}),
+      CHAMP("titre", "Titre (facultatif)"), CHAMP("fond", "Fond", "choix", {options: LG_FONDS}), CHAMP("perso1", "Personnage 1 (à gauche)"), CHAMP("perso2", "Personnage 2 (à droite)"),
       CHAMP("lignes", "Répliques — mets entre [crochets] les mots à trouver en texte à trous", "liste", {sous: [CHAMP("qui", "Qui parle", "choix", {options: [["1", "Personnage 1"], ["2", "Personnage 2"]]}), CHAMP("texte", "Réplique"), CHAMP("fr", "Traduction (facultatif)")], max: 12, neuf: () => ({qui: "1", texte: "", fr: ""})}),
-      CHAMP("traduction", "Traduction au clic", "case")],
+      CHAMP("traduction", "Bouton de traduction (FR)", "case")],
     rendu: htmlDialogue, surLangue: o => { const a = LG_DEF_DIALOGUE[o.langue === "es" ? "en" : "es"]; if (lgPareil(o.lignes, a.lignes)) Object.assign(o, lgCopie(LG_DEF_DIALOGUE[lgL(o)])); }}
 );
 
