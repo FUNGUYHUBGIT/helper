@@ -861,7 +861,7 @@ a.lien{color:var(--accent)}
 @keyframes lg-secoue{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .lg-cube-fond{opacity:0;transition:opacity .35s}.lg-scene.verre .lg-cube-fond{opacity:1}.lg-cube>*{transition:opacity .35s}.lg-scene.verre .lg-cube>*{opacity:.35}
 .lg-lecteur{display:flex;flex-direction:column;gap:8px}
-.lg-scene-bd{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--ligne);background:#0e0e0f;cursor:pointer;outline:none;user-select:none}
+.lg-scene-bd{container-type:inline-size;position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--ligne);background:#0e0e0f;cursor:pointer;outline:none;user-select:none}
 .lg-scene-bd:focus-visible{box-shadow:0 0 0 3px var(--accent)}
 .lg-bd-svg{display:block;width:100%;height:auto;position:relative}.lg-bd-cv{position:absolute;inset:0;width:100%;height:100%;display:block}
 .lg-nom-bd{font:800 15px var(--f-texte),Arial,sans-serif;text-anchor:middle;fill:#e8e8ea;letter-spacing:.04em}
@@ -870,10 +870,10 @@ a.lien{color:var(--accent)}
 .lg-perso .b-croix{opacity:0}.lg-perso.croix .b-croix{opacity:1}.lg-perso.croix .b-yeux{opacity:0}.lg-perso.croix .lg-corps{animation:lg-tremble .18s 4}.lg-perso.saute .lg-corps{animation:lg-saute .5s ease-out}
 .lg-perso .b-ouverte,.lg-perso .b-triste{opacity:0}.lg-perso.triste .b-triste{opacity:1}.lg-perso.triste .b-content{opacity:0}.lg-perso.bouche .b-ouverte{opacity:1}.lg-perso.bouche .b-content,.lg-perso.bouche .b-triste{opacity:0}
 .lg-perso{transform-box:fill-box;transform-origin:50% 100%;transition:transform .4s cubic-bezier(.3,1.5,.5,1),filter .3s}.lg-perso.parle{transform:scale(1.12)}.lg-perso.ecoute{transform:scale(.84);filter:brightness(.55)}
-.lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:0;transition:background .3s,color .3s;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.82rem,2.3vw,1.02rem);line-height:1.42;box-shadow:0 5px 14px rgba(0,0,0,.45);text-align:left;cursor:pointer}
+.lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:0;transition:background .3s,color .3s;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.76rem,3.1cqw,1.02rem);line-height:1.42;box-shadow:0 5px 14px rgba(0,0,0,.45);text-align:left;cursor:pointer}
 .lg-bulle-bd.q1{background:var(--lg-p1,#d92b3a);color:var(--lg-t1,#fff)}.lg-bulle-bd.q2{background:var(--lg-p2,#5fb81c);color:var(--lg-t2,#111214)}
 .lg-queue{position:absolute;left:0;top:100%;width:100%;height:26px;overflow:visible;pointer-events:none}.lg-bulle-bd.q1 .lg-queue path{fill:var(--lg-p1,#d92b3a)}.lg-bulle-bd.q2 .lg-queue path{fill:var(--lg-p2,#5fb81c)}
-.lg-bulle-bd.q1{left:3%}.lg-bulle-bd.q2{right:3%}
+.lg-bulle-bd.q1{left:3%}.lg-bulle-bd.q2{right:3%}.lg-bulle-bd{top:4%;max-width:66%}.lg-bulle-bd.serre{font-size:clamp(.7rem,2.6cqw,.9rem);padding:5px 12px 9px;max-width:80%}.lg-bulle-bd.serre2{font-size:clamp(.66rem,2.2cqw,.8rem);max-width:94%;line-height:1.3}
 .lg-bulle-bd::after,.lg-bulle-bd::before{content:"";position:absolute}
 .lg-bulle-bd::after,.lg-bulle-bd::before{display:none}
 .lg-bulle-bd.q1::after{left:16%;clip-path:polygon(0 0,100% 0,15% 100%)}.lg-bulle-bd.q1::before{left:calc(16% + 4px);clip-path:polygon(0 0,100% 0,12% 100%)}
@@ -3652,7 +3652,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.66";
+const VERSION_SITE = "0.67";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7889,10 +7889,10 @@ function lgFondAnime(scene, acc){
 function lgBDHtml(o, lignes){
   const u = "lg" + (++lgUid) + "-", noms = [o.perso1 || "Perso-01", o.perso2 || "Perso-02"], l0 = lignes[0], q0 = l0 && l0.qui === "2" ? 2 : 1;
   return `<div class="lg-lecteur"><div class="lg-scene-bd" tabindex="0" role="group" aria-label="Bande dessinée : clique ou appuie sur → pour la réplique suivante">
-      <canvas class="lg-bd-cv" aria-hidden="true"></canvas><svg viewBox="0 0 600 340" class="lg-bd-svg" aria-hidden="true">
-        <g transform="translate(150 312)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1, u)}</g></g></g>
-        <g transform="translate(450 312) scale(-1 1)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2, u)}</g></g></g>
-        <text x="150" y="333" class="lg-nom-bd">${esc(noms[0])}</text><text x="450" y="333" class="lg-nom-bd">${esc(noms[1])}</text></svg>
+      <canvas class="lg-bd-cv" aria-hidden="true"></canvas><svg viewBox="0 0 600 380" class="lg-bd-svg" aria-hidden="true">
+        <g transform="translate(150 354) scale(.86)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1, u)}</g></g></g>
+        <g transform="translate(450 354) scale(-.86 .86)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2, u)}</g></g></g>
+        <text x="150" y="373" class="lg-nom-bd">${esc(noms[0])}</text><text x="450" y="373" class="lg-nom-bd">${esc(noms[1])}</text></svg>
       ${l0 ? `<div class="lg-bulle-bd q${q0}"><span class="lg-qui">${esc(noms[q0 - 1])}</span><span class="lg-dit">${esc(lgSansCrochets(l0.texte))}</span><span class="lg-fr" hidden></span><span class="lg-indic" aria-hidden="true">▼</span><svg class="lg-queue" aria-hidden="true"><path d=""/></svg></div>` : ""}</div>
     <div class="lg-nav"><button type="button" class="mini-btn" data-nav="-1" aria-label="Réplique précédente">◀</button><span class="lg-compteur">1 / ${lignes.length}</span><button type="button" class="mini-btn lg-suivant" data-nav="1">Suivant ▶</button>
       <span class="lg-nav-droite">${o.traduction !== false && lignes.some(l => l.fr) ? `<button type="button" class="mini-btn" data-trad aria-pressed="false">FR</button>` : ""}<button type="button" class="mini-btn" data-son aria-pressed="false">🔇 Son</button></span></div></div>`;
@@ -7926,9 +7926,14 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
   const calme = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const coul = lgCouleursPersos(scene), fond = lgFondAnime(scene, coul.acc), queue = bulle.querySelector(".lg-queue path");
   // la pointe de la bulle vise toujours la tête de celui qui parle
+  // … et ne touche jamais un personnage : la pointe raccourcit, et si la bulle est trop basse son texte se resserre
   const placerQueue = () => { if (!queue) return; const sr = scene.getBoundingClientRect(), br = bulle.getBoundingClientRect(); if (!br.width) return;
+    const hautPerso = Math.min(...persos.map(p => p.getBoundingClientRect().top)), espace = hautPerso - br.bottom;
+    if (espace < 16 && !bulle.classList.contains("serre2")){ bulle.classList.add(bulle.classList.contains("serre") ? "serre2" : "serre"); return requestAnimationFrame(placerQueue); }
+    const h = Math.max(5, Math.min(24, espace - 10));
     const tete = sr.left + sr.width * (qActif === 1 ? 150 : 450) / 600 - br.left, base = Math.max(22, Math.min(br.width - 22, tete)), bout = Math.max(base - 34, Math.min(base + 34, tete));
-    queue.setAttribute("d", `M${(base - 12).toFixed(1)} -3L${(base + 12).toFixed(1)} -3L${bout.toFixed(1)} 24Z`); };
+    queue.setAttribute("d", `M${(base - 12).toFixed(1)} -3L${(base + 12).toFixed(1)} -3L${bout.toFixed(1)} ${h.toFixed(1)}Z`); };
+  persos.forEach(p => p.addEventListener("transitionend", placerQueue));
   if (window.ResizeObserver) new ResizeObserver(placerQueue).observe(scene);
   let idx = 0, file = [], j = 0, minut = null, qActif = 1, fini = true;
   etat.trad = etat.trad || false; etat.son = etat.son || false;
@@ -7958,7 +7963,7 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
   };
   const dire = (i, instant) => {
     clearTimeout(minut); idx = i; const l = lignes[i]; qActif = l.qui === "2" ? 2 : 1;
-    bulle.className = `lg-bulle-bd q${qActif}`; qui.textContent = noms[qActif - 1]; dit.textContent = "";
+    bulle.className = `lg-bulle-bd q${qActif}`; setTimeout(placerQueue, 450); qui.textContent = noms[qActif - 1]; dit.textContent = "";
     fr.textContent = l.fr || ""; fr.hidden = !(etat.trad && l.fr);
     persos.forEach((p, k) => { p.classList.remove("bouche"); p.classList.toggle("ecoute", k + 1 !== qActif); p.classList.toggle("parle", k + 1 === qActif); });
     fond.teinte(coul.couleurs[qActif - 1]);
