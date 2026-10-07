@@ -782,6 +782,41 @@ a.lien{color:var(--accent)}
 .nav-chantier{margin-left:auto;font:600 .6rem/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:4px;color:#1a1300;background:repeating-linear-gradient(-45deg,#f2ae02 0 6px,#ffd35a 6px 12px);white-space:nowrap}
 .bandeau-chantier{display:flex;gap:12px;align-items:center;padding:12px 16px;margin:0 0 18px;border-radius:10px;border:1.5px dashed #f2ae02;background:repeating-linear-gradient(-45deg,color-mix(in srgb,#f2ae02 10%,transparent) 0 14px,transparent 14px 28px);font-size:.92rem}
 .bandeau-chantier-ico{font-size:1.5rem}
+/* ----- Mode mise à jour ----- */
+body.maj-bloque #acces, body.maj-bloque #app, body.maj-bloque #ouverture, body.maj-bloque .version-acces, body.maj-bloque #maj-bandeau{display:none!important}
+#maj-site{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 16px;overflow-y:auto}
+#maj-site[hidden]{display:none}
+.maj-ruban{position:fixed;left:-10px;right:-10px;height:22px;background:repeating-linear-gradient(-45deg,#f2ae02 0 18px,#16161a 18px 36px);box-shadow:0 0 24px rgba(242,174,2,.25);opacity:.9}
+.maj-ruban.haut{top:0;transform:rotate(-.6deg) translateY(-4px)}.maj-ruban.bas{bottom:0;transform:rotate(.6deg) translateY(4px)}
+.maj-carte{position:relative;width:min(620px,100%);display:flex;flex-direction:column;gap:16px;padding:34px 32px;border-radius:14px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1.5px dashed color-mix(in srgb,#f2ae02 70%,transparent);backdrop-filter:blur(3px);box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.maj-logo{display:flex;align-items:center;gap:10px;font:500 1.15rem var(--f-titre)}.maj-logo svg{width:30px;height:30px}
+.maj-sur{align-self:flex-start;font:600 .78rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:#16161a;background:#f2ae02;padding:4px 10px;border-radius:5px}
+.maj-glitch{position:relative;font-size:clamp(1.9rem,6vw,2.8rem);line-height:1.1;font-weight:600}
+.maj-glitch::before,.maj-glitch::after{content:attr(data-texte);position:absolute;inset:0;pointer-events:none}
+.maj-glitch::before{color:#29e0ff;clip-path:inset(0 0 60% 0);animation:maj-g1 3.2s infinite steps(1)}
+.maj-glitch::after{color:#ff3b5c;clip-path:inset(55% 0 0 0);animation:maj-g2 2.7s infinite steps(1)}
+@keyframes maj-g1{0%,88%,100%{transform:none;opacity:0}89%{transform:translate(-4px,-1px);opacity:.9}92%{transform:translate(3px,1px);opacity:.9}95%{transform:translate(-2px,0);opacity:.7}}
+@keyframes maj-g2{0%,82%,100%{transform:none;opacity:0}83%{transform:translate(4px,1px);opacity:.9}86%{transform:translate(-3px,-1px);opacity:.9}90%{transform:translate(2px,0);opacity:.6}}
+@media (prefers-reduced-motion: reduce){.maj-glitch::before,.maj-glitch::after{animation:none;opacity:0}}
+.maj-texte{color:var(--doux);line-height:1.55}
+.maj-duree{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:10px;background:var(--surface-2);border:1px solid var(--ligne)}
+.maj-duree-l{font-size:1rem}.maj-reste{font-size:.88rem;color:var(--doux)}
+.maj-barre{height:8px;border-radius:99px;background:color-mix(in srgb,var(--texte) 10%,transparent);overflow:hidden;margin-top:4px}
+.maj-barre i{display:block;height:100%;background:repeating-linear-gradient(-45deg,#f2ae02 0 10px,#d99a00 10px 20px);background-size:28px 28px;animation:maj-defile 1.2s linear infinite;border-radius:99px}
+.maj-barre.indet i{width:35%;animation:maj-defile 1.2s linear infinite,maj-va 2.4s ease-in-out infinite alternate}
+@keyframes maj-defile{to{background-position:28px 0}}@keyframes maj-va{from{margin-left:0}to{margin-left:65%}}
+.maj-message{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-left:3px solid #f2ae02;background:color-mix(in srgb,#f2ae02 8%,transparent);border-radius:0 8px 8px 0}
+.maj-actions{display:flex;gap:10px;flex-wrap:wrap}
+.maj-gerant{align-self:center;background:none;border:0;color:var(--doux);font-size:.78rem;text-decoration:underline;cursor:pointer;opacity:.7}.maj-gerant:hover{opacity:1;color:var(--accent)}
+.maj-note{font-size:.82rem;color:var(--doux);text-align:center}
+#maj-bandeau,#maj-retour{position:fixed;left:50%;transform:translateX(-50%);z-index:55;display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:10px;font-size:.85rem;background:repeating-linear-gradient(-45deg,color-mix(in srgb,#f2ae02 22%,var(--surface)) 0 14px,var(--surface) 14px 28px);border:1.5px solid #f2ae02;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:calc(100vw - 24px)}
+#maj-bandeau{bottom:14px}#maj-retour{top:14px}
+body.maj-gerant-dedans #vue{padding-bottom:90px}
+#maj-bandeau[hidden],#maj-retour[hidden]{display:none}
+.maj-etat.actif{border-color:#f2ae02;background:repeating-linear-gradient(-45deg,color-mix(in srgb,#f2ae02 6%,transparent) 0 14px,transparent 14px 28px)}
+.etat.maj-actif{border-color:#f2ae02;color:#f2ae02}
+.btn.danger{background:#e5484d;color:#fff;border-color:#e5484d}
+.choix-rang{padding:4px 6px;background:var(--surface-2);border:1px solid var(--ligne);border-radius:6px;color:var(--texte);font:inherit;font-size:.85rem}
 .cartes-monde{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
 .carte-monde .monde-lien{display:flex;flex-direction:column;flex:1;color:inherit;text-decoration:none;min-width:0}
 .carte-monde .monde-lien:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
@@ -2767,6 +2802,129 @@ const MSG_SB = {code_inconnu: "Ce code n'existe pas. Vérifie-le auprès du gér
   pseudo_invalide: "Le pseudo doit faire 3 à 20 caractères : lettres sans accent, chiffres, - ou _.", deja_un_compte: "Tu as déjà un compte sur cet appareil.", bloque: "Le changement de pseudo a été désactivé par le gérant.",
   delai: "Tu as déjà changé de pseudo il y a moins de 24 h.", interdit: "Action non autorisée.", introuvable: "Compte introuvable."};
 const messageSb = err => { const m = String(err && err.message || ""); const k = Object.keys(MSG_SB).find(c => m.includes(c)); return k ? MSG_SB[k] : ""; };
+/* ===================== MODE « MISE À JOUR » : site fermé à tous sauf au gérant ===================== */
+/* Document site/maintenance = {actif, debut, fin (ISO ou null = durée indéterminée), message, par, majLe} */
+let majSite = null, majVoirApercu = false, majConnexion = false;
+const majEnCours = () => !!(majSite && majSite.actif && (!majSite.fin || Date.parse(majSite.fin) > Date.now()));
+function bloqueParMaj(){ return majVoirApercu || (majEnCours() && !(typeof profil !== "undefined" && profil && profil.rang === "gerant") && !majConnexion); }
+const JOURS_LONGS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+const MOIS_LONGS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+function dateLongue(iso){ const d = new Date(iso); return `${JOURS_LONGS[d.getDay()]} ${d.getDate()} ${MOIS_LONGS[d.getMonth()]} à ${d.getHours()} h ${String(d.getMinutes()).padStart(2, "0")}`; }
+function resteTexte(ms){
+  const m = Math.max(1, Math.ceil(ms / 60000)), j = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60), mn = m % 60;
+  return j ? `${j} j${h ? " " + h + " h" : ""}` : h ? `${h} h${mn ? " " + String(mn).padStart(2, "0") + " min" : ""}` : `${mn} min`;
+}
+function htmlMaj(m){
+  const fin = m && m.fin ? Date.parse(m.fin) : 0, debut = m && m.debut ? Date.parse(m.debut) : Date.now();
+  const prog = fin ? Math.min(100, Math.max(2, (Date.now() - debut) / Math.max(1, fin - debut) * 100)) : 0;
+  const esc2 = t => String(t).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"})[c]);
+  return `<div class="maj-ruban haut" aria-hidden="true"></div>
+  <div class="maj-carte">
+    <div class="maj-logo"><svg aria-hidden="true"><use href="#logo"/></svg>Helper</div>
+    <span class="maj-sur">🚧 Mise à jour en cours</span>
+    <h1 id="maj-titre" class="maj-glitch" data-texte="Helper se met à jour">Helper se met à jour</h1>
+    <p class="maj-texte">Le site est fermé quelques instants pendant que nous l'améliorons. Tes comptes, tes points et ta progression sont conservés.</p>
+    ${fin ? `<div class="maj-duree"><span class="maj-duree-l">Retour prévu le <b>${esc2(dateLongue(m.fin))}</b></span><span class="maj-reste">encore environ <b>${resteTexte(fin - Date.now())}</b></span>
+      <div class="maj-barre" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(prog)}"><i style="width:${prog.toFixed(1)}%"></i></div></div>`
+      : `<div class="maj-duree"><span class="maj-duree-l"><b>Durée indéterminée</b></span><span class="maj-reste">Reviens un peu plus tard : le site rouvrira dès que la mise à jour sera terminée.</span><div class="maj-barre indet"><i></i></div></div>`}
+    ${m && m.message ? `<p class="maj-message"><span class="mono">Message de l'équipe</span>${esc2(m.message)}</p>` : ""}
+    <div class="maj-actions">${majVoirApercu ? `<button class="btn" type="button" id="maj-fermer-apercu">Fermer l'aperçu</button>` : `<button class="btn" type="button" id="maj-reessayer">Réessayer</button>`}</div>
+    ${majVoirApercu ? `<p class="maj-note">Aperçu : c'est ce que voient les élèves pendant la mise à jour.</p>` : `<button class="maj-gerant" type="button" id="maj-acces-gerant">Accès gérant</button>`}
+  </div>
+  <div class="maj-ruban bas" aria-hidden="true"></div>`;
+}
+function appliquerMaj(){
+  let el = document.getElementById("maj-site");
+  if (!el){ el = document.createElement("div"); el.id = "maj-site"; el.setAttribute("role", "alertdialog"); el.setAttribute("aria-labelledby", "maj-titre"); el.hidden = true; document.body.appendChild(el); }
+  const bloque = bloqueParMaj();
+  document.body.classList.toggle("maj-bloque", bloque);
+  document.body.classList.toggle("maj-connexion", majConnexion && majEnCours());
+  if (bloque){
+    el.innerHTML = htmlMaj(majVoirApercu && !majEnCours() ? (majSite && majSite.apercu) || majSite || {} : majSite);
+    el.hidden = false;
+    const r = document.getElementById("maj-reessayer"); if (r) r.onclick = () => location.reload();
+    const a = document.getElementById("maj-acces-gerant"); if (a) a.onclick = () => { if (profil) document.getElementById("deconnexion").click(); majConnexion = true; appliquerMaj(); if (typeof choisirMode === "function") choisirMode("connecter"); const i = document.getElementById("identifiant"); if (i) i.focus(); };
+    const f = document.getElementById("maj-fermer-apercu"); if (f) f.onclick = () => { majVoirApercu = false; appliquerMaj(); };
+  } else el.hidden = true;
+  if (typeof Formes !== "undefined") Formes.chantier(bloque || (!document.getElementById("app").hidden && typeof EN_CHANTIER !== "undefined" && EN_CHANTIER.includes(vueActive)));
+  // bandeau pour le gérant connecté pendant la mise à jour
+  let b = document.getElementById("maj-bandeau");
+  const gerantDedans = majEnCours() && !bloque && typeof profil !== "undefined" && profil && profil.rang === "gerant";
+  if (gerantDedans && !b){ b = document.createElement("div"); b.id = "maj-bandeau"; document.body.appendChild(b); }
+  document.body.classList.toggle("maj-gerant-dedans", gerantDedans);
+  if (b){ b.hidden = !gerantDedans; if (gerantDedans){ b.innerHTML = `<span>🚧 <b>Mise à jour en cours</b> : le site est fermé aux élèves${majSite.fin ? ` jusqu'au ${dateLongue(majSite.fin)}` : " (durée indéterminée)"}.</span><button type="button" class="mini-btn" id="maj-gerer">Gérer</button>`; document.getElementById("maj-gerer").onclick = () => changerVue("g-site"); } }
+  // retour à l'accueil depuis l'écran de connexion du gérant
+  let rt = document.getElementById("maj-retour");
+  if (majConnexion && majEnCours() && !(profil && profil.rang === "gerant")){
+    if (!rt){ rt = document.createElement("div"); rt.id = "maj-retour"; rt.innerHTML = `<span>🚧 Le site est en mise à jour : seul le <b>gérant</b> peut se connecter.</span><button type="button" class="mini-btn">Retour</button>`; document.body.appendChild(rt); rt.querySelector("button").onclick = () => { majConnexion = false; appliquerMaj(); }; }
+    rt.hidden = false;
+  } else if (rt) rt.hidden = true;
+}
+// connexion d'un compte non gérant pendant la mise à jour : on referme le site
+function apresConnexionMaj(){
+  if (majConnexion && majEnCours() && !(profil && profil.rang === "gerant")){ majConnexion = false; toast("Le site est en mise à jour : seul le gérant peut y accéder pour le moment."); }
+  else if (profil && profil.rang === "gerant") majConnexion = false;
+  appliquerMaj();
+}
+setInterval(() => { if (majSite && majSite.actif) appliquerMaj(); }, 20000);
+
+/* ----- Gérant : onglet « Mise à jour du site » ----- */
+let majForm = {type: "indeterminee", nb: 2, unite: "h", date: "", message: ""};
+function vueGSite(){
+  rafraichir = vueGSite;
+  const m = majSite || {}, actif = majEnCours(), expiree = m.actif && m.fin && Date.parse(m.fin) <= Date.now();
+  if (actif && !majForm.touche){ majForm.message = m.message || ""; majForm.type = m.fin ? "date" : "indeterminee"; if (m.fin){ const d = new Date(m.fin); majForm.date = new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16); } }
+  const unites = [["min", "minutes"], ["h", "heures"], ["j", "jours"]];
+  zone().innerHTML = entete("Gérant", "Mise à jour du site", `<span class="etat ${actif ? "maj-actif" : "fait"}">${actif ? "🚧 Site fermé" : "Site ouvert"}</span>`) + `
+    <p id="statut" class="statut" role="status"></p>
+    <div class="bloc maj-etat ${actif ? "actif" : ""}">
+      <span class="mono">État actuel</span>
+      ${actif ? `<p><b>La mise à jour est en cours.</b> Les élèves et les administrateurs voient la page de mise à jour et ne peuvent pas utiliser le site. Toi seul (gérant) peux y accéder.</p>
+        <p class="doux">${m.fin ? `Fin prévue : <b>${dateLongue(m.fin)}</b> (encore ${resteTexte(Date.parse(m.fin) - Date.now())}). Le site rouvrira tout seul à cette heure-là.` : "Durée indéterminée : le site reste fermé jusqu'à ce que tu termines la mise à jour."}${m.debut ? ` · Commencée le ${dateLongue(m.debut)}${m.par ? " par " + esc(m.par) : ""}.` : ""}</p>`
+        : `<p><b>Le site est ouvert</b> à tout le monde.${expiree ? ` La dernière mise à jour s'est terminée le ${dateLongue(m.fin)}.` : ""}</p>`}
+    </div>
+    <form class="bloc" id="form-maj" novalidate>
+      <span class="mono">${actif ? "Modifier la mise à jour en cours" : "Lancer une mise à jour"}</span>
+      <p class="doux" style="font-size:.88rem;max-width:75ch">Quand le mode mise à jour est actif, toute personne qui ouvre le site tombe sur une page qui la prévient (avec le même fond « en travaux » que les onglets en construction). Les personnes déjà connectées sont bloquées immédiatement.</p>
+      <div class="champ"><span class="mono">Durée</span>${segment("maj-type", [["indeterminee", "Indéterminée"], ["duree", "Pendant…"], ["date", "Jusqu'au…"]], majForm.type)}</div>
+      ${majForm.type === "duree" ? `<div class="rangee" style="gap:10px;align-items:flex-end"><div class="champ" style="max-width:120px"><label for="maj-nb">Durée</label><input id="maj-nb" type="number" min="1" max="999" value="${majForm.nb}"></div>
+        <div class="champ" style="max-width:160px"><label for="maj-unite">Unité</label><select id="maj-unite">${unites.map(([k, t]) => `<option value="${k}" ${majForm.unite === k ? "selected" : ""}>${t}</option>`).join("")}</select></div></div>` : ""}
+      ${majForm.type === "date" ? `<div class="champ" style="max-width:260px"><label for="maj-date">Fin prévue</label><input id="maj-date" type="datetime-local" value="${esc(majForm.date)}"></div>` : ""}
+      <div class="champ"><label for="maj-message">Message affiché (facultatif)</label><textarea id="maj-message" rows="3" maxlength="300" placeholder="Ex. : nouvelles cartes interactives et correction de bugs.">${esc(majForm.message)}</textarea></div>
+      <div class="rangee">
+        <button class="btn" type="submit">${actif ? "Enregistrer les changements" : "Activer la mise à jour"}</button>
+        <button class="btn sec" type="button" id="maj-apercu">Voir la page des élèves</button>
+        ${actif ? `<button class="btn danger" type="button" id="maj-terminer">Terminer la mise à jour</button>` : ""}
+      </div>
+    </form>`;
+  zone().querySelectorAll("#maj-type button").forEach(b => b.onclick = () => { lireFormMaj(); majForm.type = b.dataset.v; majForm.touche = true; vueGSite(); });
+  const finChoisie = () => {
+    lireFormMaj();
+    if (majForm.type === "duree"){ const n = Math.max(1, +majForm.nb || 1); return new Date(Date.now() + n * ({min: 60000, h: 3600000, j: 86400000})[majForm.unite]).toISOString(); }
+    if (majForm.type === "date"){ const t = Date.parse(majForm.date); return Number.isFinite(t) ? new Date(t).toISOString() : "invalide"; }
+    return null;
+  };
+  $("#maj-apercu").onclick = () => { const fin = finChoisie(); majSite = majSite || {}; majSite.apercu = {actif: true, debut: new Date().toISOString(), fin: fin === "invalide" ? null : fin, message: majForm.message}; majVoirApercu = true; appliquerMaj(); };
+  $("#form-maj").onsubmit = async ev => {
+    ev.preventDefault();
+    const fin = finChoisie();
+    if (fin === "invalide") return statut("Choisis la date et l'heure de fin.");
+    if (fin && Date.parse(fin) <= Date.now() + 60000) return statut("La fin doit être dans le futur (au moins une minute).");
+    try {
+      await db.doc("site/maintenance").set({actif: true, debut: actif && m.debut ? m.debut : new Date().toISOString(), fin, message: majForm.message.trim().slice(0, 300), par: profil ? profil.pseudo : "gérant", majLe: new Date().toISOString()});
+      majForm.touche = false; Formes.succes(); statut(actif ? "Mise à jour modifiée." : "Mise à jour activée : le site est fermé aux élèves.", true);
+    } catch (err){ statut(erreurEcriture(err)); }
+  };
+  const t = $("#maj-terminer");
+  if (t) deuxClics(t, async () => { await db.doc("site/maintenance").set({actif: false, debut: m.debut || null, fin: new Date().toISOString(), message: "", par: profil ? profil.pseudo : "gérant", majLe: new Date().toISOString()}); majForm = {type: "indeterminee", nb: 2, unite: "h", date: "", message: ""}; });
+}
+function lireFormMaj(){
+  const g = id => document.getElementById(id);
+  if (g("maj-nb")) majForm.nb = +g("maj-nb").value || 1;
+  if (g("maj-unite")) majForm.unite = g("maj-unite").value;
+  if (g("maj-date")) majForm.date = g("maj-date").value;
+  if (g("maj-message")) majForm.message = g("maj-message").value;
+}
 /* ===================== FORMES ANIMÉES (fond du site) ===================== */
 const hexRgb = h => { const n = parseInt(String(h).replace("#", ""), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
 const Formes = (() => {
@@ -2933,12 +3091,15 @@ let connecteLe = 0;
 const progVide = () => ({lecons:{}, exos:{}, brevet:{}, defis:{}, points:0, serie:0, dernierDefi:""});
 // Le rang vient du compte Helper (code IAUWL) ; estGerant = droit d'écriture sur la page claude.ai
 const estGerantCompte = () => !!profil && profil.rang === "gerant";
+// Administrateur : modifie les leçons et l'emploi du temps (moins de droits que le gérant)
+const estAdminCompte = () => !!profil && profil.rang === "administrateur";
 const normClasse = c => String(c || "").replace(/\s+/g, "").toUpperCase();
 const est3C = () => modeGerant || estGerantCompte() || (!!profil && normClasse(profil.classe) === "3C");
-const RANGS = {eleve: "Élève", gerant: "Gérant"};
+const RANGS = {eleve: "Élève", administrateur: "Administrateur", gerant: "Gérant"};
+const rangDe = r => r === "gerant" || r === "admin" ? "gerant" : r === "administrateur" ? "administrateur" : "eleve";
 
 function montrer(id){
-  if (id !== "app") Formes.chantier(false);
+  if (id !== "app") Formes.chantier(bloqueParMaj());
   $("#acces").hidden = id !== "acces"; $("#app").hidden = id !== "app";
   Formes.discret(id === "app");
 }
@@ -3027,7 +3188,7 @@ async function chargerProfil(id){
   if (c.codeHash){
     const [k, u] = await Promise.all([db.doc("codes/" + c.codeHash).get(), db.doc("utilisations/" + c.codeHash).get()]);
     if (k.exists && u.exists && u.data().compte === id){
-      const d = k.data(); nom = d.nom || ""; rang = d.rang === "gerant" || d.rang === "admin" ? "gerant" : "eleve"; classe = d.classe || "";
+      const d = k.data(); nom = d.nom || ""; rang = rangDe(d.rang); classe = d.classe || "";
     } else { rang = "eleve"; classe = ""; }
   }
   return {id, pseudo: c.pseudo || id, nom, rang, classe, avatar: typeof c.avatar === "string" ? c.avatar : "",
@@ -3039,7 +3200,7 @@ async function connecter(id){
   if (!p) return;
   id = p.id; moi = id; profil = p; modeGerant = false;
   try { uid = (await sb.auth.getUser()).data.user.id; } catch { uid = null; }
-  assets = p.rang === "gerant" ? Fichiers : null;
+  assets = p.rang === "gerant" || p.rang === "administrateur" ? Fichiers : null;
   $("#mdp").value = ""; $("#code").value = ""; masquerChamps(); $("#msg-acces").textContent = "";
   const s = await db.doc("progres/" + id).get();
   prog = Object.assign(progVide(), s.exists ? structuredClone(s.data()) : {});
@@ -3047,6 +3208,7 @@ async function connecter(id){
   appliquerPrefs(profil.prefs);
   connecteLe = Date.now();
   ouvrirApp();
+  apresConnexionMaj();
   annoncerNouveautes();
 }
 $("#entrer-gerant").addEventListener("click", () => {
@@ -3058,7 +3220,7 @@ $("#deconnexion").addEventListener("click", () => {
   assets = null; uid = null;
   moi = null; profil = null; prog = null; modeGerant = false; rafraichir = null;
   appliquerPrefs(PREFS_DEFAUT);
-  $("#identifiant").value = ""; choisirMode(estGerant ? "gerant" : "connecter"); montrer("acces");
+  $("#identifiant").value = ""; choisirMode(estGerant ? "gerant" : "connecter"); montrer("acces"); appliquerMaj();
 });
 function sauver(){
   const copie = structuredClone(prog), id = moi;
@@ -3103,7 +3265,8 @@ function notifierEnDirect(type, docs){
 
 /* ===================== NAVIGATION ===================== */
 const ONGLETS_ELEVE = [["profil","Profil"],["prefs","Préférences"],["edt","Emploi du temps"],["lecons","Leçons"],["exos","Exercices"],["brevet","Exercices Brevet"],["defi","Défi"],["actu","Actualité"],["cloud","Cloud"]];
-const ONGLETS_GERANT = [["g-eleves","Élèves et codes"],["g-lecons","Leçons"],["g-exos","Exercices"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"],["a-actus","Actus"],["g-cloud","Cloud"],["g-signal","Signalements"]];
+const ONGLETS_ADMIN = [["g-lecons","Leçons"],["g-edt","Emploi du temps"]];
+const ONGLETS_GERANT = [["g-site","Mise à jour du site"],["g-eleves","Élèves et codes"],["g-lecons","Leçons"],["g-exos","Exercices"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"],["a-actus","Actus"],["g-cloud","Cloud"],["g-signal","Signalements"]];
 const zone = () => $("#vue");
 function initiale(p){ return esc(((p && (p.pseudo || p.nom)) || "?").slice(0, 1).toUpperCase()); }
 function majIdentite(){
@@ -3115,16 +3278,19 @@ function ouvrirApp(){
   const groupes = [];
   if (!modeGerant) groupes.push(["Élève", ONGLETS_ELEVE]);
   if (modeGerant || estGerantCompte()){ groupes.push(["Gérant", ONGLETS_GERANT]); suivreGestion(); }
+  else if (estAdminCompte()) groupes.push(["Administration", ONGLETS_ADMIN]);
   $("#nav").innerHTML = groupes.map(([g, ongs]) => `<span class="nav-groupe">${g}</span>` + ongs.map(([v, t]) => `<button type="button" role="tab" data-vue="${v}" aria-selected="false"${EN_CHANTIER.includes(v) ? ` title="${t} : onglet en construction"` : ""}>${t}${EN_CHANTIER.includes(v) ? `<span class="nav-chantier" aria-label="en construction">En travaux</span>` : ""}</button>`).join("")).join("");
   $("#nav").querySelectorAll("button").forEach(b => b.onclick = () => changerVue(b.dataset.vue));
   majIdentite(); majBadgeSignal();
   montrer("app"); changerVue(modeGerant ? "g-eleves" : "edt");
 }
+let vueActive = "";
 function marquerNav(v){ document.querySelectorAll("#nav button").forEach(b => b.setAttribute("aria-selected", b.dataset.vue === v)); }
 const VUES = {};
 function changerVue(v){
   marquerNav(v); rafraichir = null; fermerFenetre();
-  Formes.chantier(EN_CHANTIER.includes(v));
+  vueActive = v;
+  Formes.chantier(EN_CHANTIER.includes(v) || bloqueParMaj());
   VUES[v]();
   scrollTo({top: 0});
 }
@@ -3134,7 +3300,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.51";
+const VERSION_SITE = "0.52";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -8268,6 +8434,7 @@ async function enregistrerCodesClairs(){
 }
 
 /* ----- Gérant : élèves et codes IAUWL ----- */
+VUES["g-site"] = () => vueGSite();
 VUES["g-eleves"] = function vueGEleves(){
   rafraichir = dessinerEleves;
   zone().innerHTML = entete("Gérant", "Élèves et codes d'accès") + `
@@ -8277,7 +8444,7 @@ VUES["g-eleves"] = function vueGEleves(){
       <div class="grille-form">
         <div class="champ" style="grid-column:span 2"><label for="nc-code">Code</label><div class="rangee" style="flex-wrap:nowrap"><input id="nc-code" type="text" class="code-clair" spellcheck="false" autocapitalize="characters" value="${genererCode()}" style="flex:1;min-width:0"><button type="button" class="mini-btn" id="nc-gen">Générer</button></div></div>
         <div class="champ"><label for="nc-nom">Nom</label><input id="nc-nom" type="text" placeholder="Gabriel.C." maxlength="40"></div>
-        <div class="champ"><label for="nc-rang">Rang</label><select id="nc-rang"><option value="eleve">Élève</option><option value="gerant">Gérant</option></select></div>
+        <div class="champ"><label for="nc-rang">Rang</label><select id="nc-rang"><option value="eleve">Élève</option><option value="administrateur">Administrateur (leçons, emploi du temps)</option><option value="gerant">Gérant</option></select></div>
         <div class="champ"><label for="nc-classe">Classe</label><input id="nc-classe" type="text" value="3C" maxlength="10"></div>
       </div>
       <p id="statut" class="statut" role="status"></p>
@@ -8309,7 +8476,7 @@ function dessinerEleves(){
   zc.innerHTML = tri.length ? `<div class="tableau"><table><thead><tr><th>Nom</th><th>Code</th><th>Rang</th><th>Classe</th><th>État</th><th></th></tr></thead><tbody>${tri.map(c => {
       const u = utilisations[c.id];
       return `<tr><td>${esc(c.nom)}</td><td class="code-clair">${codesClairs[c.id] ? esc(codesClairs[c.id]) : `<span class="doux" title="Créé depuis un autre appareil ou un autre compte gérant">masqué</span>`}</td>
-        <td>${RANGS[c.rang === "admin" ? "gerant" : c.rang] || "Élève"}</td><td>${esc(c.classe) || "—"}</td>
+        <td>${RANGS[rangDe(c.rang)]}</td><td>${esc(c.classe) || "—"}</td>
         <td>${u && u.compte ? `<span class="badge accent">Utilisé · ${esc(pseudoDe(u.compte))}</span>` : `<span class="badge">Libre</span>`}</td>
         <td style="text-align:right"><button type="button" class="mini-btn danger" data-suppr-code="${esc(c.id)}">Supprimer</button></td></tr>`; }).join("")}</tbody></table></div>`
     : `<div class="vide">Aucun code pour le moment. Crée le premier ci-dessus, par exemple pour toi avec le rang Gérant.</div>`;
@@ -8323,10 +8490,15 @@ function dessinerEleves(){
   za.innerHTML = lignes.length ? `<div class="tableau"><table><thead><tr><th>Pseudo</th><th>Nom</th><th>Rang</th><th>Classe</th><th>Points</th><th>Série</th><th>Créé le</th><th></th></tr></thead><tbody>${lignes.map(c => {
       const k = infosCode(c), p = progresTous[c.id] || {};
       return `<tr><td><span class="rangee" style="gap:8px;flex-wrap:nowrap"><span class="avatar" style="width:28px;height:28px;font-size:.75rem">${c.avatar ? `<img src="${esc(c.avatar)}" alt="">` : esc((c.pseudo || c.id).slice(0, 1).toUpperCase())}</span>${esc(c.pseudo || c.id)}</span></td>
-        <td>${esc(k.nom) || `<span class="doux">${k.ancien ? "Ancien compte" : k.sansCode ? "Code supprimé" : "—"}</span>`}</td><td>${RANGS[k.rang === "admin" ? "gerant" : k.rang] || "Élève"}</td><td>${esc(k.classe) || "—"}</td>
+        <td>${esc(k.nom) || `<span class="doux">${k.ancien ? "Ancien compte" : k.sansCode ? "Code supprimé" : "—"}</span>`}</td><td>${k.ancien || k.sansCode || !c.codeHash ? (RANGS[rangDe(k.rang)]) : `<select class="choix-rang" data-rang-code="${esc(c.codeHash)}" data-compte="${esc(c.id)}" aria-label="Rôle de ${esc(c.pseudo || c.id)}"${c.id === moi ? ` disabled title="Tu ne peux pas changer ton propre rôle"` : ""}>${Object.entries(RANGS).map(([r, t]) => `<option value="${r}" ${rangDe(k.rang) === r ? "selected" : ""}>${t}</option>`).join("")}</select>`}</td><td>${esc(k.classe) || "—"}</td>
         <td class="num">${p.points || 0}</td><td class="num">${p.serie || 0} j</td><td>${c.creeLe ? dateFr(String(c.creeLe).slice(0, 10)) : "—"}</td><td style="text-align:right;white-space:nowrap">${c.pseudoBloque ? `<span class="badge" title="Changement de pseudo désactivé">🔒 Pseudo</span> ` : ""}<button type="button" class="mini-btn" data-moderer="${esc(c.id)}">Pseudo…</button> <button type="button" class="mini-btn danger" data-suppr-compte="${esc(c.id)}">Supprimer</button></td></tr>`; }).join("")}</tbody></table></div>`
     : `<div class="vide">Aucun compte créé pour le moment.</div>`;
   za.querySelectorAll("[data-suppr-compte]").forEach(b => deuxClics(b, () => supprimerCompteGerant(b.dataset.supprCompte)));
+  za.querySelectorAll("[data-rang-code]").forEach(sel => sel.onchange = async () => {
+    const c = comptes.find(x => x.id === sel.dataset.compte), r = sel.value;
+    try { await db.doc("codes/" + sel.dataset.rangCode).update({rang: r}); statut(`« ${c ? c.pseudo || c.id : sel.dataset.compte} » est maintenant ${RANGS[r]}. Le changement s'applique à sa prochaine connexion.`, true); Formes.succes(); }
+    catch (err){ statut(erreurEcriture(err)); dessinerEleves(); }
+  });
   za.querySelectorAll("[data-moderer]").forEach(b => b.onclick = () => { const c = comptes.find(x => x.id === b.dataset.moderer); if (c) fenetrePseudo(c); });
 }
 async function supprimerCompteGerant(id){
@@ -8694,6 +8866,9 @@ signalements = l; majBadgeSignal(); });
   if (!db) return;
   // la page d'accès n'a plus d'« espace gérant » séparé : le gérant se connecte avec son compte (code de rang Gérant)
   estGerant = false; $("#onglet-gerant").hidden = true;
+
+  // Mode mise à jour (site fermé à tous sauf au gérant)
+  db.doc("site/maintenance").onSnapshot(s => { majSite = s.exists ? s.data() : null; appliquerMaj(); if (rafraichir === vueGSite) majVue(); }, () => {});
 
   // Données partagées en direct
   const nouveaux = s => s.docChanges().filter(c => c.type === "added").map(c => ({...c.doc.data(), id: c.doc.id}));
