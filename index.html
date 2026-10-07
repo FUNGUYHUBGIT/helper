@@ -786,27 +786,15 @@ a.lien{color:var(--accent)}
 body.maj-bloque #acces, body.maj-bloque #app, body.maj-bloque #ouverture, body.maj-bloque .version-acces, body.maj-bloque #maj-bandeau{display:none!important}
 #maj-site{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 16px;overflow-y:auto}
 #maj-site[hidden]{display:none}
-.maj-ruban{position:fixed;left:-40px;right:-40px;height:24px;background:repeating-linear-gradient(-45deg,#f2ae02 0 18px,#16161a 18px 36px);background-size:50.9px 50.9px;box-shadow:0 0 24px rgba(242,174,2,.3);opacity:.92;will-change:background-position,transform}
-.maj-ruban::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 40%,rgba(255,255,255,.35) 50%,transparent 60% 100%);background-size:300% 100%;animation:maj-reflet 3.5s ease-in-out infinite;mix-blend-mode:overlay}
-.maj-ruban.haut{top:0;animation:maj-tapis 1.4s linear infinite,maj-flotte-h 4s ease-in-out infinite,maj-saute 5.3s steps(1) infinite}
-.maj-ruban.bas{bottom:0;animation:maj-tapis-inv 1.4s linear infinite,maj-flotte-b 4.6s ease-in-out infinite,maj-saute 6.1s steps(1) infinite 1.7s}
+.maj-ruban{position:fixed;left:0;right:0;height:22px;background:repeating-linear-gradient(-45deg,#f2ae02 0 18px,#16161a 18px 36px);background-size:50.9px 50.9px;opacity:.92}
+.maj-ruban.haut{top:0;animation:maj-tapis 1.4s linear infinite}
+.maj-ruban.bas{bottom:0;animation:maj-tapis-inv 1.4s linear infinite}
 @keyframes maj-tapis{to{background-position:50.9px 0}}
 @keyframes maj-tapis-inv{to{background-position:-50.9px 0}}
-@keyframes maj-flotte-h{0%,100%{transform:rotate(-.7deg) translateY(-5px)}50%{transform:rotate(.5deg) translateY(-1px)}}
-@keyframes maj-flotte-b{0%,100%{transform:rotate(.7deg) translateY(5px)}50%{transform:rotate(-.5deg) translateY(1px)}}
-@keyframes maj-saute{0%,93%,100%{filter:none;opacity:.92}94%{filter:hue-rotate(160deg) saturate(2);opacity:.5;margin-left:-14px}96%{filter:none;opacity:1;margin-left:9px}98%{opacity:.7;margin-left:0}}
-@keyframes maj-reflet{0%{background-position:100% 0}100%{background-position:-50% 0}}
-@media (prefers-reduced-motion: reduce){.maj-ruban.haut,.maj-ruban.bas{animation-duration:4s,0s,0s}.maj-ruban::after{animation:none}}
 .maj-carte{position:relative;width:min(620px,100%);display:flex;flex-direction:column;gap:16px;padding:34px 32px;border-radius:14px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1.5px dashed color-mix(in srgb,#f2ae02 70%,transparent);backdrop-filter:blur(3px);box-shadow:0 20px 60px rgba(0,0,0,.45)}
 .maj-logo{display:flex;align-items:center;gap:10px;font:500 1.15rem var(--f-titre)}.maj-logo svg{width:30px;height:30px}
 .maj-sur{align-self:flex-start;font:600 .78rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:#16161a;background:#f2ae02;padding:4px 10px;border-radius:5px}
 .maj-glitch{position:relative;font-size:clamp(1.9rem,6vw,2.8rem);line-height:1.1;font-weight:600}
-.maj-glitch::before,.maj-glitch::after{content:attr(data-texte);position:absolute;inset:0;pointer-events:none}
-.maj-glitch::before{color:#29e0ff;clip-path:inset(0 0 60% 0);animation:maj-g1 3.2s infinite steps(1)}
-.maj-glitch::after{color:#ff3b5c;clip-path:inset(55% 0 0 0);animation:maj-g2 2.7s infinite steps(1)}
-@keyframes maj-g1{0%,88%,100%{transform:none;opacity:0}89%{transform:translate(-4px,-1px);opacity:.9}92%{transform:translate(3px,1px);opacity:.9}95%{transform:translate(-2px,0);opacity:.7}}
-@keyframes maj-g2{0%,82%,100%{transform:none;opacity:0}83%{transform:translate(4px,1px);opacity:.9}86%{transform:translate(-3px,-1px);opacity:.9}90%{transform:translate(2px,0);opacity:.6}}
-@media (prefers-reduced-motion: reduce){.maj-glitch::before,.maj-glitch::after{animation:none;opacity:0}}
 .maj-texte{color:var(--doux);line-height:1.55}
 .maj-duree{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:10px;background:var(--surface-2);border:1px solid var(--ligne)}
 .maj-duree-l{font-size:1rem}.maj-reste{font-size:.88rem;color:var(--doux)}
@@ -3309,7 +3297,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.53";
+const VERSION_SITE = "0.54";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
