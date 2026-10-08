@@ -408,6 +408,28 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .o-couleur{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:.85rem;background:var(--surface);border:1px solid var(--ligne);border-radius:4px;padding:2px 4px 2px 8px;cursor:pointer}
 .o-couleur input{width:24px;height:22px;border:0;padding:0}
 .o-couleur.surligne{background:linear-gradient(transparent 55%,rgba(245,165,36,.5) 55%),var(--surface)}
+.doc-lecon ul[class*="puce-"]{list-style:none;padding-left:1.5em}
+.doc-lecon ul[class*="puce-"]>li{position:relative}
+.doc-lecon ul[class*="puce-"]>li::before{content:var(--forme-puce,"•");position:absolute;left:-1.25em;width:1em;text-align:center;color:var(--puce,currentColor);font-weight:700}
+.doc-lecon ul.puce-disque{--forme-puce:"●"}.doc-lecon ul.puce-cercle{--forme-puce:"○"}.doc-lecon ul.puce-carre{--forme-puce:"■"}.doc-lecon ul.puce-losange{--forme-puce:"◆"}
+.doc-lecon ul.puce-fleche{--forme-puce:"➤"}.doc-lecon ul.puce-coche{--forme-puce:"✓"}.doc-lecon ul.puce-etoile{--forme-puce:"★"}.doc-lecon ul.puce-tiret{--forme-puce:"–"}
+.doc-lecon ul[class*="puce-"]>li::before{font-size:.85em;top:.12em}
+.barre-outils [data-cmd].actif{background:color-mix(in srgb,var(--accent) 22%,var(--surface-2));border-color:var(--accent);color:var(--accent)}
+.barre-outils .o-couleur{border-bottom:3px solid var(--c,#f4f2ed)}.barre-outils .o-couleur-puce{color:var(--accent)}
+.obj-doc:has(.fm-fiche){width:min(680px,100%)}
+.fm-drapeau{font-family:var(--f-texte)}
+.fm-outils{display:flex;flex-wrap:wrap;gap:4px;padding:6px;border:1px solid var(--ligne);border-radius:10px;background:var(--surface-2)}
+.fm-outils button{min-width:36px;height:34px;padding:0 8px;font:600 .95rem "Times New Roman",Georgia,serif;color:var(--texte);background:var(--surface);border:1px solid var(--ligne);border-radius:6px;cursor:pointer;line-height:1}
+.fm-outils button:hover{border-color:var(--accent);color:var(--accent)}.fm-outils sup,.fm-outils sub{font-size:.7em}
+.fm-lignes{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface)}
+.fm-ligne{display:flex;align-items:center;gap:8px}
+.fm-num{flex:none;width:22px;text-align:right;font:700 .72rem var(--f-mono);color:var(--doux)}
+.fm-champ{flex:1;min-width:0;display:block;min-height:40px;font-size:1.25rem;padding:4px 10px;border-radius:8px;border:1px solid transparent;background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--texte);
+  --caret-color:var(--accent);--selection-background-color:color-mix(in srgb,var(--accent) 30%,transparent);--selection-color:var(--texte);--contains-highlight-background-color:color-mix(in srgb,var(--accent) 12%,transparent);--placeholder-color:var(--accent);--primary:var(--accent);--text-font-family:var(--f-texte)}
+.fm-champ:focus-within{border-color:var(--accent);outline:none}
+.fm-champ::part(menu-toggle){display:none}.fm-champ::part(virtual-keyboard-toggle){color:var(--doux)}
+.fm-suppr{flex:none;background:none;border:0;color:var(--doux);font-size:1.1rem;cursor:pointer;opacity:.5}.fm-ligne:hover .fm-suppr{opacity:1}.fm-suppr:hover{color:#e5484d}
+.fm-pied{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.fm-aide{font-size:.78rem;color:var(--doux)}.fm-aide b{color:var(--texte)}
 .titre-fixe-lecon{color:#ff5c5c;font-size:1.08rem;font-weight:600;margin:0 0 .8em;user-select:text}
 .legende-auteur{margin:14px 0 0;padding-top:10px;border-top:1px solid var(--ligne);color:var(--doux);opacity:.75;font-size:.8rem;font-style:italic}
 .cadre-edition{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:22px 22px 14px}
@@ -3832,7 +3854,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.72";
+const VERSION_SITE = "0.73";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4443,7 +4465,7 @@ function remplirSommaires(racine){
 
 /* ----- Nettoyage du HTML : seules les balises et styles de mise en forme sont gardés ----- */
 const BALISES_OK = new Set(["P","DIV","BR","SPAN","FONT","B","STRONG","I","EM","U","S","STRIKE","H1","H2","H3","UL","OL","LI","BLOCKQUOTE","FIGURE","IMG","FIGCAPTION","TABLE","THEAD","TBODY","TR","TH","TD","SUP","SUB"]);
-const STYLES_OK = ["color","background-color","font-family","font-size","font-weight","font-style","text-decoration","text-decoration-line","text-align","left","top","width","vertical-align"];
+const STYLES_OK = ["color","background-color","font-family","font-size","font-weight","font-style","text-decoration","text-decoration-line","text-align","left","top","width","vertical-align","--puce"];
 function nettoyerHtml(html){
   const doc = new DOMParser().parseFromString(`<div>${html || ""}</div>`, "text/html");
   const marcher = el => {
@@ -4461,10 +4483,11 @@ function nettoyerHtml(html){
           const propre = v.split(";").map(x => x.trim()).filter(Boolean).filter(d => {
             const [p, ...r] = d.split(":"), val = r.join(":").trim().toLowerCase();
             if (p.trim().toLowerCase() === "vertical-align" && !/^(super|sub|baseline)$/.test(val)) return false;   // exposants et indices
+            if (p.trim().toLowerCase() === "--puce" && !/^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\))$/.test(val)) return false;   // couleur des puces
             return STYLES_OK.includes(p.trim().toLowerCase()) && !/url\(|expression|javascript|[<>]/.test(val);
           }).join("; ");
           if (propre){ n.setAttribute("style", propre); garder = true; }
-        } else if (nom === "class") { const c = v.split(/\s+/).filter(x => /^(img-doc|obj-doc|tab-doc|sommaire-lecon|partie-lecon|mode-(flux|libre)|pos-(gauche|droite|centre)|t-(petite|moyenne|grande))$/.test(x)).join(" "); if (c){ n.setAttribute("class", c); garder = true; } }
+        } else if (nom === "class") { const c = v.split(/\s+/).filter(x => /^(img-doc|obj-doc|tab-doc|sommaire-lecon|partie-lecon|puce-(disque|cercle|carre|losange|fleche|coche|etoile|tiret)|mode-(flux|libre)|pos-(gauche|droite|centre)|t-(petite|moyenne|grande))$/.test(x)).join(" "); if (c){ n.setAttribute("class", c); garder = true; } }
         else if (n.tagName === "IMG" && nom === "data-asset") garder = /^[0-9a-f]{32}$/.test(v);
         else if (n.tagName === "IMG" && nom === "data-ref") garder = /^i-[a-z0-9]+$/.test(v);
         else if (n.tagName === "IMG" && nom === "alt") garder = true;
@@ -4619,6 +4642,8 @@ function dessinerEditeur(){
         <button type="button" data-cmd="subscript" title="Indice" aria-label="Indice">x₂</button>
         <button type="button" data-cmd="insertUnorderedList" title="Liste à puces" aria-label="Liste à puces">• ≡</button>
         <button type="button" data-cmd="insertOrderedList" title="Liste numérotée" aria-label="Liste numérotée">1. ≡</button>
+        <select id="o-puce" aria-label="Forme des puces" title="Forme des puces (liste à puces)"><option value="">Puce…</option><option value="disque">● Disque</option><option value="cercle">○ Cercle</option><option value="carre">■ Carré</option><option value="losange">◆ Losange</option><option value="fleche">➤ Flèche</option><option value="coche">✓ Coche</option><option value="etoile">★ Étoile</option><option value="tiret">– Tiret</option></select>
+        <label class="o-couleur o-couleur-puce" title="Couleur des puces">●<input type="color" id="o-puce-couleur" value="#f2ae02" aria-label="Couleur des puces"></label>
         <button type="button" data-cmd="justifyCenter" title="Centrer" aria-label="Centrer">≡</button>
         <button type="button" data-cmd="removeFormat" title="Effacer la mise en forme" aria-label="Effacer la mise en forme">Tx</button>
         <span class="sep"></span>
@@ -4676,13 +4701,42 @@ function dessinerEditeur(){
   try { document.execCommand("styleWithCSS", false, true); } catch {}
   let selection = null;
   const garder = () => { const s = getSelection(); if (s.rangeCount && doc.contains(s.anchorNode)) selection = s.getRangeAt(0).cloneRange(); };
-  const rendre = () => { doc.focus(); if (selection){ const s = getSelection(); s.removeAllRanges(); s.addRange(selection); } };
+  const rendre = () => { doc.focus({preventScroll: true}); if (selection){ const s = getSelection(); s.removeAllRanges(); s.addRange(selection); } };
   doc.addEventListener("keyup", garder); doc.addEventListener("mouseup", garder); doc.addEventListener("input", garder);
-  const cmd = (c, v) => { rendre(); document.execCommand(c, false, v); garder(); };
+  // la sélection est retenue dès qu'elle change, et le ruban affiche la mise en forme du texte sélectionné
+  const versHex = c => { const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(c || ""); return m ? "#" + [m[1], m[2], m[3]].map(v => (+v).toString(16).padStart(2, "0")).join("") : "#f4f2ed"; };
+  const PX_TAILLES = [["2", 13], ["3", 16], ["4", 18], ["5", 24], ["6", 32], ["7", 48]];
+  const majRuban = () => {
+    const sel = getSelection(); if (!sel.rangeCount || !doc.contains(sel.anchorNode)) return;
+    const el = sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement; if (!el) return;
+    const cs = getComputedStyle(el), nomPolice = v => String(v).split(",")[0].replace(/['"]/g, "").trim().toLowerCase();
+    const pol = $("#o-police"), fam = nomPolice(cs.fontFamily), trouvee = POLICES.find(([v]) => nomPolice(v) === fam);
+    pol.querySelector('option[data-autre]')?.remove();
+    if (trouvee) pol.value = trouvee[0]; else { const o = document.createElement("option"); o.dataset.autre = "1"; o.value = ""; o.textContent = cs.fontFamily.split(",")[0].replace(/['"]/g, ""); pol.prepend(o); pol.value = ""; }
+    const px = parseFloat(cs.fontSize) || 16; $("#o-taille").value = PX_TAILLES.reduce((a, b) => Math.abs(b[1] - px) < Math.abs(a[1] - px) ? b : a)[0];
+    zone().querySelectorAll("[data-cmd]").forEach(b => { let on = false; try { on = document.queryCommandState(b.dataset.cmd); } catch {} b.classList.toggle("actif", !!on); b.setAttribute("aria-pressed", !!on); });
+    $("#o-couleur").value = versHex(cs.color); $("#o-couleur").parentElement.style.setProperty("--c", cs.color);
+    const ul = el.closest("ul"); $("#o-puce").value = ul && doc.contains(ul) ? ((ul.className.match(/puce-(\w+)/) || [, "disque"])[1]) : "";
+    if (ul && doc.contains(ul)) $("#o-puce-couleur").value = versHex(ul.style.getPropertyValue("--puce") || cs.color);
+  };
+  const surSelection = () => { if (!doc.isConnected) return document.removeEventListener("selectionchange", surSelection); const sel = getSelection(); if (sel.rangeCount && doc.contains(sel.anchorNode)){ selection = sel.getRangeAt(0).cloneRange(); majRuban(); } };
+  document.addEventListener("selectionchange", surSelection);
+  const cmd = (c, v) => { rendre(); document.execCommand(c, false, v); garder(); majRuban(); };
   zone().querySelectorAll("[data-cmd]").forEach(b => { b.onmousedown = ev => ev.preventDefault(); b.onclick = () => cmd(b.dataset.cmd); });
   $("#o-police").onchange = () => cmd("fontName", $("#o-police").value);
   $("#o-taille").onchange = () => cmd("fontSize", $("#o-taille").value);
-  $("#o-couleur").oninput = () => cmd("foreColor", $("#o-couleur").value);
+  $("#o-couleur").oninput = () => $("#o-couleur").parentElement.style.setProperty("--c", $("#o-couleur").value);
+  $("#o-couleur").onchange = () => cmd("foreColor", $("#o-couleur").value);
+  $("#o-couleur").onmousedown = () => garder();
+  // ----- Puces : forme et couleur de la liste -----
+  const listeCourante = () => { const sel = getSelection(); if (!sel.rangeCount) return null; const n = sel.anchorNode; const el = n && (n.nodeType === 1 ? n : n.parentElement); const ul = el && el.closest("ul"); return ul && doc.contains(ul) ? ul : null; };
+  $("#o-puce").onchange = () => { const forme = $("#o-puce").value; if (!forme) return; rendre(); let ul = listeCourante();
+    if (!ul){ document.execCommand("insertUnorderedList"); ul = listeCourante(); }
+    if (ul){ ul.className = ul.className.replace(/\bpuce-\w+/g, "").trim(); ul.classList.add("puce-" + forme); }
+    garder(); majRuban(); };
+  $("#o-puce-couleur").onmousedown = () => garder();
+  $("#o-puce-couleur").onchange = () => { rendre(); let ul = listeCourante(); if (!ul){ document.execCommand("insertUnorderedList"); ul = listeCourante(); }
+    if (ul){ ul.style.setProperty("--puce", $("#o-puce-couleur").value); if (!/puce-/.test(ul.className)) ul.classList.add("puce-disque"); } garder(); majRuban(); };
   // Surlignage translucide : la couleur et la police du texte restent visibles
   $("#o-surligne").onchange = () => { const v = $("#o-surligne").value; if (v) cmd("hiliteColor", v === "aucun" ? "transparent" : `rgba(${v}, 0.38)`); $("#o-surligne").value = ""; };
   doc.addEventListener("paste", ev => { ev.preventDefault(); document.execCommand("insertText", false, ev.clipboardData.getData("text/plain")); });
@@ -4722,7 +4776,7 @@ function dessinerEditeur(){
     });
     setTimeout(() => { const dehors = ev => { if (!p.contains(ev.target) && ev.target !== $("#o-tableau")){ p.remove(); document.removeEventListener("mousedown", dehors); } }; document.addEventListener("mousedown", dehors); });
   };
-  const placerDans = c => { if (!c) return; const r = document.createRange(); r.selectNodeContents(c); r.collapse(true); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); doc.focus(); garder(); caseActive = c; };
+  const placerDans = c => { if (!c) return; const r = document.createRange(); r.selectNodeContents(c); r.collapse(true); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); doc.focus({preventScroll: true}); garder(); caseActive = c; };
   // Tab / Maj+Tab : case suivante / précédente (nouvelle ligne à la fin)
   doc.addEventListener("keydown", ev => {
     if (ev.key !== "Tab") return; const c = caseCourante(); if (!c) return;
@@ -5959,6 +6013,7 @@ function brancherTransitions(racine){
     maj();
   });
   if (typeof brancherLangues === "function") brancherLangues(racine);
+  if (typeof brancherFicheMaths === "function") brancherFicheMaths(racine);
 }
 
 /* ---------- Tableaux de conjugaison / déclinaison ---------- */
@@ -8363,6 +8418,85 @@ INTERACTIFS.fautes = {
     };
   }
 };
+/* ===================== MODULE : fiche interactive de maths =====================
+   Un cadre où l'on tape librement ses calculs : fractions, racines, puissances, inconnues…
+   Éditeur de formules MathLive (hébergé dans vendor/mathlive), chargé seulement quand une fiche s'affiche.
+   Les lignes de départ s'écrivent comme sur une calculatrice : 3/4 + sqrt(2) = x^2 */
+const LIB_MATHS = "vendor/mathlive/mathlive.min.js";
+let mathsPret = null;
+function chargerMaths(){
+  return mathsPret || (mathsPret = chargerScript(LIB_MATHS).then(() => {
+    const M = window.MathfieldElement;
+    if (M){ M.soundsDirectory = null; try { M.locale = "fr"; } catch {} }
+    return M;
+  }).catch(() => { mathsPret = null; return null; }));
+}
+// boutons de la barre : [texte du bouton, commande LaTeX insérée, titre]
+const FM_OUTILS = [
+  ["<sup>a</sup>⁄<sub>b</sub>", "\\frac{#0}{#?}", "Fraction (ou tape /)"], ["√", "\\sqrt{#0}", "Racine carrée (ou tape sqrt)"], ["ⁿ√", "\\sqrt[#?]{#0}", "Racine n-ième"],
+  ["x²", "#0^{2}", "Au carré"], ["xⁿ", "#0^{#?}", "Puissance (ou tape ^)"], ["xₙ", "#0_{#?}", "Indice (ou tape _)"],
+  ["×", "\\times", "Multiplier"], ["÷", "\\div", "Diviser"], ["±", "\\pm", "Plus ou moins"], ["( )", "\\left(#0\\right)", "Parenthèses"], ["|x|", "\\left|#0\\right|", "Valeur absolue"],
+  ["π", "\\pi", "Pi"], ["°", "^{\\circ}", "Degré"], ["≈", "\\approx", "Environ égal"], ["≠", "\\neq", "Différent"], ["≤", "\\leq", "Inférieur ou égal"], ["≥", "\\geq", "Supérieur ou égal"],
+  ["⇔", "\\Leftrightarrow", "Équivaut à"], ["x", "x", "Inconnue x"], ["y", "y", "Inconnue y"]
+];
+const fmLignesDepart = o => String(o.lignes || "").split("\n").map(l => l.trim()).filter(Boolean);
+function htmlFicheMaths(o){
+  const depart = fmLignesDepart(o), vides = Math.max(0, Math.min(12, +o.vides || 0)), n = Math.max(1, depart.length + vides);
+  const lignes = Array.from({length: n}, (_, i) => depart[i] || "");
+  return `<div class="lg-mod fm-fiche" data-fm="1" data-o="${encoderObjet(o)}">
+    <div class="lg-tete"><span class="lg-drapeau fm-drapeau">√x</span><b>${esc(o.titre || "Fiche de calcul")}</b>${o.consigne ? `<span class="lg-consigne fm-consigne">${esc(o.consigne)}</span>` : ""}</div>
+    ${o.outils !== false ? `<div class="fm-outils" role="toolbar" aria-label="Symboles mathématiques">${FM_OUTILS.map(([t, , titre], i) => `<button type="button" data-fm-outil="${i}" title="${esc(titre)}" aria-label="${esc(titre)}">${t}</button>`).join("")}</div>` : ""}
+    <div class="fm-lignes">${lignes.map((l, i) => fmLigne(i + 1, l)).join("")}</div>
+    <div class="fm-pied"><button type="button" class="mini-btn" data-fm-ajout>+ Ligne</button><button type="button" class="mini-btn" data-fm-vider>↺ Tout effacer</button>
+      <span class="fm-aide">Tape <b>/</b> pour une fraction, <b>sqrt</b> pour une racine, <b>^</b> pour un exposant, <b>_</b> pour un indice. <b>Entrée</b> = nouvelle ligne.</span></div></div>`;
+}
+const fmLigne = (n, ascii) => `<div class="fm-ligne"><span class="fm-num">${n}</span><math-field class="fm-champ" data-ascii="${esc(ascii || "")}" aria-label="Ligne de calcul ${n}"></math-field><button type="button" class="fm-suppr" data-fm-suppr title="Retirer la ligne" aria-label="Retirer la ligne">×</button></div>`;
+function brancherFicheMaths(racine){
+  if (!racine || !racine.querySelectorAll) return;
+  const fiches = [...racine.querySelectorAll(".fm-fiche[data-fm]")].filter(f => !f.dataset.pret);
+  if (!fiches.length) return;
+  fiches.forEach(f => f.dataset.pret = "1");
+  chargerMaths().then(M => fiches.forEach(f => {
+    if (!M){ f.querySelector(".fm-lignes").insertAdjacentHTML("beforebegin", `<p class="doux">L'éditeur de formules n'a pas pu se charger. Vérifie ta connexion puis recharge la page.</p>`); return; }
+    let dernier = null;
+    const lignes = () => [...f.querySelectorAll(".fm-champ")];
+    const renumeroter = () => f.querySelectorAll(".fm-num").forEach((s, i) => s.textContent = i + 1);
+    const preparer = mf => {
+      if (mf.dataset.fmPret) return; mf.dataset.fmPret = "1";
+      try { mf.mathVirtualKeyboardPolicy = "auto"; mf.smartFence = true; mf.smartSuperscript = true; } catch {}
+      if (mf.dataset.ascii){ try { mf.setValue(mf.dataset.ascii, {format: "ascii-math"}); } catch { mf.value = mf.dataset.ascii; } }
+      mf.addEventListener("focusin", () => dernier = mf);
+      mf.addEventListener("keydown", ev => {
+        if (ev.key === "Enter"){ ev.preventDefault(); ajouter(mf.closest(".fm-ligne")); }
+        else if (ev.key === "Backspace" && !mf.value && lignes().length > 1){ ev.preventDefault(); const l = mf.closest(".fm-ligne"), avant = l.previousElementSibling; l.remove(); renumeroter(); avant?.querySelector(".fm-champ")?.focus(); }
+      });
+      // dans l'éditeur de leçon, les touches ne doivent pas partir dans le texte autour
+      ["keydown", "keypress", "input", "paste"].forEach(t => mf.addEventListener(t, ev => ev.stopPropagation()));
+    };
+    const ajouter = apres => {
+      const div = document.createElement("div"); div.innerHTML = fmLigne(0, "");
+      const l = div.firstElementChild; apres ? apres.after(l) : f.querySelector(".fm-lignes").appendChild(l);
+      renumeroter(); brancherSuppr(l); const mf = l.querySelector(".fm-champ"); preparer(mf); setTimeout(() => mf.focus(), 30);
+    };
+    const brancherSuppr = l => { l.querySelector("[data-fm-suppr]").onclick = () => { if (lignes().length > 1){ l.remove(); renumeroter(); } else l.querySelector(".fm-champ").value = ""; }; };
+    lignes().forEach(preparer); f.querySelectorAll(".fm-ligne").forEach(brancherSuppr);
+    f.querySelectorAll("[data-fm-outil]").forEach(b => {
+      b.onmousedown = ev => ev.preventDefault();
+      b.onclick = () => { const mf = dernier && dernier.isConnected ? dernier : lignes()[0]; if (!mf) return; mf.focus(); mf.executeCommand(["insert", FM_OUTILS[+b.dataset.fmOutil][1], {focus: true, selectionMode: "placeholder"}]); };
+    });
+    f.querySelector("[data-fm-ajout]").onclick = () => ajouter(dernier && dernier.isConnected ? dernier.closest(".fm-ligne") : null);
+    const vider = f.querySelector("[data-fm-vider]"); let confirmer = false;
+    vider.onclick = () => { if (!confirmer){ confirmer = true; vider.textContent = "Confirmer ?"; setTimeout(() => { confirmer = false; vider.textContent = "↺ Tout effacer"; }, 2500); return; }
+      confirmer = false; vider.textContent = "↺ Tout effacer"; lignes().forEach(mf => mf.value = ""); };
+  }));
+}
+MODULES.splice(MODULES.findIndex(m => m.id === "fonction"), 0,
+  {id: "fiche-maths", nom: "Fiche de calcul", cat: "Maths", icone: "√x", defaut: () => ({titre: "Fiche de calcul", consigne: "", lignes: "", vides: 4, outils: true}),
+    champs: [CHAMP("titre", "Titre"), CHAMP("consigne", "Consigne (facultatif)", "texte", {aide: "Ex. : Calcule et donne le résultat sous forme de fraction irréductible."}),
+      CHAMP("lignes", "Lignes déjà écrites (facultatif)", "zone", {aide: "Une ligne par calcul, écrit comme sur une calculatrice : 3/4 + 5/6 = ; sqrt(49) ; 2x + 3 = 7 ; x^2 ; pi*r^2. L'élève peut les compléter."}),
+      CHAMP("vides", "Lignes vides en plus", "nombre", {min: 0, max: 12}), CHAMP("outils", "Barre de symboles (fraction, racine, puissance…)", "case")],
+    rendu: htmlFicheMaths}
+);
 /* ===================== GÉRANT : ÉDITEUR D'EXERCICES (simplifié) ===================== */
 /* Une question à la fois : on choisit le type, on écrit l'énoncé, on donne la réponse.
    Les options (difficulté, rappel, explication, illustration) sont repliées. Aperçu élève en direct. */
