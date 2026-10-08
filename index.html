@@ -1256,6 +1256,10 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .geo-cote{fill:var(--doux);font:600 12.5px var(--f-texte)}
 .obj-doc:has(.geo-svg){width:fit-content}
 .fig-exo .geo-svg{max-width:100%}
+.plan-svg{width:min(400px,100%);height:auto}
+.contexte .fig-exo{margin:10px 0 4px;padding:8px 14px}
+.contexte .plan-svg{width:min(320px,100%);margin-left:24px}
+.contexte .fig-exo{margin-top:10px}
 .formes-choix button span{font-size:.72rem;color:var(--doux)}
 .formes-choix button:has(span){height:auto;gap:4px;padding:8px 6px}
 .formes-choix button .geo-svg{width:56px;max-height:44px}
@@ -2101,11 +2105,11 @@ const GENERATEURS = [
   ["dnb","maths", () => { const t1 = prendre([10, 20, 25, 50]), t2 = prendre([10, 20, 25, 50]), c = (1 + t1 / 100) * (1 - t2 / 100);
     return qcm({q: `Un prix augmente de ${t1} %, puis baisse de ${t2} %. Par quel nombre (coefficient multiplicateur global) le prix initial est-il multiplié ?`, exp: `${fr(1 + t1 / 100)} × ${fr(1 - t2 / 100)} = ${fr(c, 4)}.`}, fr(c, 4), [fr(1 + (t1 - t2) / 100, 4), fr((1 + t1 / 100) + (1 - t2 / 100), 4), "1", fr(1 - (t1 + t2) / 100, 4)]); }],
   ["dnb","maths", () => { const [a, b, c] = prendre([[3,4,5],[5,12,13],[8,15,17],[7,24,25],[6,8,10],[9,12,15],[20,21,29]]), k = prendre([1, 1, 2, 3]);
-    return {q: `Le triangle ABC est rectangle en A, avec AB = ${a * k} cm et AC = ${b * k} cm. Calcule la longueur BC (l'hypoténuse), en cm. Écris seulement le nombre.`, rep: repNum(c * k), exp: `Pythagore : BC² = ${a * k}² + ${b * k}² = ${(c * k) ** 2}, donc BC = ${c * k} cm.`, fig: {type: "schema", nom: "triangle", a: a * k + " cm", b: b * k + " cm", c: "?", s: ["A","B","C"]}}; }],
+    return {q: `Le triangle ABC est rectangle en A, avec AB = ${a * k} cm et AC = ${b * k} cm. Calcule la longueur BC (l'hypoténuse), en cm. Écris seulement le nombre.`, rep: repNum(c * k), exp: `Pythagore : BC² = ${a * k}² + ${b * k}² = ${(c * k) ** 2}, donc BC = ${c * k} cm.`, fig: FG_triRect("ABC", a, b, a * k + " cm", b * k + " cm", "?", {miroir: Math.random() < .5, legende: FG_PAS_ECHELLE})}; }],
   ["dnb","maths", () => { const [a, b, c] = prendre([[3,4,5],[5,12,13],[8,15,17],[6,8,10],[9,40,41]]);
-    return {q: `Dans un triangle rectangle, l'hypoténuse mesure ${c} cm et un des côtés de l'angle droit mesure ${a} cm. Calcule la longueur du troisième côté, en cm. Écris seulement le nombre.`, rep: repNum(b), exp: `${c}² − ${a}² = ${c * c - a * a} = ${b}², donc ${b} cm.`}; }],
+    return {q: `Dans un triangle rectangle, l'hypoténuse mesure ${c} cm et un des côtés de l'angle droit mesure ${a} cm. Calcule la longueur du troisième côté, en cm. Écris seulement le nombre.`, rep: repNum(b), exp: `${c}² − ${a}² = ${c * c - a * a} = ${b}², donc ${b} cm.`, fig: FG_triRect(["_A", "_B", "_C"], a, b, a + " cm", "?", c + " cm", {miroir: Math.random() < .5, legende: FG_PAS_ECHELLE})}; }],
   ["dnb","maths", () => { const k = prendre([2, 3, 4, 5]), am = alea(2, 6), an = alea(2, 7);
-    return {q: `(MN) // (BC), M sur [AB], N sur [AC]. AM = ${am} cm, AB = ${am * k} cm et AN = ${an} cm. Calcule la longueur AC en cm avec le théorème de Thalès. Écris seulement le nombre.`, rep: repNum(an * k), exp: `Thalès : AM/AB = AN/AC, soit ${am}/${am * k} = ${an}/AC, donc AC = ${an * k} cm.`}; }],
+    return {q: `(MN) // (BC), M sur [AB], N sur [AC]. AM = ${am} cm, AB = ${am * k} cm et AN = ${an} cm. Calcule la longueur AC en cm avec le théorème de Thalès. Écris seulement le nombre.`, rep: repNum(an * k), exp: `Thalès : AM/AB = AN/AC, soit ${am}/${am * k} = ${an}/AC, donc AC = ${an * k} cm.`, fig: FG_thales("AMBNC", {AM: am + " cm", AB: am * k + " cm", AN: an + " cm", AC: "?"})}; }],
   ["dnb","maths", () => { const a = prendre([2, 3, 4, 5, 6, 7]), x = alea(-9, 12), b = alea(-15, 15), c = a * x + b;
     return {q: `Résous l'équation ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${c}. Écris seulement la valeur de x.`, rep: repNum(x), exp: `${a}x = ${c} ${b < 0 ? "+" : "−"} ${Math.abs(b)} = ${a * x}, donc x = ${x}.`}; }],
   ["dnb","maths", () => { const a = alea(1, 9), b = alea(1, 9), s = a + b, p = a * b;
@@ -2125,7 +2129,7 @@ const GENERATEURS = [
   ["dnb","maths", () => { const r = alea(2, 9), b = alea(2, 9), v = alea(1, 6), t = r + b + v;
     return qcm({q: `Un sac contient ${r} boules rouges, ${b} bleues et ${v} vertes. On tire une boule au hasard. Quelle est la probabilité de tirer une boule rouge (fraction irréductible) ?`, exp: `${r} cas favorables sur ${t} : ${fraction(r, t)}.`}, fraction(r, t), [fraction(b, t), `${r}/${b + v}`, fraction(r, t + 1), `1/${r}`]); }],
   ["dnb","maths", () => { const r = alea(2, 10), h = alea(3, 20), v = Math.PI * r * r * h;
-    return qcm({q: `Quel est le volume d'un cylindre de rayon ${r} cm et de hauteur ${h} cm, arrondi au cm³ près ? (V = π × r² × h)`, exp: `π × ${r}² × ${h} ≈ ${Math.round(v)} cm³.`}, Math.round(v) + " cm³", [Math.round(2 * Math.PI * r * h) + " cm³", Math.round(Math.PI * r * h) + " cm³", Math.round(v / 3) + " cm³", Math.round(Math.PI * 2 * r * 2 * r * h) + " cm³"]); }],
+    return qcm({q: `Quel est le volume d'un cylindre de rayon ${r} cm et de hauteur ${h} cm, arrondi au cm³ près ? (V = π × r² × h)`, exp: `π × ${r}² × ${h} ≈ ${Math.round(v)} cm³.`, fig: FG_cylindre(r + " cm", h + " cm")}, Math.round(v) + " cm³", [Math.round(2 * Math.PI * r * h) + " cm³", Math.round(Math.PI * r * h) + " cm³", Math.round(v / 3) + " cm³", Math.round(Math.PI * 2 * r * 2 * r * h) + " cm³"]); }],
   ["dnb","maths", () => { const g = prendre([6, 8, 9, 12, 14, 15, 18]), a = g * prendre([5, 7, 11, 13]), b = g * prendre([2, 3, 4]);
     const d = pgcd(a, b);
     return {q: `On veut faire le plus grand nombre de paquets identiques avec ${a} billes rouges et ${b} billes bleues, en les utilisant toutes. Combien de paquets peut-on faire au maximum ? (Cherche le PGCD.) Écris seulement le nombre.`, rep: repNum(d), exp: `C'est le PGCD de ${a} et ${b} : ${d} paquets.`}; }],
@@ -2137,7 +2141,7 @@ const GENERATEURS = [
   ["dnb","maths", () => { const d = alea(12, 90) * 5, h = prendre([1.5, 2, 2.5, 3, 4, 5]);
     return qcm({q: `Une voiture parcourt ${d} km en ${fr(h)} h. Quelle est sa vitesse moyenne, en km/h ?`, exp: `v = d / t = ${d} / ${fr(h)} = ${fr(d / h)} km/h.`}, fr(d / h) + " km/h", [fr(d * h) + " km/h", fr(d / h / 60) + " km/h", fr(d / (h + 1)) + " km/h"]); }],
   ["dnb","maths", () => { const ang = prendre([30, 35, 40, 50, 60]), h = alea(5, 20), a = h * Math.cos(ang * Math.PI / 180);
-    return qcm({q: `Triangle ABC rectangle en B, BÂC = ${ang}° et AC = ${h} cm. Calcule la longueur AB, arrondie au dixième de cm (utilise le cosinus).`, exp: `cos(${ang}°) = AB/AC donc AB = ${h} × cos(${ang}°) ≈ ${fr(a, 1)} cm.`}, fr(a, 1) + " cm", [fr(h * Math.sin(ang * Math.PI / 180), 1) + " cm", fr(h * Math.tan(ang * Math.PI / 180), 1) + " cm", fr(h / Math.cos(ang * Math.PI / 180), 1) + " cm"]); }],
+    return qcm({q: `Triangle ABC rectangle en B, BÂC = ${ang}° et AC = ${h} cm. Calcule la longueur AB, arrondie au dixième de cm (utilise le cosinus).`, exp: `cos(${ang}°) = AB/AC donc AB = ${h} × cos(${ang}°) ≈ ${fr(a, 1)} cm.`, fig: FG_triRect("BAC", Math.cos(ang * Math.PI / 180), Math.sin(ang * Math.PI / 180), "?", "", h + " cm", {angle: ["A", ang + "°"], miroir: Math.random() < .5})}, fr(a, 1) + " cm", [fr(h * Math.sin(ang * Math.PI / 180), 1) + " cm", fr(h * Math.tan(ang * Math.PI / 180), 1) + " cm", fr(h / Math.cos(ang * Math.PI / 180), 1) + " cm"]); }],
   ["dnb","maths", () => { const m = alea(11, 99) / 10, e = alea(3, 9), n = m * 10 ** e;
     return qcm({q: `Quelle est l'écriture scientifique (a × 10ⁿ avec 1 ≤ a < 10) de ${Math.round(n).toLocaleString("fr-FR")} ?`, exp: `${fr(m)} × 10^${e}.`}, `${fr(m)} × 10^${e}`, [`${fr(m)} × 10^${e + 1}`, `${fr(m * 10)} × 10^${e - 1}`, `${fr(m)} × 10^${e - 1}`]); }],
   ["dnb","maths", () => { const k = prendre([2, 3, 4, 0.5]), a = alea(3, 20);
@@ -2887,46 +2891,46 @@ GENERATEURS.push(
   // conversion de volumes
   ["dnb", "maths", () => { const a = alea(2, 9), b = alea(2, 6), c = prendre([1, 1.5, 2]), v = a * b * c;
     return AVEC({q: `Un bassin a la forme d'un pavé droit de ${a} m de long, ${b} m de large et ${nbFr(c)} m de profondeur. Combien de litres d'eau faut-il pour le remplir entièrement ? (1 m³ = 1 000 L.) Écris seulement le nombre.`, brouillon: `${a} xx ${b} xx ${c} =`,
-      rep: variantes(v * 1000, (v * 1000).toLocaleString("fr-FR")), exp: `Volume = ${a} × ${b} × ${nbFr(c)} = ${nbFr(v)} m³, soit ${(v * 1000).toLocaleString("fr-FR")} L.`}); }],
+      rep: variantes(v * 1000, (v * 1000).toLocaleString("fr-FR")), exp: `Volume = ${a} × ${b} × ${nbFr(c)} = ${nbFr(v)} m³, soit ${(v * 1000).toLocaleString("fr-FR")} L.`, fig: FG_pave(a, b, c, a + " m", b + " m", nbFr(c) + " m", {legende: FG_PAS_ECHELLE})}); }],
   // aire d'un disque
   ["dnb", "maths", () => { const r = alea(2, 15), a = Math.PI * r * r;
     return AVEC({q: `Calcule l'aire d'un disque de rayon ${r} cm (A = π × r²). Donne le résultat arrondi au cm² près, sans écrire l'unité.`, brouillon: `pi xx ${r}^2 =`, rep: variantes(Math.round(a)),
-      exp: `A = π × ${r}² = ${r * r}π ≈ ${nbFr(a)} cm², soit ${Math.round(a)} cm² arrondi à l'unité.`}); }],
+      exp: `A = π × ${r}² = ${r * r}π ≈ ${nbFr(a)} cm², soit ${Math.round(a)} cm² arrondi à l'unité.`, fig: FG_disque({rayon: r + " cm"})}); }],
   // périmètre d'un cercle
   ["dnb", "maths", () => { const d = alea(3, 30), p = Math.PI * d;
     return AVEC({q: `Un cercle a un diamètre de ${d} cm. Calcule son périmètre (P = π × diamètre), arrondi au dixième de cm. Écris seulement le nombre.`, brouillon: `pi xx ${d} =`, rep: repN(Math.round(p * 10) / 10, 1),
-      exp: `P = π × ${d} ≈ ${nbFr(p, 3)} cm, soit ${nbFr(Math.round(p * 10) / 10, 1)} cm au dixième.`}); }],
+      exp: `P = π × ${d} ≈ ${nbFr(p, 3)} cm, soit ${nbFr(Math.round(p * 10) / 10, 1)} cm au dixième.`, fig: FG_disque({diametre: d + " cm"})}); }],
   // volume d'une pyramide
   ["dnb", "maths", () => { const c = alea(2, 10), h = 3 * alea(1, 6), v = c * c * h / 3;
     return AVEC({q: `Une pyramide a pour base un carré de côté ${c} cm et pour hauteur ${h} cm. Calcule son volume en cm³ (V = aire de la base × hauteur ÷ 3). Écris seulement le nombre.`, brouillon: `${c}^2 xx ${h} / 3 =`, rep: variantes(v),
-      exp: `Aire de la base : ${c}² = ${c * c} cm². V = ${c * c} × ${h} ÷ 3 = ${v} cm³.`}); }],
+      exp: `Aire de la base : ${c}² = ${c * c} cm². V = ${c * c} × ${h} ÷ 3 = ${v} cm³.`, fig: FG_pyramide(c + " cm", h + " cm")}); }],
   // volume d'une boule
   ["dnb", "maths", () => { const r = alea(2, 9), v = 4 / 3 * Math.PI * r ** 3;
     return AVEC({q: `Calcule le volume d'une boule de rayon ${r} cm (V = 4/3 × π × r³). Donne le résultat arrondi au cm³ près, sans l'unité.`, brouillon: `4/3 xx pi xx ${r}^3 =`, rep: variantes(Math.round(v)),
-      exp: `V = 4/3 × π × ${r}³ = 4/3 × π × ${r ** 3} ≈ ${nbFr(v)} cm³, soit ${Math.round(v)} cm³.`}); }],
+      exp: `V = 4/3 × π × ${r}³ = 4/3 × π × ${r ** 3} ≈ ${nbFr(v)} cm³, soit ${Math.round(v)} cm³.`, fig: FG_boule(r + " cm")}); }],
   // trigonométrie : tangente
   ["dnb", "maths", () => { const ang = prendre([20, 25, 30, 35, 40, 50, 55, 60]), ab = alea(3, 15), ac = ab * Math.tan(ang * Math.PI / 180);
     return AVEC({q: `Le triangle ABC est rectangle en A. On sait que AB = ${ab} cm et que l'angle ABC mesure ${ang}°. Calcule la longueur AC (côté opposé à l'angle B), arrondie au dixième de cm. Écris seulement le nombre.`, brouillon: `AC = ${ab} xx tan(${ang}) =`,
-      rep: repN(Math.round(ac * 10) / 10, 1), exp: `tan(ABC) = côté opposé / côté adjacent = AC / AB, donc AC = ${ab} × tan(${ang}°) ≈ ${nbFr(ac, 3)} cm, soit ${nbFr(Math.round(ac * 10) / 10, 1)} cm.`}); }],
+      rep: repN(Math.round(ac * 10) / 10, 1), exp: `tan(ABC) = côté opposé / côté adjacent = AC / AB, donc AC = ${ab} × tan(${ang}°) ≈ ${nbFr(ac, 3)} cm, soit ${nbFr(Math.round(ac * 10) / 10, 1)} cm.`, fig: FG_triRect("ABC", ab, ac, ab + " cm", "?", "", {angle: ["B", ang + "°"], miroir: Math.random() < .5})}); }],
   // trigonométrie : retrouver un angle
   ["dnb", "maths", () => { const [adj, hyp] = prendre([[4, 5], [3, 5], [5, 13], [12, 13], [8, 10], [6, 10], [7, 9], [5, 8], [2, 3]]), ang = Math.acos(adj / hyp) * 180 / Math.PI;
     return AVEC({q: `Le triangle DEF est rectangle en E, avec DE = ${adj} cm et DF = ${hyp} cm (hypoténuse). Calcule la mesure de l'angle EDF, arrondie au degré. Écris seulement le nombre (sans le signe °).`, brouillon: `cos(EDF) = ${adj}/${hyp}`,
-      rep: variantes(Math.round(ang)), exp: `cos(EDF) = côté adjacent / hypoténuse = ${adj}/${hyp} ≈ ${nbFr(adj / hyp, 3)}. Avec la touche arccos (cos⁻¹) : EDF ≈ ${nbFr(ang, 1)}°, soit ${Math.round(ang)}°.`}); }],
+      rep: variantes(Math.round(ang)), exp: `cos(EDF) = côté adjacent / hypoténuse = ${adj}/${hyp} ≈ ${nbFr(adj / hyp, 3)}. Avec la touche arccos (cos⁻¹) : EDF ≈ ${nbFr(ang, 1)}°, soit ${Math.round(ang)}°.`, fig: FG_triRect("EDF", adj, Math.sqrt(hyp * hyp - adj * adj), adj + " cm", "", hyp + " cm", {angle: ["D", "?"], miroir: Math.random() < .5})}); }],
   // somme des angles d'un triangle
   ["dnb", "maths", () => { const a = alea(20, 90), b = alea(20, 160 - a), c = 180 - a - b;
-    return {q: `Dans un triangle, deux angles mesurent ${a}° et ${b}°. Combien mesure le troisième angle ? Écris seulement le nombre (sans le signe °).`, rep: variantes(c), brouillon: `180 - ${a} - ${b} =`, exp: `La somme des angles d'un triangle vaut 180° : 180 − ${a} − ${b} = ${c}°.`}; }],
+    return {q: `Dans un triangle, deux angles mesurent ${a}° et ${b}°. Combien mesure le troisième angle ? Écris seulement le nombre (sans le signe °).`, rep: variantes(c), brouillon: `180 - ${a} - ${b} =`, exp: `La somme des angles d'un triangle vaut 180° : 180 − ${a} − ${b} = ${c}°.`, fig: FG_triAngles("ABC", a, b, a + "°", b + "°", "?")}; }],
   // polygone régulier
   ["dnb", "maths", () => { const n = prendre([3, 4, 5, 6, 8, 9, 10, 12]), noms = {3: "triangle équilatéral", 4: "carré", 5: "pentagone régulier", 6: "hexagone régulier", 8: "octogone régulier", 9: "ennéagone régulier", 10: "décagone régulier", 12: "dodécagone régulier"};
-    return {q: `Un ${noms[n]} a ${n} côtés. Quelle est la mesure de son angle au centre (en degrés) ? Écris seulement le nombre.`, rep: variantes(360 / n), brouillon: `360 / ${n} =`, exp: `Les ${n} angles au centre se partagent le tour complet : 360 ÷ ${n} = ${360 / n}°.`}; }],
+    return {q: `Un ${noms[n]} a ${n} côtés. Quelle est la mesure de son angle au centre (en degrés) ? Écris seulement le nombre.`, rep: variantes(360 / n), brouillon: `360 / ${n} =`, exp: `Les ${n} angles au centre se partagent le tour complet : 360 ÷ ${n} = ${360 / n}°.`, fig: FG_polygone(n, "?")}; }],
   // réciproque de Pythagore
   ["dnb", "maths", () => { const ok = Math.random() < .5, [a, b, c] = ok ? prendre([[6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17], [7, 24, 25], [20, 21, 29]]) : prendre([[6, 8, 11], [5, 11, 13], [7, 9, 12], [8, 14, 17], [10, 11, 15]]);
     return qcm({q: `Un triangle a des côtés de ${a} cm, ${b} cm et ${c} cm. Est-il rectangle ? (Compare le carré du plus grand côté à la somme des carrés des deux autres.)`, brouillon: `${c}^2 = ;  ${a}^2 + ${b}^2 =`,
-      exp: `${c}² = ${c * c} et ${a}² + ${b}² = ${a * a} + ${b * b} = ${a * a + b * b}. ${ok ? "Les deux sont égaux : d'après la réciproque du théorème de Pythagore, le triangle est rectangle." : "Ils sont différents : d'après la contraposée du théorème de Pythagore, le triangle n'est pas rectangle."}`},
+      exp: `${c}² = ${c * c} et ${a}² + ${b}² = ${a * a} + ${b * b} = ${a * a + b * b}. ${ok ? "Les deux sont égaux : d'après la réciproque du théorème de Pythagore, le triangle est rectangle." : "Ils sont différents : d'après la contraposée du théorème de Pythagore, le triangle n'est pas rectangle."}`, fig: FG_triCotes(["_A", "_B", "_C"], a, b, c, a + " cm", b + " cm", c + " cm", {legende: FG_PAS_ECHELLE})},
       ok ? "Oui, il est rectangle" : "Non, il n'est pas rectangle", [ok ? "Non, il n'est pas rectangle" : "Oui, il est rectangle", "On ne peut pas savoir"]); }],
   // réciproque de Thalès
   ["dnb", "maths", () => { const k = prendre([2, 3, 4]), am = alea(2, 6), an = alea(2, 6), ok = Math.random() < .5, ac = an * k + (ok ? 0 : prendre([1, -1, 2]));
     return qcm({q: `A, M, B sont alignés et A, N, C aussi, dans le même ordre. AM = ${am} cm, AB = ${am * k} cm, AN = ${an} cm et AC = ${ac} cm. Les droites (MN) et (BC) sont-elles parallèles ? (Compare AM/AB et AN/AC.)`, brouillon: `${am}/${am * k} = ;  ${an}/${ac} =`,
-      exp: `AM/AB = ${am}/${am * k} = ${frac(am, am * k)} et AN/AC = ${an}/${ac} = ${frac(an, ac)}. ${ok ? "Les rapports sont égaux : d'après la réciproque du théorème de Thalès, (MN) // (BC)." : "Les rapports sont différents : les droites ne sont pas parallèles."}`},
+      exp: `AM/AB = ${am}/${am * k} = ${frac(am, am * k)} et AN/AC = ${an}/${ac} = ${frac(an, ac)}. ${ok ? "Les rapports sont égaux : d'après la réciproque du théorème de Thalès, (MN) // (BC)." : "Les rapports sont différents : les droites ne sont pas parallèles."}`, fig: FG_thales("AMBNC", {AM: am + " cm", AB: am * k + " cm", AN: an + " cm", AC: ac + " cm"}, {paralleles: false, papillon: false})},
       ok ? "Oui, elles sont parallèles" : "Non, elles ne sont pas parallèles", [ok ? "Non, elles ne sont pas parallèles" : "Oui, elles sont parallèles", "Elles sont perpendiculaires"]); }],
   // équation produit nul
   ["dnb", "maths", () => { const a = alea(1, 9), b = alea(1, 9);
@@ -2975,6 +2979,104 @@ GENERATEURS.push(
     return qcm({q: `Quelle est la plus grande de ces fractions : ${f.map(x => `${x[0]}/${x[1]}`).join(" ; ")} ? (Tu peux les écrire en écriture décimale.)`, exp: f.map(x => `${x[0]}/${x[1]} ≈ ${nbFr(x[2], 3)}`).join(" ; ") + `. La plus grande est ${g[0]}/${g[1]}.`},
       `${g[0]}/${g[1]}`, f.filter(x => x !== g).map(x => `${x[0]}/${x[1]}`)); }]
 );
+/* ===================== FIGURES DES EXERCICES DE MATHS (brevet) =====================
+   Petites fonctions qui fabriquent des figures géométriques (type "plan", dessinées par svgPlan) :
+   triangle rectangle, Thalès, cercle, disque, cylindre, pavé, pyramide, boule, polygone…
+   Les points dont le nom commence par « _ » ne sont pas nommés sur la figure. */
+const FG_PAS_ECHELLE = "La figure n'est pas à l'échelle.";
+const fgNoms = N => Array.isArray(N) ? N : String(N).split("");
+// Triangle rectangle : angle droit en N[0] ; N[1] au bout du côté l1 (vertical), N[2] au bout du côté l2 (horizontal).
+// t1, t2 : textes des côtés de l'angle droit, th : texte de l'hypoténuse. o.angle = [sommet, texte], o.miroir pour retourner.
+function FG_triRect(N, l1, l2, t1, t2, th, o = {}){
+  const [a, b, c] = fgNoms(N), s = o.miroir ? -1 : 1, y = 4 * Math.max(.35, Math.min(1.6, l1 / l2));
+  const pts = {[a]: [0, 0], [b]: [0, y], [c]: [4 * s, 0]};
+  const fig = {type: "plan", alt: "Triangle rectangle", pts, poly: [[[a, b, c], "plein"]], droit: [[b, a, c]],
+    seg: [[a, b, t1 || "", "n"], [a, c, t2 || "", "n"], [b, c, th || "", "n"]]};
+  if (o.angle){ const [v, t] = o.angle, autres = [a, b, c].filter(x => x !== v); fig.angle = [[[autres[0], v, autres[1]], t]]; }
+  if (o.legende) fig.legende = o.legende;
+  return fig;
+}
+// Triangle quelconque à partir de ses trois côtés (a = BC, b = CA, c = AB), sans codage d'angle droit.
+function FG_triCotes(N, a, b, c, ta, tb, tc, o = {}){
+  const [A, B, C] = fgNoms(N), x = (b * b - a * a + c * c) / (2 * c), y = Math.sqrt(Math.max(0, b * b - x * x));
+  return {type: "plan", alt: "Triangle", pts: {[A]: [0, 0], [B]: [c, 0], [C]: [x, y]}, poly: [[[A, B, C], "plein"]],
+    seg: [[B, C, ta || "", "n"], [C, A, tb || "", "n"], [A, B, tc || "", "n"]], legende: o.legende};
+}
+// Triangle défini par deux angles (en A et en B) ; les marques d'angle portent les textes donnés.
+function FG_triAngles(N, angA, angB, tA, tB, tC){
+  const [A, B, C] = fgNoms(N), r = Math.PI / 180, angC = 180 - angA - angB, ac = 6 * Math.sin(angB * r) / Math.sin(angC * r);
+  return {type: "plan", alt: "Triangle et ses angles", pts: {[A]: [0, 0], [B]: [6, 0], [C]: [ac * Math.cos(angA * r), ac * Math.sin(angA * r)]},
+    poly: [[[A, B, C], "plein"]], angle: [[[B, A, C], tA], [[C, B, A], tB], [[A, C, B], tC]], legende: FG_PAS_ECHELLE};
+}
+// Configuration de Thalès : N = [A, M, B, N, C] (M sur (AB), N sur (AC)). o.papillon : M et N de l'autre côté de A.
+function FG_thales(N, cotes = {}, o = {}){
+  const [A, M, B, P, C] = fgNoms(N), t = o.papillon ? -.55 : .36, b = [7, 0], c = [5.2, 4.2];
+  const pts = {[A]: [0, 0], [B]: b, [C]: c, [M]: [b[0] * t, b[1] * t], [P]: [c[0] * t, c[1] * t]};
+  const seg = o.papillon
+    ? [[M, B, ""], [P, C, ""], [B, C, cotes.BC || ""], [M, P, cotes.MN || "", ""], [A, M, cotes.AM || "", "n"], [A, B, cotes.AB || "", "n"], [A, P, cotes.AN || "", "n"], [A, C, cotes.AC || "", "n"]]
+    : [[A, B, ""], [A, C, ""], [B, C, cotes.BC || ""], [M, P, cotes.MN || ""], [A, M, cotes.AM || "", "n"], [A, B, cotes.AB || "", "ni"], [A, P, cotes.AN || "", "n"], [A, C, cotes.AC || "", "ni"]];
+  return {type: "plan", alt: "Configuration de Thalès", pts, seg, legende: o.legende || (o.paralleles === false ? FG_PAS_ECHELLE : `(${M}${P}) // (${B}${C}). ${FG_PAS_ECHELLE}`)};
+}
+// Disque ou cercle de centre O : o.rayon (texte) ou o.diametre (texte).
+function FG_disque(o = {}){
+  const fig = {type: "plan", alt: o.diametre ? "Cercle et son diamètre" : "Disque et son rayon", pts: {O: [0, 0], _R: [3, 0], _D: [-3, 0]}, ell: [["O", 3, 3]], seg: []};
+  if (o.diametre) fig.seg.push(["_D", "_R", o.diametre, "c"]); else fig.seg.push(["O", "_R", o.rayon || "", "c"]);
+  return fig;
+}
+// Cylindre (r et h en texte).
+function FG_cylindre(tr, th, o = {}){
+  return {type: "plan", alt: "Cylindre", pts: {_O: [0, 0], _H: [0, 4.2], _g: [-2.2, 0], _d: [2.2, 0], _G: [-2.2, 4.2], _D: [2.2, 4.2]},
+    ell: [["_O", 2.2, .7, "b"], ["_H", 2.2, .7]], seg: [["_g", "_G", ""], ["_d", "_D", ""], [o.diametre ? "_G" : "_H", "_D", "", "pc"], ["_O", "_H", th || "", "pi"]], txt: tr ? [[o.diametre ? 0 : 1.1, 5.25, tr]] : [], legende: o.legende};
+}
+// Pavé droit en perspective cavalière : longueur, largeur (profondeur), hauteur. o.eau = fraction remplie (0 à 1).
+function FG_pave(L, l, H, tL, tl, tH, o = {}){
+  const k = 6 / Math.max(L, l * .8, H * 1.4), x = L * k, z = Math.max(.9, H * k), p = Math.max(.8, l * k) * .5, dx = p, dy = p * .75;
+  const pts = {_A: [0, 0], _B: [x, 0], _C: [x, z], _D: [0, z], _E: [dx, dy], _F: [x + dx, dy], _G: [x + dx, z + dy], _H: [dx, z + dy]};
+  const fig = {type: "plan", alt: "Pavé droit", pts, poly: [[["_A", "_B", "_C", "_D"], "plein"], [["_B", "_F", "_G", "_C"], "trait"], [["_D", "_C", "_G", "_H"], "trait"]],
+    seg: [["_A", "_E", "", "p"], ["_E", "_F", "", "p"], ["_E", "_H", "", "p"], ["_A", "_B", tL || "", "n"], ["_B", "_F", tl || "", "n"], ["_B", "_C", tH || "", "ni"]], legende: o.legende};
+  if (o.eau){ const e = z * o.eau; Object.assign(pts, {_e1: [0, e], _e2: [x, e], _e3: [x + dx, e + dy]});
+    fig.poly.unshift([["_A", "_B", "_e2", "_e1"], "eau"], [["_B", "_F", "_e3", "_e2"], "eau"]); }
+  return fig;
+}
+// Pyramide à base carrée (côté et hauteur en texte).
+function FG_pyramide(tc, th){
+  const pts = {_A: [0, 0], _B: [4, 0], _C: [5.4, 1.1], _D: [1.4, 1.1], _O: [2.7, .55], _S: [2.7, 4.6]};
+  return {type: "plan", alt: "Pyramide à base carrée", pts, poly: [[["_A", "_B", "_S"], "plein"], [["_B", "_C", "_S"], "trait"]],
+    seg: [["_A", "_D", "", "p"], ["_D", "_C", "", "p"], ["_D", "_S", "", "p"], ["_O", "_S", "", "pc"], ["_A", "_B", tc || "", "n"]], droit: [["_B", "_O", "_S"]],
+    legende: `Base carrée de côté ${tc} · hauteur (en pointillés roses) : ${th}.`};
+}
+// Boule (rayon en texte).
+function FG_boule(tr){
+  return {type: "plan", alt: "Boule", pts: {O: [0, 0], _R: [3, 0]}, cercle: [["O", 3]], ell: [["O", 3, .9, "b"]], seg: [["O", "_R", tr || "", "c"]]};
+}
+// Polygone régulier à n côtés, avec un angle au centre marqué.
+function FG_polygone(n, t){
+  const pts = {O: [0, 0]}, noms = [];
+  for (let i = 0; i < n; i++){ const a = Math.PI / 2 + 2 * Math.PI * i / n, m = "_" + i; pts[m] = [3 * Math.cos(a), 3 * Math.sin(a)]; noms.push(m); }
+  return {type: "plan", alt: "Polygone régulier", pts, poly: [[noms, "plein"]], seg: [["O", "_0", "", "p"], ["O", "_1", "", "p"]], angle: [[["_0", "O", "_1"], t || "?"]]};
+}
+
+/* ----- Figures des sujets officiels : affichées avec le document de l'exercice ----- */
+const FIG_CTX = new Map([
+  [CTX.course, {type: "plan", alt: "Parcours de la course", pts: {A: [0, 0], C: [480, 0], B: [600, 0], D: [0, 260], E: [0, 340]},
+    seg: [["A", "B", ""], ["A", "E", ""], ["C", "D", "", "c"], ["B", "E", ""], ["A", "C", "480 m", "n"], ["C", "B", "120 m", "n"], ["D", "E", "50 m", "n"]],
+    droit: ["DAC"], legende: "AE = 250 m · Parcours A → C → D → E → B. " + FG_PAS_ECHELLE}],
+  [CTX.cercle24, {type: "plan", alt: "Cercle de diamètre [AB]", pts: {A: [-4.5, 0], B: [4.5, 0], O: [0, 0], D: [-1.6, 4.2]},
+    cercle: [["O", 4.5]], poly: [["ABD", "plein"]], seg: [["A", "B", "9 cm", "ni"]]}],
+  [CTX.piscine24, FG_pave(25, 15, 2, "25 m", "15 m", "2 m", {eau: .9, legende: "Eau jusqu'à 1,8 m de hauteur. " + FG_PAS_ECHELLE})],
+  [CTX.rectangle23, {type: "plan", alt: "Rectangle BCDE et triangle BAE", pts: {B: [0, 0], E: [7, 0], D: [7, -4.2], C: [0, -4.2], A: [2.52, 3.36]},
+    poly: [["BEDC", "plein"], ["BAE", "plein"]], droit: ["BAE", "EDC"], seg: [["A", "B", "4,2 cm", "n"], ["B", "C", "4,2 cm", "n"], ["B", "E", "7 cm", "ni"]]}],
+  [CTX.escalier, (() => { const pts = {A: [0, 0], B: [432, 0], C: [432, 272]}, n = 5, marches = ["A"];
+      for (let i = 0; i < n; i++){ pts["_h" + i] = [432 * i / n, 272 * (i + 1) / n]; pts["_v" + i] = [432 * (i + 1) / n, 272 * (i + 1) / n]; marches.push("_h" + i, "_v" + i); }
+      return {type: "plan", alt: "Profil de l'escalier", pts, poly: [[marches, "ouvert"]], droit: ["ABC"],
+        seg: [["A", "B", "", "p"], ["B", "C", "272 cm", "p"], ["A", "_h0", "17 cm", "n"], ["_h0", "_v0", "27 cm", "ni"], ["A", "C", "", "pc"]],
+        legende: "Une marche : 17 cm de haut, 27 cm de profondeur. Toutes les marches ne sont pas dessinées."}; })()],
+  [CTX.aires22, {type: "plan", alt: "Un rectangle et un carré", pts: {_a: [0, 0], _b: [15, 0], _c: [15, 5], _d: [0, 5], _e: [18, 0], _f: [26, 0], _g: [26, 8], _h: [18, 8]},
+    poly: [[["_a", "_b", "_c", "_d"], "plein"], [["_e", "_f", "_g", "_h"], "plein"]],
+    seg: [["_a", "_b", "x + 7", "n"], ["_a", "_d", "x − 3", "n"], ["_e", "_f", "x", "n"], ["_f", "_g", "x", "n"]], legende: "Le rectangle (à gauche) et le carré (à droite)."}],
+  [CTX.fuite, FG_cylindre("40 cm", "15 cm", {diametre: true, legende: "La vasque : un cylindre de 40 cm de diamètre et 15 cm de haut."})]
+]);
+BANQUE_BREVET.forEach(q => { const f = q.ctx && FIG_CTX.get(q.ctx); if (!f) return; q.ctxFig = f; if (q.fig && q.fig.type === "schema") delete q.fig; });
 /* ===================== EXERCICES BREVET · LANGUES VIVANTES (anglais, espagnol) =====================
    Le brevet n'a pas d'épreuve écrite de langue : ces questions entraînent au niveau attendu en fin de 3e (A2 → B1).
    Compréhension écrite et orale, grammaire, vocabulaire, culture. lv = "en" ou "es". */
@@ -4035,7 +4137,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.75";
+const VERSION_SITE = "0.76";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5616,6 +5718,59 @@ function svgSchema(fig){
       <text x="60" y="160" class="fg-txt">(CD) // (BE)</text></svg>`;
   return "";
 }
+/* Figure géométrique libre : points en coordonnées (y vers le haut), segments cotés, polygones, angles droits, arcs, cercles.
+   fig = {type:"plan", pts:{A:[x,y],…}, poly:[["ABC","plein"|"eau"|"ouvert"|"trait"]], seg:[["A","B","4 cm","p|i|c|n"]],
+          droit:["BAC"], angle:[["BAC","40°"]], cercle:[["O",r,"p"]], ell:[["O",rx,ry,"b"]], txt:[[x,y,"texte"]], cache:["_1"]} */
+function svgPlan(fig){
+  const P = fig.pts || {}, noms = Object.keys(P); if (!noms.length) return "";
+  const pts = s => Array.isArray(s) ? s : String(s).split("");
+  const xs = [], ys = [];
+  noms.forEach(n => { xs.push(P[n][0]); ys.push(P[n][1]); });
+  (fig.cercle || []).forEach(([c, r]) => { const p = P[c]; xs.push(p[0] - r, p[0] + r); ys.push(p[1] - r, p[1] + r); });
+  (fig.ell || []).forEach(([c, rx, ry]) => { const p = P[c]; xs.push(p[0] - rx, p[0] + rx); ys.push(p[1] - ry, p[1] + ry); });
+  const W = 340, H = 240, M = 34, x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const k = Math.min((W - 2 * M) / ((x1 - x0) || 1), (H - 2 * M) / ((y1 - y0) || 1));
+  const w = (x1 - x0) * k + 2 * M, h = (y1 - y0) * k + 2 * M;
+  const S = n => { const p = Array.isArray(n) ? n : P[n]; return [M + (p[0] - x0) * k, h - M - (p[1] - y0) * k]; };
+  const f = v => v.toFixed(1), coul = "var(--accent)";
+  const voisins = {}; const lier = (a, b) => { (voisins[a] = voisins[a] || new Set()).add(b); (voisins[b] = voisins[b] || new Set()).add(a); };
+  (fig.seg || []).forEach(([a, b, , o]) => { if (!String(o || "").includes("n")) lier(a, b); });
+  (fig.poly || []).forEach(([s, st]) => { const l = pts(s); l.forEach((a, i) => { if (i < l.length - 1 || st !== "ouvert") lier(a, l[(i + 1) % l.length]); }); });
+  const tous = noms.map(S), gx = tous.reduce((s, p) => s + p[0], 0) / tous.length, gy = tous.reduce((s, p) => s + p[1], 0) / tous.length;
+  let svg = "";
+  (fig.poly || []).forEach(([s, st]) => { const l = pts(s).map(S);
+    const fill = st === "eau" ? "color-mix(in srgb, #5fa8d3 38%, transparent)" : st === "plein" || !st ? `color-mix(in srgb, ${coul} 14%, transparent)` : "none";
+    svg += `<path d="M${l.map(p => f(p[0]) + " " + f(p[1])).join(" L")}${st === "ouvert" ? "" : "Z"}" fill="${fill}" stroke="${st === "eau" ? "#5fa8d3" : coul}" stroke-width="${st === "eau" ? 1.2 : 2.2}" stroke-linejoin="round"/>`; });
+  (fig.cercle || []).forEach(([c, r, o]) => { const [cx, cy] = S(c); svg += `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r * k)}" fill="none" stroke="${coul}" stroke-width="2"${String(o || "").includes("p") ? ' stroke-dasharray="5 4"' : ""}/>`; });
+  (fig.ell || []).forEach(([c, rx, ry, o]) => { const [cx, cy] = S(c), a = rx * k, b = ry * k;
+    if (String(o || "").includes("b")) svg += `<path d="M${f(cx - a)} ${f(cy)} A${f(a)} ${f(b)} 0 0 1 ${f(cx + a)} ${f(cy)}" fill="none" stroke="${coul}" stroke-width="1.6" stroke-dasharray="5 4"/><path d="M${f(cx - a)} ${f(cy)} A${f(a)} ${f(b)} 0 0 0 ${f(cx + a)} ${f(cy)}" fill="none" stroke="${coul}" stroke-width="2.2"/>`;
+    else svg += `<ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(a)}" ry="${f(b)}" fill="color-mix(in srgb, ${coul} 10%, transparent)" stroke="${coul}" stroke-width="2.2"/>`; });
+  let textes = "";
+  (fig.seg || []).forEach(([a, b, t, o]) => { o = String(o || ""); const [ax, ay] = S(a), [bx, by] = S(b);
+    if (!o.includes("n")) svg += `<line x1="${f(ax)}" y1="${f(ay)}" x2="${f(bx)}" y2="${f(by)}" stroke="${o.includes("c") ? "#e86f9a" : coul}" stroke-width="${o.includes("p") ? 1.5 : 2.2}"${o.includes("p") ? ' stroke-dasharray="5 4"' : ""} stroke-linecap="round"/>`;
+    if (!t) return;
+    const mx = (ax + bx) / 2, my = (ay + by) / 2, L = Math.hypot(bx - ax, by - ay) || 1; let nx = -(by - ay) / L, ny = (bx - ax) / L;
+    if ((mx - gx) * nx + (my - gy) * ny < 0){ nx = -nx; ny = -ny; } if (o.includes("i")){ nx = -nx; ny = -ny; }
+    const tx = mx + nx * 11, ty = my + ny * 11 + (ny > .35 ? 9 : ny < -.35 ? -2 : 4);
+    textes += `<text x="${f(tx)}" y="${f(ty)}" text-anchor="${nx > .35 ? "start" : nx < -.35 ? "end" : "middle"}" class="geo-cote">${esc(t)}</text>`; });
+  const marque = (s, fn) => { const [a, o, b] = pts(s), [ox, oy] = S(o), [ax, ay] = S(a), [bx, by] = S(b), na = Math.hypot(ax - ox, ay - oy) || 1, nb = Math.hypot(bx - ox, by - oy) || 1;
+    return fn(ox, oy, (ax - ox) / na, (ay - oy) / na, (bx - ox) / nb, (by - oy) / nb); };
+  (fig.droit || []).forEach(s => svg += marque(s, (ox, oy, ux, uy, vx, vy) => { const d = 10;
+    return `<path d="M${f(ox + ux * d)} ${f(oy + uy * d)} L${f(ox + (ux + vx) * d)} ${f(oy + (uy + vy) * d)} L${f(ox + vx * d)} ${f(oy + vy * d)}" fill="none" stroke="var(--texte)" stroke-width="1.3"/>`; }));
+  (fig.angle || []).forEach(([s, t]) => svg += marque(s, (ox, oy, ux, uy, vx, vy) => { const r = 24, sens = ux * vy - uy * vx > 0 ? 1 : 0;
+    let bx = ux + vx, by = uy + vy; const n = Math.hypot(bx, by) || 1; bx /= n; by /= n;
+    return `<path d="M${f(ox + ux * r)} ${f(oy + uy * r)} A${r} ${r} 0 0 ${sens} ${f(ox + vx * r)} ${f(oy + vy * r)}" fill="none" stroke="#e86f9a" stroke-width="1.6"/>`
+      + (t ? `<text x="${f(ox + bx * 40)}" y="${f(oy + by * 40 + 4)}" text-anchor="middle" class="geo-cote" style="fill:#e86f9a">${esc(t)}</text>` : ""); }));
+  const cache = new Set(fig.cache || []);
+  noms.filter(n => !n.startsWith("_") && !cache.has(n)).forEach(n => { const [x, y] = S(n), v = [...(voisins[n] || [])].map(S);
+    let cx = gx, cy = gy; if (v.length){ cx = v.reduce((s, p) => s + p[0], 0) / v.length; cy = v.reduce((s, p) => s + p[1], 0) / v.length; }
+    let dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy); if (d < 1){ dx = x - gx; dy = y - gy; d = Math.hypot(dx, dy) || 1; }
+    dx /= d; dy /= d;
+    svg += `<circle cx="${f(x)}" cy="${f(y)}" r="2.3" fill="var(--texte)"/>`;
+    textes += `<text x="${f(x + dx * 13)}" y="${f(y + dy * 13 + 4.5)}" text-anchor="middle" class="fg-txt fort">${esc(n)}</text>`; });
+  (fig.txt || []).forEach(([x, y, t]) => { const [sx, sy] = S([x, y]); textes += `<text x="${f(sx)}" y="${f(sy + 4)}" text-anchor="middle" class="geo-cote">${esc(t)}</text>`; });
+  return `<svg viewBox="0 0 ${f(w)} ${f(h)}" class="fig-svg plan-svg" role="img" aria-label="${esc(fig.alt || "Figure géométrique")}">${svg}${textes}</svg>`;
+}
 function figureHtml(fig){
   if (!fig || !fig.type) return "";
   let corps = "";
@@ -5624,6 +5779,7 @@ function figureHtml(fig){
   else if (fig.type === "graphique") corps = svgGraphique({...fig, type: fig.typeG || "barres"});
   else if (fig.type === "forme") corps = svgForme(fig);
   else if (fig.type === "geo") corps = svgGeo(fig);
+  else if (fig.type === "plan") corps = svgPlan(fig);
   else if (fig.type === "module" && fig.module) corps = `<div class="obj-doc mod-exo" data-obj="${encoderObjet(fig.module)}"></div>`;
   else if (fig.type === "tableau") corps = htmlTableau(fig);
   else if (fig.type === "image") corps = `<img ${fig.id ? `data-asset="${esc(fig.id)}"` : `data-ref="${esc(fig.ref || "")}"`} alt="${esc(fig.legende || "")}">`;
@@ -10422,7 +10578,7 @@ function lancerQuiz(questions, ctx){
   const etape = () => {
     const q = questions[i];
     zone().innerHTML = entete(esc(ctx.sur), esc(ctx.titre)) + `
-      ${q.ctx || ctx.contexte || q.sujet ? `<details class="contexte" open><summary>Document et énoncé</summary>${q.ctxTitre ? `<p class="ctx-titre">${esc(q.ctxTitre)}</p>` : ""}${q.ctx || ctx.contexte ? `<p class="${String(q.ctx || ctx.contexte).length > 380 ? "ctx-long" : ""}">${esc(q.ctx || ctx.contexte)}</p>` : ""}
+      ${q.ctx || ctx.contexte || q.sujet ? `<details class="contexte" open><summary>Document et énoncé</summary>${q.ctxTitre ? `<p class="ctx-titre">${esc(q.ctxTitre)}</p>` : ""}${q.ctx || ctx.contexte ? `<p class="${String(q.ctx || ctx.contexte).length > 380 ? "ctx-long" : ""}">${esc(q.ctx || ctx.contexte)}</p>` : ""}${q.ctxFig ? figureHtml(q.ctxFig) : ""}
         ${q.sujet && SUJETS[q.sujet] ? `<p class="source-q">Source : ${esc(SUJETS[q.sujet].titre)}${q.src ? " · " + esc(q.src) : ""} — <a href="${esc(SUJETS[q.sujet].url)}" target="_blank" rel="noopener">Ouvrir le sujet complet ↗</a></p>` : ""}</details>` : ""}
       <div class="bloc">
         <div class="rangee" style="justify-content:space-between"><span class="mono">${q.matiere ? esc(q.matiere) : "Question"}${NIVEAUX[q.n] ? ` · <span class="niveau">${NIVEAUX[q.n]}</span>` : ""}</span><span class="rangee" style="gap:10px">${avecBrouillon(q, ctx) ? `<button type="button" class="btn-brouillon" id="ouvrir-brouillon" title="Ouvrir une page de brouillon pour poser tes calculs">✎ Brouillon</button>` : ""}<button type="button" class="prevenir" id="prevenir" title="Signaler un bug, une erreur ou un glitch">⚑ Prévenir</button><span class="mono">${i + 1} / ${questions.length}</span></span></div>
