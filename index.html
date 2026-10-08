@@ -917,6 +917,9 @@ a.lien{color:var(--accent)}
 .relance-site p{margin:0;line-height:1.45}.relance-compte{font-family:var(--f-mono);font-size:.85rem;color:var(--doux)}.relance-compte b{color:var(--accent);font-size:1.05rem}.relance-info{color:#ff9a6b;font-size:.88rem}
 @keyframes avert-entre{from{opacity:0;transform:translate(-50%,-10px)}}
 .relance-site{animation-name:relance-entre}@keyframes relance-entre{from{opacity:0;transform:translateY(12px)}}
+.presence-bloc{margin-top:8px;padding-top:12px;border-top:1px solid var(--ligne);display:flex;flex-direction:column;gap:8px}
+.presence-resume{margin:0}.presence-resume .ok,.presence-tab .ok{color:#6fbf73}.presence-resume .ko,.presence-tab .ko{color:#ff9a6b}
+.presence-tab{font-size:.86rem}.presence-tab tr.moi td{background:color-mix(in srgb,var(--accent) 10%,transparent)}
 @keyframes relance-tourne{to{transform:rotate(360deg)}}
 .lv-bloc .lv-tete{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .nav-chantier{margin-left:auto;font:600 .6rem/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:4px;color:#1a1300;background:repeating-linear-gradient(-45deg,#f2ae02 0 6px,#ffd35a 6px 12px);white-space:nowrap}
@@ -3226,6 +3229,7 @@ function appliquerMaj(){
 }
 // connexion d'un compte non gérant pendant la mise à jour : on referme le site
 function apresConnexionMaj(){
+  majPresence();
   if (majConnexion && majEnCours() && !(profil && profil.rang === "gerant")){ majConnexion = false; toast("Le site est en mise à jour : seul le gérant peut y accéder pour le moment."); }
   else if (profil && profil.rang === "gerant") majConnexion = false;
   appliquerMaj();
@@ -3313,7 +3317,6 @@ function surRelance(d){
   if (relanceVu === null){ relanceVu = jeton; return; }      // premier chargement : rien à relancer
   if (!jeton || jeton === relanceVu) return;
   relanceVu = jeton;
-  if (jeton === relanceEnvoyee) return;                       // c'est cet onglet qui a demandé la relance
   compteRelance(d);
 }
 function compteRelance(d){
@@ -3367,6 +3370,7 @@ function htmlAvertRelance(){
       <div class="champ"><span class="mono">Délai avant la relance</span>${segment("relance-delai", [["10", "10 secondes"], ["30", "30 secondes"], ["60", "1 minute"]], String(rlForm.delai))}</div>
       <div class="rangee"><button class="btn" type="button" id="relance-go">↻ Relancer le site partout</button></div>
       ${rl.jeton ? `<p class="doux" style="font-size:.82rem">Dernière relance : ${dateLongue(rl.jeton)}${rl.par ? " par " + esc(rl.par) : ""}.</p>` : ""}
+      <div class="presence-bloc"><span class="mono">Connectés en ce moment</span><div id="presence-liste">${htmlPresence()}</div></div>
     </form>`;
 }
 function brancherAvertRelance(){
@@ -3383,11 +3387,48 @@ function brancherAvertRelance(){
   g("relance-message").oninput = ev => rlForm.message = ev.target.value;
   document.querySelectorAll("#relance-delai button").forEach(b => b.onclick = () => { rlForm.delai = +b.dataset.v; document.querySelectorAll("#relance-delai button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
   deuxClics(g("relance-go"), async () => {
-    const jeton = new Date().toISOString(); relanceEnvoyee = jeton;
-    await db.doc("site/relance").set({jeton, message: rlForm.message.trim().slice(0, 200), delai: rlForm.delai, par: profil ? profil.pseudo : "gérant"});
-    Formes.succes(); statut(`Relance envoyée : le site se recharge chez tout le monde dans ${rlForm.delai} secondes.`, true);
+    const jeton = new Date().toISOString(), d = {jeton, message: rlForm.message.trim().slice(0, 200), delai: rlForm.delai, par: profil ? profil.pseudo : "gérant"}; relanceEnvoyee = jeton;
+    await db.doc("site/relance").set(d);
+    Formes.succes(); statut(`Relance envoyée : le site se recharge chez tout le monde (toi aussi) dans ${rlForm.delai} secondes.`, true);
+    relanceVu = jeton; compteRelance(d);   // le gérant reçoit la même notification
   });
 }
+
+/* ----- Qui est connecté, et avec quelle version du site (présence en direct, sans écriture en base) ----- */
+let presences = [], canalPresence = null;
+const clePresence = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)) ;
+const infosPresence = () => ({version: VERSION_SITE, pseudo: (typeof profil !== "undefined" && profil && profil.pseudo) || "", rang: (typeof profil !== "undefined" && profil && profil.rang) || "", depuis: new Date().toISOString()});
+function majPresence(){
+  try {
+    if (typeof sb === "undefined" || !sb || !sb.channel) return;
+    if (!canalPresence){
+      canalPresence = sb.channel("helper-presence", {config: {presence: {key: clePresence}}});
+      if (!canalPresence || !canalPresence.on || !canalPresence.presenceState) { canalPresence = null; return; }
+      canalPresence.on("presence", {event: "sync"}, () => {
+        const etat = canalPresence.presenceState() || {};
+        presences = Object.entries(etat).map(([k, l]) => ({...(l[l.length - 1] || {}), cle: k}));
+        const z = document.getElementById("presence-liste"); if (z) z.innerHTML = htmlPresence();
+      }).subscribe(st => { if (st === "SUBSCRIBED") canalPresence.track(infosPresence()); });
+    } else canalPresence.track(infosPresence());
+  } catch {}
+}
+function htmlPresence(){
+  if (!canalPresence) return `<p class="doux" style="font-size:.85rem">Liste indisponible pour le moment.</p>`;
+  if (!presences.length) return `<p class="doux" style="font-size:.85rem">Recherche des personnes connectées…</p>`;
+  const vRec = Math.max(...presences.map(p => parseFloat(p.version) || 0), parseFloat(VERSION_SITE) || 0);
+  const ajour = presences.filter(p => (parseFloat(p.version) || 0) >= vRec).length;
+  const nomRang = r => ({gerant: "Gérant", admin: "Gérant", administrateur: "Administrateur", eleve: "Élève"})[r] || "Pas connecté";
+  const tri = presences.slice().sort((a, b) => (parseFloat(a.version) || 0) - (parseFloat(b.version) || 0) || String(a.pseudo).localeCompare(b.pseudo));
+  return `<p class="presence-resume"><b>${presences.length}</b> personne${presences.length > 1 ? "s" : ""} sur le site · <b class="${ajour === presences.length ? "ok" : "ko"}">${ajour} / ${presences.length}</b> sur la dernière version (${vRec.toFixed(2)})</p>
+    <table class="tab-doc presence-tab"><tr><th>Qui</th><th>Rôle</th><th>Version</th><th>État</th></tr>${tri.map(p => { const ok = (parseFloat(p.version) || 0) >= vRec;
+      return `<tr${p.cle === clePresence ? ' class="moi"' : ""}><td>${esc(p.pseudo || "Visiteur")}${p.cle === clePresence ? " (toi)" : ""}</td><td>${nomRang(p.rang)}</td><td>${esc(p.version || "?")}</td><td class="${ok ? "ok" : "ko"}">${ok ? "✓ à jour" : "⟳ ancienne version"}</td></tr>`; }).join("")}</table>
+    <p class="doux" style="font-size:.78rem">Chaque onglet ouvert compte pour une personne. La liste se met à jour toute seule : après une relance, tout le monde doit repasser sur la dernière version.</p>`;
+}
+// après une relance : on le signale à la personne, puis on nettoie l'adresse
+(function(){
+  try { const u = new URL(location.href); if (!u.searchParams.has("v")) return; u.searchParams.delete("v"); history.replaceState(null, "", u.toString());
+    setTimeout(() => { if (typeof toast === "function") toast(`✓ Site relancé : tu as la dernière version (${VERSION_SITE}).`); }, 1800); } catch {}
+})();
 /* ===================== FORMES ANIMÉES (fond du site) ===================== */
 const hexRgb = h => { const n = parseInt(String(h).replace("#", ""), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
 const Formes = (() => {
@@ -3683,7 +3724,7 @@ $("#deconnexion").addEventListener("click", () => {
   assets = null; uid = null;
   moi = null; profil = null; prog = null; modeGerant = false; rafraichir = null;
   appliquerPrefs(PREFS_DEFAUT);
-  $("#identifiant").value = ""; choisirMode(estGerant ? "gerant" : "connecter"); montrer("acces"); appliquerMaj();
+  $("#identifiant").value = ""; choisirMode(estGerant ? "gerant" : "connecter"); montrer("acces"); appliquerMaj(); majPresence();
 });
 function sauver(){
   const copie = structuredClone(prog), id = moi;
@@ -3763,7 +3804,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.68";
+const VERSION_SITE = "0.69";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -10195,6 +10236,7 @@ signalements = l; majBadgeSignal(); });
   // Message d'avertissement et relance du site à distance (gérant)
   db.doc("site/avertissement").onSnapshot(s => { avertSite = s.exists ? s.data() : null; appliquerAvertissement(); if (rafraichir === vueGSite && !avForm.touche) majVue(); }, () => {});
   db.doc("site/relance").onSnapshot(s => { surRelance(s.exists ? s.data() : null); }, () => {});
+  majPresence();
 
   // Données partagées en direct
   const nouveaux = s => s.docChanges().filter(c => c.type === "added").map(c => ({...c.doc.data(), id: c.doc.id}));
