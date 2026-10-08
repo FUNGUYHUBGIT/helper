@@ -912,6 +912,11 @@ a.lien{color:var(--accent)}
 .avert-site p{margin:.15em 0 0;white-space:pre-line;line-height:1.45}.avert-site>div{flex:1}
 .avert-ico{font-size:1.35rem;line-height:1.2;color:var(--accent)}.avert-site.important .avert-ico{color:#ff6b70}
 .avert-fermer{background:none;border:0;color:var(--doux);font-size:1.3rem;line-height:1;cursor:pointer;padding:0 4px}.avert-fermer:hover{color:var(--texte)}
+.avert-pastille{position:fixed;top:12px;right:14px;z-index:9000;animation:relance-entre .3s ease-out}
+.avert-pastille button{font:700 .82rem var(--f-texte);display:flex;gap:6px;align-items:center;padding:7px 12px;border-radius:999px;border:1.5px solid var(--accent);background:var(--surface);color:var(--accent);cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.avert-pastille.important button{border-color:#e5484d;color:#ff6b70;background:color-mix(in srgb,#e5484d 14%,var(--surface));animation:avert-pulse 2s ease-in-out infinite}
+.avert-pastille button:hover{filter:brightness(1.15)}
+@keyframes avert-pulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,#e5484d 25%,transparent)}}
 .relance-site{position:fixed;right:18px;bottom:18px;z-index:9500;width:min(380px,calc(100% - 36px));padding:16px 18px;border-radius:14px;background:var(--surface);border:1.5px solid var(--accent);box-shadow:0 14px 40px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:8px;animation:avert-entre .35s ease-out}
 .relance-tete{display:flex;gap:10px;align-items:center}.relance-ico{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#111;font-weight:800;animation:relance-tourne 2s linear infinite}
 .relance-site p{margin:0;line-height:1.45}.relance-compte{font-family:var(--f-mono);font-size:.85rem;color:var(--doux)}.relance-compte b{color:var(--accent);font-size:1.05rem}.relance-info{color:#ff9a6b;font-size:.88rem}
@@ -3302,14 +3307,22 @@ let avertSite = null, relanceSite = null, relanceVu = null, relanceEnvoyee = nul
 let avForm = {texte: "", niveau: "info", touche: false}, rlForm = {message: "Le site a été mis à jour. Il va se relancer pour charger la nouvelle version.", delai: 30};
 function appliquerAvertissement(){
   let el = document.getElementById("avert-site");
-  const a = avertSite, cle = "avert-ferme-" + (a && a.majLe || "");
-  let ferme = false; try { ferme = sessionStorage.getItem(cle) === "1"; } catch {}
-  if (!a || !a.actif || !String(a.texte || "").trim() || ferme){ if (el) el.remove(); return; }
+  const a = avertSite, cle = "avert-reduit-" + (a && a.majLe || "");
+  if (!a || !a.actif || !String(a.texte || "").trim()){ if (el) el.remove(); return; }
+  let reduit = false; try { reduit = sessionStorage.getItem(cle) === "1"; } catch {}
   if (!el){ el = document.createElement("div"); el.id = "avert-site"; el.setAttribute("role", "alert"); document.body.appendChild(el); }
-  const imp = a.niveau === "important";
+  const imp = a.niveau === "important", ico = imp ? "⚠" : "ℹ";
+  const memo = v => { try { v ? sessionStorage.setItem(cle, "1") : sessionStorage.removeItem(cle); } catch {} appliquerAvertissement(); };
+  if (reduit){
+    // fermé : il reste visible sous forme de pastille, un clic le rouvre
+    el.className = "avert-pastille " + (imp ? "important" : "info");
+    el.innerHTML = `<button type="button" title="Afficher le message" aria-label="Afficher le message d'avertissement"><span aria-hidden="true">${ico}</span> ${imp ? "Important" : "Message"}</button>`;
+    el.querySelector("button").onclick = () => memo(false);
+    return;
+  }
   el.className = "avert-site " + (imp ? "important" : "info");
-  el.innerHTML = `<span class="avert-ico" aria-hidden="true">${imp ? "⚠" : "ℹ"}</span><div><b>${imp ? "Important" : "Information"}</b><p>${esc(a.texte)}</p></div><button type="button" class="avert-fermer" aria-label="Fermer le message">×</button>`;
-  el.querySelector("button").onclick = () => { try { sessionStorage.setItem(cle, "1"); } catch {} el.remove(); };
+  el.innerHTML = `<span class="avert-ico" aria-hidden="true">${ico}</span><div><b>${imp ? "Important" : "Information"}</b><p>${esc(a.texte)}</p></div><button type="button" class="avert-fermer" aria-label="Réduire le message" title="Réduire">×</button>`;
+  el.querySelector("button").onclick = () => memo(true);
 }
 function surRelance(d){
   relanceSite = d;
@@ -3358,7 +3371,7 @@ function htmlAvertRelance(){
   if (!avForm.touche){ avForm.texte = av.texte || ""; avForm.niveau = av.niveau === "important" ? "important" : "info"; }
   return `<form class="bloc" id="form-avert" novalidate>
       <div class="rangee" style="justify-content:space-between"><span class="mono">Message d'avertissement</span><span class="etat ${av.actif ? "maj-actif" : ""}">${av.actif ? "Affiché" : "Masqué"}</span></div>
-      <p class="doux" style="font-size:.88rem;max-width:75ch">Un bandeau s'affiche en haut de l'écran pour tout le monde, même sur la page de connexion, jusqu'à ce que tu le retires. Chacun peut le fermer pour lui ; si tu modifies le message, il réapparaît.</p>
+      <p class="doux" style="font-size:.88rem;max-width:75ch">Un bandeau s'affiche en haut de l'écran pour tout le monde, même sur la page de connexion, jusqu'à ce que tu le retires. Avec sa croix, chacun peut le réduire en une petite pastille qui reste en haut à droite (un clic la rouvre) ; si tu modifies le message, il se déplie à nouveau chez tout le monde.</p>
       <div class="champ"><span class="mono">Type</span>${segment("avert-niveau", [["info", "ℹ Information"], ["important", "⚠ Important"]], avForm.niveau)}</div>
       <div class="champ"><label for="avert-texte">Contenu du message</label><textarea id="avert-texte" rows="3" maxlength="400" placeholder="Ex. : le site sera en mise à jour samedi de 14 h à 16 h.">${esc(avForm.texte)}</textarea></div>
       <div class="rangee"><button class="btn" type="submit">${av.actif ? "Mettre à jour le message" : "Afficher le message"}</button>${av.actif ? `<button class="btn danger" type="button" id="avert-retirer">Retirer le message</button>` : ""}</div>
@@ -3804,7 +3817,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.69";
+const VERSION_SITE = "0.70";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
