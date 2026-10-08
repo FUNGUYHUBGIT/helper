@@ -869,11 +869,11 @@ a.lien{color:var(--accent)}
 .lg-corps{transform-box:fill-box;transform-origin:50% 100%;animation:lg-respire 2.8s ease-in-out infinite}
 .lg-perso .b-croix{opacity:0}.lg-perso.croix .b-croix{opacity:1}.lg-perso.croix .b-yeux{opacity:0}.lg-perso.croix .lg-corps{animation:lg-tremble .18s 4}.lg-perso.saute .lg-corps{animation:lg-saute .5s ease-out}
 .lg-perso .b-ouverte,.lg-perso .b-triste{opacity:0}.lg-perso.triste .b-triste{opacity:1}.lg-perso.triste .b-content{opacity:0}.lg-perso.bouche .b-ouverte{opacity:1}.lg-perso.bouche .b-content,.lg-perso.bouche .b-triste{opacity:0}
-.lg-perso{transform-box:fill-box;transform-origin:50% 100%;transition:transform .4s cubic-bezier(.3,1.5,.5,1),filter .3s}.lg-perso.parle{transform:scale(1.12)}.lg-perso.ecoute{transform:scale(.84);filter:brightness(.55)}
+.lg-perso{transform-box:fill-box;transform-origin:50% 100%;transition:transform .4s cubic-bezier(.3,1.5,.5,1),filter .3s}.lg-scene-bd.tasse .lg-perso.parle{transform:scale(.9)}.lg-scene-bd.tasse .lg-perso.ecoute{transform:scale(.62)}.lg-perso.parle{transform:scale(1.2)}.lg-perso.ecoute{transform:scale(.8);filter:brightness(.55)}
 .lg-bulle-bd{position:absolute;top:5%;max-width:62%;min-width:34%;background:#fff;color:#1d1f24;border:0;transition:background .3s,color .3s;border-radius:18px;padding:7px 14px 12px;font-size:clamp(.76rem,3.1cqw,1.02rem);line-height:1.42;box-shadow:0 5px 14px rgba(0,0,0,.45);text-align:left;cursor:pointer}
 .lg-bulle-bd.q1{background:var(--lg-p1,#d92b3a);color:var(--lg-t1,#fff)}.lg-bulle-bd.q2{background:var(--lg-p2,#5fb81c);color:var(--lg-t2,#111214)}
 .lg-queue{position:absolute;left:0;top:100%;width:100%;height:26px;overflow:visible;pointer-events:none}.lg-bulle-bd.q1 .lg-queue path{fill:var(--lg-p1,#d92b3a)}.lg-bulle-bd.q2 .lg-queue path{fill:var(--lg-p2,#5fb81c)}
-.lg-bulle-bd.q1{left:3%}.lg-bulle-bd.q2{right:3%}.lg-bulle-bd{top:4%;max-width:66%}.lg-bulle-bd.serre{font-size:clamp(.7rem,2.6cqw,.9rem);padding:5px 12px 9px;max-width:80%}.lg-bulle-bd.serre2{font-size:clamp(.66rem,2.2cqw,.8rem);max-width:94%;line-height:1.3}
+.lg-bulle-bd.q1{left:3%}.lg-bulle-bd.q2{right:3%}.lg-bulle-bd{top:4%;max-width:66%;transition:top .25s ease-out,background .3s,color .3s}.lg-bulle-bd.serre{font-size:clamp(.7rem,2.6cqw,.9rem);padding:5px 12px 9px;max-width:80%}.lg-bulle-bd.serre2{font-size:clamp(.66rem,2.2cqw,.8rem);max-width:94%;line-height:1.3}
 .lg-bulle-bd::after,.lg-bulle-bd::before{content:"";position:absolute}
 .lg-bulle-bd::after,.lg-bulle-bd::before{display:none}
 .lg-bulle-bd.q1::after{left:16%;clip-path:polygon(0 0,100% 0,15% 100%)}.lg-bulle-bd.q1::before{left:calc(16% + 4px);clip-path:polygon(0 0,100% 0,12% 100%)}
@@ -906,6 +906,18 @@ a.lien{color:var(--accent)}
 .ft-mot:hover:not(:disabled){border-bottom-color:var(--accent)}.ft-mot.choisi{background:color-mix(in srgb,var(--accent) 28%,transparent);border-bottom-color:var(--accent)}
 .ft-mot.ok{background:color-mix(in srgb,#6fbf73 30%,transparent)}.ft-mot.ko{background:color-mix(in srgb,#e5484d 30%,transparent);text-decoration:line-through}.ft-mot.juste{outline:2px solid #6fbf73}
 .ft-mot:disabled{cursor:default}.ft-correction{display:flex;flex-direction:column;gap:6px;max-width:320px}.ft-saisie{text-align:left}
+.avert-site{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9000;width:min(720px,calc(100% - 24px));display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--surface);border:1.5px solid var(--accent);box-shadow:0 10px 30px rgba(0,0,0,.45);animation:avert-entre .35s ease-out}
+.avert-site.important{border-color:#e5484d;background:color-mix(in srgb,#e5484d 14%,var(--surface))}
+.avert-site b{font-size:.78rem;font-family:var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}.avert-site.important b{color:#ff6b70}
+.avert-site p{margin:.15em 0 0;white-space:pre-line;line-height:1.45}.avert-site>div{flex:1}
+.avert-ico{font-size:1.35rem;line-height:1.2;color:var(--accent)}.avert-site.important .avert-ico{color:#ff6b70}
+.avert-fermer{background:none;border:0;color:var(--doux);font-size:1.3rem;line-height:1;cursor:pointer;padding:0 4px}.avert-fermer:hover{color:var(--texte)}
+.relance-site{position:fixed;right:18px;bottom:18px;z-index:9500;width:min(380px,calc(100% - 36px));padding:16px 18px;border-radius:14px;background:var(--surface);border:1.5px solid var(--accent);box-shadow:0 14px 40px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:8px;animation:avert-entre .35s ease-out}
+.relance-tete{display:flex;gap:10px;align-items:center}.relance-ico{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#111;font-weight:800;animation:relance-tourne 2s linear infinite}
+.relance-site p{margin:0;line-height:1.45}.relance-compte{font-family:var(--f-mono);font-size:.85rem;color:var(--doux)}.relance-compte b{color:var(--accent);font-size:1.05rem}.relance-info{color:#ff9a6b;font-size:.88rem}
+@keyframes avert-entre{from{opacity:0;transform:translate(-50%,-10px)}}
+.relance-site{animation-name:relance-entre}@keyframes relance-entre{from{opacity:0;transform:translateY(12px)}}
+@keyframes relance-tourne{to{transform:rotate(360deg)}}
 .lv-bloc .lv-tete{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .nav-chantier{margin-left:auto;font:600 .6rem/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:4px;color:#1a1300;background:repeating-linear-gradient(-45deg,#f2ae02 0 6px,#ffd35a 6px 12px);white-space:nowrap}
 .bandeau-chantier{display:flex;gap:12px;align-items:center;padding:12px 16px;margin:0 0 18px;border-radius:10px;border:1.5px dashed #f2ae02;background:repeating-linear-gradient(-45deg,color-mix(in srgb,#f2ae02 10%,transparent) 0 14px,transparent 14px 28px);font-size:.92rem}
@@ -3248,7 +3260,8 @@ function vueGSite(){
         <button class="btn sec" type="button" id="maj-apercu">Voir la page des élèves</button>
         ${actif ? `<button class="btn danger" type="button" id="maj-terminer">Terminer la mise à jour</button>` : ""}
       </div>
-    </form>`;
+    </form>` + htmlAvertRelance();
+  brancherAvertRelance();
   zone().querySelectorAll("#maj-type button").forEach(b => b.onclick = () => { lireFormMaj(); majForm.type = b.dataset.v; majForm.touche = true; vueGSite(); });
   const finChoisie = () => {
     lireFormMaj();
@@ -3276,6 +3289,104 @@ function lireFormMaj(){
   if (g("maj-unite")) majForm.unite = g("maj-unite").value;
   if (g("maj-date")) majForm.date = g("maj-date").value;
   if (g("maj-message")) majForm.message = g("maj-message").value;
+}
+
+/* ===================== MESSAGE D'AVERTISSEMENT ET RELANCE DU SITE =====================
+   site/avertissement = {actif, texte, niveau ("info" | "important"), majLe, par}
+   site/relance = {jeton (date ISO), message, delai (s), par} : chaque nouveau jeton fait recharger le site chez tout le monde. */
+let avertSite = null, relanceSite = null, relanceVu = null, relanceEnvoyee = null, relanceMinuteur = null;
+let avForm = {texte: "", niveau: "info", touche: false}, rlForm = {message: "Le site a été mis à jour. Il va se relancer pour charger la nouvelle version.", delai: 30};
+function appliquerAvertissement(){
+  let el = document.getElementById("avert-site");
+  const a = avertSite, cle = "avert-ferme-" + (a && a.majLe || "");
+  let ferme = false; try { ferme = sessionStorage.getItem(cle) === "1"; } catch {}
+  if (!a || !a.actif || !String(a.texte || "").trim() || ferme){ if (el) el.remove(); return; }
+  if (!el){ el = document.createElement("div"); el.id = "avert-site"; el.setAttribute("role", "alert"); document.body.appendChild(el); }
+  const imp = a.niveau === "important";
+  el.className = "avert-site " + (imp ? "important" : "info");
+  el.innerHTML = `<span class="avert-ico" aria-hidden="true">${imp ? "⚠" : "ℹ"}</span><div><b>${imp ? "Important" : "Information"}</b><p>${esc(a.texte)}</p></div><button type="button" class="avert-fermer" aria-label="Fermer le message">×</button>`;
+  el.querySelector("button").onclick = () => { try { sessionStorage.setItem(cle, "1"); } catch {} el.remove(); };
+}
+function surRelance(d){
+  relanceSite = d;
+  const jeton = d && d.jeton || "";
+  if (relanceVu === null){ relanceVu = jeton; return; }      // premier chargement : rien à relancer
+  if (!jeton || jeton === relanceVu) return;
+  relanceVu = jeton;
+  if (jeton === relanceEnvoyee) return;                       // c'est cet onglet qui a demandé la relance
+  compteRelance(d);
+}
+function compteRelance(d){
+  let reste = Math.max(5, Math.min(120, +d.delai || 30));
+  let el = document.getElementById("relance-site");
+  if (!el){ el = document.createElement("div"); el.id = "relance-site"; el.className = "relance-site"; el.setAttribute("role", "alertdialog"); document.body.appendChild(el); }
+  el.innerHTML = `<div class="relance-tete"><span class="relance-ico" aria-hidden="true">↻</span><b>Mise à jour du site</b></div><p>${esc(d.message || "Une nouvelle version du site est disponible.")}</p>
+    <p class="relance-compte">Relance dans <b>${reste}</b> s</p><p class="relance-info" hidden></p><div class="rangee"><button class="btn" type="button" data-maintenant>Relancer maintenant</button></div>`;
+  const compte = el.querySelector(".relance-compte b");
+  clearInterval(relanceMinuteur);
+  relanceMinuteur = setInterval(() => { reste--; if (compte) compte.textContent = Math.max(0, reste); if (reste <= 0){ clearInterval(relanceMinuteur); relancerMaintenant(el); } }, 1000);
+  el.querySelector("[data-maintenant]").onclick = () => { clearInterval(relanceMinuteur); relancerMaintenant(el); };
+}
+const editeurOuvert = () => (typeof ed !== "undefined" && ed) || (typeof se !== "undefined" && se);
+// enregistre la leçon ou la série en cours de modification (titre provisoire s'il manque)
+async function sauvegarderEditeurs(){
+  if (!editeurOuvert()) return true;
+  const btn = document.getElementById("enregistrer"); if (!btn) return true;
+  const titreAuto = "Brouillon du " + new Date().toLocaleDateString("fr-FR");
+  if (typeof ed !== "undefined" && ed){ const t = document.getElementById("ed-titre"); if (t && !t.value.trim()) t.value = titreAuto; }
+  if (typeof se !== "undefined" && se && !String(se.titre || "").trim()) se.titre = titreAuto;
+  btn.disabled = false; btn.click();
+  for (let i = 0; i < 50 && editeurOuvert(); i++) await new Promise(r => setTimeout(r, 200));
+  return !editeurOuvert();
+}
+const rechargerSite = () => { const u = new URL(location.href); u.searchParams.set("v", Date.now().toString(36)); location.replace(u.toString()); };
+async function relancerMaintenant(el){
+  const info = el.querySelector(".relance-info"), btn = el.querySelector("[data-maintenant]"), compte = el.querySelector(".relance-compte");
+  if (btn) btn.disabled = true;
+  if (editeurOuvert()) compte.textContent = "Enregistrement de ton travail…";
+  if (await sauvegarderEditeurs()){ compte.textContent = "Relance…"; return rechargerSite(); }
+  compte.textContent = ""; info.hidden = false;
+  info.textContent = "Ton travail n'a pas pu être enregistré automatiquement. Corrige l'erreur indiquée puis clique sur « Enregistrer » : le site se relancera juste après.";
+  const attente = setInterval(() => { if (!editeurOuvert()){ clearInterval(attente); rechargerSite(); } }, 500);
+}
+// blocs de l'onglet gérant « Mise à jour du site »
+function htmlAvertRelance(){
+  const av = avertSite || {}, rl = relanceSite || {};
+  if (!avForm.touche){ avForm.texte = av.texte || ""; avForm.niveau = av.niveau === "important" ? "important" : "info"; }
+  return `<form class="bloc" id="form-avert" novalidate>
+      <div class="rangee" style="justify-content:space-between"><span class="mono">Message d'avertissement</span><span class="etat ${av.actif ? "maj-actif" : ""}">${av.actif ? "Affiché" : "Masqué"}</span></div>
+      <p class="doux" style="font-size:.88rem;max-width:75ch">Un bandeau s'affiche en haut de l'écran pour tout le monde, même sur la page de connexion, jusqu'à ce que tu le retires. Chacun peut le fermer pour lui ; si tu modifies le message, il réapparaît.</p>
+      <div class="champ"><span class="mono">Type</span>${segment("avert-niveau", [["info", "ℹ Information"], ["important", "⚠ Important"]], avForm.niveau)}</div>
+      <div class="champ"><label for="avert-texte">Contenu du message</label><textarea id="avert-texte" rows="3" maxlength="400" placeholder="Ex. : le site sera en mise à jour samedi de 14 h à 16 h.">${esc(avForm.texte)}</textarea></div>
+      <div class="rangee"><button class="btn" type="submit">${av.actif ? "Mettre à jour le message" : "Afficher le message"}</button>${av.actif ? `<button class="btn danger" type="button" id="avert-retirer">Retirer le message</button>` : ""}</div>
+    </form>
+    <form class="bloc" id="form-relance" novalidate>
+      <span class="mono">Relancer le site sur tous les ordinateurs</span>
+      <p class="doux" style="font-size:.88rem;max-width:75ch">À utiliser après chaque mise à jour : tous ceux qui ont le site ouvert reçoivent une notification avec un compte à rebours, puis le site se recharge avec la nouvelle version (plus besoin de Ctrl + F5). Les leçons et les séries d'exercices en cours de modification sont enregistrées automatiquement avant la relance.</p>
+      <div class="champ"><label for="relance-message">Message de la notification</label><textarea id="relance-message" rows="2" maxlength="200">${esc(rlForm.message)}</textarea></div>
+      <div class="champ"><span class="mono">Délai avant la relance</span>${segment("relance-delai", [["10", "10 secondes"], ["30", "30 secondes"], ["60", "1 minute"]], String(rlForm.delai))}</div>
+      <div class="rangee"><button class="btn" type="button" id="relance-go">↻ Relancer le site partout</button></div>
+      ${rl.jeton ? `<p class="doux" style="font-size:.82rem">Dernière relance : ${dateLongue(rl.jeton)}${rl.par ? " par " + esc(rl.par) : ""}.</p>` : ""}
+    </form>`;
+}
+function brancherAvertRelance(){
+  const g = id => document.getElementById(id);
+  g("avert-texte").oninput = ev => { avForm.texte = ev.target.value; avForm.touche = true; };
+  document.querySelectorAll("#avert-niveau button").forEach(b => b.onclick = () => { avForm.niveau = b.dataset.v; avForm.touche = true; document.querySelectorAll("#avert-niveau button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  g("form-avert").onsubmit = async ev => {
+    ev.preventDefault(); const texte = avForm.texte.trim();
+    if (!texte){ statut("Écris le contenu du message."); g("avert-texte").focus(); return; }
+    try { await db.doc("site/avertissement").set({actif: true, texte: texte.slice(0, 400), niveau: avForm.niveau, majLe: new Date().toISOString(), par: profil ? profil.pseudo : "gérant"}); avForm.touche = false; Formes.succes(); statut("Message affiché pour tout le monde.", true); }
+    catch (err){ statut(erreurEcriture(err)); }
+  };
+  if (g("avert-retirer")) deuxClics(g("avert-retirer"), async () => { const a = avertSite || {}; await db.doc("site/avertissement").set({...a, actif: false, majLe: new Date().toISOString()}); avForm.touche = false; });
+  g("relance-message").oninput = ev => rlForm.message = ev.target.value;
+  document.querySelectorAll("#relance-delai button").forEach(b => b.onclick = () => { rlForm.delai = +b.dataset.v; document.querySelectorAll("#relance-delai button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  deuxClics(g("relance-go"), async () => {
+    const jeton = new Date().toISOString(); relanceEnvoyee = jeton;
+    await db.doc("site/relance").set({jeton, message: rlForm.message.trim().slice(0, 200), delai: rlForm.delai, par: profil ? profil.pseudo : "gérant"});
+    Formes.succes(); statut(`Relance envoyée : le site se recharge chez tout le monde dans ${rlForm.delai} secondes.`, true);
+  });
 }
 /* ===================== FORMES ANIMÉES (fond du site) ===================== */
 const hexRgb = h => { const n = parseInt(String(h).replace("#", ""), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
@@ -3652,7 +3763,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.67";
+const VERSION_SITE = "0.68";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7889,10 +8000,10 @@ function lgFondAnime(scene, acc){
 function lgBDHtml(o, lignes){
   const u = "lg" + (++lgUid) + "-", noms = [o.perso1 || "Perso-01", o.perso2 || "Perso-02"], l0 = lignes[0], q0 = l0 && l0.qui === "2" ? 2 : 1;
   return `<div class="lg-lecteur"><div class="lg-scene-bd" tabindex="0" role="group" aria-label="Bande dessinée : clique ou appuie sur → pour la réplique suivante">
-      <canvas class="lg-bd-cv" aria-hidden="true"></canvas><svg viewBox="0 0 600 380" class="lg-bd-svg" aria-hidden="true">
-        <g transform="translate(150 354) scale(.86)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1, u)}</g></g></g>
-        <g transform="translate(450 354) scale(-.86 .86)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2, u)}</g></g></g>
-        <text x="150" y="373" class="lg-nom-bd">${esc(noms[0])}</text><text x="450" y="373" class="lg-nom-bd">${esc(noms[1])}</text></svg>
+      <canvas class="lg-bd-cv" aria-hidden="true"></canvas><svg viewBox="0 0 600 360" class="lg-bd-svg" aria-hidden="true">
+        <g transform="translate(150 338)"><g class="lg-perso" data-q="1"><g class="lg-corps">${lgBonhomme(1, u)}</g></g></g>
+        <g transform="translate(450 338) scale(-1 1)"><g class="lg-perso" data-q="2"><g class="lg-corps">${lgBonhomme(2, u)}</g></g></g>
+        <text x="150" y="355" class="lg-nom-bd">${esc(noms[0])}</text><text x="450" y="355" class="lg-nom-bd">${esc(noms[1])}</text></svg>
       ${l0 ? `<div class="lg-bulle-bd q${q0}"><span class="lg-qui">${esc(noms[q0 - 1])}</span><span class="lg-dit">${esc(lgSansCrochets(l0.texte))}</span><span class="lg-fr" hidden></span><span class="lg-indic" aria-hidden="true">▼</span><svg class="lg-queue" aria-hidden="true"><path d=""/></svg></div>` : ""}</div>
     <div class="lg-nav"><button type="button" class="mini-btn" data-nav="-1" aria-label="Réplique précédente">◀</button><span class="lg-compteur">1 / ${lignes.length}</span><button type="button" class="mini-btn lg-suivant" data-nav="1">Suivant ▶</button>
       <span class="lg-nav-droite">${o.traduction !== false && lignes.some(l => l.fr) ? `<button type="button" class="mini-btn" data-trad aria-pressed="false">FR</button>` : ""}<button type="button" class="mini-btn" data-son aria-pressed="false">🔇 Son</button></span></div></div>`;
@@ -7927,11 +8038,15 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
   const coul = lgCouleursPersos(scene), fond = lgFondAnime(scene, coul.acc), queue = bulle.querySelector(".lg-queue path");
   // la pointe de la bulle vise toujours la tête de celui qui parle
   // … et ne touche jamais un personnage : la pointe raccourcit, et si la bulle est trop basse son texte se resserre
+  // la bulle se pose juste au-dessus de la tête (sans jamais la toucher) ; si la place manque, son texte se resserre
   const placerQueue = () => { if (!queue) return; const sr = scene.getBoundingClientRect(), br = bulle.getBoundingClientRect(); if (!br.width) return;
-    const hautPerso = Math.min(...persos.map(p => p.getBoundingClientRect().top)), espace = hautPerso - br.bottom;
-    if (espace < 16 && !bulle.classList.contains("serre2")){ bulle.classList.add(bulle.classList.contains("serre") ? "serre2" : "serre"); return requestAnimationFrame(placerQueue); }
-    const h = Math.max(5, Math.min(24, espace - 10));
-    const tete = sr.left + sr.width * (qActif === 1 ? 150 : 450) / 600 - br.left, base = Math.max(22, Math.min(br.width - 22, tete)), bout = Math.max(base - 34, Math.min(base + 34, tete));
+    const hautPerso = Math.min(...persos.map(p => p.getBoundingClientRect().top)) - sr.top, mini = sr.height * .03, Q = 20, G = 8;
+    const haut = Math.max(mini, hautPerso - G - Q - br.height); bulle.style.top = haut.toFixed(1) + "px";
+    const espace = hautPerso - (haut + br.height);
+    if (espace < G + 8 && !bulle.classList.contains("serre2")){ bulle.classList.add(bulle.classList.contains("serre") ? "serre2" : "serre"); return requestAnimationFrame(placerQueue); }
+    if (espace < G + 8 && !scene.classList.contains("tasse")){ scene.classList.add("tasse"); return; } // dernier recours : les personnages se baissent (transitionend relance le calcul)
+    const h = Math.max(5, Math.min(Q, espace - G));
+    const tete = sr.left + sr.width * (qActif === 1 ? 150 : 450) / 600 - br.left, base = Math.max(22, Math.min(br.width - 22, tete)), bout = Math.max(base - 30, Math.min(base + 30, tete));
     queue.setAttribute("d", `M${(base - 12).toFixed(1)} -3L${(base + 12).toFixed(1)} -3L${bout.toFixed(1)} ${h.toFixed(1)}Z`); };
   persos.forEach(p => p.addEventListener("transitionend", placerQueue));
   if (window.ResizeObserver) new ResizeObserver(placerQueue).observe(scene);
@@ -7963,7 +8078,7 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
   };
   const dire = (i, instant) => {
     clearTimeout(minut); idx = i; const l = lignes[i]; qActif = l.qui === "2" ? 2 : 1;
-    bulle.className = `lg-bulle-bd q${qActif}`; setTimeout(placerQueue, 450); qui.textContent = noms[qActif - 1]; dit.textContent = "";
+    bulle.className = `lg-bulle-bd q${qActif}`; scene.classList.remove("tasse"); setTimeout(placerQueue, 450); qui.textContent = noms[qActif - 1]; dit.textContent = "";
     fr.textContent = l.fr || ""; fr.hidden = !(etat.trad && l.fr);
     persos.forEach((p, k) => { p.classList.remove("bouche"); p.classList.toggle("ecoute", k + 1 !== qActif); p.classList.toggle("parle", k + 1 === qActif); });
     fond.teinte(coul.couleurs[qActif - 1]);
@@ -10077,6 +10192,9 @@ signalements = l; majBadgeSignal(); });
 
   // Mode mise à jour (site fermé à tous sauf au gérant)
   db.doc("site/maintenance").onSnapshot(s => { majSite = s.exists ? s.data() : null; appliquerMaj(); if (rafraichir === vueGSite) majVue(); }, () => {});
+  // Message d'avertissement et relance du site à distance (gérant)
+  db.doc("site/avertissement").onSnapshot(s => { avertSite = s.exists ? s.data() : null; appliquerAvertissement(); if (rafraichir === vueGSite && !avForm.touche) majVue(); }, () => {});
+  db.doc("site/relance").onSnapshot(s => { surRelance(s.exists ? s.data() : null); }, () => {});
 
   // Données partagées en direct
   const nouveaux = s => s.docChanges().filter(c => c.type === "added").map(c => ({...c.doc.data(), id: c.doc.id}));
