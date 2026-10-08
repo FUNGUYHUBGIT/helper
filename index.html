@@ -408,6 +408,21 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .o-couleur{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:.85rem;background:var(--surface);border:1px solid var(--ligne);border-radius:4px;padding:2px 4px 2px 8px;cursor:pointer}
 .o-couleur input{width:24px;height:22px;border:0;padding:0}
 .o-couleur.surligne{background:linear-gradient(transparent 55%,rgba(245,165,36,.5) 55%),var(--surface)}
+.titre-fixe-lecon{color:#ff5c5c;font-size:1.08rem;font-weight:600;margin:0 0 .8em;user-select:text}
+.legende-auteur{margin:14px 0 0;padding-top:10px;border-top:1px solid var(--ligne);color:var(--doux);opacity:.75;font-size:.8rem;font-style:italic}
+.cadre-edition{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:22px 22px 14px}
+.cadre-edition:focus-within{border-color:var(--accent)}
+.cadre-edition .titre-fixe-lecon{cursor:not-allowed;padding-bottom:8px;border-bottom:1px dashed color-mix(in srgb,#ff5c5c 40%,transparent)}
+.cadre-edition .doc-lecon.edition{border:0;padding:6px 0;background:none;border-radius:0}
+.doc-lecon .partie-lecon{color:#ff5c5c;text-decoration:underline;font-size:1.08rem;font-weight:700;margin:1.1em 0 .5em;scroll-margin-top:24px;border-radius:4px;transition:background .6s}
+.doc-lecon .partie-lecon.partie-flash{animation:partie-flash 1.6s ease-out}
+@keyframes partie-flash{0%,30%{background:color-mix(in srgb,#b06bff 30%,transparent)}100%{background:transparent}}
+.sommaire-lecon{margin:.4em 0 1em;user-select:none}
+.sommaire-lecon ol{margin:0;padding-left:1.4em}.sommaire-lecon li{margin:.15em 0}.sommaire-lecon li::marker{color:var(--texte);font-weight:700}
+.sommaire-lecon a{color:#b06bff;font-style:italic;text-decoration:underline;cursor:pointer}.sommaire-lecon a:hover{color:#cf9dff}
+.doc-lecon.edition .sommaire-lecon{padding:8px 10px;border:1px dashed color-mix(in srgb,#b06bff 50%,transparent);border-radius:8px;cursor:default}
+.groupe-lecons{margin:0 0 22px}.titre-groupe{display:flex;align-items:baseline;gap:10px;font-size:1.02rem;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--ligne)}.titre-groupe .doux{font-size:.78rem;font-weight:400}
+.barre-outils .o-sommaire{color:#b06bff}
 .doc-lecon.edition{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:22px;min-height:340px;outline:none}
 .doc-lecon.edition:focus{border-color:var(--accent)}
 .doc-lecon.edition .img-doc{cursor:pointer}
@@ -3817,7 +3832,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.70";
+const VERSION_SITE = "0.71";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4396,6 +4411,36 @@ function toutesSeries(){
 }
 const seriesDe = m => toutesSeries().filter(s => s.matiere === m);
 
+/* ----- Titre fixe (rouge), groupes, auteur et sommaire interactif ----- */
+const NOMS_LONGS_MATIERES = {maths: "Mathématiques"};
+const nomLongMatiere = id => NOMS_LONGS_MATIERES[id] || nomMatiere(id);
+const titreFixe = l => { const t = String(l.titre || "").trim() || "Sans titre"; return `${nomLongMatiere(l.matiere)}${String(l.groupe || "").trim() ? " - " + l.groupe.trim() : ""} : ${t}${/[.!?…:]$/.test(t) ? "" : "."}`; };
+const htmlTitreFixe = l => `<p class="titre-fixe-lecon">${esc(titreFixe(l))}</p>`;
+function legendeAuteur(l){
+  const auteur = l.auteur || (l.integree && !l.modifiee ? "Studio Nφonda" : l.modifiePar || "Studio Nφonda");
+  const date = l.majLe ? dateFr(String(l.majLe).slice(0, 10)) : "";
+  return `Leçon rédigée par ${esc(auteur)}${l.modifiePar && l.modifiePar !== auteur ? ` · modifiée par ${esc(l.modifiePar)}` : ""}${date ? ` · dernière mise à jour le ${esc(date)}` : ""}`;
+}
+const htmlLegendeAuteur = l => `<p class="legende-auteur">${legendeAuteur(l)}</p>`;
+const groupesDe = m => [...new Set(leconsDe(m).map(l => String(l.groupe || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr"));
+// regroupe les leçons d'une matière par groupe (les leçons sans groupe à la fin)
+function parGroupes(ls){
+  const g = new Map(); ls.forEach(l => { const k = String(l.groupe || "").trim(); if (!g.has(k)) g.set(k, []); g.get(k).push(l); });
+  return [...g.entries()].sort((a, b) => !a[0] ? 1 : !b[0] ? -1 : a[0].localeCompare(b[0], "fr"));
+}
+// Sommaire : liste cliquable des parties (titres « § Partie ») du document
+function remplirSommaires(racine){
+  if (!racine || !racine.querySelectorAll) return;
+  racine.querySelectorAll(".sommaire-lecon").forEach(som => {
+    const doc = som.closest(".doc-lecon") || racine, parties = [...doc.querySelectorAll(".partie-lecon")];
+    parties.forEach((h, i) => { if (!h.id || !h.id.startsWith("partie-")) h.id = "partie-" + (i + 1) + "-" + Math.random().toString(36).slice(2, 6); });
+    som.innerHTML = parties.length ? `<ol>${parties.map(h => `<li><a href="#${h.id}" data-partie="${h.id}">${esc(h.textContent.trim().replace(/^\d+\s*[.)-]\s*/, "").replace(/\s*:\s*$/, ""))}</a></li>`).join("")}</ol>`
+      : `<p class="doux">Sommaire : transforme des lignes en titres de partie avec le bouton « § Partie » pour qu'elles apparaissent ici.</p>`;
+    som.querySelectorAll("[data-partie]").forEach(a => a.onclick = ev => { ev.preventDefault(); const h = doc.querySelector("#" + CSS.escape(a.dataset.partie)); if (!h) return;
+      h.scrollIntoView({behavior: "smooth", block: "start"}); h.classList.remove("partie-flash"); h.getBoundingClientRect(); h.classList.add("partie-flash"); });
+  });
+}
+
 /* ----- Nettoyage du HTML : seules les balises et styles de mise en forme sont gardés ----- */
 const BALISES_OK = new Set(["P","DIV","BR","SPAN","FONT","B","STRONG","I","EM","U","S","STRIKE","H1","H2","H3","UL","OL","LI","BLOCKQUOTE","FIGURE","IMG","FIGCAPTION","TABLE","THEAD","TBODY","TR","TH","TD","SUP","SUB"]);
 const STYLES_OK = ["color","background-color","font-family","font-size","font-weight","font-style","text-decoration","text-decoration-line","text-align","left","top","width"];
@@ -4418,7 +4463,7 @@ function nettoyerHtml(html){
             return STYLES_OK.includes(p.trim().toLowerCase()) && !/url\(|expression|javascript|[<>]/.test(val);
           }).join("; ");
           if (propre){ n.setAttribute("style", propre); garder = true; }
-        } else if (nom === "class") { const c = v.split(/\s+/).filter(x => /^(img-doc|obj-doc|tab-doc|mode-(flux|libre)|pos-(gauche|droite|centre)|t-(petite|moyenne|grande))$/.test(x)).join(" "); if (c){ n.setAttribute("class", c); garder = true; } }
+        } else if (nom === "class") { const c = v.split(/\s+/).filter(x => /^(img-doc|obj-doc|tab-doc|sommaire-lecon|partie-lecon|mode-(flux|libre)|pos-(gauche|droite|centre)|t-(petite|moyenne|grande))$/.test(x)).join(" "); if (c){ n.setAttribute("class", c); garder = true; } }
         else if (n.tagName === "IMG" && nom === "data-asset") garder = /^[0-9a-f]{32}$/.test(v);
         else if (n.tagName === "IMG" && nom === "data-ref") garder = /^i-[a-z0-9]+$/.test(v);
         else if (n.tagName === "IMG" && nom === "alt") garder = true;
@@ -4427,6 +4472,7 @@ function nettoyerHtml(html){
         if (!garder) n.removeAttribute(a.name);
       });
       if (n.tagName === "FIGURE" && n.hasAttribute("data-obj")){ n.textContent = ""; return; }
+      if (n.classList && n.classList.contains("sommaire-lecon")){ n.textContent = ""; return; }   // le sommaire est recalculé à l'affichage
     marcher(n);
     });
   };
@@ -4460,7 +4506,7 @@ function brancherPj(racine){
 /* ----- Miniature d'une leçon : le début de la page, réduit ----- */
 const miniLecon = (l, attr) => `<button type="button" class="mini-lecon" ${attr} title="Ouvrir « ${esc(l.titre)} »"><div class="mini-page" aria-hidden="true">
   <div class="mini-entete"><span class="mono">${esc(nomMatiere(l.matiere))} · Leçon</span><h2>${esc(l.titre)}</h2>${l.sousTitre ? `<p class="sous-titre-lecon">${esc(l.sousTitre)}</p>` : ""}</div>
-  <div class="doc-lecon">${nettoyerHtml(l.html)}</div></div></button>`;
+  <div class="doc-lecon">${htmlTitreFixe(l)}${nettoyerHtml(l.html)}</div></div></button>`;
 function ajusterMiniatures(racine){
   const pages = [...racine.querySelectorAll(".mini-page")];
   remplirImages(racine); remplirObjets(racine);
@@ -4473,11 +4519,12 @@ function ajusterMiniatures(racine){
 VUES.lecons = function vueLecons(){
   rafraichir = vueLecons;
   const ls = leconsDe(matiereActive);
-  zone().innerHTML = entete("Leçons", "Apprendre") + filtres() + (ls.length ? `
-    <div class="cartes-lecons">${ls.map(l => `
+  zone().innerHTML = entete("Leçons", "Apprendre") + filtres() + (ls.length ? parGroupes(ls).map(([g, l2]) => `
+    <section class="groupe-lecons"><h3 class="titre-groupe">${g ? esc(g) : "Autres leçons"}<span class="doux">${l2.length} leçon${l2.length > 1 ? "s" : ""}</span></h3>
+    <div class="cartes-lecons">${l2.map(l => `
       <div class="carte-lecon">${miniLecon(l, `data-l="${esc(l.id)}"`)}
         <div class="corps-lecon"><strong>${esc(l.titre)}</strong>${l.sousTitre ? `<span class="doux">${esc(l.sousTitre)}</span>` : ""}
-          <span class="etat ${prog.lecons[l.id] ? "fait" : ""}">${prog.lecons[l.id] ? "Lue" : "À lire"}</span></div></div>`).join("")}</div>` : `<div class="vide">Aucune leçon en ${nomMatiere(matiereActive)} pour le moment.</div>`);
+          <span class="etat ${prog.lecons[l.id] ? "fait" : ""}">${prog.lecons[l.id] ? "Lue" : "À lire"}</span></div></div>`).join("")}</div></section>`).join("") : `<div class="vide">Aucune leçon en ${nomMatiere(matiereActive)} pour le moment.</div>`);
   brancherFiltres(vueLecons);
   ajusterMiniatures(zone());
   zone().querySelectorAll("[data-l]").forEach(b => b.onclick = () => lireLecon(ls.find(l => l.id === b.dataset.l)));
@@ -4488,7 +4535,7 @@ function lireLecon(l){
   zone().innerHTML = `<button type="button" class="retour" id="retour">← ${nomMatiere(l.matiere)}</button>
     ${entete(nomMatiere(l.matiere) + " · Leçon", esc(l.titre))}
     ${l.sousTitre ? `<p class="sous-titre-lecon">${esc(l.sousTitre)}</p>` : ""}
-    <article class="bloc"><div class="doc-lecon">${nettoyerHtml(l.html)}</div></article>
+    <article class="bloc"><div class="doc-lecon">${htmlTitreFixe(l)}${nettoyerHtml(l.html)}</div>${htmlLegendeAuteur(l)}</article>
     ${(l.pj || []).length ? `<div class="bloc"><span class="mono">Pièces jointes</span><div class="rangee">${l.pj.map(lienPj).join("")}</div></div>` : ""}
     <div class="rangee">
       ${prog.lecons[l.id] ? `<span class="etat fait">Leçon lue</span>` : `<button class="btn" type="button" id="compris">Marquer comme lue (+10)</button>`}
@@ -4508,11 +4555,11 @@ VUES["g-lecons"] = function vueGLecons(){
   const ls = leconsDe(matiereActive);
   zone().innerHTML = entete("Gérant", "Leçons", `<button class="btn" type="button" id="nouvelle">Nouvelle leçon</button>`) + filtres() + `
     <p id="statut" class="statut" role="status"></p>
-    ${ls.length ? `<div class="cartes-lecons">${ls.map(l => `
+    ${ls.length ? parGroupes(ls).map(([g, l2]) => `<section class="groupe-lecons"><h3 class="titre-groupe">${g ? esc(g) : "Sans groupe"}<span class="doux">${l2.length} leçon${l2.length > 1 ? "s" : ""}</span></h3><div class="cartes-lecons">${l2.map(l => `
       <div class="carte-lecon">${miniLecon(l, `data-modif="${esc(l.id)}"`)}
         <div class="corps-lecon"><strong>${esc(l.titre)}</strong><span class="doux">${l.integree ? (l.modifiee ? "Leçon de départ, modifiée" : "Leçon de départ") : "Ajoutée"}${(l.pj || []).length ? ` · ${l.pj.length} pièce${l.pj.length > 1 ? "s" : ""} jointe${l.pj.length > 1 ? "s" : ""}` : ""}</span>
           <span class="rangee"><button type="button" class="mini-btn" data-modif="${esc(l.id)}">Modifier</button><button type="button" class="mini-btn danger" data-suppr="${esc(l.id)}">Supprimer</button></span></div>
-      </div>`).join("")}</div>` : `<div class="vide">Aucune leçon en ${nomMatiere(matiereActive)}. Clique sur « Nouvelle leçon » pour en écrire une.</div>`}`;
+      </div>`).join("")}</div></section>`).join("") : `<div class="vide">Aucune leçon en ${nomMatiere(matiereActive)}. Clique sur « Nouvelle leçon » pour en écrire une.</div>`}`;
   brancherFiltres(vueGLecons);
   ajusterMiniatures(zone());
   $("#nouvelle").onclick = () => ouvrirEditeur(null);
@@ -4531,7 +4578,8 @@ const TAILLES = [["2","Petit"],["3","Normal"],["4","Moyen"],["5","Grand"],["6","
 let ed = null;
 function ouvrirEditeur(l){
   rafraichir = null;
-  ed = {id: l ? l.id : null, integree: l ? !!l.integree : false, matiere: l ? l.matiere : matiereActive, titre: l ? l.titre : "", sousTitre: l ? l.sousTitre || "" : "",
+  ed = {id: l ? l.id : null, integree: l ? !!l.integree : false, modifiee: l ? !!l.modifiee : false, matiere: l ? l.matiere : matiereActive, titre: l ? l.titre : "", sousTitre: l ? l.sousTitre || "" : "",
+        groupe: l ? l.groupe || "" : "", auteur: l ? l.auteur || "" : "", modifiePar: l ? l.modifiePar || "" : "", majLe: l ? l.majLe || "" : "",
         html: l ? l.html : "<p></p>", pj: l ? structuredClone(l.pj || []) : [], nouveaux: [], img: null};
   dessinerEditeur();
 }
@@ -4540,7 +4588,8 @@ function dessinerEditeur(){
     <div class="bloc">
       <div class="grille-form">
         <div class="champ"><label for="ed-matiere">Matière</label><select id="ed-matiere">${MATIERES.map(m => `<option value="${m.id}" ${m.id === ed.matiere ? "selected" : ""}>${m.nom}</option>`).join("")}</select></div>
-        <div class="champ" style="grid-column:span 2"><label for="ed-titre">Titre</label><input id="ed-titre" type="text" maxlength="120" value="${esc(ed.titre)}"></div>
+        <div class="champ"><label for="ed-groupe">Groupe</label><input id="ed-groupe" type="text" maxlength="80" value="${esc(ed.groupe)}" list="ed-groupes" placeholder="Ex. : Arithmétique niveau 3ème"><datalist id="ed-groupes">${groupesDe(ed.matiere).map(g => `<option value="${esc(g)}">`).join("")}</datalist></div>
+        <div class="champ"><label for="ed-titre">Titre</label><input id="ed-titre" type="text" maxlength="120" value="${esc(ed.titre)}"></div>
         <div class="champ" style="grid-column:1 / -1"><label for="ed-sous">Sous-titre</label><input id="ed-sous" type="text" maxlength="160" value="${esc(ed.sousTitre)}" placeholder="Facultatif"></div>
       </div>
     </div>
@@ -4565,6 +4614,9 @@ function dessinerEditeur(){
         <button type="button" data-cmd="insertOrderedList" title="Liste numérotée" aria-label="Liste numérotée">1. ≡</button>
         <button type="button" data-cmd="justifyCenter" title="Centrer" aria-label="Centrer">≡</button>
         <button type="button" data-cmd="removeFormat" title="Effacer la mise en forme" aria-label="Effacer la mise en forme">Tx</button>
+        <span class="sep"></span>
+        <button type="button" id="o-partie" title="Faire de la ligne un titre de partie (il apparaîtra dans le sommaire)">§ Partie</button>
+        <button type="button" id="o-sommaire" title="Insérer un sommaire cliquable des parties" class="o-sommaire">☰ Sommaire</button>
         <span class="sep"></span>
         <button type="button" id="o-tableau" title="Insérer un tableau">▦ Tableau</button>
         <button type="button" id="o-graphe" title="Insérer un graphique">📊 Graphique</button>
@@ -4597,14 +4649,22 @@ function dessinerEditeur(){
         ${segment("obj-taille", [["petite","Petite"],["moyenne","Moyenne"],["grande","Grande"]], "moyenne")}
         <button type="button" class="mini-btn danger" id="obj-suppr">Retirer</button>
       </div>
+      <div class="cadre-edition"><p class="titre-fixe-lecon" id="ed-titre-fixe" title="Titre automatique : matière, groupe et titre de la leçon (il ne peut pas être supprimé)">${esc(titreFixe(ed))}</p>
       <div class="doc-lecon edition" id="doc" contenteditable="true" spellcheck="true" lang="fr">${nettoyerHtml(ed.html)}</div>
+      <p class="legende-auteur" id="ed-legende">${legendeAuteur({...ed, auteur: ed.auteur || (ed.integree && !ed.modifiee ? "Studio Nφonda" : (profil && profil.pseudo) || "Studio Nφonda"), modifiePar: (profil && profil.pseudo) || ed.modifiePar, majLe: new Date().toISOString()})}</p></div>
       <p class="doux" style="font-size:.82rem">« Avec le texte » : le texte s'écarte autour de l'image. « Par-dessus le texte » : l'image se pose où tu veux, en la faisant glisser, sans déplacer le texte.</p>
     </div>
     <div class="bloc"><span class="mono">Pièces jointes</span><div class="rangee" id="liste-pj"></div></div>
     <p id="statut" class="statut" role="status"></p>
     <div class="rangee"><button class="btn" type="button" id="enregistrer">Enregistrer la leçon</button><button class="btn sec" type="button" id="annuler">Annuler</button></div>`;
   const doc = $("#doc");
-  doc.querySelectorAll("figure.img-doc, figure.obj-doc").forEach(f => f.contentEditable = "false");
+  doc.querySelectorAll("figure.img-doc, figure.obj-doc, .sommaire-lecon").forEach(f => f.contentEditable = "false");
+  // titre fixe : se met à jour avec la matière, le groupe et le titre
+  const majTitreFixe = () => { $("#ed-titre-fixe").textContent = titreFixe({matiere: $("#ed-matiere").value, groupe: $("#ed-groupe").value, titre: $("#ed-titre").value}); };
+  ["#ed-matiere", "#ed-groupe", "#ed-titre"].forEach(id => $(id).addEventListener("input", majTitreFixe));
+  $("#ed-matiere").addEventListener("change", () => { majTitreFixe(); $("#ed-groupes").innerHTML = groupesDe($("#ed-matiere").value).map(g => `<option value="${esc(g)}">`).join(""); });
+  // le sommaire suit les parties pendant qu'on écrit
+  let minuteSom = null; doc.addEventListener("input", () => { clearTimeout(minuteSom); minuteSom = setTimeout(() => remplirSommaires(doc), 400); });
   remplirImages(doc); remplirObjets(doc);
   try { document.execCommand("styleWithCSS", false, true); } catch {}
   let selection = null;
@@ -4625,6 +4685,15 @@ function dessinerEditeur(){
   $("#o-symb").onclick = () => ouvrirSymboles($("#o-symb"), sym => cmd("insertText", sym));
   // ----- Tableaux -----
   const insererHtml = html => { rendre(); document.execCommand("insertHTML", false, html); garder(); };
+  // ----- Parties et sommaire -----
+  $("#o-partie").onmousedown = $("#o-sommaire").onmousedown = ev => ev.preventDefault();
+  $("#o-partie").onclick = () => {
+    rendre(); const s = getSelection(); let n = s.anchorNode; while (n && n !== doc && !(n.nodeType === 1 && /^(P|DIV|H1|H2|H3|LI)$/.test(n.tagName))) n = n.parentNode;
+    if (n && n !== doc && n.classList && n.classList.contains("partie-lecon")){ document.execCommand("formatBlock", false, "p"); }
+    else { document.execCommand("formatBlock", false, "h3"); let h = getSelection().anchorNode; while (h && h !== doc && h.tagName !== "H3") h = h.parentNode; if (h && h !== doc) h.classList.add("partie-lecon"); }
+    garder(); remplirSommaires(doc);
+  };
+  $("#o-sommaire").onclick = () => { insererHtml(`<div class="sommaire-lecon" contenteditable="false"></div><p><br></p>`); remplirSommaires(doc); };
   $("#o-tableau").onmousedown = ev => { ev.preventDefault(); garder(); };
   $("#o-tableau").onclick = () => {
     if ($("#pop-tableau")){ $("#pop-tableau").remove(); return; }
@@ -4783,11 +4852,14 @@ function dessinerEditeur(){
     if (!titre){ statut("Donne un titre à la leçon."); $("#ed-titre").focus(); return; }
     doc.querySelectorAll("figure.img-doc, figure.obj-doc").forEach(f => f.removeAttribute("contenteditable"));
     doc.querySelectorAll("figure.obj-doc").forEach(f => { f.classList.remove("choisie"); f.textContent = ""; });
+    doc.querySelectorAll(".sommaire-lecon").forEach(f => { f.textContent = ""; f.removeAttribute("contenteditable"); });
+    doc.querySelectorAll(".partie-lecon").forEach(h => h.removeAttribute("id"));
     doc.querySelectorAll("img").forEach(i => i.removeAttribute("src"));
     const html = nettoyerHtml(doc.innerHTML);
     const id = ed.id || nouvelId("l"), btn = $("#enregistrer"); btn.disabled = true; statut("Enregistrement…", true);
     try {
-      await db.doc("lecons/" + id).set({matiere: $("#ed-matiere").value, titre, sousTitre: $("#ed-sous").value.trim(), html, pj: ed.pj, majLe: new Date().toISOString()});
+      const moiPseudo = (profil && profil.pseudo) || "Studio Nφonda", auteur = ed.auteur || (ed.integree && !ed.modifiee ? "Studio Nφonda" : moiPseudo);
+      await db.doc("lecons/" + id).set({matiere: $("#ed-matiere").value, groupe: $("#ed-groupe").value.trim().slice(0, 80), titre, sousTitre: $("#ed-sous").value.trim(), html, pj: ed.pj, auteur, modifiePar: moiPseudo, majLe: new Date().toISOString()});
       matiereActive = $("#ed-matiere").value; ed = null; Formes.succes(); changerVue("g-lecons"); statut("Leçon enregistrée.", true);
     } catch (err){ statut(erreurEcriture(err)); btn.disabled = false; remplirImages(doc); remplirObjets(doc); Formes.echec(); }
   };
@@ -5027,6 +5099,7 @@ const encoderObjet = o => encodeURIComponent(JSON.stringify(o));
 const lireObjet = v => { try { return JSON.parse(decodeURIComponent(v)); } catch { return null; } };
 const svgObjet = o => !o ? "" : o.kind === "module" ? rendreModule(o) : o.kind === "geo" ? svgGeo(o) : o.kind === "forme" ? svgForme(o) : svgGraphique(o);
 function remplirObjets(racine){
+  if (typeof remplirSommaires === "function") remplirSommaires(racine);
   racine.querySelectorAll("figure.obj-doc[data-obj], div.obj-doc[data-obj]").forEach(async f => {
     const r = svgObjet(lireObjet(f.dataset.obj));
     if (typeof r === "string"){ f.innerHTML = r; if (typeof brancherTransitions === "function") brancherTransitions(f); return; }
