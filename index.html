@@ -435,6 +435,12 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .fm-champ:focus-within{border-color:color-mix(in srgb,var(--accent) 70%,transparent);outline:none;background:color-mix(in srgb,var(--surface) 55%,transparent)}
 .fm-champ::part(menu-toggle){display:none}.fm-champ::part(virtual-keyboard-toggle){display:none}.fm-bloc.actif .fm-champ::part(virtual-keyboard-toggle){display:flex;color:var(--doux)}
 .fm-pied{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.fm-aide{font-size:.78rem;color:var(--doux)}.fm-aide b{color:var(--texte)}
+.btn-brouillon{font:600 .8rem var(--f-texte);padding:5px 12px;border-radius:999px;border:1.5px solid var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);cursor:pointer}
+.btn-brouillon:hover,.btn-brouillon.actif{background:var(--accent);color:#111}
+.panneau-brouillon{position:fixed;right:16px;bottom:16px;z-index:8000;width:min(600px,calc(100% - 32px));max-height:calc(100vh - 32px);overflow:auto;padding:14px;border-radius:16px;background:var(--surface);border:1.5px solid var(--accent);box-shadow:0 18px 50px rgba(0,0,0,.6);animation:relance-entre .25s ease-out}
+.panneau-brouillon[hidden]{display:none}
+.pb-fermer{position:absolute;top:8px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte);font-size:1.1rem;cursor:pointer;z-index:2}.pb-fermer:hover{border-color:var(--accent)}
+.panneau-brouillon .fm-page{min-height:300px}
 .titre-fixe-lecon{color:#ff5c5c;font-size:1.08rem;font-weight:600;margin:0 0 .8em;user-select:text}
 .legende-auteur{margin:14px 0 0;padding-top:10px;border-top:1px solid var(--ligne);color:var(--doux);opacity:.75;font-size:.8rem;font-style:italic}
 .cadre-edition{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:22px 22px 14px}
@@ -2091,55 +2097,55 @@ const repNum = v => [fr(v), String(v), String(v).replace(".", ",")];
 const GENERATEURS = [
   /* ===== DNB · Maths ===== */
   ["dnb","maths", () => { const p = alea(4, 40) * 5, t = prendre([10, 15, 20, 25, 30, 40]), n = p * (1 - t / 100);
-    return qcm({q: `Un article coûte ${p} €. Il est soldé à −${t} %. Quel est son nouveau prix ?`, exp: `${p} × (1 − ${t}/100) = ${p} × ${fr(1 - t / 100)} = ${fr(n)} €.`}, fr(n) + " €", [fr(p - t) + " €", fr(p * t / 100) + " €", fr(p * (1 + t / 100)) + " €", fr(n + 5) + " €"]); }],
+    return qcm({q: `Un article coûte ${p} €. Il est soldé à −${t} %. Quel est son prix après la réduction ?`, exp: `${p} × (1 − ${t}/100) = ${p} × ${fr(1 - t / 100)} = ${fr(n)} €.`}, fr(n) + " €", [fr(p - t) + " €", fr(p * t / 100) + " €", fr(p * (1 + t / 100)) + " €", fr(n + 5) + " €"]); }],
   ["dnb","maths", () => { const t1 = prendre([10, 20, 25, 50]), t2 = prendre([10, 20, 25, 50]), c = (1 + t1 / 100) * (1 - t2 / 100);
-    return qcm({q: `Un prix augmente de ${t1} %, puis baisse de ${t2} %. Par quel nombre le prix initial est-il multiplié ?`, exp: `${fr(1 + t1 / 100)} × ${fr(1 - t2 / 100)} = ${fr(c, 4)}.`}, fr(c, 4), [fr(1 + (t1 - t2) / 100, 4), fr((1 + t1 / 100) + (1 - t2 / 100), 4), "1", fr(1 - (t1 + t2) / 100, 4)]); }],
+    return qcm({q: `Un prix augmente de ${t1} %, puis baisse de ${t2} %. Par quel nombre (coefficient multiplicateur global) le prix initial est-il multiplié ?`, exp: `${fr(1 + t1 / 100)} × ${fr(1 - t2 / 100)} = ${fr(c, 4)}.`}, fr(c, 4), [fr(1 + (t1 - t2) / 100, 4), fr((1 + t1 / 100) + (1 - t2 / 100), 4), "1", fr(1 - (t1 + t2) / 100, 4)]); }],
   ["dnb","maths", () => { const [a, b, c] = prendre([[3,4,5],[5,12,13],[8,15,17],[7,24,25],[6,8,10],[9,12,15],[20,21,29]]), k = prendre([1, 1, 2, 3]);
-    return {q: `ABC est rectangle en A avec AB = ${a * k} cm et AC = ${b * k} cm. Combien mesure BC (en cm) ?`, rep: repNum(c * k), exp: `Pythagore : BC² = ${a * k}² + ${b * k}² = ${(c * k) ** 2}, donc BC = ${c * k} cm.`, fig: {type: "schema", nom: "triangle", a: a * k + " cm", b: b * k + " cm", c: "?", s: ["A","B","C"]}}; }],
+    return {q: `Le triangle ABC est rectangle en A, avec AB = ${a * k} cm et AC = ${b * k} cm. Calcule la longueur BC (l'hypoténuse), en cm. Écris seulement le nombre.`, rep: repNum(c * k), exp: `Pythagore : BC² = ${a * k}² + ${b * k}² = ${(c * k) ** 2}, donc BC = ${c * k} cm.`, fig: {type: "schema", nom: "triangle", a: a * k + " cm", b: b * k + " cm", c: "?", s: ["A","B","C"]}}; }],
   ["dnb","maths", () => { const [a, b, c] = prendre([[3,4,5],[5,12,13],[8,15,17],[6,8,10],[9,40,41]]);
-    return {q: `Dans un triangle rectangle, l'hypoténuse mesure ${c} cm et un côté de l'angle droit ${a} cm. Combien mesure l'autre côté (en cm) ?`, rep: repNum(b), exp: `${c}² − ${a}² = ${c * c - a * a} = ${b}², donc ${b} cm.`}; }],
+    return {q: `Dans un triangle rectangle, l'hypoténuse mesure ${c} cm et un des côtés de l'angle droit mesure ${a} cm. Calcule la longueur du troisième côté, en cm. Écris seulement le nombre.`, rep: repNum(b), exp: `${c}² − ${a}² = ${c * c - a * a} = ${b}², donc ${b} cm.`}; }],
   ["dnb","maths", () => { const k = prendre([2, 3, 4, 5]), am = alea(2, 6), an = alea(2, 7);
-    return {q: `(MN) // (BC), M sur [AB], N sur [AC]. AM = ${am} cm, AB = ${am * k} cm et AN = ${an} cm. Combien mesure AC (en cm) ?`, rep: repNum(an * k), exp: `Thalès : AM/AB = AN/AC, soit ${am}/${am * k} = ${an}/AC, donc AC = ${an * k} cm.`}; }],
+    return {q: `(MN) // (BC), M sur [AB], N sur [AC]. AM = ${am} cm, AB = ${am * k} cm et AN = ${an} cm. Calcule la longueur AC en cm avec le théorème de Thalès. Écris seulement le nombre.`, rep: repNum(an * k), exp: `Thalès : AM/AB = AN/AC, soit ${am}/${am * k} = ${an}/AC, donc AC = ${an * k} cm.`}; }],
   ["dnb","maths", () => { const a = prendre([2, 3, 4, 5, 6, 7]), x = alea(-9, 12), b = alea(-15, 15), c = a * x + b;
-    return {q: `Résoudre : ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${c}. Que vaut x ?`, rep: repNum(x), exp: `${a}x = ${c} ${b < 0 ? "+" : "−"} ${Math.abs(b)} = ${a * x}, donc x = ${x}.`}; }],
+    return {q: `Résous l'équation ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${c}. Écris seulement la valeur de x.`, rep: repNum(x), exp: `${a}x = ${c} ${b < 0 ? "+" : "−"} ${Math.abs(b)} = ${a * x}, donc x = ${x}.`}; }],
   ["dnb","maths", () => { const a = alea(1, 9), b = alea(1, 9), s = a + b, p = a * b;
-    return qcm({q: `Développer et réduire (x + ${a})(x + ${b}).`, exp: `x² + ${b}x + ${a}x + ${p} = x² + ${s}x + ${p}.`}, `x² + ${s}x + ${p}`, [`x² + ${p}x + ${s}`, `x² + ${p}`, `2x + ${s}`, `x² + ${s}x + ${s}`]); }],
+    return qcm({q: `Développe et réduis l'expression (x + ${a})(x + ${b}). Quelle est la bonne forme réduite ?`, exp: `x² + ${b}x + ${a}x + ${p} = x² + ${s}x + ${p}.`}, `x² + ${s}x + ${p}`, [`x² + ${p}x + ${s}`, `x² + ${p}`, `2x + ${s}`, `x² + ${s}x + ${s}`]); }],
   ["dnb","maths", () => { const a = alea(2, 12);
-    return qcm({q: `Factoriser x² − ${a * a}.`, exp: `Identité a² − b² = (a − b)(a + b) avec b = ${a}.`}, `(x − ${a})(x + ${a})`, [`(x − ${a})²`, `(x + ${a})²`, `x(x − ${a * a})`, `(x − ${a * a})(x + 1)`]); }],
+    return qcm({q: `Factorise x² − ${a * a} (pense à l'identité a² − b² = (a − b)(a + b)).`, exp: `Identité a² − b² = (a − b)(a + b) avec b = ${a}.`}, `(x − ${a})(x + ${a})`, [`(x − ${a})²`, `(x + ${a})²`, `x(x − ${a * a})`, `(x − ${a * a})(x + 1)`]); }],
   ["dnb","maths", () => { const a = alea(2, 5), b = alea(-9, 9), x = alea(-4, 4), y = a * x * x + b;
-    return {q: `f(x) = ${a}x² ${b < 0 ? "−" : "+"} ${Math.abs(b)}. Calculer f(${x}).`, rep: repNum(y), exp: `${a} × (${x})² ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${a * x * x} ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${y}.`}; }],
+    return {q: `f(x) = ${a}x² ${b < 0 ? "−" : "+"} ${Math.abs(b)}. Calcule l'image de ${x} par f, c'est-à-dire f(${x}). Écris seulement le nombre.`, rep: repNum(y), exp: `${a} × (${x})² ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${a * x * x} ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${y}.`}; }],
   ["dnb","maths", () => { const a = alea(-5, 6) || 2, b = alea(-8, 8), x1 = alea(-3, 1), x2 = x1 + alea(1, 4);
-    return {q: `Une fonction affine f vérifie f(${x1}) = ${a * x1 + b} et f(${x2}) = ${a * x2 + b}. Quel est son coefficient directeur ?`, rep: repNum(a), exp: `(${a * x2 + b} − ${a * x1 + b}) / (${x2} − ${x1}) = ${a * (x2 - x1)} / ${x2 - x1} = ${a}.`}; }],
+    return {q: `Une fonction affine f vérifie f(${x1}) = ${a * x1 + b} et f(${x2}) = ${a * x2 + b}. Calcule son coefficient directeur a (a = différence des images ÷ différence des nombres). Écris seulement le nombre.`, rep: repNum(a), exp: `(${a * x2 + b} − ${a * x1 + b}) / (${x2} − ${x1}) = ${a * (x2 - x1)} / ${x2 - x1} = ${a}.`}; }],
   ["dnb","maths", () => { const n = Array.from({length: 5}, () => alea(6, 19)); const s = n.reduce((x, y) => x + y, 0); const m = s / 5;
-    return qcm({q: `Notes : ${n.join(" ; ")}. Quelle est la moyenne ?`, exp: `Somme ${s} ÷ 5 = ${fr(m)}.`}, fr(m), [fr(m + 1), fr([...n].sort((a, b) => a - b)[2]), fr(s / 4), fr(Math.max(...n) - Math.min(...n))]); }],
+    return qcm({q: `Voici 5 notes sur 20 : ${n.join(" ; ")}. Quelle est la moyenne de ces notes ?`, exp: `Somme ${s} ÷ 5 = ${fr(m)}.`}, fr(m), [fr(m + 1), fr([...n].sort((a, b) => a - b)[2]), fr(s / 4), fr(Math.max(...n) - Math.min(...n))]); }],
   ["dnb","maths", () => { const n = Array.from({length: 7}, () => alea(1, 30)); const t = [...n].sort((a, b) => a - b);
-    return {q: `Série : ${n.join(" ; ")}. Quelle est la médiane ?`, rep: repNum(t[3]), exp: `Rangée : ${t.join(" ; ")}. La 4e valeur sur 7 est ${t[3]}.`}; }],
+    return {q: `Voici une série de 7 valeurs : ${n.join(" ; ")}. Range-les dans l'ordre croissant et donne la médiane. Écris seulement le nombre.`, rep: repNum(t[3]), exp: `Rangée : ${t.join(" ; ")}. La 4e valeur sur 7 est ${t[3]}.`}; }],
   ["dnb","maths", () => { const n = Array.from({length: 6}, () => alea(2, 40)); const e = Math.max(...n) - Math.min(...n);
-    return {q: `Série : ${n.join(" ; ")}. Quelle est l'étendue ?`, rep: repNum(e), exp: `${Math.max(...n)} − ${Math.min(...n)} = ${e}.`}; }],
+    return {q: `Voici une série de valeurs : ${n.join(" ; ")}. Calcule son étendue (plus grande valeur − plus petite valeur). Écris seulement le nombre.`, rep: repNum(e), exp: `${Math.max(...n)} − ${Math.min(...n)} = ${e}.`}; }],
   ["dnb","maths", () => { const r = alea(2, 9), b = alea(2, 9), v = alea(1, 6), t = r + b + v;
-    return qcm({q: `Un sac contient ${r} boules rouges, ${b} bleues et ${v} vertes. On tire une boule au hasard. Probabilité qu'elle soit rouge ?`, exp: `${r} cas favorables sur ${t} : ${fraction(r, t)}.`}, fraction(r, t), [fraction(b, t), `${r}/${b + v}`, fraction(r, t + 1), `1/${r}`]); }],
+    return qcm({q: `Un sac contient ${r} boules rouges, ${b} bleues et ${v} vertes. On tire une boule au hasard. Quelle est la probabilité de tirer une boule rouge (fraction irréductible) ?`, exp: `${r} cas favorables sur ${t} : ${fraction(r, t)}.`}, fraction(r, t), [fraction(b, t), `${r}/${b + v}`, fraction(r, t + 1), `1/${r}`]); }],
   ["dnb","maths", () => { const r = alea(2, 10), h = alea(3, 20), v = Math.PI * r * r * h;
-    return qcm({q: `Volume d'un cylindre de rayon ${r} cm et de hauteur ${h} cm, arrondi au cm³ ?`, exp: `π × ${r}² × ${h} ≈ ${Math.round(v)} cm³.`}, Math.round(v) + " cm³", [Math.round(2 * Math.PI * r * h) + " cm³", Math.round(Math.PI * r * h) + " cm³", Math.round(v / 3) + " cm³", Math.round(Math.PI * 2 * r * 2 * r * h) + " cm³"]); }],
+    return qcm({q: `Quel est le volume d'un cylindre de rayon ${r} cm et de hauteur ${h} cm, arrondi au cm³ près ? (V = π × r² × h)`, exp: `π × ${r}² × ${h} ≈ ${Math.round(v)} cm³.`}, Math.round(v) + " cm³", [Math.round(2 * Math.PI * r * h) + " cm³", Math.round(Math.PI * r * h) + " cm³", Math.round(v / 3) + " cm³", Math.round(Math.PI * 2 * r * 2 * r * h) + " cm³"]); }],
   ["dnb","maths", () => { const g = prendre([6, 8, 9, 12, 14, 15, 18]), a = g * prendre([5, 7, 11, 13]), b = g * prendre([2, 3, 4]);
     const d = pgcd(a, b);
-    return {q: `On veut faire le plus grand nombre de paquets identiques avec ${a} billes rouges et ${b} billes bleues, en les utilisant toutes. Combien de paquets ?`, rep: repNum(d), exp: `C'est le PGCD de ${a} et ${b} : ${d} paquets.`}; }],
+    return {q: `On veut faire le plus grand nombre de paquets identiques avec ${a} billes rouges et ${b} billes bleues, en les utilisant toutes. Combien de paquets peut-on faire au maximum ? (Cherche le PGCD.) Écris seulement le nombre.`, rep: repNum(d), exp: `C'est le PGCD de ${a} et ${b} : ${d} paquets.`}; }],
   ["dnb","maths", () => { const f = [2, 2, 3, 3, 5, 7].sort(() => Math.random() - .5).slice(0, alea(3, 4)).sort((a, b) => a - b), n = f.reduce((a, b) => a * b, 1);
     const ecrit = t => { const c = {}; t.forEach(x => c[x] = (c[x] || 0) + 1); return Object.entries(c).map(([p, e]) => e > 1 ? `${p}${e === 2 ? "²" : "³"}` : p).join(" × "); };
     return qcm({q: `Quelle est la décomposition en facteurs premiers de ${n} ?`, exp: `${n} = ${f.join(" × ")} = ${ecrit(f)}.`}, ecrit(f), [ecrit([...f.slice(1), 4].sort()), `${f[0]} × ${n / f[0]}`, ecrit([...f, 2]), `${n / 2} × 2`]); }],
   ["dnb","maths", () => { const v = prendre([36, 54, 72, 90, 108, 126]);
-    return qcm({q: `Convertir ${v} km/h en m/s.`, exp: `${v} ÷ 3,6 = ${fr(v / 3.6)} m/s.`}, fr(v / 3.6) + " m/s", [fr(v * 3.6) + " m/s", fr(v / 60) + " m/s", fr(v / 1.6) + " m/s"]); }],
+    return qcm({q: `Convertis ${v} km/h en m/s (1 km = 1 000 m et 1 h = 3 600 s).`, exp: `${v} ÷ 3,6 = ${fr(v / 3.6)} m/s.`}, fr(v / 3.6) + " m/s", [fr(v * 3.6) + " m/s", fr(v / 60) + " m/s", fr(v / 1.6) + " m/s"]); }],
   ["dnb","maths", () => { const d = alea(12, 90) * 5, h = prendre([1.5, 2, 2.5, 3, 4, 5]);
-    return qcm({q: `Une voiture parcourt ${d} km en ${fr(h)} h. Quelle est sa vitesse moyenne ?`, exp: `v = d / t = ${d} / ${fr(h)} = ${fr(d / h)} km/h.`}, fr(d / h) + " km/h", [fr(d * h) + " km/h", fr(d / h / 60) + " km/h", fr(d / (h + 1)) + " km/h"]); }],
+    return qcm({q: `Une voiture parcourt ${d} km en ${fr(h)} h. Quelle est sa vitesse moyenne, en km/h ?`, exp: `v = d / t = ${d} / ${fr(h)} = ${fr(d / h)} km/h.`}, fr(d / h) + " km/h", [fr(d * h) + " km/h", fr(d / h / 60) + " km/h", fr(d / (h + 1)) + " km/h"]); }],
   ["dnb","maths", () => { const ang = prendre([30, 35, 40, 50, 60]), h = alea(5, 20), a = h * Math.cos(ang * Math.PI / 180);
-    return qcm({q: `Triangle ABC rectangle en B, BÂC = ${ang}° et AC = ${h} cm. Longueur AB, arrondie au dixième ?`, exp: `cos(${ang}°) = AB/AC donc AB = ${h} × cos(${ang}°) ≈ ${fr(a, 1)} cm.`}, fr(a, 1) + " cm", [fr(h * Math.sin(ang * Math.PI / 180), 1) + " cm", fr(h * Math.tan(ang * Math.PI / 180), 1) + " cm", fr(h / Math.cos(ang * Math.PI / 180), 1) + " cm"]); }],
+    return qcm({q: `Triangle ABC rectangle en B, BÂC = ${ang}° et AC = ${h} cm. Calcule la longueur AB, arrondie au dixième de cm (utilise le cosinus).`, exp: `cos(${ang}°) = AB/AC donc AB = ${h} × cos(${ang}°) ≈ ${fr(a, 1)} cm.`}, fr(a, 1) + " cm", [fr(h * Math.sin(ang * Math.PI / 180), 1) + " cm", fr(h * Math.tan(ang * Math.PI / 180), 1) + " cm", fr(h / Math.cos(ang * Math.PI / 180), 1) + " cm"]); }],
   ["dnb","maths", () => { const m = alea(11, 99) / 10, e = alea(3, 9), n = m * 10 ** e;
-    return qcm({q: `Quelle est l'écriture scientifique de ${Math.round(n).toLocaleString("fr-FR")} ?`, exp: `${fr(m)} × 10^${e}.`}, `${fr(m)} × 10^${e}`, [`${fr(m)} × 10^${e + 1}`, `${fr(m * 10)} × 10^${e - 1}`, `${fr(m)} × 10^${e - 1}`]); }],
+    return qcm({q: `Quelle est l'écriture scientifique (a × 10ⁿ avec 1 ≤ a < 10) de ${Math.round(n).toLocaleString("fr-FR")} ?`, exp: `${fr(m)} × 10^${e}.`}, `${fr(m)} × 10^${e}`, [`${fr(m)} × 10^${e + 1}`, `${fr(m * 10)} × 10^${e - 1}`, `${fr(m)} × 10^${e - 1}`]); }],
   ["dnb","maths", () => { const k = prendre([2, 3, 4, 0.5]), a = alea(3, 20);
-    return qcm({q: `On agrandit (ou réduit) une figure d'aire ${a} cm² à l'échelle ${fr(k)}. Quelle est la nouvelle aire ?`, exp: `Les aires sont multipliées par k² = ${fr(k * k)} : ${fr(a * k * k)} cm².`}, fr(a * k * k) + " cm²", [fr(a * k) + " cm²", fr(a * k * k * k) + " cm²", fr(a + k) + " cm²"]); }],
+    return qcm({q: `On agrandit (ou réduit) une figure d'aire ${a} cm² à l'échelle ${fr(k)}. Quelle est l'aire de la nouvelle figure ? (Les aires sont multipliées par k².)`, exp: `Les aires sont multipliées par k² = ${fr(k * k)} : ${fr(a * k * k)} cm².`}, fr(a * k * k) + " cm²", [fr(a * k) + " cm²", fr(a * k * k * k) + " cm²", fr(a + k) + " cm²"]); }],
   ["dnb","maths", () => { const q1 = alea(2, 8), p1 = q1 * alea(2, 9) / 2, q2 = alea(9, 20);
-    return qcm({q: `${q1} cahiers coûtent ${fr(p1)} €. Combien coûtent ${q2} cahiers ?`, exp: `Prix d'un cahier : ${fr(p1 / q1)} €, donc ${q2} × ${fr(p1 / q1)} = ${fr(p1 / q1 * q2)} €.`}, fr(p1 / q1 * q2) + " €", [fr(p1 * q2) + " €", fr(p1 + q2 - q1) + " €", fr(p1 / q2 * q1) + " €"]); }],
+    return qcm({q: `${q1} cahiers coûtent ${fr(p1)} €. Combien coûtent ${q2} cahiers identiques ?`, exp: `Prix d'un cahier : ${fr(p1 / q1)} €, donc ${q2} × ${fr(p1 / q1)} = ${fr(p1 / q1 * q2)} €.`}, fr(p1 / q1 * q2) + " €", [fr(p1 * q2) + " €", fr(p1 + q2 - q1) + " €", fr(p1 / q2 * q1) + " €"]); }],
   ["dnb","maths", () => { const a = alea(1, 5), b = a + alea(1, 3), t = alea(3, 12) * (a + b);
-    return qcm({q: `On partage ${t} € entre deux personnes dans le ratio ${a} : ${b}. Combien reçoit la première ?`, exp: `${t} ÷ ${a + b} = ${t / (a + b)} € par part, donc ${a} × ${t / (a + b)} = ${a * t / (a + b)} €.`}, fr(a * t / (a + b)) + " €", [fr(b * t / (a + b)) + " €", fr(t / a) + " €", fr(t / 2) + " €"]); }],
+    return qcm({q: `On partage ${t} € entre deux personnes dans le ratio ${a} : ${b}. Combien d'euros reçoit la première personne ?`, exp: `${t} ÷ ${a + b} = ${t / (a + b)} € par part, donc ${a} × ${t / (a + b)} = ${a * t / (a + b)} €.`}, fr(a * t / (a + b)) + " €", [fr(b * t / (a + b)) + " €", fr(t / a) + " €", fr(t / 2) + " €"]); }],
   ["dnb","maths", () => { const n = prendre([51, 57, 87, 91, 119, 133, 143, 161, 221, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113]), pr = ![2,3,5,7,11,13].some(d => n % d === 0 && n !== d);
     const div = [3, 7, 11, 13, 17].find(d => n % d === 0);
     return qcm({q: `Le nombre ${n} est-il premier ?`, exp: pr ? `${n} n'a pas d'autre diviseur que 1 et lui-même.` : `${n} = ${div} × ${n / div}, il n'est pas premier.`}, pr ? "Oui" : "Non", [pr ? "Non" : "Oui"]); }],
@@ -2801,7 +2807,6 @@ Article 2. La langue de la République est le français. L'emblème national est
 DOCS_HGE.forEach(d => d.questions.forEach(x => BANQUE_REVISION.push({ex: "dnb", an: 0, mat: "hge", src: "Analyse de document", ctxTitre: d.titre, ctx: d.texte, ...x})));
 /* ===================== DNB · Maths : calculs à poser sur la page de brouillon (module « Brouillon de calcul ») =====================
    L'élève fait son calcul sur le brouillon quadrillé (fractions, racines, puissances…), puis écrit le résultat. */
-const BROUILLON = (lignes, consigne) => ({type: "module", module: {kind: "module", type: "fiche-maths", titre: "Brouillon", consigne: consigne || "Pose ton calcul ici (clique sur la grille), puis écris le résultat en dessous.", lignes, vides: 6, outils: true}});
 const sansEsp = s => String(s).replace(/\s+/g, "");
 // variantes acceptées pour une réponse : avec ou sans espaces, ² ou ^2, signe moins typographique
 const variantes = (...l) => [...new Set(l.flatMap(v => { const s = String(v); return [s, sansEsp(s), s.replace(/²/g, "^2"), sansEsp(s).replace(/²/g, "^2"), s.replace(/−/g, "-"), sansEsp(s).replace(/−/g, "-").replace(/²/g, "^2")]; }))];
@@ -2812,47 +2817,163 @@ const AVEC = q => ({...q, brouillon: true});
 GENERATEURS.push(
   ["dnb", "maths", () => { let b = alea(2, 9), d = alea(2, 9); while (d === b) d = alea(2, 9); let a = alea(1, b + 3), c = alea(1, d + 3); while (a % b === 0) a = alea(1, b + 3); while (c % d === 0) c = alea(1, d + 3); const op = Math.random() < .6 ? "+" : "−";
     const n = op === "+" ? a * d + c * b : a * d - c * b, r = frac(n, b * d);
-    return AVEC({q: `Calcule ${a}/${b} ${op} ${c}/${d} et donne le résultat sous forme de fraction irréductible.`, fig: BROUILLON(`${a}/${b} ${op === "+" ? "+" : "-"} ${c}/${d} =`), rep: variantes(r),
+    return AVEC({q: `Calcule ${a}/${b} ${op} ${c}/${d}. Donne le résultat sous forme de fraction irréductible, écrite avec une barre oblique (exemple : 7/12), ou un nombre entier si la fraction se simplifie complètement.`, brouillon: (`${a}/${b} ${op === "+" ? "+" : "-"} ${c}/${d} =`), rep: variantes(r),
       exp: `Même dénominateur ${b * d} : ${a * d}/${b * d} ${op} ${c * b}/${b * d} = ${n}/${b * d}${frac(n, b * d) !== `${n}/${b * d}` ? ` = ${r} après simplification` : ""}.`}); }],
   ["dnb", "maths", () => { const a = alea(1, 9), b = alea(2, 9), c = alea(1, 9), d = alea(2, 9), div = Math.random() < .45;
     const n = div ? a * d : a * c, de = div ? b * c : b * d, r = frac(n, de);
-    return AVEC({q: `Calcule ${a}/${b} ${div ? "÷" : "×"} ${c}/${d} (fraction irréductible).`, fig: BROUILLON(`${a}/${b} ${div ? "-:" : "xx"} ${c}/${d} =`), rep: variantes(r),
+    return AVEC({q: `Calcule ${a}/${b} ${div ? "÷" : "×"} ${c}/${d}. Donne le résultat sous forme de fraction irréductible (exemple : 5/8), ou un nombre entier si elle se simplifie complètement.`, brouillon: (`${a}/${b} ${div ? "-:" : "xx"} ${c}/${d} =`), rep: variantes(r),
       exp: div ? `Diviser, c'est multiplier par l'inverse : ${a}/${b} × ${d}/${c} = ${n}/${de} = ${r}.` : `On multiplie les numérateurs et les dénominateurs : ${n}/${de} = ${r}.`}); }],
   ["dnb", "maths", () => { const a = alea(2, 9), b = alea(2, 6), c = alea(3, 9), d = alea(1, c - 1), e = Math.random() < .5;
     const val = e ? a + b * (c - d) ** 2 : a * b - (c - d) ** 2;
-    return AVEC({q: `Calcule en respectant les priorités : ${e ? `${a} + ${b} × (${c} − ${d})²` : `${a} × ${b} − (${c} − ${d})²`}`, fig: BROUILLON(e ? `${a} + ${b} xx (${c} - ${d})^2 =` : `${a} xx ${b} - (${c} - ${d})^2 =`), rep: variantes(val),
+    return AVEC({q: `Calcule en respectant les priorités opératoires (parenthèses, puissances, multiplications, puis additions et soustractions). Écris seulement le résultat : ${e ? `${a} + ${b} × (${c} − ${d})²` : `${a} × ${b} − (${c} − ${d})²`}.`, brouillon: (e ? `${a} + ${b} xx (${c} - ${d})^2 =` : `${a} xx ${b} - (${c} - ${d})^2 =`), rep: variantes(val),
       exp: `D'abord les parenthèses (${c - d}), puis la puissance (${(c - d) ** 2}), puis la multiplication, enfin l'addition ou la soustraction : ${val}.`}); }],
   ["dnb", "maths", () => { const a = alea(-9, 9) || 3, b = alea(-9, 9) || -2, c = alea(2, 6), d = alea(-6, 6) || 4, val = a * b - c * d;
-    return AVEC({q: `Calcule : ${sg(a)} × ${sg(b)} − ${c} × ${sg(d)}`, fig: BROUILLON(`${sg(a)} xx ${sg(b)} - ${c} xx ${sg(d)} =`), rep: variantes(val),
+    return AVEC({q: `Calcule ${sg(a)} × ${sg(b)} − ${c} × ${sg(d)}. Attention aux signes. Écris seulement le résultat (exemple : −14).`, brouillon: (`${sg(a)} xx ${sg(b)} - ${c} xx ${sg(d)} =`), rep: variantes(val),
       exp: `${sg(a)} × ${sg(b)} = ${a * b} et ${c} × ${sg(d)} = ${c * d}, donc ${a * b} − ${sg(c * d)} = ${val}. Règle des signes : deux nombres de même signe donnent un produit positif.`}); }],
   ["dnb", "maths", () => { const [a, b, c] = prendre([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [7, 24, 25], [12, 16, 20]]);
-    return AVEC({q: `Calcule √(${a}² + ${b}²).`, fig: BROUILLON(`sqrt(${a}^2 + ${b}^2) =`), rep: variantes(c),
+    return AVEC({q: `Calcule √(${a}² + ${b}²). Le résultat est un nombre entier : écris-le seul.`, brouillon: (`sqrt(${a}^2 + ${b}^2) =`), rep: variantes(c),
       exp: `${a}² + ${b}² = ${a * a} + ${b * b} = ${c * c}, et √${c * c} = ${c}. C'est le calcul de l'hypoténuse avec le théorème de Pythagore.`}); }],
   ["dnb", "maths", () => { const m1 = alea(2, 9), e1 = alea(2, 6), m2 = alea(2, 4), e2 = -alea(1, 3), p = m1 * m2, e = e1 + e2;
     const val = p * 10 ** e;
-    return AVEC({q: `Calcule (${m1} × 10${["⁰","¹","²","³","⁴","⁵","⁶"][e1]}) × (${m2} × 10⁻${["","¹","²","³"][-e2]}) et donne le résultat en écriture décimale.`, fig: BROUILLON(`(${m1} xx 10^${e1}) xx (${m2} xx 10^(${e2})) =`),
+    return AVEC({q: `Calcule (${m1} × 10${["⁰","¹","²","³","⁴","⁵","⁶"][e1]}) × (${m2} × 10⁻${["","¹","²","³"][-e2]}) Donne le résultat en écriture décimale (exemple : 3,6 ou 2 400), sans puissance de 10.`, brouillon: (`(${m1} xx 10^${e1}) xx (${m2} xx 10^(${e2})) =`),
       rep: variantes(val, val.toLocaleString("fr-FR"), String(val).replace(/\B(?=(\d{3})+(?!\d))/g, " ")),
       exp: `${m1} × ${m2} = ${p} et 10^${e1} × 10^(${e2}) = 10^${e} (on additionne les exposants), donc ${p} × 10^${e} = ${val.toLocaleString("fr-FR")}.`}); }],
   ["dnb", "maths", () => { const x = alea(-6, 9), a = alea(2, 7), c = alea(1, a - 1), b = alea(-9, 9), d = (a - c) * x + b;
     const ecr = (k, s) => `${k === 1 ? "" : k}x ${s < 0 ? "−" : "+"} ${Math.abs(s)}`;
-    return AVEC({q: `Résous l'équation ${ecr(a, b)} = ${ecr(c, d)}. Que vaut x ?`, fig: BROUILLON(`${a}x ${b < 0 ? "-" : "+"} ${Math.abs(b)} = ${c === 1 ? "" : c}x ${d < 0 ? "-" : "+"} ${Math.abs(d)}`), rep: variantes(x, "x=" + x, "x = " + x),
+    return AVEC({q: `Résous l'équation ${ecr(a, b)} = ${ecr(c, d)}. Écris seulement la valeur de x (exemple : −3).`, brouillon: (`${a}x ${b < 0 ? "-" : "+"} ${Math.abs(b)} = ${c === 1 ? "" : c}x ${d < 0 ? "-" : "+"} ${Math.abs(d)}`), rep: variantes(x, "x=" + x, "x = " + x),
       exp: `On regroupe les x : ${a}x − ${c === 1 ? "" : c}x = ${d} − ${sg(b)}, soit ${a - c}x = ${d - b}, donc x = ${x}.`}); }],
   ["dnb", "maths", () => { const a = alea(2, 5), b = alea(1, 7), c = alea(1, 6), s = Math.random() < .5 ? 1 : -1;
     // (ax + b)(x + s·c) = a x² + (a·s·c + b) x + b·s·c
     const k1 = a, k2 = a * s * c + b, k3 = b * s * c, terme = (k, x) => (k < 0 ? " − " : " + ") + (Math.abs(k) === 1 && x ? "" : Math.abs(k)) + x;
     const r = `${k1}x²${k2 ? terme(k2, "x") : ""}${k3 ? terme(k3, "") : ""}`;
-    return AVEC({q: `Développe et réduis (${a}x + ${b})(x ${s > 0 ? "+" : "−"} ${c}).`, fig: BROUILLON(`(${a}x + ${b})(x ${s > 0 ? "+" : "-"} ${c}) =`), rep: variantes(r, r.replace(/ /g, "")),
+    return AVEC({q: `Développe et réduis (${a}x + ${b})(x ${s > 0 ? "+" : "−"} ${c}). Écris le résultat sous la forme ax² + bx + c, en commençant par le terme en x² (tu peux écrire x² ou x^2).`, brouillon: (`(${a}x + ${b})(x ${s > 0 ? "+" : "-"} ${c}) =`), rep: variantes(r, r.replace(/ /g, "")),
       exp: `Double distributivité : ${a}x × x + ${a}x × ${sg(s * c)} + ${b} × x + ${b} × ${sg(s * c)} = ${r}.`}); }],
   ["dnb", "maths", () => { const t = prendre([5, 10, 12, 15, 20, 25, 30, 40, 75]), n = alea(2, 30) * 20, val = n * t / 100;
-    return AVEC({q: `Calcule ${t} % de ${n}.`, fig: BROUILLON(`${t}/100 xx ${n} =`), rep: variantes(val, String(val).replace(".", ",")), exp: `${t} % de ${n} = ${t}/100 × ${n} = ${String(val).replace(".", ",")}.`}); }],
+    return AVEC({q: `Calcule ${t} % de ${n}. Écris seulement le nombre (avec une virgule s'il y a des décimales).`, brouillon: (`${t}/100 xx ${n} =`), rep: variantes(val, String(val).replace(".", ",")), exp: `${t} % de ${n} = ${t}/100 × ${n} = ${String(val).replace(".", ",")}.`}); }],
   ["dnb", "maths", () => { const d = prendre([3, 4, 5, 6, 8]), n = alea(1, d - 1), q = d * alea(3, 15), val = n * q / d;
-    return AVEC({q: `Combien font les ${n}/${d} de ${q} ?`, fig: BROUILLON(`${n}/${d} xx ${q} =`), rep: variantes(val), exp: `${q} ÷ ${d} = ${q / d}, puis × ${n} = ${val}.`}); }],
+    return AVEC({q: `Calcule les ${n}/${d} de ${q}. Écris seulement le nombre.`, brouillon: (`${n}/${d} xx ${q} =`), rep: variantes(val), exp: `${q} ÷ ${d} = ${q / d}, puis × ${n} = ${val}.`}); }],
   ["dnb", "maths", () => { const a = alea(2, 4), b = alea(-5, 5) || 1, c = alea(-6, 6), x = alea(-3, 3) || 2, val = a * x * x + b * x + c;
-    return AVEC({q: `Calcule ${a}x² ${b < 0 ? "−" : "+"} ${Math.abs(b)}x ${c < 0 ? "−" : "+"} ${Math.abs(c)} pour x = ${x}.`, fig: BROUILLON(`${a} xx ${sg(x)}^2 ${b < 0 ? "-" : "+"} ${Math.abs(b)} xx ${sg(x)} ${c < 0 ? "-" : "+"} ${Math.abs(c)} =`), rep: variantes(val),
+    return AVEC({q: `Calcule ${a}x² ${b < 0 ? "−" : "+"} ${Math.abs(b)}x ${c < 0 ? "−" : "+"} ${Math.abs(c)} pour x = ${x}. Remplace x par ${x} (attention au carré d'un nombre négatif) et écris seulement le résultat.`, brouillon: (`${a} xx ${sg(x)}^2 ${b < 0 ? "-" : "+"} ${Math.abs(b)} xx ${sg(x)} ${c < 0 ? "-" : "+"} ${Math.abs(c)} =`), rep: variantes(val),
       exp: `${a} × ${sg(x)}² = ${a * x * x} ; ${sg(b)} × ${sg(x)} = ${b * x} ; total : ${a * x * x} ${b * x < 0 ? "−" : "+"} ${Math.abs(b * x)} ${c < 0 ? "−" : "+"} ${Math.abs(c)} = ${val}. Attention : (${x})² est positif.`}); }],
   ["dnb", "maths", () => { const n = prendre([12, 18, 20, 27, 32, 45, 48, 50, 72, 75, 98, 125, 200]), k = [10, 9, 8, 7, 6, 5, 4, 3, 2].find(k => n % (k * k) === 0 && k > 1), r = n / (k * k);
-    return AVEC({q: `Écris √${n} sous la forme a√b, avec b le plus petit possible.`, fig: BROUILLON(`sqrt(${n}) = sqrt(${k * k} xx ${r}) =`), rep: variantes(`${k}√${r}`, `${k}sqrt(${r})`, `${k}racine${r}`, `${k} racine ${r}`),
+    return AVEC({q: `Écris √${n} sous la forme a√b, avec a et b entiers et b le plus petit possible. Écris ta réponse comme ceci : 3√2 (ou 3sqrt(2)).`, brouillon: (`sqrt(${n}) = sqrt(${k * k} xx ${r}) =`), rep: variantes(`${k}√${r}`, `${k}sqrt(${r})`, `${k}racine${r}`, `${k} racine ${r}`),
       exp: `${n} = ${k * k} × ${r}, donc √${n} = √${k * k} × √${r} = ${k}√${r}.`}); }]
+);
+
+/* ----- Nouvelles questions de maths (diversité), avec consignes précises ----- */
+const nbFr = (v, d = 2) => Number(v).toLocaleString("fr-FR", {maximumFractionDigits: d});
+const repN = (v, d = 2) => variantes(nbFr(v, d), String(Math.round(v * 10 ** d) / 10 ** d));
+GENERATEURS.push(
+  // pourcentage d'évolution
+  ["dnb", "maths", () => { const a = alea(4, 30) * 10, t = prendre([5, 10, 15, 20, 25, 30, 40, 50]), b = a * (1 + t / 100);
+    return AVEC({q: `Le prix d'un objet passe de ${a} € à ${nbFr(b)} €. De quel pourcentage a-t-il augmenté ? Écris seulement le nombre, sans le signe %.`, brouillon: `(${nbFr(b).replace(",", ".")} - ${a}) / ${a} xx 100 =`, rep: variantes(t),
+      exp: `Augmentation : ${nbFr(b)} − ${a} = ${nbFr(b - a)} €. Puis ${nbFr(b - a)} ÷ ${a} × 100 = ${t} %.`}); }],
+  // prix avant réduction
+  ["dnb", "maths", () => { const t = prendre([10, 20, 25, 30, 40, 50]), avant = alea(3, 30) * 20, apres = avant * (1 - t / 100);
+    return AVEC({q: `Après une réduction de ${t} %, un article coûte ${nbFr(apres)} €. Quel était son prix avant la réduction ? Donne le résultat en euros, sans écrire l'unité.`, brouillon: `${nbFr(apres).replace(",", ".")} / ${nbFr(1 - t / 100).replace(",", ".")} =`, rep: repN(avant),
+      exp: `Le prix réduit vaut ${nbFr(1 - t / 100)} fois le prix de départ, donc prix de départ = ${nbFr(apres)} ÷ ${nbFr(1 - t / 100)} = ${nbFr(avant)} €.`}); }],
+  // échelle de carte
+  ["dnb", "maths", () => { const e = prendre([10000, 20000, 25000, 50000, 100000]), d = alea(2, 24) / 2, km = d * e / 100000;
+    return AVEC({q: `Sur une carte à l'échelle 1/${e.toLocaleString("fr-FR")}, deux villages sont séparés de ${nbFr(d)} cm. Quelle est la distance réelle entre ces villages, en km ? Écris seulement le nombre.`, brouillon: `${String(d)} xx ${e} =`, rep: repN(km, 3),
+      exp: `${nbFr(d)} cm sur la carte = ${nbFr(d)} × ${e.toLocaleString("fr-FR")} = ${(d * e).toLocaleString("fr-FR")} cm en réalité, soit ${nbFr(km, 3)} km (1 km = 100 000 cm).`}); }],
+  // durée en heures décimales
+  ["dnb", "maths", () => { const h = alea(1, 4), q = prendre([.25, .5, .75, .1, .2, .3, .4, .6, .8, .9]), min = Math.round(q * 60);
+    return {q: `Convertis ${nbFr(h + q)} h en heures et minutes. Écris ta réponse sous la forme « ${h} h 15 min ».`, rep: variantes(`${h} h ${min} min`, `${h}h${min}min`, `${h}h${min}`, `${h} h ${min}`), brouillon: `${String(q)} xx 60 =`,
+      exp: `${nbFr(q)} h = ${nbFr(q)} × 60 min = ${min} min, donc ${nbFr(h + q)} h = ${h} h ${min} min. Attention : ${nbFr(h + q)} h ne fait pas ${h} h ${String(q).slice(2)} min !`}; }],
+  // distance = vitesse × temps
+  ["dnb", "maths", () => { const v = prendre([12, 15, 18, 20, 24, 30, 45, 60, 80, 90]), t = prendre([10, 15, 20, 30, 40, 45, 90]), d = v * t / 60;
+    return AVEC({q: `Un véhicule roule à la vitesse constante de ${v} km/h pendant ${t} minutes. Quelle distance parcourt-il, en km ? Écris seulement le nombre.`, brouillon: `${v} xx ${t}/60 =`, rep: repN(d),
+      exp: `${t} min = ${t}/60 h = ${nbFr(t / 60, 3)} h. Distance = vitesse × temps = ${v} × ${nbFr(t / 60, 3)} = ${nbFr(d)} km.`}); }],
+  // conversion de volumes
+  ["dnb", "maths", () => { const a = alea(2, 9), b = alea(2, 6), c = prendre([1, 1.5, 2]), v = a * b * c;
+    return AVEC({q: `Un bassin a la forme d'un pavé droit de ${a} m de long, ${b} m de large et ${nbFr(c)} m de profondeur. Combien de litres d'eau faut-il pour le remplir entièrement ? (1 m³ = 1 000 L.) Écris seulement le nombre.`, brouillon: `${a} xx ${b} xx ${c} =`,
+      rep: variantes(v * 1000, (v * 1000).toLocaleString("fr-FR")), exp: `Volume = ${a} × ${b} × ${nbFr(c)} = ${nbFr(v)} m³, soit ${(v * 1000).toLocaleString("fr-FR")} L.`}); }],
+  // aire d'un disque
+  ["dnb", "maths", () => { const r = alea(2, 15), a = Math.PI * r * r;
+    return AVEC({q: `Calcule l'aire d'un disque de rayon ${r} cm (A = π × r²). Donne le résultat arrondi au cm² près, sans écrire l'unité.`, brouillon: `pi xx ${r}^2 =`, rep: variantes(Math.round(a)),
+      exp: `A = π × ${r}² = ${r * r}π ≈ ${nbFr(a)} cm², soit ${Math.round(a)} cm² arrondi à l'unité.`}); }],
+  // périmètre d'un cercle
+  ["dnb", "maths", () => { const d = alea(3, 30), p = Math.PI * d;
+    return AVEC({q: `Un cercle a un diamètre de ${d} cm. Calcule son périmètre (P = π × diamètre), arrondi au dixième de cm. Écris seulement le nombre.`, brouillon: `pi xx ${d} =`, rep: repN(Math.round(p * 10) / 10, 1),
+      exp: `P = π × ${d} ≈ ${nbFr(p, 3)} cm, soit ${nbFr(Math.round(p * 10) / 10, 1)} cm au dixième.`}); }],
+  // volume d'une pyramide
+  ["dnb", "maths", () => { const c = alea(2, 10), h = 3 * alea(1, 6), v = c * c * h / 3;
+    return AVEC({q: `Une pyramide a pour base un carré de côté ${c} cm et pour hauteur ${h} cm. Calcule son volume en cm³ (V = aire de la base × hauteur ÷ 3). Écris seulement le nombre.`, brouillon: `${c}^2 xx ${h} / 3 =`, rep: variantes(v),
+      exp: `Aire de la base : ${c}² = ${c * c} cm². V = ${c * c} × ${h} ÷ 3 = ${v} cm³.`}); }],
+  // volume d'une boule
+  ["dnb", "maths", () => { const r = alea(2, 9), v = 4 / 3 * Math.PI * r ** 3;
+    return AVEC({q: `Calcule le volume d'une boule de rayon ${r} cm (V = 4/3 × π × r³). Donne le résultat arrondi au cm³ près, sans l'unité.`, brouillon: `4/3 xx pi xx ${r}^3 =`, rep: variantes(Math.round(v)),
+      exp: `V = 4/3 × π × ${r}³ = 4/3 × π × ${r ** 3} ≈ ${nbFr(v)} cm³, soit ${Math.round(v)} cm³.`}); }],
+  // trigonométrie : tangente
+  ["dnb", "maths", () => { const ang = prendre([20, 25, 30, 35, 40, 50, 55, 60]), ab = alea(3, 15), ac = ab * Math.tan(ang * Math.PI / 180);
+    return AVEC({q: `Le triangle ABC est rectangle en A. On sait que AB = ${ab} cm et que l'angle ABC mesure ${ang}°. Calcule la longueur AC (côté opposé à l'angle B), arrondie au dixième de cm. Écris seulement le nombre.`, brouillon: `AC = ${ab} xx tan(${ang}) =`,
+      rep: repN(Math.round(ac * 10) / 10, 1), exp: `tan(ABC) = côté opposé / côté adjacent = AC / AB, donc AC = ${ab} × tan(${ang}°) ≈ ${nbFr(ac, 3)} cm, soit ${nbFr(Math.round(ac * 10) / 10, 1)} cm.`}); }],
+  // trigonométrie : retrouver un angle
+  ["dnb", "maths", () => { const [adj, hyp] = prendre([[4, 5], [3, 5], [5, 13], [12, 13], [8, 10], [6, 10], [7, 9], [5, 8], [2, 3]]), ang = Math.acos(adj / hyp) * 180 / Math.PI;
+    return AVEC({q: `Le triangle DEF est rectangle en E, avec DE = ${adj} cm et DF = ${hyp} cm (hypoténuse). Calcule la mesure de l'angle EDF, arrondie au degré. Écris seulement le nombre (sans le signe °).`, brouillon: `cos(EDF) = ${adj}/${hyp}`,
+      rep: variantes(Math.round(ang)), exp: `cos(EDF) = côté adjacent / hypoténuse = ${adj}/${hyp} ≈ ${nbFr(adj / hyp, 3)}. Avec la touche arccos (cos⁻¹) : EDF ≈ ${nbFr(ang, 1)}°, soit ${Math.round(ang)}°.`}); }],
+  // somme des angles d'un triangle
+  ["dnb", "maths", () => { const a = alea(20, 90), b = alea(20, 160 - a), c = 180 - a - b;
+    return {q: `Dans un triangle, deux angles mesurent ${a}° et ${b}°. Combien mesure le troisième angle ? Écris seulement le nombre (sans le signe °).`, rep: variantes(c), brouillon: `180 - ${a} - ${b} =`, exp: `La somme des angles d'un triangle vaut 180° : 180 − ${a} − ${b} = ${c}°.`}; }],
+  // polygone régulier
+  ["dnb", "maths", () => { const n = prendre([3, 4, 5, 6, 8, 9, 10, 12]), noms = {3: "triangle équilatéral", 4: "carré", 5: "pentagone régulier", 6: "hexagone régulier", 8: "octogone régulier", 9: "ennéagone régulier", 10: "décagone régulier", 12: "dodécagone régulier"};
+    return {q: `Un ${noms[n]} a ${n} côtés. Quelle est la mesure de son angle au centre (en degrés) ? Écris seulement le nombre.`, rep: variantes(360 / n), brouillon: `360 / ${n} =`, exp: `Les ${n} angles au centre se partagent le tour complet : 360 ÷ ${n} = ${360 / n}°.`}; }],
+  // réciproque de Pythagore
+  ["dnb", "maths", () => { const ok = Math.random() < .5, [a, b, c] = ok ? prendre([[6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17], [7, 24, 25], [20, 21, 29]]) : prendre([[6, 8, 11], [5, 11, 13], [7, 9, 12], [8, 14, 17], [10, 11, 15]]);
+    return qcm({q: `Un triangle a des côtés de ${a} cm, ${b} cm et ${c} cm. Est-il rectangle ? (Compare le carré du plus grand côté à la somme des carrés des deux autres.)`, brouillon: `${c}^2 = ;  ${a}^2 + ${b}^2 =`,
+      exp: `${c}² = ${c * c} et ${a}² + ${b}² = ${a * a} + ${b * b} = ${a * a + b * b}. ${ok ? "Les deux sont égaux : d'après la réciproque du théorème de Pythagore, le triangle est rectangle." : "Ils sont différents : d'après la contraposée du théorème de Pythagore, le triangle n'est pas rectangle."}`},
+      ok ? "Oui, il est rectangle" : "Non, il n'est pas rectangle", [ok ? "Non, il n'est pas rectangle" : "Oui, il est rectangle", "On ne peut pas savoir"]); }],
+  // réciproque de Thalès
+  ["dnb", "maths", () => { const k = prendre([2, 3, 4]), am = alea(2, 6), an = alea(2, 6), ok = Math.random() < .5, ac = an * k + (ok ? 0 : prendre([1, -1, 2]));
+    return qcm({q: `A, M, B sont alignés et A, N, C aussi, dans le même ordre. AM = ${am} cm, AB = ${am * k} cm, AN = ${an} cm et AC = ${ac} cm. Les droites (MN) et (BC) sont-elles parallèles ? (Compare AM/AB et AN/AC.)`, brouillon: `${am}/${am * k} = ;  ${an}/${ac} =`,
+      exp: `AM/AB = ${am}/${am * k} = ${frac(am, am * k)} et AN/AC = ${an}/${ac} = ${frac(an, ac)}. ${ok ? "Les rapports sont égaux : d'après la réciproque du théorème de Thalès, (MN) // (BC)." : "Les rapports sont différents : les droites ne sont pas parallèles."}`},
+      ok ? "Oui, elles sont parallèles" : "Non, elles ne sont pas parallèles", [ok ? "Non, elles ne sont pas parallèles" : "Oui, elles sont parallèles", "Elles sont perpendiculaires"]); }],
+  // équation produit nul
+  ["dnb", "maths", () => { const a = alea(1, 9), b = alea(1, 9);
+    return qcm({q: `Quelles sont les solutions de l'équation (x − ${a})(x + ${b}) = 0 ? (Un produit est nul si l'un de ses facteurs est nul.)`, exp: `x − ${a} = 0 donne x = ${a} ; x + ${b} = 0 donne x = −${b}.`},
+      `x = ${a} ou x = −${b}`, [`x = −${a} ou x = ${b}`, `x = ${a} seulement`, `x = ${a * b}`, `x = ${a} ou x = ${b}`]); }],
+  // identité remarquable
+  ["dnb", "maths", () => { const a = alea(2, 9), moins = Math.random() < .5, r = `x² ${moins ? "−" : "+"} ${2 * a}x + ${a * a}`;
+    return AVEC({q: `Développe (x ${moins ? "−" : "+"} ${a})² avec une identité remarquable. Écris le résultat sous la forme x² + bx + c (tu peux écrire x² ou x^2).`, brouillon: `(x ${moins ? "-" : "+"} ${a})^2 =`, rep: variantes(r, r.replace("−", "-")),
+      exp: `(a ${moins ? "−" : "+"} b)² = a² ${moins ? "−" : "+"} 2ab + b², donc (x ${moins ? "−" : "+"} ${a})² = ${r}. Attention : ce n'est pas x² + ${a * a} !`}); }],
+  // factorisation par un facteur commun
+  ["dnb", "maths", () => { const k = prendre([2, 3, 4, 5, 6, 7]), a = alea(2, 7), b = alea(1, 9), sansFacteur = pgcdB(a, b) === 1;
+    if (!sansFacteur) return null; const r = `${k}(${a}x + ${b})`;
+    return {q: `Factorise ${k * a}x + ${k * b} en mettant le plus grand facteur commun en évidence. Écris ta réponse sous la forme k(ax + b), par exemple 3(2x + 5).`, rep: variantes(r), brouillon: `${k * a}x + ${k * b} =`,
+      exp: `${k * a}x = ${k} × ${a}x et ${k * b} = ${k} × ${b}, donc ${k * a}x + ${k * b} = ${r}.`}; }],
+  // inéquation
+  ["dnb", "maths", () => { const a = alea(2, 6), x = alea(-4, 8), b = alea(-9, 9), c = a * x + b;
+    return qcm({q: `Résous l'inéquation ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} < ${c}. Quelle est la bonne solution ?`, brouillon: `${a}x ${b < 0 ? "-" : "+"} ${Math.abs(b)} < ${c}`,
+      exp: `On ${b < 0 ? "ajoute" : "soustrait"} ${Math.abs(b)} des deux côtés : ${a}x < ${c - b}. On divise par ${a} (positif, le sens ne change pas) : x < ${x}.`}, `x < ${x}`, [`x > ${x}`, `x < ${x + 1}`, `x < ${c}`, `x > ${-x}`]); }],
+  // programme de calcul
+  ["dnb", "maths", () => { const n = alea(-6, 9), a = alea(2, 9), k = alea(2, 5), b = alea(1, 9), r = (n + a) * k - b;
+    return AVEC({q: `Voici un programme de calcul : « Choisir un nombre. Lui ajouter ${a}. Multiplier le résultat par ${k}. Soustraire ${b}. » Quel résultat obtient-on en choisissant ${n} ? Écris seulement le nombre.`, brouillon: `(${sg(n)} + ${a}) xx ${k} - ${b} =`, rep: variantes(r),
+      exp: `${sg(n)} + ${a} = ${n + a} ; ${n + a} × ${k} = ${(n + a) * k} ; ${(n + a) * k} − ${b} = ${r}.`}); }],
+  // antécédent par une fonction affine
+  ["dnb", "maths", () => { const a = prendre([-4, -3, -2, 2, 3, 4, 5]), b = alea(-9, 9), x = alea(-6, 6), y = a * x + b;
+    return AVEC({q: `On considère la fonction f définie par f(x) = ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)}. Quel nombre a pour image ${y} par f ? (On cherche x tel que f(x) = ${y}.) Écris seulement le nombre.`, brouillon: `${a}x ${b < 0 ? "-" : "+"} ${Math.abs(b)} = ${y}`, rep: variantes(x),
+      exp: `${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${y}, donc ${a}x = ${y - b}, donc x = ${y - b} ÷ ${sg(a)} = ${x}. L'antécédent de ${y} est ${x}.`}); }],
+  // probabilité avec deux dés
+  ["dnb", "maths", () => { const s = alea(2, 12), cas = [...Array(6)].reduce((t, _, i) => t + [...Array(6)].filter((_, j) => i + j + 2 === s).length, 0);
+    return AVEC({q: `On lance deux dés équilibrés à 6 faces et on additionne les deux résultats. Quelle est la probabilité d'obtenir une somme égale à ${s} ? Donne une fraction irréductible (exemple : 1/9).`, brouillon: `${cas}/36 =`, rep: variantes(frac(cas, 36)),
+      exp: `Il y a 6 × 6 = 36 issues équiprobables. La somme ${s} est obtenue de ${cas} façon${cas > 1 ? "s" : ""} : probabilité ${cas}/36 = ${frac(cas, 36)}.`}); }],
+  // moyenne pondérée
+  ["dnb", "maths", () => { const notes = [alea(6, 19), alea(6, 19), alea(6, 19)], coef = [alea(1, 3), alea(1, 3), alea(1, 4)], m = notes.reduce((s, n, i) => s + n * coef[i], 0) / coef.reduce((a, b) => a + b, 0);
+    return AVEC({q: `Un élève a eu ${notes[0]} (coefficient ${coef[0]}), ${notes[1]} (coefficient ${coef[1]}) et ${notes[2]} (coefficient ${coef[2]}). Calcule sa moyenne, arrondie au dixième. Écris seulement le nombre.`,
+      brouillon: `(${notes[0]} xx ${coef[0]} + ${notes[1]} xx ${coef[1]} + ${notes[2]} xx ${coef[2]}) / ${coef.reduce((a, b) => a + b, 0)} =`, rep: repN(Math.round(m * 10) / 10, 1),
+      exp: `Somme pondérée : ${notes.map((n, i) => n * coef[i]).join(" + ")} = ${notes.reduce((s, n, i) => s + n * coef[i], 0)} ; somme des coefficients : ${coef.reduce((a, b) => a + b, 0)}. Moyenne ≈ ${nbFr(m, 3)}, soit ${nbFr(Math.round(m * 10) / 10, 1)}.`}); }],
+  // nombre de diviseurs
+  ["dnb", "maths", () => { const n = prendre([12, 18, 20, 24, 28, 30, 36, 40, 45, 48, 60, 72, 84, 90, 100]), d = [...Array(n)].map((_, i) => i + 1).filter(k => n % k === 0);
+    return {q: `Combien le nombre ${n} a-t-il de diviseurs (en comptant 1 et ${n}) ? Écris seulement le nombre.`, rep: variantes(d.length), brouillon: `${n} = 1 xx ${n} = ...`, exp: `Les diviseurs de ${n} sont : ${d.join(", ")}. Il y en a ${d.length}.`}; }],
+  // recette (proportionnalité)
+  ["dnb", "maths", () => { const p1 = prendre([2, 4, 6, 8]), g = alea(2, 9) * 25 * p1 / 2, p2 = prendre([3, 5, 6, 10, 12].filter(x => x !== p1)), r = g / p1 * p2;
+    return AVEC({q: `Pour ${p1} personnes, une recette demande ${g} g de farine. Quelle masse de farine faut-il pour ${p2} personnes, en grammes ? Écris seulement le nombre.`, brouillon: `${g} / ${p1} xx ${p2} =`, rep: repN(r),
+      exp: `Pour 1 personne : ${g} ÷ ${p1} = ${nbFr(g / p1)} g. Pour ${p2} personnes : ${nbFr(g / p1)} × ${p2} = ${nbFr(r)} g.`}); }],
+  // comparer des fractions
+  ["dnb", "maths", () => { const f = [0, 1, 2, 3].map(() => { const b = alea(3, 12); return [alea(1, b - 1), b]; }).map(([a, b]) => [a, b, a / b]);
+    const vals = new Set(f.map(x => x[2].toFixed(6))); if (vals.size < 4) return null; const g = f.reduce((m, x) => x[2] > m[2] ? x : m);
+    return qcm({q: `Quelle est la plus grande de ces fractions : ${f.map(x => `${x[0]}/${x[1]}`).join(" ; ")} ? (Tu peux les écrire en écriture décimale.)`, exp: f.map(x => `${x[0]}/${x[1]} ≈ ${nbFr(x[2], 3)}`).join(" ; ") + `. La plus grande est ${g[0]}/${g[1]}.`},
+      `${g[0]}/${g[1]}`, f.filter(x => x !== g).map(x => `${x[0]}/${x[1]}`)); }]
 );
 /* ===================== EXERCICES BREVET · LANGUES VIVANTES (anglais, espagnol) =====================
    Le brevet n'a pas d'épreuve écrite de langue : ces questions entraînent au niveau attendu en fin de 3e (A2 → B1).
@@ -3914,7 +4035,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.74";
+const VERSION_SITE = "0.75";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -10304,7 +10425,7 @@ function lancerQuiz(questions, ctx){
       ${q.ctx || ctx.contexte || q.sujet ? `<details class="contexte" open><summary>Document et énoncé</summary>${q.ctxTitre ? `<p class="ctx-titre">${esc(q.ctxTitre)}</p>` : ""}${q.ctx || ctx.contexte ? `<p class="${String(q.ctx || ctx.contexte).length > 380 ? "ctx-long" : ""}">${esc(q.ctx || ctx.contexte)}</p>` : ""}
         ${q.sujet && SUJETS[q.sujet] ? `<p class="source-q">Source : ${esc(SUJETS[q.sujet].titre)}${q.src ? " · " + esc(q.src) : ""} — <a href="${esc(SUJETS[q.sujet].url)}" target="_blank" rel="noopener">Ouvrir le sujet complet ↗</a></p>` : ""}</details>` : ""}
       <div class="bloc">
-        <div class="rangee" style="justify-content:space-between"><span class="mono">${q.matiere ? esc(q.matiere) : "Question"}${NIVEAUX[q.n] ? ` · <span class="niveau">${NIVEAUX[q.n]}</span>` : ""}</span><span class="rangee" style="gap:10px"><button type="button" class="prevenir" id="prevenir" title="Signaler un bug, une erreur ou un glitch">⚑ Prévenir</button><span class="mono">${i + 1} / ${questions.length}</span></span></div>
+        <div class="rangee" style="justify-content:space-between"><span class="mono">${q.matiere ? esc(q.matiere) : "Question"}${NIVEAUX[q.n] ? ` · <span class="niveau">${NIVEAUX[q.n]}</span>` : ""}</span><span class="rangee" style="gap:10px">${avecBrouillon(q, ctx) ? `<button type="button" class="btn-brouillon" id="ouvrir-brouillon" title="Ouvrir une page de brouillon pour poser tes calculs">✎ Brouillon</button>` : ""}<button type="button" class="prevenir" id="prevenir" title="Signaler un bug, une erreur ou un glitch">⚑ Prévenir</button><span class="mono">${i + 1} / ${questions.length}</span></span></div>
         <div class="avance"><i style="width:${i / questions.length * 100}%"></i></div>
         ${q.exemple ? `<div class="exemple-q"><span class="mono">Exemple</span><p>${esc(q.exemple)}</p></div>` : ""}
         ${figureHtml(q.fig)}
@@ -10315,6 +10436,7 @@ function lancerQuiz(questions, ctx){
       </div>`;
     remplirImages(zone()); masquerFigure(zone(), q); Promise.resolve(remplirObjets(zone())).then(() => masquerFigure(zone(), q));
     $("#prevenir").onclick = () => fenetrePrevenir(q, ctx, i + 1, capturerZone());
+    fermerBrouillon(); if ($("#ouvrir-brouillon")) $("#ouvrir-brouillon").onclick = () => basculerBrouillon(q);
     const repondre = juste => {
       document.dispatchEvent(new CustomEvent("helper-reponse", {detail: {juste}})); // les personnages des BD réagissent
       if (juste) score++;
@@ -10352,6 +10474,7 @@ function lancerQuiz(questions, ctx){
     }
   };
   const fin = () => {
+    fermerBrouillon();
     let gain = 0, note = "", retour = "exos", libRetour = "Autres exercices", rejouer = true;
     if (ctx.defi){
       const a = auj(); prog.defis = prog.defis || {}; prog.defis[a] = prog.defis[a] || {};
@@ -10525,6 +10648,23 @@ signalements = l; majBadgeSignal(); });
     if (!s.exists){ try { const m = await db.doc("gerant/codes-migres").get(); if (m.exists && m.data().liste){ codesClairs = {...m.data().liste}; await enregistrerCodesClairs(); } } catch {} }
     majVue(); }, () => {});
 }
+/* ===================== Brouillon dans les exercices de maths =====================
+   Un bouton « ✎ Brouillon » ouvre une page quadrillée (module Brouillon de calcul) dans un panneau.
+   Le brouillon garde ce qu'on y écrit pendant toute la question ; il est remis à neuf à la question suivante. */
+const avecBrouillon = (q, ctx) => !!(q && (q.brouillon || q.mat === "maths" || (ctx && ctx.lecon && ctx.lecon.matiere === "maths")));
+function fermerBrouillon(){ document.getElementById("panneau-brouillon")?.remove(); }
+function basculerBrouillon(q){
+  let p = document.getElementById("panneau-brouillon");
+  if (p){ p.hidden = !p.hidden; document.getElementById("ouvrir-brouillon")?.classList.toggle("actif", !p.hidden); return; }
+  p = document.createElement("div"); p.id = "panneau-brouillon"; p.className = "panneau-brouillon"; p.setAttribute("role", "dialog"); p.setAttribute("aria-label", "Brouillon");
+  p.innerHTML = `<button type="button" class="pb-fermer" aria-label="Fermer le brouillon" title="Fermer (ce que tu as écrit est gardé jusqu'à la question suivante)">×</button>
+    <div class="pb-corps">${rendreModule({kind: "module", type: "fiche-maths", titre: "Brouillon", consigne: typeof q.brouillon === "string" ? "Le calcul est déjà posé : termine-le sur la grille." : "", lignes: typeof q.brouillon === "string" ? q.brouillon : "", vides: 10, outils: true})}</div>`;
+  document.body.appendChild(p); brancherTransitions(p);
+  p.querySelector(".pb-fermer").onclick = () => { p.hidden = true; document.getElementById("ouvrir-brouillon")?.classList.remove("actif"); };
+  document.getElementById("ouvrir-brouillon")?.classList.add("actif");
+  // le panneau disparaît si l'on quitte l'exercice
+  const veille = setInterval(() => { if (!document.getElementById("prevenir")){ clearInterval(veille); p.remove(); } }, 800);
+}
 (async () => {
   try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch { db = null; }
   dbPret = true;
@@ -10564,6 +10704,7 @@ signalements = l; majBadgeSignal(); });
       else { const r = await sb.rpc("mon_compte"); if (!r.error && r.data) await connecter(r.data); }
     }
   } catch {}
+
 })();
 })();
 </script>
