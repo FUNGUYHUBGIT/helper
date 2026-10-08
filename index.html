@@ -416,19 +416,24 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .doc-lecon ul[class*="puce-"]>li::before{font-size:.85em;top:.12em}
 .barre-outils [data-cmd].actif{background:color-mix(in srgb,var(--accent) 22%,var(--surface-2));border-color:var(--accent);color:var(--accent)}
 .barre-outils .o-couleur{border-bottom:3px solid var(--c,#f4f2ed)}.barre-outils .o-couleur-puce{color:var(--accent)}
-.obj-doc:has(.fm-fiche){width:min(680px,100%)}
+.obj-doc:has(.fm-fiche){width:min(680px,100%)}.fig-exo .obj-doc:has(.fm-fiche){width:100%}
 .fm-drapeau{font-family:var(--f-texte)}
 .fm-outils{display:flex;flex-wrap:wrap;gap:4px;padding:6px;border:1px solid var(--ligne);border-radius:10px;background:var(--surface-2)}
 .fm-outils button{min-width:36px;height:34px;padding:0 8px;font:600 .95rem "Times New Roman",Georgia,serif;color:var(--texte);background:var(--surface);border:1px solid var(--ligne);border-radius:6px;cursor:pointer;line-height:1}
 .fm-outils button:hover{border-color:var(--accent);color:var(--accent)}.fm-outils sup,.fm-outils sub{font-size:.7em}
-.fm-lignes{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface)}
-.fm-ligne{display:flex;align-items:center;gap:8px}
-.fm-num{flex:none;width:22px;text-align:right;font:700 .72rem var(--f-mono);color:var(--doux)}
-.fm-champ{flex:1;min-width:0;display:block;min-height:40px;font-size:1.25rem;padding:4px 10px;border-radius:8px;border:1px solid transparent;background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--texte);
+.fm-page{position:relative;width:100%;min-height:288px;border-radius:12px;border:1px solid var(--ligne);overflow:hidden;cursor:text;transition:height .2s;
+  background-color:transparent;background-image:linear-gradient(90deg,transparent calc(var(--case) * 3 - 1px),color-mix(in srgb,#e5484d 55%,transparent) calc(var(--case) * 3 - 1px),color-mix(in srgb,#e5484d 55%,transparent) calc(var(--case) * 3 + 1px),transparent calc(var(--case) * 3 + 1px)),
+  linear-gradient(color-mix(in srgb,var(--texte) 10%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--texte) 10%,transparent) 1px,transparent 1px);
+  background-size:100% 100%,var(--case) var(--case),var(--case) var(--case);background-repeat:no-repeat,repeat,repeat}
+.fm-page:focus{outline:none}
+.fm-bloc{position:absolute;display:flex;align-items:center;min-height:calc(var(--case) * 2);transform:translateY(-50%)}
+.fm-bloc.deplace{opacity:.8;z-index:2}
+.fm-poignee{position:absolute;left:-18px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--doux);cursor:grab;opacity:0;padding:2px;user-select:none;touch-action:none}
+.fm-bloc:hover .fm-poignee,.fm-bloc.actif .fm-poignee{opacity:.8}.fm-bloc.deplace .fm-poignee{cursor:grabbing}
+.fm-champ{display:inline-block;min-width:calc(var(--case) * 3);font-size:1.3rem;padding:0 4px;border-radius:6px;border:1px dashed transparent;background:transparent;color:var(--texte);
   --caret-color:var(--accent);--selection-background-color:color-mix(in srgb,var(--accent) 30%,transparent);--selection-color:var(--texte);--contains-highlight-background-color:color-mix(in srgb,var(--accent) 12%,transparent);--placeholder-color:var(--accent);--primary:var(--accent);--text-font-family:var(--f-texte)}
-.fm-champ:focus-within{border-color:var(--accent);outline:none}
-.fm-champ::part(menu-toggle){display:none}.fm-champ::part(virtual-keyboard-toggle){color:var(--doux)}
-.fm-suppr{flex:none;background:none;border:0;color:var(--doux);font-size:1.1rem;cursor:pointer;opacity:.5}.fm-ligne:hover .fm-suppr{opacity:1}.fm-suppr:hover{color:#e5484d}
+.fm-champ:focus-within{border-color:color-mix(in srgb,var(--accent) 70%,transparent);outline:none;background:color-mix(in srgb,var(--surface) 55%,transparent)}
+.fm-champ::part(menu-toggle){display:none}.fm-champ::part(virtual-keyboard-toggle){display:none}.fm-bloc.actif .fm-champ::part(virtual-keyboard-toggle){display:flex;color:var(--doux)}
 .fm-pied{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.fm-aide{font-size:.78rem;color:var(--doux)}.fm-aide b{color:var(--texte)}
 .titre-fixe-lecon{color:#ff5c5c;font-size:1.08rem;font-weight:600;margin:0 0 .8em;user-select:text}
 .legende-auteur{margin:14px 0 0;padding-top:10px;border-top:1px solid var(--ligne);color:var(--doux);opacity:.75;font-size:.8rem;font-style:italic}
@@ -2794,6 +2799,61 @@ Article 2. La langue de la République est le français. L'emblème national est
       {q: "Quelle différence avec l'article 1er de la DDHC de 1789 ?", choix: ["Il concerne « tous les êtres humains » et parle aussi de dignité", "Il ne parle pas de liberté", "Il ne concerne que les Français", "Il supprime l'égalité"], bonne: 0, exp: "La DUDH est universelle (tous les êtres humains) et ajoute la notion de dignité."}
     ]}];
 DOCS_HGE.forEach(d => d.questions.forEach(x => BANQUE_REVISION.push({ex: "dnb", an: 0, mat: "hge", src: "Analyse de document", ctxTitre: d.titre, ctx: d.texte, ...x})));
+/* ===================== DNB · Maths : calculs à poser sur la page de brouillon (module « Brouillon de calcul ») =====================
+   L'élève fait son calcul sur le brouillon quadrillé (fractions, racines, puissances…), puis écrit le résultat. */
+const BROUILLON = (lignes, consigne) => ({type: "module", module: {kind: "module", type: "fiche-maths", titre: "Brouillon", consigne: consigne || "Pose ton calcul ici (clique sur la grille), puis écris le résultat en dessous.", lignes, vides: 6, outils: true}});
+const sansEsp = s => String(s).replace(/\s+/g, "");
+// variantes acceptées pour une réponse : avec ou sans espaces, ² ou ^2, signe moins typographique
+const variantes = (...l) => [...new Set(l.flatMap(v => { const s = String(v); return [s, sansEsp(s), s.replace(/²/g, "^2"), sansEsp(s).replace(/²/g, "^2"), s.replace(/−/g, "-"), sansEsp(s).replace(/−/g, "-").replace(/²/g, "^2")]; }))];
+const sg = n => n < 0 ? `(${n})` : String(n);              // nombre négatif entre parenthèses
+const pgcdB = (a, b) => b ? pgcdB(b, a % b) : Math.abs(a);
+const frac = (n, d) => { if (d < 0){ n = -n; d = -d; } const g = pgcdB(n, d) || 1; n /= g; d /= g; return d === 1 ? String(n) : `${n}/${d}`; };
+const AVEC = q => ({...q, brouillon: true});
+GENERATEURS.push(
+  ["dnb", "maths", () => { let b = alea(2, 9), d = alea(2, 9); while (d === b) d = alea(2, 9); let a = alea(1, b + 3), c = alea(1, d + 3); while (a % b === 0) a = alea(1, b + 3); while (c % d === 0) c = alea(1, d + 3); const op = Math.random() < .6 ? "+" : "−";
+    const n = op === "+" ? a * d + c * b : a * d - c * b, r = frac(n, b * d);
+    return AVEC({q: `Calcule ${a}/${b} ${op} ${c}/${d} et donne le résultat sous forme de fraction irréductible.`, fig: BROUILLON(`${a}/${b} ${op === "+" ? "+" : "-"} ${c}/${d} =`), rep: variantes(r),
+      exp: `Même dénominateur ${b * d} : ${a * d}/${b * d} ${op} ${c * b}/${b * d} = ${n}/${b * d}${frac(n, b * d) !== `${n}/${b * d}` ? ` = ${r} après simplification` : ""}.`}); }],
+  ["dnb", "maths", () => { const a = alea(1, 9), b = alea(2, 9), c = alea(1, 9), d = alea(2, 9), div = Math.random() < .45;
+    const n = div ? a * d : a * c, de = div ? b * c : b * d, r = frac(n, de);
+    return AVEC({q: `Calcule ${a}/${b} ${div ? "÷" : "×"} ${c}/${d} (fraction irréductible).`, fig: BROUILLON(`${a}/${b} ${div ? "-:" : "xx"} ${c}/${d} =`), rep: variantes(r),
+      exp: div ? `Diviser, c'est multiplier par l'inverse : ${a}/${b} × ${d}/${c} = ${n}/${de} = ${r}.` : `On multiplie les numérateurs et les dénominateurs : ${n}/${de} = ${r}.`}); }],
+  ["dnb", "maths", () => { const a = alea(2, 9), b = alea(2, 6), c = alea(3, 9), d = alea(1, c - 1), e = Math.random() < .5;
+    const val = e ? a + b * (c - d) ** 2 : a * b - (c - d) ** 2;
+    return AVEC({q: `Calcule en respectant les priorités : ${e ? `${a} + ${b} × (${c} − ${d})²` : `${a} × ${b} − (${c} − ${d})²`}`, fig: BROUILLON(e ? `${a} + ${b} xx (${c} - ${d})^2 =` : `${a} xx ${b} - (${c} - ${d})^2 =`), rep: variantes(val),
+      exp: `D'abord les parenthèses (${c - d}), puis la puissance (${(c - d) ** 2}), puis la multiplication, enfin l'addition ou la soustraction : ${val}.`}); }],
+  ["dnb", "maths", () => { const a = alea(-9, 9) || 3, b = alea(-9, 9) || -2, c = alea(2, 6), d = alea(-6, 6) || 4, val = a * b - c * d;
+    return AVEC({q: `Calcule : ${sg(a)} × ${sg(b)} − ${c} × ${sg(d)}`, fig: BROUILLON(`${sg(a)} xx ${sg(b)} - ${c} xx ${sg(d)} =`), rep: variantes(val),
+      exp: `${sg(a)} × ${sg(b)} = ${a * b} et ${c} × ${sg(d)} = ${c * d}, donc ${a * b} − ${sg(c * d)} = ${val}. Règle des signes : deux nombres de même signe donnent un produit positif.`}); }],
+  ["dnb", "maths", () => { const [a, b, c] = prendre([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [7, 24, 25], [12, 16, 20]]);
+    return AVEC({q: `Calcule √(${a}² + ${b}²).`, fig: BROUILLON(`sqrt(${a}^2 + ${b}^2) =`), rep: variantes(c),
+      exp: `${a}² + ${b}² = ${a * a} + ${b * b} = ${c * c}, et √${c * c} = ${c}. C'est le calcul de l'hypoténuse avec le théorème de Pythagore.`}); }],
+  ["dnb", "maths", () => { const m1 = alea(2, 9), e1 = alea(2, 6), m2 = alea(2, 4), e2 = -alea(1, 3), p = m1 * m2, e = e1 + e2;
+    const val = p * 10 ** e;
+    return AVEC({q: `Calcule (${m1} × 10${["⁰","¹","²","³","⁴","⁵","⁶"][e1]}) × (${m2} × 10⁻${["","¹","²","³"][-e2]}) et donne le résultat en écriture décimale.`, fig: BROUILLON(`(${m1} xx 10^${e1}) xx (${m2} xx 10^(${e2})) =`),
+      rep: variantes(val, val.toLocaleString("fr-FR"), String(val).replace(/\B(?=(\d{3})+(?!\d))/g, " ")),
+      exp: `${m1} × ${m2} = ${p} et 10^${e1} × 10^(${e2}) = 10^${e} (on additionne les exposants), donc ${p} × 10^${e} = ${val.toLocaleString("fr-FR")}.`}); }],
+  ["dnb", "maths", () => { const x = alea(-6, 9), a = alea(2, 7), c = alea(1, a - 1), b = alea(-9, 9), d = (a - c) * x + b;
+    const ecr = (k, s) => `${k === 1 ? "" : k}x ${s < 0 ? "−" : "+"} ${Math.abs(s)}`;
+    return AVEC({q: `Résous l'équation ${ecr(a, b)} = ${ecr(c, d)}. Que vaut x ?`, fig: BROUILLON(`${a}x ${b < 0 ? "-" : "+"} ${Math.abs(b)} = ${c === 1 ? "" : c}x ${d < 0 ? "-" : "+"} ${Math.abs(d)}`), rep: variantes(x, "x=" + x, "x = " + x),
+      exp: `On regroupe les x : ${a}x − ${c === 1 ? "" : c}x = ${d} − ${sg(b)}, soit ${a - c}x = ${d - b}, donc x = ${x}.`}); }],
+  ["dnb", "maths", () => { const a = alea(2, 5), b = alea(1, 7), c = alea(1, 6), s = Math.random() < .5 ? 1 : -1;
+    // (ax + b)(x + s·c) = a x² + (a·s·c + b) x + b·s·c
+    const k1 = a, k2 = a * s * c + b, k3 = b * s * c, terme = (k, x) => (k < 0 ? " − " : " + ") + (Math.abs(k) === 1 && x ? "" : Math.abs(k)) + x;
+    const r = `${k1}x²${k2 ? terme(k2, "x") : ""}${k3 ? terme(k3, "") : ""}`;
+    return AVEC({q: `Développe et réduis (${a}x + ${b})(x ${s > 0 ? "+" : "−"} ${c}).`, fig: BROUILLON(`(${a}x + ${b})(x ${s > 0 ? "+" : "-"} ${c}) =`), rep: variantes(r, r.replace(/ /g, "")),
+      exp: `Double distributivité : ${a}x × x + ${a}x × ${sg(s * c)} + ${b} × x + ${b} × ${sg(s * c)} = ${r}.`}); }],
+  ["dnb", "maths", () => { const t = prendre([5, 10, 12, 15, 20, 25, 30, 40, 75]), n = alea(2, 30) * 20, val = n * t / 100;
+    return AVEC({q: `Calcule ${t} % de ${n}.`, fig: BROUILLON(`${t}/100 xx ${n} =`), rep: variantes(val, String(val).replace(".", ",")), exp: `${t} % de ${n} = ${t}/100 × ${n} = ${String(val).replace(".", ",")}.`}); }],
+  ["dnb", "maths", () => { const d = prendre([3, 4, 5, 6, 8]), n = alea(1, d - 1), q = d * alea(3, 15), val = n * q / d;
+    return AVEC({q: `Combien font les ${n}/${d} de ${q} ?`, fig: BROUILLON(`${n}/${d} xx ${q} =`), rep: variantes(val), exp: `${q} ÷ ${d} = ${q / d}, puis × ${n} = ${val}.`}); }],
+  ["dnb", "maths", () => { const a = alea(2, 4), b = alea(-5, 5) || 1, c = alea(-6, 6), x = alea(-3, 3) || 2, val = a * x * x + b * x + c;
+    return AVEC({q: `Calcule ${a}x² ${b < 0 ? "−" : "+"} ${Math.abs(b)}x ${c < 0 ? "−" : "+"} ${Math.abs(c)} pour x = ${x}.`, fig: BROUILLON(`${a} xx ${sg(x)}^2 ${b < 0 ? "-" : "+"} ${Math.abs(b)} xx ${sg(x)} ${c < 0 ? "-" : "+"} ${Math.abs(c)} =`), rep: variantes(val),
+      exp: `${a} × ${sg(x)}² = ${a * x * x} ; ${sg(b)} × ${sg(x)} = ${b * x} ; total : ${a * x * x} ${b * x < 0 ? "−" : "+"} ${Math.abs(b * x)} ${c < 0 ? "−" : "+"} ${Math.abs(c)} = ${val}. Attention : (${x})² est positif.`}); }],
+  ["dnb", "maths", () => { const n = prendre([12, 18, 20, 27, 32, 45, 48, 50, 72, 75, 98, 125, 200]), k = [10, 9, 8, 7, 6, 5, 4, 3, 2].find(k => n % (k * k) === 0 && k > 1), r = n / (k * k);
+    return AVEC({q: `Écris √${n} sous la forme a√b, avec b le plus petit possible.`, fig: BROUILLON(`sqrt(${n}) = sqrt(${k * k} xx ${r}) =`), rep: variantes(`${k}√${r}`, `${k}sqrt(${r})`, `${k}racine${r}`, `${k} racine ${r}`),
+      exp: `${n} = ${k * k} × ${r}, donc √${n} = √${k * k} × √${r} = ${k}√${r}.`}); }]
+);
 /* ===================== EXERCICES BREVET · LANGUES VIVANTES (anglais, espagnol) =====================
    Le brevet n'a pas d'épreuve écrite de langue : ces questions entraînent au niveau attendu en fin de 3e (A2 → B1).
    Compréhension écrite et orale, grammaire, vocabulaire, culture. lv = "en" ou "es". */
@@ -3854,7 +3914,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.73";
+const VERSION_SITE = "0.74";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4244,7 +4304,7 @@ function construireSerieBrevet(){
   const generees = genMats.length ? genererQuestions(ex, genMats, N - choisies.length) : [];
   const l = [...choisies, ...generees];
   for (let i = l.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [l[i], l[j]] = [l[j], l[i]]; }
-  return l.map(q => ({...q, n: 0, matiere: nomMat(q) + " · " + (q.genere ? "Entraînement" : q.an ? q.an : "Révision")}));
+  return l.map(q => ({...q, n: 0, matiere: nomMat(q) + " · " + (q.genere ? (q.brouillon ? "Calcul avec brouillon" : "Entraînement") : q.an ? q.an : "Révision")}));
 }
 
 /* ----- Défi : chaque jour, un défi difficile par matière ----- */
@@ -8440,61 +8500,75 @@ const FM_OUTILS = [
   ["⇔", "\\Leftrightarrow", "Équivaut à"], ["x", "x", "Inconnue x"], ["y", "y", "Inconnue y"]
 ];
 const fmLignesDepart = o => String(o.lignes || "").split("\n").map(l => l.trim()).filter(Boolean);
+const FM_CASE = 24, FM_MARGE = 3;   // taille d'un carreau (px) et marge à gauche (en carreaux)
+// Page de brouillon : grille transparente à petits carreaux, on clique où l'on veut pour écrire.
 function htmlFicheMaths(o){
-  const depart = fmLignesDepart(o), vides = Math.max(0, Math.min(12, +o.vides || 0)), n = Math.max(1, depart.length + vides);
-  const lignes = Array.from({length: n}, (_, i) => depart[i] || "");
+  const depart = fmLignesDepart(o), rangs = Math.max(12, depart.length * 2 + 2 + Math.max(0, Math.min(30, +o.vides || 0)) * 2);
   return `<div class="lg-mod fm-fiche" data-fm="1" data-o="${encoderObjet(o)}">
-    <div class="lg-tete"><span class="lg-drapeau fm-drapeau">√x</span><b>${esc(o.titre || "Fiche de calcul")}</b>${o.consigne ? `<span class="lg-consigne fm-consigne">${esc(o.consigne)}</span>` : ""}</div>
+    <div class="lg-tete"><span class="lg-drapeau fm-drapeau">√x</span><b>${esc(o.titre || "Brouillon")}</b>${o.consigne ? `<span class="lg-consigne fm-consigne">${esc(o.consigne)}</span>` : ""}</div>
     ${o.outils !== false ? `<div class="fm-outils" role="toolbar" aria-label="Symboles mathématiques">${FM_OUTILS.map(([t, , titre], i) => `<button type="button" data-fm-outil="${i}" title="${esc(titre)}" aria-label="${esc(titre)}">${t}</button>`).join("")}</div>` : ""}
-    <div class="fm-lignes">${lignes.map((l, i) => fmLigne(i + 1, l)).join("")}</div>
-    <div class="fm-pied"><button type="button" class="mini-btn" data-fm-ajout>+ Ligne</button><button type="button" class="mini-btn" data-fm-vider>↺ Tout effacer</button>
-      <span class="fm-aide">Tape <b>/</b> pour une fraction, <b>sqrt</b> pour une racine, <b>^</b> pour un exposant, <b>_</b> pour un indice. <b>Entrée</b> = nouvelle ligne.</span></div></div>`;
+    <div class="fm-page" style="--case:${FM_CASE}px;height:${rangs * FM_CASE}px" data-rangs="${rangs}" tabindex="-1" aria-label="Page de brouillon : clique n'importe où pour écrire un calcul">
+      ${depart.map((l, k) => fmBloc(FM_MARGE + 1, 1 + k * 2, l)).join("")}</div>
+    <div class="fm-pied"><button type="button" class="mini-btn" data-fm-ajout>+ Agrandir la page</button><button type="button" class="mini-btn" data-fm-vider>↺ Tout effacer</button>
+      <span class="fm-aide">Clique n'importe où sur la grille pour écrire. <b>/</b> fraction, <b>sqrt</b> racine, <b>^</b> exposant, <b>_</b> indice, <b>Entrée</b> = ligne suivante. Glisse <b>⠿</b> pour déplacer un calcul.</span></div></div>`;
 }
-const fmLigne = (n, ascii) => `<div class="fm-ligne"><span class="fm-num">${n}</span><math-field class="fm-champ" data-ascii="${esc(ascii || "")}" aria-label="Ligne de calcul ${n}"></math-field><button type="button" class="fm-suppr" data-fm-suppr title="Retirer la ligne" aria-label="Retirer la ligne">×</button></div>`;
+const fmBloc = (col, rang, ascii) => `<div class="fm-bloc" data-col="${col}" data-rang="${rang}" style="left:${col * FM_CASE}px;top:${rang * FM_CASE}px"><span class="fm-poignee" title="Déplacer" aria-hidden="true">⠿</span><math-field class="fm-champ" data-ascii="${esc(ascii || "")}" aria-label="Calcul"></math-field></div>`;
 function brancherFicheMaths(racine){
   if (!racine || !racine.querySelectorAll) return;
   const fiches = [...racine.querySelectorAll(".fm-fiche[data-fm]")].filter(f => !f.dataset.pret);
   if (!fiches.length) return;
   fiches.forEach(f => f.dataset.pret = "1");
   chargerMaths().then(M => fiches.forEach(f => {
-    if (!M){ f.querySelector(".fm-lignes").insertAdjacentHTML("beforebegin", `<p class="doux">L'éditeur de formules n'a pas pu se charger. Vérifie ta connexion puis recharge la page.</p>`); return; }
+    const page = f.querySelector(".fm-page");
+    if (!M){ page.insertAdjacentHTML("beforebegin", `<p class="doux">L'éditeur de formules n'a pas pu se charger. Vérifie ta connexion puis recharge la page.</p>`); return; }
     let dernier = null;
-    const lignes = () => [...f.querySelectorAll(".fm-champ")];
-    const renumeroter = () => f.querySelectorAll(".fm-num").forEach((s, i) => s.textContent = i + 1);
-    const preparer = mf => {
-      if (mf.dataset.fmPret) return; mf.dataset.fmPret = "1";
+    const blocs = () => [...page.querySelectorAll(".fm-bloc")];
+    const placer = (b, col, rang) => { b.dataset.col = col; b.dataset.rang = rang; b.style.left = col * FM_CASE + "px"; b.style.top = rang * FM_CASE + "px";
+      const r = +page.dataset.rangs; if (rang + 3 > r){ page.dataset.rangs = rang + 4; page.style.height = (rang + 4) * FM_CASE + "px"; } };
+    const occupe = (col, rang, sauf) => blocs().some(b => b !== sauf && Math.abs(+b.dataset.rang - rang) < 2 && col >= +b.dataset.col - 1 && col <= +b.dataset.col + Math.ceil(b.offsetWidth / FM_CASE));
+    const preparer = b => {
+      const mf = b.querySelector(".fm-champ"); if (mf.dataset.fmPret) return mf; mf.dataset.fmPret = "1";
       try { mf.mathVirtualKeyboardPolicy = "auto"; mf.smartFence = true; mf.smartSuperscript = true; } catch {}
       if (mf.dataset.ascii){ try { mf.setValue(mf.dataset.ascii, {format: "ascii-math"}); } catch { mf.value = mf.dataset.ascii; } }
-      mf.addEventListener("focusin", () => dernier = mf);
-      mf.addEventListener("keydown", ev => {
-        if (ev.key === "Enter"){ ev.preventDefault(); ajouter(mf.closest(".fm-ligne")); }
-        else if (ev.key === "Backspace" && !mf.value && lignes().length > 1){ ev.preventDefault(); const l = mf.closest(".fm-ligne"), avant = l.previousElementSibling; l.remove(); renumeroter(); avant?.querySelector(".fm-champ")?.focus(); }
-      });
-      // dans l'éditeur de leçon, les touches ne doivent pas partir dans le texte autour
+      mf.addEventListener("focusin", () => { dernier = mf; b.classList.add("actif"); });
+      mf.addEventListener("focusout", () => { b.classList.remove("actif"); setTimeout(() => { if (!mf.value && b.isConnected && document.activeElement !== mf) b.remove(); }, 150); });
+      mf.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); let r = +b.dataset.rang + 2; while (occupe(+b.dataset.col, r)) r += 2; nouveau(+b.dataset.col, r); } });
       ["keydown", "keypress", "input", "paste"].forEach(t => mf.addEventListener(t, ev => ev.stopPropagation()));
+      // déplacer le calcul avec sa poignée (aimanté à la grille)
+      b.querySelector(".fm-poignee").onpointerdown = ev => {
+        ev.preventDefault(); const pr = page.getBoundingClientRect(), dx = ev.clientX - b.getBoundingClientRect().left, dy = ev.clientY - b.getBoundingClientRect().top;
+        b.classList.add("deplace");
+        const bouger = e => placer(b, Math.max(0, Math.round((e.clientX - pr.left - dx) / FM_CASE)), Math.max(0, Math.round((e.clientY - pr.top - dy) / FM_CASE)));
+        const fin = () => { b.classList.remove("deplace"); removeEventListener("pointermove", bouger); removeEventListener("pointerup", fin); };
+        addEventListener("pointermove", bouger); addEventListener("pointerup", fin);
+      };
+      return mf;
     };
-    const ajouter = apres => {
-      const div = document.createElement("div"); div.innerHTML = fmLigne(0, "");
-      const l = div.firstElementChild; apres ? apres.after(l) : f.querySelector(".fm-lignes").appendChild(l);
-      renumeroter(); brancherSuppr(l); const mf = l.querySelector(".fm-champ"); preparer(mf); setTimeout(() => mf.focus(), 30);
-    };
-    const brancherSuppr = l => { l.querySelector("[data-fm-suppr]").onclick = () => { if (lignes().length > 1){ l.remove(); renumeroter(); } else l.querySelector(".fm-champ").value = ""; }; };
-    lignes().forEach(preparer); f.querySelectorAll(".fm-ligne").forEach(brancherSuppr);
+    const nouveau = (col, rang) => { const t = document.createElement("div"); t.innerHTML = fmBloc(col, rang, ""); const b = t.firstElementChild; page.appendChild(b); placer(b, col, rang);
+      const mf = preparer(b); setTimeout(() => mf.focus(), 30); return mf; };
+    blocs().forEach(preparer);
+    page.addEventListener("pointerdown", ev => {
+      if (ev.target !== page) return; ev.preventDefault();
+      const r = page.getBoundingClientRect(), col = Math.max(0, Math.floor((ev.clientX - r.left) / FM_CASE)), rang = Math.max(0, Math.round((ev.clientY - r.top) / FM_CASE - .5));
+      nouveau(col, rang);
+    });
     f.querySelectorAll("[data-fm-outil]").forEach(b => {
       b.onmousedown = ev => ev.preventDefault();
-      b.onclick = () => { const mf = dernier && dernier.isConnected ? dernier : lignes()[0]; if (!mf) return; mf.focus(); mf.executeCommand(["insert", FM_OUTILS[+b.dataset.fmOutil][1], {focus: true, selectionMode: "placeholder"}]); };
+      b.onclick = () => { let mf = dernier && dernier.isConnected ? dernier : null;
+        if (!mf){ let r = 1; while (occupe(FM_MARGE + 1, r)) r += 2; mf = nouveau(FM_MARGE + 1, r); }
+        mf.focus(); setTimeout(() => mf.executeCommand(["insert", FM_OUTILS[+b.dataset.fmOutil][1], {focus: true, selectionMode: "placeholder"}]), 40); };
     });
-    f.querySelector("[data-fm-ajout]").onclick = () => ajouter(dernier && dernier.isConnected ? dernier.closest(".fm-ligne") : null);
+    f.querySelector("[data-fm-ajout]").onclick = () => { const r = +page.dataset.rangs + 8; page.dataset.rangs = r; page.style.height = r * FM_CASE + "px"; };
     const vider = f.querySelector("[data-fm-vider]"); let confirmer = false;
     vider.onclick = () => { if (!confirmer){ confirmer = true; vider.textContent = "Confirmer ?"; setTimeout(() => { confirmer = false; vider.textContent = "↺ Tout effacer"; }, 2500); return; }
-      confirmer = false; vider.textContent = "↺ Tout effacer"; lignes().forEach(mf => mf.value = ""); };
+      confirmer = false; vider.textContent = "↺ Tout effacer"; blocs().forEach(b => b.remove()); dernier = null; };
   }));
 }
 MODULES.splice(MODULES.findIndex(m => m.id === "fonction"), 0,
-  {id: "fiche-maths", nom: "Fiche de calcul", cat: "Maths", icone: "√x", defaut: () => ({titre: "Fiche de calcul", consigne: "", lignes: "", vides: 4, outils: true}),
+  {id: "fiche-maths", nom: "Brouillon de calcul", cat: "Maths", icone: "√x", defaut: () => ({titre: "Brouillon", consigne: "", lignes: "", vides: 6, outils: true}),
     champs: [CHAMP("titre", "Titre"), CHAMP("consigne", "Consigne (facultatif)", "texte", {aide: "Ex. : Calcule et donne le résultat sous forme de fraction irréductible."}),
-      CHAMP("lignes", "Lignes déjà écrites (facultatif)", "zone", {aide: "Une ligne par calcul, écrit comme sur une calculatrice : 3/4 + 5/6 = ; sqrt(49) ; 2x + 3 = 7 ; x^2 ; pi*r^2. L'élève peut les compléter."}),
-      CHAMP("vides", "Lignes vides en plus", "nombre", {min: 0, max: 12}), CHAMP("outils", "Barre de symboles (fraction, racine, puissance…)", "case")],
+      CHAMP("lignes", "Lignes déjà écrites (facultatif)", "zone", {aide: "Une ligne par calcul, écrit comme sur une calculatrice : 3/4 + 5/6 = ; sqrt(49) ; 2x + 3 = 7 ; x^2 ; pi*r^2. Ils sont placés en haut de la page et l'élève peut les compléter."}),
+      CHAMP("vides", "Hauteur de la page (lignes libres en plus)", "nombre", {min: 0, max: 30}), CHAMP("outils", "Barre de symboles (fraction, racine, puissance…)", "case")],
     rendu: htmlFicheMaths}
 );
 /* ===================== GÉRANT : ÉDITEUR D'EXERCICES (simplifié) ===================== */
