@@ -4742,10 +4742,27 @@ function remplirSommaires(racine){
     som.innerHTML = parties.length ? `<ol>${parties.map(h => `<li><a href="#${h.id}" data-partie="${h.id}">${esc(h.textContent.trim().replace(/^\d+\s*[.)-]\s*/, "").replace(/\s*:\s*$/, ""))}</a></li>`).join("")}</ol>`
       : `<p class="doux">Sommaire : transforme des lignes en titres de partie avec le bouton « § Partie » pour qu'elles apparaissent ici.</p>`;
     som.querySelectorAll("[data-partie]").forEach(a => a.onclick = ev => { ev.preventDefault(); const h = doc.querySelector("#" + CSS.escape(a.dataset.partie)); if (!h) return;
-      h.scrollIntoView({behavior: "smooth", block: "start"}); h.classList.remove("partie-flash"); h.getBoundingClientRect(); h.classList.add("partie-flash"); });
+      allerAPartie(h, doc); h.classList.remove("partie-flash"); h.getBoundingClientRect(); h.classList.add("partie-flash"); });
   });
 }
 
+// Fait défiler jusqu'à la partie pour que sa ligne arrive en haut de l'écran (sous la barre du ruban en édition),
+// même quand la partie est vers la fin de la leçon : on ajoute alors l'espace qui manque sous le document.
+function allerAPartie(h, doc){
+  let zone = h.parentElement;
+  while (zone && zone !== document.body){ const o = getComputedStyle(zone).overflowY; if (/(auto|scroll)/.test(o) && zone.scrollHeight > zone.clientHeight) break; zone = zone.parentElement; }
+  const fenetre = !zone || zone === document.body, sc = fenetre ? document.scrollingElement : zone;
+  const haut = fenetre ? 0 : zone.getBoundingClientRect().top, visible = fenetre ? innerHeight : zone.clientHeight;
+  const ruban = doc.classList.contains("edition") ? document.querySelector(".barre-outils") : null;
+  const marge = 20 + (ruban ? ruban.getBoundingClientRect().height + 8 : 0);
+  const cible = sc.scrollTop + h.getBoundingClientRect().top - haut - marge;
+  const manque = cible - (sc.scrollHeight - visible);
+  if (manque > 0){ const boite = doc.classList.contains("edition") ? doc.parentElement : doc;   // en édition : hors du texte enregistré
+    const r = boite.querySelector(":scope > .rallonge-sommaire") || boite.appendChild(Object.assign(document.createElement("div"), {className: "rallonge-sommaire", contentEditable: "false"}));
+    r.style.height = (r.offsetHeight + manque + 2) + "px";
+    if (boite !== doc) doc.addEventListener("input", () => r.remove(), {once: true}); }
+  (fenetre ? window : zone).scrollTo({top: Math.max(0, cible), behavior: "smooth"});
+}
 /* ----- Nettoyage du HTML : seules les balises et styles de mise en forme sont gardés ----- */
 const BALISES_OK = new Set(["P","DIV","BR","SPAN","FONT","B","STRONG","I","EM","U","S","STRIKE","H1","H2","H3","UL","OL","LI","BLOCKQUOTE","FIGURE","IMG","FIGCAPTION","TABLE","THEAD","TBODY","TR","TH","TD","SUP","SUB"]);
 const STYLES_OK = ["color","background-color","font-family","font-size","font-weight","font-style","text-decoration","text-decoration-line","text-align","left","top","width","vertical-align","--puce"];
