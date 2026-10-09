@@ -1058,6 +1058,19 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .et-mode-emploi{margin:0;font-size:.9rem;color:var(--doux)}.et-mode-emploi b{color:var(--texte)}
 .et-feuille .obj-doc,.et-feuille .lg-mod{width:100%;max-width:none}
 .et-case{display:flex;gap:8px;align-items:center;font-size:.86rem;color:var(--doux)}
+@font-face{font-family:"Playwrite FR Moderne";font-style:normal;font-weight:400;font-display:swap;src:url(vendor/fonts/playwrite-fr-moderne-latin-400-normal.woff2) format("woff2")}
+.cp-copie{display:flex;flex-direction:column;gap:8px}
+.cp-tete{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}.cp-tete .doux{font-size:.86rem}
+.cp-page{position:relative;padding:calc(var(--lh) * .9) 18px calc(var(--lh) * .6) 74px;border-radius:12px;border:1px solid var(--ligne);
+  background-color:color-mix(in srgb,var(--surface) 92%,#5fa8d3);
+  background-image:linear-gradient(90deg,transparent 58px,color-mix(in srgb,#e86f9a 75%,transparent) 58px,color-mix(in srgb,#e86f9a 75%,transparent) 60px,transparent 60px),
+    repeating-linear-gradient(180deg,transparent 0,transparent calc(var(--lh) - 1px),color-mix(in srgb,#5fa8d3 45%,transparent) calc(var(--lh) - 1px),color-mix(in srgb,#5fa8d3 45%,transparent) var(--lh));
+  background-position:0 0,0 calc(var(--lh) * .9);background-repeat:no-repeat,repeat;cursor:text}
+.cp-ligne{height:var(--lh);line-height:calc(var(--lh) * 1.05);white-space:pre;overflow:hidden;outline:none;font:400 17px/calc(var(--lh) * 1.02) "Playwrite FR Moderne","Segoe Script","Bradley Hand",cursive;color:color-mix(in srgb,#9cc8ff 80%,var(--texte));padding:0 2px;caret-color:var(--accent)}
+.cp-ligne:focus{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.cp-ecrit{font-family:"Playwrite FR Moderne",cursive;font-size:.95rem;color:color-mix(in srgb,#9cc8ff 80%,var(--texte))}
+.et-details{margin:4px 0 0;padding-left:1.2em}.et-details li{margin:2px 0}
+.et-trouve{color:var(--doux)}
 .et-questions>li{padding:12px 14px;background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r)}
 .et-questions>li::marker{font-weight:700;color:#5fa8d3}
 .et-questions>li.juste{border-color:#6fbf73}.et-questions>li.faux{border-color:#e86f9a}
@@ -4182,7 +4195,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.80";
+const VERSION_SITE = "0.81";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -9297,6 +9310,210 @@ function brancherEditeurSerie(){
     } catch (err){ statut(erreurEcriture(err)); btn.disabled = false; }
   };
 }
+/* ===================== COPIE À LIGNES (exercices types de rédaction) =====================
+   Une page de copie à lignes : on clique sur une ligne pour écrire, en écriture manuscrite (Playwrite FR Moderne).
+   La correction cherche la réponse dans toute la copie, la vérifie au mot près et contrôle son sens :
+   chaque question a des « idées attendues » (mots ou expressions et leurs synonymes), des contresens
+   à éviter et des citations à recopier exactement.
+   Syntaxe des idées attendues, une par ligne :
+     peur | crainte | effroi        → idée obligatoire (un des mots suffit, accords et conjugaisons acceptés)
+     - heureux | joyeux             → contresens : ne doit pas être affirmé
+     = comme un oiseau blessé       → citation à recopier exactement, au mot près */
+const CP_LH = 36, CP_LIGNES = 22;
+function htmlCopie(o = {}){
+  const n = Math.max(8, +o.lignes || CP_LIGNES);
+  return `<div class="cp-copie" data-cp="1">
+    <div class="cp-tete"><b>${esc(o.titre || "Ma copie")}</b><span class="doux">${esc(o.aide || "Clique sur une ligne pour écrire. Commence chaque réponse par son numéro : 1. 2. 3. …")}</span></div>
+    <div class="cp-page" style="--lh:${CP_LH}px">${Array.from({length: n}, () => `<div class="cp-ligne" contenteditable="true" spellcheck="false" role="textbox" aria-label="Ligne de la copie"></div>`).join("")}</div>
+    <div class="fm-pied"><button type="button" class="mini-btn" data-cp-ajout>+ Ajouter des lignes</button><button type="button" class="mini-btn" data-cp-vider>↺ Tout effacer</button>
+      <span class="fm-aide"><b>Entrée</b> = ligne suivante · <b>↑ ↓</b> pour changer de ligne · le texte passe tout seul à la ligne quand elle est pleine.</span></div></div>`;
+}
+const cpLignes = racine => [...racine.querySelectorAll(".cp-ligne")];
+const cpTexte = el => el.textContent.replace(/ /g, " ");
+function cpCurseur(el, pos){
+  el.focus({preventScroll: true});
+  const t = el.firstChild, sel = getSelection(), r = document.createRange();
+  if (!t){ r.setStart(el, 0); } else { r.setStart(t, Math.max(0, Math.min(pos, t.length))); }
+  r.collapse(true); sel.removeAllRanges(); sel.addRange(r);
+}
+function cpPosition(el){ const s = getSelection(); if (!s.rangeCount || !el.contains(s.anchorNode)) return cpTexte(el).length;
+  const r = s.getRangeAt(0).cloneRange(); r.selectNodeContents(el); r.setEnd(s.anchorNode, s.anchorOffset); return r.toString().length; }
+function brancherCopie(racine){
+  (racine.querySelectorAll ? racine.querySelectorAll(".cp-copie[data-cp]") : []).forEach(c => {
+    if (c.dataset.pret) return; c.dataset.pret = "1";
+    const page = c.querySelector(".cp-page");
+    const nouvelleLigne = apres => { const d = document.createElement("div"); d.className = "cp-ligne"; d.contentEditable = "true"; d.spellcheck = false; d.setAttribute("role", "textbox"); d.setAttribute("aria-label", "Ligne de la copie");
+      if (apres) apres.after(d); else page.appendChild(d); return d; };
+    const suivante = el => el.nextElementSibling || nouvelleLigne(el);
+    // texte trop long : les derniers mots passent au début de la ligne suivante
+    const deborder = el => {
+      let pos = cpPosition(el), focus = document.activeElement === el, cible = null;
+      for (let garde = 0; el.scrollWidth > el.clientWidth + 1 && garde < 60; garde++){
+        const t = cpTexte(el), k = t.trimEnd().lastIndexOf(" ");
+        if (k <= 0) break;
+        const reste = t.slice(k + 1), n = suivante(el);
+        el.textContent = t.slice(0, k);
+        n.textContent = reste + (cpTexte(n).trim() ? " " + cpTexte(n).trimStart() : "");
+        if (pos > k){ cible = [n, pos - k - 1]; }
+        deborder(n);
+      }
+      if (focus && cible) cpCurseur(cible[0], cible[1]);
+    };
+    page.addEventListener("input", e => { if (e.target.classList.contains("cp-ligne")) deborder(e.target); });
+    page.addEventListener("paste", e => { if (!e.target.classList.contains("cp-ligne")) return; e.preventDefault();
+      document.execCommand("insertText", false, (e.clipboardData.getData("text/plain") || "").replace(/\s+/g, " ")); });
+    page.addEventListener("keydown", e => {
+      const el = e.target; if (!el.classList || !el.classList.contains("cp-ligne")) return;
+      e.stopPropagation();
+      const pos = cpPosition(el), t = cpTexte(el);
+      if (e.key === "Enter"){ e.preventDefault();
+        // coupe la ligne au curseur : la fin descend sur une nouvelle ligne
+        const fin = t.slice(pos); el.textContent = t.slice(0, pos);
+        const n = nouvelleLigne(el); n.textContent = fin;
+        const vide = [...page.children].reverse().find(x => x !== n && !cpTexte(x).trim() && x.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_PRECEDING);
+        if (vide && page.children.length > CP_LIGNES) vide.remove();
+        cpCurseur(n, 0); return; }
+      if (e.key === "Backspace" && pos === 0 && el.previousElementSibling && !getSelection().toString()){ e.preventDefault();
+        const p = el.previousElementSibling, pt = cpTexte(p).replace(/\s+$/, ""), joint = pt + (pt && t ? " " : "") + t;
+        p.textContent = joint; el.remove(); nouvelleLigne(null); cpCurseur(p, pt.length + (pt && t ? 1 : 0)); deborder(p); return; }
+      if (e.key === "ArrowUp" && el.previousElementSibling){ e.preventDefault(); cpCurseur(el.previousElementSibling, pos); }
+      if (e.key === "ArrowDown"){ e.preventDefault(); cpCurseur(suivante(el), pos); }
+    });
+    // un clic sur la ligne place le curseur en fin de texte si l'on clique après le texte
+    page.addEventListener("mousedown", e => { const el = e.target; if (!el.classList.contains("cp-ligne")) return;
+      const r = document.createRange(); r.selectNodeContents(el); const b = r.getBoundingClientRect();
+      if (!cpTexte(el) || e.clientX > b.right){ e.preventDefault(); cpCurseur(el, cpTexte(el).length); } });
+    c.querySelector("[data-cp-ajout]").onclick = () => { for (let i = 0; i < 8; i++) nouvelleLigne(null); };
+    const vider = c.querySelector("[data-cp-vider]"); let conf = false;
+    vider.onclick = () => { if (!conf){ conf = true; vider.textContent = "Confirmer ?"; setTimeout(() => { conf = false; vider.textContent = "↺ Tout effacer"; }, 2500); return; }
+      conf = false; vider.textContent = "↺ Tout effacer"; cpLignes(c).forEach(l => l.textContent = ""); };
+  });
+}
+const lireCopie = racine => cpLignes(racine).map(cpTexte);
+
+/* ----- Analyse du texte : mots, racines, négations ----- */
+const CP_VIDES = new Set("le la les l un une des de du d au aux a à et ou en dans sur sous pour par avec ce cet cette ces c se s sa son ses leur leurs il elle ils elles on qui que qu est sont été être était étaient y lui me m te t nous vous je j tu mon ma mes ton ta tes notre nos votre vos cela ça ceci".split(" "));
+const CP_NEG = new Set(["pas", "jamais", "aucun", "aucune", "sans", "nullement", "guère", "ni", "non"]), CP_NEG_NE = new Set(["plus", "rien", "personne"]);
+const cpSansAccent = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "");
+const CP_SUFFIXES = ["issements", "issement", "ements", "ement", "atrices", "atrice", "ateurs", "ateur", "ations", "ation", "euses", "euse", "aient", "ives", "ive", "ifs", "ées", "ée", "és", "ait", "ais", "ant", "ent", "er", "ez", "ions", "iez", "ons", "if", "é", "es", "e", "s", "x"];
+function cpRacine(w){ for (const s of CP_SUFFIXES) if (w.endsWith(s) && w.length - s.length >= 3) return w.slice(0, -s.length); return w; }
+// mots du texte, avec le numéro de proposition (une négation ne dépasse pas une virgule, « car », « mais »…)
+const CP_COUPURES = new Set(["car", "mais", "parce", "puisque", "donc", "or", "alors", "cependant", "pourtant", "lorsque", "quand"]);
+function cpMots(t){
+  const r = []; let prop = 0;
+  for (const m of String(t).toLowerCase().replace(/[’`]/g, "'").matchAll(/[a-zà-ÿœæ0-9]+(?:-[a-zà-ÿœæ0-9]+)*|[,;:.!?…()«»"]/g)){
+    const w = m[0];
+    if (!/[a-zà-ÿœæ0-9]/.test(w)){ prop++; continue; }
+    if (CP_COUPURES.has(w)) prop++;
+    r.push({m: w, r: cpRacine(w), n: cpRacine(cpSansAccent(w)), vide: CP_VIDES.has(w), neg: CP_NEG.has(w) || w === "ne" || w === "n" || CP_NEG_NE.has(w), prop});
+  }
+  return r;
+}
+function cpLev(a, b){ if (Math.abs(a.length - b.length) > 2) return 3; const d = Array.from({length: a.length + 1}, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length]; }
+// la forme trouvée est-elle niée (ne… pas, jamais, sans…) ?
+function cpNiee(mots, i){
+  const av = mots.slice(Math.max(0, i - 5), i).filter(x => x.prop === mots[i].prop).map(x => x.m), ne = av.includes("ne") || av.includes("n");
+  return av.some(m => CP_NEG.has(m)) || (ne && av.some(m => CP_NEG_NE.has(m)));
+}
+// cherche une expression dans une liste de mots : {exact, approx:[[écrit, attendu]], niee}
+function cpChercher(expr, mots){
+  const e = cpMots(expr), aNeg = e.some(x => x.neg), cle = e.filter(x => !x.vide && !(x.neg && !aNeg)), base = cle.length ? cle : e;
+  const idx = mots.map((x, i) => i).filter(i => !mots[i].vide || !cle.length);
+  let meilleur = null;
+  for (let s = 0; s + base.length <= idx.length; s++){
+    let exact = true, approx = [];
+    for (let k = 0; k < base.length; k++){
+      const w = mots[idx[s + k]], a = base[k];
+      if (w.m === a.m) continue;
+      if (cpSansAccent(w.m) === cpSansAccent(a.m)){ exact = false; approx.push([w.m, a.m]); continue; }   // accent oublié ou en trop
+      if (w.r === a.r) continue;                                                                       // accord ou conjugaison
+      if (w.n === a.n || (a.m.length >= 5 && cpLev(cpSansAccent(w.m), cpSansAccent(a.m)) <= 1) || (a.r.length >= 5 && cpLev(w.n, a.n) <= 1)){ exact = false; approx.push([w.m, a.m]); continue; }
+      exact = null; break;
+    }
+    if (exact === null) continue;
+    const r = {exact, approx, niee: !aNeg && cpNiee(mots, idx[s]), pos: idx[s]};
+    if (!meilleur || (r.exact && !meilleur.exact)) meilleur = r;
+    if (r.exact) break;
+  }
+  return meilleur;
+}
+const cpNormCitation = t => String(t).replace(/[«»“”"]/g, " ").replace(/[’`]/g, "'").replace(/\s+/g, " ").trim().replace(/^[\s.,;:!?…]+|[\s.,;:!?…]+$/g, "");
+// Lit les idées attendues d'une question
+function lireIdees(txt){
+  const r = {idees: [], contresens: [], citations: []};
+  String(txt || "").split("\n").map(l => l.trim()).filter(Boolean).forEach(l => {
+    if (l.startsWith("=")) r.citations.push(l.slice(1).split("|").map(cpNormCitation).filter(Boolean));
+    else if (l.startsWith("-")) r.contresens.push(l.slice(1).split("|").map(x => x.trim()).filter(Boolean));
+    else r.idees.push(l.split("|").map(x => x.trim()).filter(Boolean));
+  });
+  r.idees = r.idees.filter(x => x.length); r.contresens = r.contresens.filter(x => x.length); r.citations = r.citations.filter(x => x.length);
+  return r;
+}
+// Découpe la copie en réponses numérotées « 1. », « 2) », « Question 3 : »…
+function cpSections(lignes){
+  const sec = {}, sans = []; let cur = null;
+  lignes.forEach(l => {
+    const m = /^\s*(?:question\s*|q\s*)?(\d{1,2})\s*[).:/–-]\s*(.*)$/i.exec(l);
+    if (m){ cur = +m[1]; sec[cur] = (sec[cur] ? sec[cur] + "\n" : "") + m[2]; }
+    else if (cur !== null) sec[cur] += "\n" + l;
+    else sans.push(l);
+  });
+  return {sec, sans: sans.join("\n")};
+}
+const cpPhrases = t => String(t).replace(/\n+/g, " ").split(/(?<=[.!?…])\s+/).map(x => x.trim()).filter(Boolean);
+// Correction d'une question de rédaction : {ok, titre, details:[…]}
+function corrigerRedaction(q, numero, lignes, vals){
+  const att = lireIdees(remplirTexte(q.attendu, vals)), {sec} = cpSections(lignes), tout = lignes.join("\n");
+  const aSection = sec[numero] !== undefined && sec[numero].trim();
+  // candidats : la réponse numérotée, sinon chaque phrase (et deux phrases qui se suivent) de toute la copie
+  let cands;
+  if (aSection) cands = [sec[numero]];
+  else { const ph = cpPhrases(tout); cands = ph.flatMap((p, i) => i < ph.length - 1 ? [p, p + " " + ph[i + 1]] : [p]); }
+  if (!cands.length || !tout.trim()) return {ok: false, titre: "Aucune réponse trouvée", details: [`Écris ta réponse sur la copie, en la commençant par « ${numero}. ».`]};
+  const evaluer = c => {
+    const mots = cpMots(c), r = {c, idees: [], contre: [], cit: [], score: 0};
+    att.idees.forEach(alts => { const t = alts.map(a => [a, cpChercher(a, mots)]).filter(x => x[1]);
+      const ex = t.find(x => x[1].exact && !x[1].niee), ap = t.find(x => !x[1].niee), ni = t.find(x => x[1].niee);
+      const etat = ex ? "ok" : ap ? "ortho" : ni ? "niee" : "manque"; r.idees.push({alts, etat, x: (ex || ap || ni || [])[1]});
+      r.score += {ok: 10, ortho: 6, niee: -4, manque: 0}[etat]; });
+    att.contresens.forEach(alts => { const t = alts.map(a => [a, cpChercher(a, mots)]).find(x => x[1] && !x[1].niee); if (t){ r.contre.push(t[0]); r.score -= 12; } });
+    const plat = cpNormCitation(c);
+    att.citations.forEach(alts => { const ok = alts.some(ci => plat.includes(ci) || plat.toLowerCase().includes(ci.toLowerCase())); r.cit.push({alts, ok}); r.score += ok ? 10 : 0; });
+    return r;
+  };
+  const best = cands.map(evaluer).sort((a, b) => b.score - a.score || a.c.length - b.c.length)[0];
+  const d = [];
+  best.idees.forEach(i => {
+    if (i.etat === "manque") d.push(`Il manque l'idée « ${i.alts[0]} »${i.alts.length > 1 ? ` (ou : ${i.alts.slice(1, 4).join(", ")})` : ""}.`);
+    if (i.etat === "niee") d.push(`Contresens : tu écris le contraire de « ${i.alts[0]} » (forme négative).`);
+    if (i.etat === "ortho") i.x.approx.forEach(([e, a]) => d.push(`Orthographe : « ${e} » s'écrit « ${a} ».`));
+  });
+  best.contre.forEach(c => d.push(`Contresens : « ${c} » ne correspond pas au texte.`));
+  best.cit.filter(x => !x.ok).forEach(x => {
+    const mots = cpNormCitation(best.c).split(" ");
+    let pire = null;
+    x.alts.forEach(ci => { const cm = ci.split(" ");
+      for (let s = 0; s + cm.length <= mots.length; s++){ const diff = cm.map((w, k) => [mots[s + k], w]).filter(([a, b]) => a.toLowerCase() !== b.toLowerCase());
+        const proches = cm.length >= 3 && diff.every(([a, b]) => cpLev(cpSansAccent(a.toLowerCase()), cpSansAccent(b.toLowerCase())) <= (Math.min(a.length, b.length) <= 3 ? 1 : 2));
+        if (proches && diff.length <= Math.ceil(cm.length / 3) && (!pire || diff.length < pire.length)) pire = diff; } });
+    if (pire && pire.length) d.push(`Citation mal recopiée : ${pire.map(([a, b]) => `« ${a} » au lieu de « ${b} »`).join(", ")}. Recopie le texte au mot près.`);
+    else d.push(`Il manque une citation exacte du texte, par exemple : « ${x.alts[0]} ».`);
+  });
+  // phrase réponse
+  if (q.phrase !== false){
+    const p = best.c.replace(/\n+/g, " ").trim(), nb = cpMots(p).length;
+    if (nb < 4) d.push("Réponds par une phrase complète, pas seulement par quelques mots.");
+    if (!/^[«"“(]?[A-ZÀ-ÖØ-ÞŒ]/.test(p)) d.push("Ta phrase réponse doit commencer par une majuscule.");
+    if (!/[.!?…»"]$/.test(p)) d.push("Ta phrase réponse doit finir par un point.");
+  }
+  const sansSec = !aSection && Object.keys(sec).length ? ` (je n'ai pas trouvé de réponse commençant par « ${numero}. », j'ai cherché dans toute la copie)` : "";
+  if (!d.length) return {ok: true, titre: "Juste", details: [], trouve: best.c};
+  const fond = best.idees.some(i => i.etat === "manque" || i.etat === "niee") || best.contre.length;
+  return {ok: false, titre: (fond ? "Réponse incomplète ou inexacte" : "Presque : réponse juste mais à corriger") + sansSec, details: d, trouve: best.c};
+}
 /* ===================== EXERCICES TYPES (« exos précis ») =====================
    Deux sortes d'exercices :
    - les exercices en chaîne (type "chaine", par défaut) : une suite de questions différentes, une par une ;
@@ -9394,15 +9611,18 @@ function problemesExoType(x){
   if (!String(x.titre || "").trim()) p.push("Donne un titre à l'exercice.");
   if (!String(x.enonce || "").trim()) p.push("Écris l'énoncé.");
   p.push(...lv.erreurs);
-  const qs = (x.questions || []).filter(q => String(q.q || "").trim() || String(q.rep || "").trim());
+  const qs = (x.questions || []).filter(q => String(q.q || "").trim() || String(q.rep || "").trim() || String(q.attendu || "").trim());
   if (!qs.length) p.push("Ajoute au moins une question.");
-  qs.forEach((q, i) => { if (!String(q.q || "").trim()) p.push(`Question ${i + 1} : écris la consigne.`); if (!String(q.rep || "").trim()) p.push(`Question ${i + 1} : indique la réponse attendue.`); });
+  const lignes = feuilleDe(x) === "lignes";
+  qs.forEach((q, i) => { if (!String(q.q || "").trim()) p.push(`Question ${i + 1} : écris la consigne.`);
+    if (lignes){ const a = lireIdees(q.attendu); if (!a.idees.length && !a.citations.length) p.push(`Question ${i + 1} : indique au moins une idée attendue ou une citation.`); }
+    else if (!String(q.rep || "").trim()) p.push(`Question ${i + 1} : indique la réponse attendue.`); });
   if (!lv.erreurs.length){
     for (let k = 0; k < 20 && p.length < 8; k++){
       const vals = tirerValeurs(x.variables);
       if (!vals){ p.push("Les conditions (lignes « ? ») ne sont presque jamais respectées : élargis les intervalles."); break; }
-      qs.forEach((q, i) => { const a = attenduDe(q, vals); if (a.nombre && !Number.isFinite(a.v) && !p.some(t => t.startsWith(`Question ${i + 1} : la formule`))) p.push(`Question ${i + 1} : la formule « ${q.rep} » ne se calcule pas (variable inconnue ou division par zéro ?).`); });
-      const txt = [x.enonce, ...qs.map(q => q.q + " " + (q.exp || ""))].join(" ");
+      if (!lignes) qs.forEach((q, i) => { const a = attenduDe(q, vals); if (a.nombre && !Number.isFinite(a.v) && !p.some(t => t.startsWith(`Question ${i + 1} : la formule`))) p.push(`Question ${i + 1} : la formule « ${q.rep} » ne se calcule pas (variable inconnue ou division par zéro ?).`); });
+      const txt = [x.enonce, ...qs.map(q => q.q + " " + (q.exp || "") + " " + (q.attendu || ""))].join(" ");
       (txt.match(/\{(?![=?])([^{}]+)\}/g) || []).forEach(t => { const k = t.slice(1, -1).trim(); if (!(k in vals) && !p.some(e => e.includes(`{${k}}`))) p.push(`{${k}} est utilisé dans un texte mais n'est pas défini dans les variables.`); });
     }
   }
@@ -9472,7 +9692,8 @@ function lancerExoType(s, vals){
   rafraichir = null; fermerBrouillon();
   vals = vals || tirerValeurs(s.variables) || {};
   const qs = s.questions.filter(q => String(q.q || "").trim());
-  const att = qs.map(q => attenduDe(q, vals));
+  const lignes = feuilleDe(s) === "lignes";
+  const att = qs.map(q => lignes ? null : attenduDe(q, vals));
   const feuille = {kind: "module", type: "fiche-maths", titre: "Ma copie", consigne: "", lignes: "", vides: 26, outils: true, texte: true, reponses: qs.length};
   zone().innerHTML = entete(esc(nomMatiere(s.matiere) + " · Exercice type"), esc(s.titre)) + `
     <div class="exo-type-page">
@@ -9480,13 +9701,15 @@ function lancerExoType(s, vals){
         <button type="button" class="mini-btn" id="et-autres" title="Le même exercice avec d'autres valeurs (la feuille est effacée)">↻ Autres valeurs</button></div>
         <div class="et-texte">${esc(remplirTexte(s.enonce, vals)).replace(/\n/g, "<br>")}</div>
         <ol class="et-consignes">${qs.map((q, i) => `<li data-i="${i}">${esc(remplirTexte(q.q, vals)).replace(/\n/g, "<br>")}${q.phrase !== false ? ` <span class="et-ph" title="La réponse doit être une phrase">phrase réponse</span>` : ""}<div class="et-corr" hidden></div></li>`).join("")}</ol></div>
-      <p class="et-mode-emploi">Fais tes calculs où tu veux sur la feuille (<b>√x Calcul</b>), puis écris ta phrase réponse (<b>Aa Phrase</b>). Pour rendre une réponse : clique dans ta ligne, puis sur le numéro de la question dans <b>✓ Réponse</b>.</p>
-      <div class="et-feuille">${rendreModule(feuille)}</div>
+      ${lignes ? `<p class="et-mode-emploi">Rédige tes réponses sur la copie, comme sur une feuille de classe. Commence chaque réponse par le numéro de la question (<b>1.</b>, <b>2.</b>…) et réponds par des phrases complètes. Pour citer le texte, recopie-le exactement entre guillemets.</p>
+      <div class="et-feuille">${htmlCopie({titre: "Ma copie", lignes: Math.max(18, qs.length * 4 + 4)})}</div>`
+      : `<p class="et-mode-emploi">Fais tes calculs où tu veux sur la feuille (<b>√x Calcul</b>), puis écris ta phrase réponse (<b>Aa Phrase</b>). Pour rendre une réponse : clique dans ta ligne, puis sur le numéro de la question dans <b>✓ Réponse</b>.</p>
+      <div class="et-feuille">${rendreModule(feuille)}</div>`}
       <p class="statut" id="et-msg" role="status"></p>
       <div class="rangee"><button class="btn" type="button" id="et-verifier">Vérifier mes réponses</button><button class="btn sec" type="button" id="et-retour">Autres exercices</button></div>
       <div id="et-bilan"></div>
     </div>`;
-  brancherTransitions(zone());
+  if (lignes) brancherCopie(zone()); else brancherTransitions(zone());
   const fiche = () => zone().querySelector(".fm-fiche");
   const msg = (t, ok) => { const m = $("#et-msg"); m.className = "statut " + (ok ? "ok" : "erreur"); m.textContent = t; };
   zone().addEventListener("fm-message", e => msg(e.detail, false));
@@ -9495,9 +9718,16 @@ function lancerExoType(s, vals){
   deuxClics($("#et-autres"), () => lancerExoType(s));
   $("#et-retour").onclick = () => changerVue("exos");
   $("#et-verifier").onclick = () => {
-    const reps = lireReponsesFiche(fiche()); let score = 0;
+    const reps = lignes ? {} : lireReponsesFiche(fiche()), copie = lignes ? lireCopie(zone()) : []; let score = 0;
     zone().querySelectorAll(".fm-bloc[data-rep]").forEach(b => b.classList.remove("rep-juste", "rep-faux"));
     qs.forEach((q, i) => {
+      if (lignes){ const c = corrigerRedaction(q, i + 1, copie, vals), li = zone().querySelector(`.et-consignes li[data-i="${i}"]`), box = li.querySelector(".et-corr");
+        if (c.ok) score++;
+        li.classList.toggle("juste", c.ok); li.classList.toggle("faux", !c.ok); box.hidden = false;
+        box.innerHTML = `<b>${c.ok ? "✓ " : "✗ "}${esc(c.titre)}</b>${c.details.length ? `<ul class="et-details">${c.details.map(d => `<li>${esc(d)}</li>`).join("")}</ul>` : ""}`
+          + (c.trouve && !c.ok ? `<p class="et-trouve">Réponse lue sur ta copie : <span class="cp-ecrit">${esc(c.trouve.replace(/\n+/g, " "))}</span></p>` : "")
+          + (q.exp ? `<p>${c.ok ? "" : "Correction : "}${esc(remplirTexte(q.exp, vals))}</p>` : "");
+        return; }
       const r = reps[i + 1], c = corrigerLigne(q, att[i], r), li = zone().querySelector(`.et-consignes li[data-i="${i}"]`), box = li.querySelector(".et-corr");
       if (c.ok) score++;
       li.classList.toggle("juste", c.ok); li.classList.toggle("faux", !c.ok);
@@ -9520,11 +9750,14 @@ function lancerExoType(s, vals){
 
 /* ----- Gérant : éditeur d'exercice type ----- */
 let et = null;
-const nouvelleQuestionType = () => ({q: "", rep: "", arrondi: "", unite: "", exp: "", phrase: true});
+const nouvelleQuestionType = () => ({q: "", rep: "", arrondi: "", unite: "", exp: "", phrase: true, attendu: ""});
+// Feuille de l'exercice : « grille » (calculs) ou « lignes » (rédaction) ; par défaut selon la matière
+const MATIERES_CALCUL = ["maths", "pc", "svt"];
+const feuilleDe = s => s.feuille === "lignes" || s.feuille === "grille" ? s.feuille : MATIERES_CALCUL.includes(s.matiere) ? "grille" : "lignes";
 function ouvrirExoType(s){
   rafraichir = null;
-  et = s ? {id: s.id, integree: !!s.integree, matiere: s.matiere, titre: s.titre || "", enonce: s.enonce || "", variables: s.variables || "", questions: (s.questions || []).map(q => ({...nouvelleQuestionType(), ...q, arrondi: q.arrondi ?? ""}))}
-    : {id: null, matiere: matiereActive, titre: "", enonce: "", variables: "", questions: [nouvelleQuestionType(), nouvelleQuestionType()]};
+  et = s ? {id: s.id, integree: !!s.integree, matiere: s.matiere, feuille: feuilleDe(s), titre: s.titre || "", enonce: s.enonce || "", variables: s.variables || "", questions: (s.questions || []).map(q => ({...nouvelleQuestionType(), ...q, arrondi: q.arrondi ?? ""}))}
+    : {id: null, matiere: matiereActive, feuille: feuilleDe({matiere: matiereActive}), titre: "", enonce: "", variables: "", questions: [nouvelleQuestionType(), nouvelleQuestionType()]};
   if (!et.questions.length) et.questions.push(nouvelleQuestionType());
   dessinerExoType();
 }
@@ -9535,9 +9768,10 @@ function dessinerExoType(){
       <select id="et-matiere" aria-label="Matière">${MATIERES.map(m => `<option value="${m.id}" ${m.id === et.matiere ? "selected" : ""}>${m.nom}</option>`).join("")}</select>
     </div>
     <p class="doux" style="font-size:.88rem;max-width:80ch">${iconeExoType().replace('width="36" height="44"', 'width="18" height="22" style="display:inline-block;vertical-align:-5px;margin-right:6px"')}<b>Exercice type</b> : un exercice de manuel avec un grand énoncé et des questions numérotées. Les valeurs écrites entre accolades changent à chaque fois que l'élève le fait.</p>
+    <div class="champ"><span class="mono">Feuille de l'élève</span>${segment("et-feuille", [["grille", "Quadrillée · calculs (maths, sciences)"], ["lignes", "À lignes · rédaction (français, histoire…)"]], et.feuille)}</div>
     <div class="et-editeur">
       <div class="et-col">
-        <div class="ed-etape"><span class="ed-etape-n">1</span><span>Variables (valeurs qui changent)</span></div>
+        <div class="ed-etape"><span class="ed-etape-n">1</span><span>Variables (valeurs qui changent)${et.feuille === "lignes" ? " · facultatif" : ""}</span></div>
         <textarea id="et-vars" rows="6" class="ed-champ et-mono" spellcheck="false" placeholder="a = 3..12\np = 5..40 pas 5\nprenom = Léa | Tom | Inès\nc = a*p/100\n? a > 4">${esc(et.variables)}</textarea>
         <p class="aide">Une variable par ligne : <code>a = 3..12</code> nombre entier entre 3 et 12 · <code>t = 0,5..4 pas 0,5</code> · <code>nom = Léa | Tom</code> au choix · <code>c = a*b</code> calculée à partir des autres · <code>? a > b</code> condition à respecter.</p>
         <div class="ed-etape"><span class="ed-etape-n">2</span><span>Énoncé</span><button type="button" class="mini-btn ed-symb" data-symb>Ω Symboles</button></div>
@@ -9550,12 +9784,13 @@ function dessinerExoType(){
               <button type="button" class="mini-btn" data-monte="${i}" ${i ? "" : "disabled"} aria-label="Monter">↑</button><button type="button" class="mini-btn" data-descend="${i}" ${i < et.questions.length - 1 ? "" : "disabled"} aria-label="Descendre">↓</button>
               <button type="button" class="mini-btn danger" data-retire="${i}" ${et.questions.length > 1 ? "" : "disabled"}>Supprimer</button></span></div>
             <label class="et-lab">Consigne<textarea rows="2" class="ed-champ" data-k="q" placeholder="ex. Calcule le prix payé par {prenom} avec le forfait A pour {n} mois.">${esc(q.q)}</textarea></label>
-            <div class="et-ligne">
+            ${et.feuille === "lignes" ? `<label class="et-lab">Idées attendues (une par ligne)<textarea rows="4" class="ed-champ et-mono" data-k="attendu" spellcheck="false" placeholder="peur | crainte | effroi\n- heureux | joyeux\n= comme un oiseau blessé">${esc(q.attendu || "")}</textarea></label>
+            <p class="aide">Une ligne = une idée obligatoire : ses mots ou expressions séparés par <code>|</code> (accords et conjugaisons acceptés, orthographe vérifiée). <code>- mots</code> = contresens à ne pas écrire. <code>= texte</code> = citation à recopier au mot près. La correction cherche la réponse dans toute la copie et repère les phrases à la forme négative.</p>` : `<div class="et-ligne">
               <label class="et-lab" style="flex:2 1 220px">Réponse attendue<input type="text" class="ed-champ et-mono" data-k="rep" value="${esc(q.rep)}" placeholder="=a*n   ou   texte accepté / autre texte"></label>
               <label class="et-lab" style="flex:1 1 120px">Arrondi<select class="ed-champ" data-k="arrondi">${[["", "exact"], ["0", "à l'unité"], ["1", "au dixième"], ["2", "au centième"], ["3", "au millième"]].map(([v, t]) => `<option value="${v}" ${String(q.arrondi) === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>
               <label class="et-lab" style="flex:1 1 100px">Unité<input type="text" class="ed-champ" data-k="unite" value="${esc(q.unite)}" placeholder="€, cm, km/h…"></label>
-            </div>
-            <label class="et-case"><input type="checkbox" data-k="phrase" ${q.phrase !== false ? "checked" : ""}> Phrase réponse obligatoire (une phrase avec majuscule, point${q.unite ? ", unité" : ""} et le bon résultat)</label>
+            </div>`}
+            <label class="et-case"><input type="checkbox" data-k="phrase" ${q.phrase !== false ? "checked" : ""}> Phrase réponse obligatoire (une phrase avec majuscule et point${et.feuille === "lignes" ? "" : `${q.unite ? ", unité" : ""} et le bon résultat`})</label>
             <label class="et-lab">Correction affichée après (facultatif)<textarea rows="2" class="ed-champ" data-k="exp" placeholder="ex. {n} × {a} = {=n*a} €.">${esc(q.exp)}</textarea></label>
           </div>`).join("")}</div>
         <button type="button" class="ed-ajout" id="et-ajout">+ Ajouter une question</button>
@@ -9577,13 +9812,16 @@ function apercuExoType(){
   box.innerHTML = (lv.erreurs.length ? `<p class="statut erreur">${lv.erreurs.map(esc).join("<br>")}</p>` : !vals ? `<p class="statut erreur">Impossible de tirer des valeurs qui respectent les conditions.</p>` : "")
     + (vals && Object.keys(vals).length ? `<p class="et-vals">${Object.entries(vals).map(([k, v]) => `<span><b>${esc(k)}</b> = ${esc(formatFr(v, 6))}</span>`).join("")}</p>` : "")
     + `<div class="et-enonce"><div class="et-texte">${esc(remplirTexte(et.enonce, vals || {})).replace(/\n/g, "<br>") || `<span class="doux">L'énoncé apparaîtra ici.</span>`}</div></div>
-    <ol class="et-questions">${qs.map(q => { const a = vals ? attenduDe(q, vals) : null; return `<li><p class="et-q">${esc(remplirTexte(q.q, vals || {}))}</p>
+    <ol class="et-questions">${qs.map(q => { if (et.feuille === "lignes"){ const a = lireIdees(remplirTexte(q.attendu, vals || {}));
+      return `<li><p class="et-q">${esc(remplirTexte(q.q, vals || {}))}</p><p class="et-attendu">${q.phrase !== false ? "Phrase réponse · " : ""}${a.idees.map(x => `<b>${esc(x.join(" / "))}</b>`).join(" + ") || "—"}${a.contresens.length ? ` · contresens : ${a.contresens.map(x => esc(x.join(" / "))).join(", ")}` : ""}${a.citations.length ? ` · citation : ${a.citations.map(x => "« " + x.map(esc).join(" » ou « ") + " »").join(", ")}` : ""}</p></li>`; }
+      const a = vals ? attenduDe(q, vals) : null; return `<li><p class="et-q">${esc(remplirTexte(q.q, vals || {}))}</p>
       <p class="et-attendu">${q.phrase !== false ? "Phrase réponse · " : ""}Réponse : <b>${a ? esc(a.texte) : "?"}</b>${q.unite ? " " + esc(q.unite) : ""}${a && a.nombre && !Number.isFinite(a.v) ? ` <span class="statut erreur">formule incalculable</span>` : ""}</p></li>`; }).join("")}</ol>`;
 }
 function brancherExoType(){
   const maj = () => apercuExoType();
   $("#et-titre").oninput = e => et.titre = e.target.value;
   $("#et-matiere").onchange = e => et.matiere = e.target.value;
+  zone().querySelectorAll("#et-feuille button").forEach(b => b.onclick = () => { et.feuille = b.dataset.v; dessinerExoType(); });
   $("#et-vars").oninput = e => { et.variables = e.target.value; maj(); };
   $("#et-enonce").oninput = e => { et.enonce = e.target.value; maj(); };
   $("#et-tirer").onclick = maj;
@@ -9600,9 +9838,9 @@ function brancherExoType(){
   $("#enregistrer").onclick = async () => {
     const pb = problemesExoType(et); if (pb.length){ statut(pb[0] + (pb.length > 1 ? ` (+ ${pb.length - 1} autre${pb.length > 2 ? "s" : ""} problème${pb.length > 2 ? "s" : ""})` : ""), false); return; }
     const id = et.id || nouvelId("t"), btn = $("#enregistrer"); btn.disabled = true;
-    const questions = et.questions.filter(q => q.q.trim()).map(q => ({q: q.q.trim(), rep: q.rep.trim(), arrondi: q.arrondi === "" ? "" : +q.arrondi, unite: q.unite.trim(), exp: q.exp.trim(), phrase: q.phrase !== false}));
+    const questions = et.questions.filter(q => q.q.trim()).map(q => ({q: q.q.trim(), rep: (q.rep || "").trim(), arrondi: q.arrondi === "" ? "" : +q.arrondi, unite: (q.unite || "").trim(), exp: (q.exp || "").trim(), phrase: q.phrase !== false, attendu: (q.attendu || "").trim()}));
     try {
-      await db.doc("series/" + id).set({type: "precis", matiere: et.matiere, titre: et.titre.trim(), enonce: et.enonce.trim(), variables: et.variables.trim(), questions, exos: [], majLe: new Date().toISOString()});
+      await db.doc("series/" + id).set({type: "precis", feuille: et.feuille, matiere: et.matiere, titre: et.titre.trim(), enonce: et.enonce.trim(), variables: et.variables.trim(), questions, exos: [], majLe: new Date().toISOString()});
       matiereActive = et.matiere; et = null; Formes.succes(); changerVue("g-exos"); statut("Exercice type enregistré.", true);
     } catch (e){ btn.disabled = false; statut("Enregistrement impossible : " + (e.message || e), false); }
   };
@@ -9610,6 +9848,43 @@ function brancherExoType(){
 
 /* ----- Exercices types fournis avec le site (modifiables par le gérant) ----- */
 const EXOS_TYPES_INTEGRES = [
+  {id: "t-phare", type: "precis", feuille: "lignes", matiere: "francais", titre: "Une nuit au phare",
+    variables: "prenom = Malo | Yanis | Erwan | Théo | Nathan",
+    enonce: "Lis ce texte puis réponds aux questions en rédigeant des phrases complètes.\n\nCe soir-là, {prenom} grimpa seul les cent marches du phare. Le vent hurlait contre les vitres et la mer, noire comme de l'encre, se jetait sur les rochers. Son cœur battait si fort qu'il l'entendait dans ses oreilles. Pourtant, il ne redescendit pas : son grand-père lui avait confié la lampe, et il avait promis de la garder allumée jusqu'à l'aube. Il serra la rambarde glacée, ferma les yeux un instant, puis alluma la mèche. Aussitôt, un long faisceau doré balaya les vagues. Au loin, une petite barque cherchait le port. « Je suis là », murmura-t-il, et sa peur se changea lentement en fierté.",
+    questions: [
+      {q: "Quel sentiment {prenom} éprouve-t-il au début du passage ? Justifie ta réponse par une citation du texte, entre guillemets.", phrase: true,
+        attendu: "peur | crainte | angoisse | effroi | inquiétude | anxiété | terreur | effrayé | apeuré | inquiet | angoissé | terrifié\n- calme | serein | tranquille | heureux | joyeux\n= Son cœur battait si fort | il l'entendait dans ses oreilles | sa peur",
+        exp: "{prenom} a peur : « Son cœur battait si fort qu'il l'entendait dans ses oreilles »."},
+      {q: "Pourquoi {prenom} ne redescend-il pas ?", phrase: true,
+        attendu: "promis | promesse | parole | engagé | engagement\ngrand-père | grand père | papi | grand-pere",
+        exp: "Il a promis à son grand-père de garder la lampe allumée jusqu'à l'aube : il tient sa promesse."},
+      {q: "Relève la comparaison qui décrit la mer.", phrase: true,
+        attendu: "= noire comme de l'encre",
+        exp: "« noire comme de l'encre » : la mer est comparée à de l'encre (outil de comparaison : comme)."},
+      {q: "Comment les sentiments de {prenom} évoluent-ils à la fin du texte ?", phrase: true,
+        attendu: "peur | crainte | angoisse | effroi\nfierté | fier | courage | courageux | confiance\n- tristesse | triste | colère",
+        exp: "Sa peur se transforme peu à peu en fierté : il a réussi à allumer le phare pour guider la barque."},
+      {q: "À quel temps est conjugué le verbe « grimpa » ?", phrase: true,
+        attendu: "passé simple\n- imparfait | passé composé | présent | plus-que-parfait",
+        exp: "« grimpa » est au passé simple de l'indicatif (verbe grimper, 3e personne du singulier)."}
+    ]},
+  {id: "t-guerre-totale", type: "precis", feuille: "lignes", matiere: "histoire", titre: "1914-1918 : une guerre totale",
+    variables: "",
+    enonce: "Document : de 1914 à 1918, la France mobilise près de 8 millions d'hommes. À l'arrière, les femmes remplacent les hommes partis au front, dans les champs et dans les usines, où elles fabriquent notamment des obus. L'État contrôle l'économie et l'information : la censure interdit de publier certaines nouvelles et la propagande appelle toute la population à soutenir l'effort de guerre. Des emprunts sont lancés pour financer le conflit. Les colonies fournissent aussi des soldats et des travailleurs.",
+    questions: [
+      {q: "Quel rôle jouent les femmes à l'arrière pendant la guerre ?", phrase: true,
+        attendu: "remplacent | remplacer | remplacement | remplaçant | travaillent | travailler | travail\nusine | obus | munitions | champ | agriculture | industrie",
+        exp: "Les femmes remplacent les hommes partis au front : elles travaillent dans les champs et dans les usines d'armement (obus)."},
+      {q: "Comment l'État contrôle-t-il l'information ? Cite les deux moyens du document.", phrase: true,
+        attendu: "censure | censurer\npropagande",
+        exp: "Par la censure (on interdit certaines nouvelles) et par la propagande (on pousse la population à soutenir la guerre)."},
+      {q: "Pourquoi parle-t-on de « guerre totale » ? Donne deux arguments.", phrase: true,
+        attendu: "population | civils | civil | société | arrière | femmes | nation\néconomie | économique | usines | production | industrie | emprunts\n- seulement les soldats | uniquement les soldats | seulement l'armée",
+        exp: "C'est une guerre totale car toute la population (les civils, les femmes à l'arrière) et toute l'économie (usines, emprunts) sont mobilisées, pas seulement les soldats."},
+      {q: "Qu'apportent les colonies à la France pendant la guerre ?", phrase: true,
+        attendu: "soldats | troupes | combattants | tirailleurs\ntravailleurs | ouvriers | main-d'œuvre | main d'œuvre",
+        exp: "Les colonies fournissent des soldats et des travailleurs."}
+    ]},
   {id: "t-forfaits", type: "precis", matiere: "maths", titre: "Deux forfaits de téléphone",
     variables: "prenom = Léa | Tom | Inès | Malik\na = 15..30\nb = 5..12\nc = 2..5\nn = 3..12\ng = 2..6\n? a > b + c\n? b + c*g != a",
     enonce: "Un opérateur propose deux forfaits mensuels.\n• Forfait A : un prix fixe de {a} € par mois, internet illimité.\n• Forfait B : un abonnement de {b} € par mois, plus {c} € par gigaoctet (Go) consommé.\nOn note x le nombre de Go consommés dans le mois.",
