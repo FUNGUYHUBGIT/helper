@@ -4204,7 +4204,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.83";
+const VERSION_SITE = "0.84";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -9715,9 +9715,21 @@ function corrigerLigne(q, att, rep){
 
 /* ----- Documents de l'exercice : images (affiches, tableaux d'art), tableaux, graphiques, modules, textes ----- */
 const TYPES_DOCS = [["image", "🖼 Image"], ["lien", "🔗 Image par lien"], ["texte", "❝ Texte"], ["tableau", "▦ Tableau"], ["graphique", "📊 Graphique"], ["module", "🧩 Module (schéma, frise, carte…)"], ["geo", "📐 Figure"]];
+// Remplace les variables {a}, {=a*b} partout dans un document (textes, cases de tableau, valeurs de graphique, points de figure)
+const CLES_NOMBRES = new Set(["valeurs", "pts", "xmin", "xmax", "ymin", "ymax", "debut", "fin", "date"]);
+function figAvecValeurs(f, vals, nombre = false){
+  if (typeof f === "string"){
+    if (!f.includes("{")) return f;
+    const r = remplirTexte(f, vals), n = r.replace(/[\s\u202f\u00a0]/g, "").replace(",", ".");
+    return nombre && /^-?\d+(?:\.\d+)?$/.test(n) ? +n : r;
+  }
+  if (Array.isArray(f)) return f.map(x => figAvecValeurs(x, vals, nombre));
+  if (f && typeof f === "object"){ const o = {}; Object.keys(f).forEach(k => o[k] = ["url", "secours", "id", "ref"].includes(k) ? f[k] : figAvecValeurs(f[k], vals, nombre || CLES_NOMBRES.has(k))); return o; }
+  return f;
+}
 const htmlDocs = (docs, vals = {}) => (docs || []).length ? `<div class="et-docs">${docs.map((d, i) => `<section class="et-doc">
     <h4><span class="et-doc-n">Document ${i + 1}</span>${d.titre ? " · " + esc(remplirTexte(d.titre, vals)) : ""}</h4>
-    ${figureHtml(d.fig && d.fig.type === "texte" ? {...d.fig, texte: remplirTexte(d.fig.texte, vals)} : d.fig)}</section>`).join("")}</div>` : "";
+    ${figureHtml(figAvecValeurs(d.fig, vals))}</section>`).join("")}</div>` : "";
 const afficherDocs = racine => { remplirImages(racine); return remplirObjets(racine); };
 
 /* ----- Élève : faire un exercice type sur une feuille de brouillon ----- */
@@ -9965,7 +9977,8 @@ function brancherExoType(){
 const EXOS_TYPES_INTEGRES = [
   {id: "t-phare", type: "precis", feuille: "lignes", matiere: "francais", theme: "Compréhension de texte", titre: "Compréhension 1",
     variables: "prenom = Malo | Yanis | Erwan | Théo | Nathan",
-    enonce: "Lis ce texte puis réponds aux questions en rédigeant des phrases complètes.\n\nCe soir-là, {prenom} grimpa seul les cent marches du phare. Le vent hurlait contre les vitres et la mer, noire comme de l'encre, se jetait sur les rochers. Son cœur battait si fort qu'il l'entendait dans ses oreilles. Pourtant, il ne redescendit pas : son grand-père lui avait confié la lampe, et il avait promis de la garder allumée jusqu'à l'aube. Il serra la rambarde glacée, ferma les yeux un instant, puis alluma la mèche. Aussitôt, un long faisceau doré balaya les vagues. Au loin, une petite barque cherchait le port. « Je suis là », murmura-t-il, et sa peur se changea lentement en fierté.",
+    enonce: "Lis le texte (document 1) puis réponds aux questions en rédigeant des phrases complètes. Commence chaque réponse par son numéro.",
+    docs: [{titre: "Extrait de récit", fig: {type: "texte", legende: "Texte écrit pour le site Helper.", texte: "Ce soir-là, {prenom} grimpa seul les cent marches du phare. Le vent hurlait contre les vitres et la mer, noire comme de l'encre, se jetait sur les rochers. Son cœur battait si fort qu'il l'entendait dans ses oreilles. Pourtant, il ne redescendit pas : son grand-père lui avait confié la lampe, et il avait promis de la garder allumée jusqu'à l'aube. Il serra la rambarde glacée, ferma les yeux un instant, puis alluma la mèche. Aussitôt, un long faisceau doré balaya les vagues. Au loin, une petite barque cherchait le port. « Je suis là », murmura-t-il, et sa peur se changea lentement en fierté."}}],
     questions: [
       {q: "Quel sentiment {prenom} éprouve-t-il au début du passage ? Justifie ta réponse par une citation du texte, entre guillemets.", phrase: true,
         attendu: "peur | crainte | angoisse | effroi | inquiétude | anxiété | terreur | effrayé | apeuré | inquiet | angoissé | terrifié\n- calme | serein | tranquille | heureux | joyeux\n= Son cœur battait si fort | il l'entendait dans ses oreilles | sa peur",
@@ -10018,7 +10031,11 @@ const EXOS_TYPES_INTEGRES = [
     ]},
   {id: "t-forfaits", type: "precis", matiere: "maths", theme: "Fonctions", titre: "Fonctions affines 1",
     variables: "prenom = Léa | Tom | Inès | Malik\na = 15..30\nb = 5..12\nc = 2..5\nn = 3..12\ng = 2..6\n? a > b + c\n? b + c*g != a",
-    enonce: "Un opérateur propose deux forfaits mensuels.\n• Forfait A : un prix fixe de {a} € par mois, internet illimité.\n• Forfait B : un abonnement de {b} € par mois, plus {c} € par gigaoctet (Go) consommé.\nOn note x le nombre de Go consommés dans le mois.",
+    enonce: "Un opérateur propose deux forfaits mensuels, présentés dans le document 1. Le document 2 montre le prix payé selon le nombre de gigaoctets (Go) consommés. On note x le nombre de Go consommés dans le mois.",
+    docs: [
+      {titre: "Les deux forfaits", fig: {type: "tableau", entete: true, lignes: [["", "Forfait A", "Forfait B"], ["Abonnement mensuel", "{a} €", "{b} €"], ["Prix par Go consommé", "0 € (illimité)", "{c} €"]], legende: "Tarifs de l'opérateur."}},
+      {titre: "Prix payé dans le mois selon les Go consommés", fig: {type: "graphique", typeG: "courbe", titre: "", labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"], series: [{nom: "Forfait A", couleur: "#5fa8d3", valeurs: ["{a}", "{a}", "{a}", "{a}", "{a}", "{a}", "{a}", "{a}", "{a}", "{a}", "{a}", "{a}", "{a}"]}, {nom: "Forfait B", couleur: "#e86f9a", valeurs: ["{=b+c*0}", "{=b+c*1}", "{=b+c*2}", "{=b+c*3}", "{=b+c*4}", "{=b+c*5}", "{=b+c*6}", "{=b+c*7}", "{=b+c*8}", "{=b+c*9}", "{=b+c*10}", "{=b+c*11}", "{=b+c*12}"]}], legende: "Axe horizontal : Go consommés · axe vertical : prix en €."}}
+    ],
     questions: [
       {q: "Avec le forfait A, combien paie-t-on en tout pour {n} mois ?", rep: "=a*n", arrondi: "", unite: "€", exp: "{n} × {a} = {=a*n} €."},
       {q: "Avec le forfait B, combien paie-t-on pour un mois où l'on consomme {g} Go ?", rep: "=b+c*g", arrondi: "", unite: "€", exp: "{b} + {c} × {g} = {=b+c*g} €."},
@@ -10028,7 +10045,9 @@ const EXOS_TYPES_INTEGRES = [
     ]},
   {id: "t-rampe", type: "precis", matiere: "maths", theme: "Trigonométrie", titre: "Pythagore et trigonométrie 1",
     variables: "h = 20..60 pas 5\nl = 300..900 pas 50\n? h/l <= 0.08\n? h/l >= 0.03",
-    enonce: "Pour rendre l'entrée d'un collège accessible en fauteuil roulant, on construit une rampe. Elle monte d'une hauteur de {h} cm sur une longueur au sol de {l} cm. Le sol est horizontal et le mur de l'entrée est vertical : la rampe, le sol et le mur forment un triangle rectangle dont l'hypoténuse est la rampe.\nLa pente d'une rampe, en %, est égale à (hauteur ÷ longueur au sol) × 100. La réglementation impose une pente d'au plus 5 % pour une longue rampe.",
+    docs: [{titre: "Schéma de la rampe (vue de côté)", fig: {type: "plan", alt: "Triangle rectangle formé par le sol, le mur et la rampe", pts: {A: [0, 0], B: [10, 0], C: [10, 3]}, poly: [["ABC", "plein"]], droit: ["ABC"],
+      seg: [["A", "B", "sol : {l} cm", "n"], ["B", "C", "mur : {h} cm", "n"], ["A", "C", "rampe : ?", "n"]], angle: [["BAC", "?"]], legende: "A : bas de la rampe · B : pied du mur · C : haut de la rampe. La figure n'est pas à l'échelle."}}],
+    enonce: "Pour rendre l'entrée d'un collège accessible en fauteuil roulant, on construit une rampe [AC] (document 1). Elle monte d'une hauteur BC = {h} cm sur une longueur au sol AB = {l} cm. Le sol est horizontal et le mur de l'entrée est vertical : la rampe, le sol et le mur forment un triangle ABC rectangle en B dont l'hypoténuse est la rampe.\nLa pente d'une rampe, en %, est égale à (hauteur ÷ longueur au sol) × 100. La réglementation impose une pente d'au plus 5 % pour une longue rampe.",
     questions: [
       {q: "Calcule la longueur de la rampe elle-même (l'hypoténuse), en cm, arrondie au dixième. Utilise le théorème de Pythagore.", rep: "=sqrt(h^2+l^2)", arrondi: 1, unite: "cm", exp: "Rampe² = {h}² + {l}² = {=h^2+l^2;0}, donc rampe = √{=h^2+l^2;0} ≈ {=sqrt(h^2+l^2);1} cm."},
       {q: "Calcule la pente de cette rampe, en %, arrondie au centième.", rep: "=h/l*100", arrondi: 2, unite: "%", exp: "{h} ÷ {l} × 100 ≈ {=h/l*100;2} %."},
@@ -10037,7 +10056,11 @@ const EXOS_TYPES_INTEGRES = [
     ]},
   {id: "t-soldes", type: "precis", matiere: "maths", theme: "Pourcentages", titre: "Pourcentages 1",
     variables: "prenom = Léa | Tom | Inès | Malik | Chloé\np = 30..120 pas 5\nr = 10 | 15 | 20 | 25 | 30 | 40\nr2 = 10 | 20 | 30",
-    enonce: "Pendant les soldes, un magasin de sport affiche une réduction de {r} % sur toutes les chaussures. {prenom} veut acheter une paire qui coûtait {p} € avant les soldes.\nLe dernier jour, le magasin applique une deuxième réduction de {r2} % sur les prix déjà soldés.",
+    enonce: "Pendant les soldes, un magasin de sport affiche une réduction de {r} % sur toutes les chaussures. {prenom} veut acheter une paire qui coûtait {p} € avant les soldes (document 1).\nLe dernier jour, le magasin applique une deuxième réduction de {r2} % sur les prix déjà soldés (document 2).",
+    docs: [
+      {titre: "L'étiquette de la paire", fig: {type: "tableau", entete: true, lignes: [["Chaussures de sport", ""], ["Prix avant les soldes", "{p} €"], ["Réduction des soldes", "− {r} %"]], legende: "Étiquette du magasin."}},
+      {titre: "L'affiche du dernier jour", fig: {type: "texte", texte: "DERNIER JOUR DES SOLDES !\n− {r2} % supplémentaires sur les prix déjà soldés, en caisse.", legende: "Affiche à l'entrée du magasin."}}
+    ],
     questions: [
       {q: "Quel est le montant de la réduction de {r} %, en euros ?", rep: "=p*r/100", arrondi: 2, unite: "€", exp: "{p} × {r} ÷ 100 = {=p*r/100} €."},
       {q: "Quel est le prix soldé de la paire, en euros ?", rep: "=p*(1-r/100)", arrondi: 2, unite: "€", exp: "{p} − {=p*r/100} = {=p*(1-r/100)} €. On peut aussi calculer {p} × {=1-r/100}."},
@@ -10047,7 +10070,8 @@ const EXOS_TYPES_INTEGRES = [
     ]},
   {id: "t-vitesse", type: "precis", matiere: "pc", theme: "Mouvement et vitesse", titre: "Vitesse et énergie 1",
     variables: "d = 6..24\nt = 15 | 20 | 30 | 40 | 45\nm = 90..130 pas 5\n? d/(t/60) <= 45",
-    enonce: "Un livreur parcourt {d} km en scooter pour aller du dépôt à un client. Le trajet dure {t} minutes. La masse totale du scooter avec son conducteur est de {m} kg.\nRappels : v = d ÷ t ; 1 m/s = 3,6 km/h ; énergie cinétique Ec = ½ × m × v² (m en kg, v en m/s, Ec en joules).",
+    docs: [{titre: "Distance parcourue en fonction du temps", fig: {type: "graphique", typeG: "courbe", titre: "", labels: ["{=t*0/4;1}", "{=t*1/4;1}", "{=t*2/4;1}", "{=t*3/4;1}", "{=t*4/4;1}"], series: [{nom: "Distance (km)", couleur: "#6fbf73", valeurs: ["{=d*0/4}", "{=d*1/4}", "{=d*2/4}", "{=d*3/4}", "{=d*4/4}"]}], legende: "Axe horizontal : temps en minutes · axe vertical : distance en km. On suppose que le scooter roule à vitesse constante."}}],
+    enonce: "Un livreur parcourt {d} km en scooter pour aller du dépôt à un client (document 1). Le trajet dure {t} minutes. La masse totale du scooter avec son conducteur est de {m} kg.\nRappels : v = d ÷ t ; 1 m/s = 3,6 km/h ; énergie cinétique Ec = ½ × m × v² (m en kg, v en m/s, Ec en joules).",
     questions: [
       {q: "Convertis la durée du trajet en heures (nombre décimal).", rep: "=t/60", arrondi: 2, unite: "h", exp: "{t} min = {t} ÷ 60 h = {=t/60} h."},
       {q: "Calcule la vitesse moyenne du scooter en km/h, arrondie au dixième.", rep: "=d/(t/60)", arrondi: 1, unite: "km/h", exp: "v = {d} ÷ {=t/60} ≈ {=d/(t/60);1} km/h."},
