@@ -434,6 +434,16 @@ button.bloc-sem:hover{filter:brightness(1.15)}
   --caret-color:var(--accent);--selection-background-color:color-mix(in srgb,var(--accent) 30%,transparent);--selection-color:var(--texte);--contains-highlight-background-color:color-mix(in srgb,var(--accent) 12%,transparent);--placeholder-color:var(--accent);--primary:var(--accent);--text-font-family:var(--f-texte)}
 .fm-champ:focus-within{border-color:color-mix(in srgb,var(--accent) 70%,transparent);outline:none;background:color-mix(in srgb,var(--surface) 55%,transparent)}
 .fm-champ::part(menu-toggle){display:none}.fm-champ::part(virtual-keyboard-toggle){display:none}.fm-bloc.actif .fm-champ::part(virtual-keyboard-toggle){display:flex;color:var(--doux)}
+.fm-groupe{display:inline-flex;gap:3px;padding:2px;border-radius:9px;background:var(--surface);border:1px solid var(--ligne);align-items:center}
+.fm-outils .fm-modes button{font:600 .85rem var(--f-texte);border:0;background:transparent}.fm-outils .fm-modes button[aria-pressed=true]{background:var(--accent);color:#141416}
+.fm-reps{margin-left:auto;border-color:color-mix(in srgb,#6fbf73 55%,transparent)}.fm-reps-lab{font:700 .8rem var(--f-texte);color:#6fbf73;padding:0 6px}
+.fm-outils .fm-reps button{min-width:30px;font:700 .85rem var(--f-mono);border-color:color-mix(in srgb,#6fbf73 40%,transparent)}.fm-outils .fm-reps button.pris{background:#6fbf73;color:#141416;border-color:#6fbf73}
+.fm-page.mode-texte{cursor:text}
+.fm-txt{display:inline-block;min-width:calc(var(--case) * 6);min-height:calc(var(--case) * 1.2);padding:2px 6px;border-radius:6px;border:1px dashed transparent;font:1.05rem/1.4 var(--f-texte);color:var(--texte);white-space:pre;outline:none}
+.fm-txt:focus{border-color:color-mix(in srgb,var(--accent) 70%,transparent);background:color-mix(in srgb,var(--surface) 55%,transparent)}
+.fm-bloc[data-rep]::after{content:"✓ " attr(data-rep);position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:8px;padding:1px 7px;border-radius:999px;background:#6fbf73;color:#141416;font:700 .72rem var(--f-mono);white-space:nowrap;pointer-events:none}
+.fm-bloc[data-rep] .fm-txt,.fm-bloc[data-rep] .fm-champ{border:1.5px solid #6fbf73;background:color-mix(in srgb,#6fbf73 10%,transparent)}
+.fm-bloc.rep-faux::after{background:#e86f9a}.fm-bloc.rep-faux .fm-txt,.fm-bloc.rep-faux .fm-champ{border-color:#e86f9a;background:color-mix(in srgb,#e86f9a 10%,transparent)}
 .fm-pied{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.fm-aide{font-size:.78rem;color:var(--doux)}.fm-aide b{color:var(--texte)}
 .btn-brouillon{font:600 .8rem var(--f-texte);padding:5px 12px;border-radius:999px;border:1.5px solid var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);cursor:pointer}
 .btn-brouillon:hover,.btn-brouillon.actif{background:var(--accent);color:#111}
@@ -1041,6 +1051,13 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .et-etiquette{display:inline-flex;align-items:center;gap:10px}.et-etiquette .exo-doc{width:24px;height:30px}
 .et-texte{margin-top:10px;font-size:1.04rem;line-height:1.7;max-width:80ch}
 .et-questions{margin:0;padding-left:1.6em;display:flex;flex-direction:column;gap:14px}
+.et-consignes{margin:12px 0 0;padding-left:1.6em;display:flex;flex-direction:column;gap:8px;font-size:1.02rem;line-height:1.6}
+.et-consignes>li::marker{font-weight:700;color:#5fa8d3}.et-consignes>li.juste::marker{color:#6fbf73}.et-consignes>li.faux::marker{color:#e86f9a}
+.et-ph{display:inline-block;margin-left:4px;padding:0 7px;border-radius:999px;border:1px solid var(--ligne);font:600 .7rem var(--f-mono);color:var(--doux);vertical-align:2px}
+.et-consignes .et-corr{margin:4px 0 2px;padding:6px 10px;border-radius:8px;background:var(--surface-2)}
+.et-mode-emploi{margin:0;font-size:.9rem;color:var(--doux)}.et-mode-emploi b{color:var(--texte)}
+.et-feuille .obj-doc,.et-feuille .lg-mod{width:100%;max-width:none}
+.et-case{display:flex;gap:8px;align-items:center;font-size:.86rem;color:var(--doux)}
 .et-questions>li{padding:12px 14px;background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r)}
 .et-questions>li::marker{font-weight:700;color:#5fa8d3}
 .et-questions>li.juste{border-color:#6fbf73}.et-questions>li.faux{border-color:#e86f9a}
@@ -4164,7 +4181,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.78";
+const VERSION_SITE = "0.79";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -8839,13 +8856,29 @@ function htmlFicheMaths(o){
   const depart = fmLignesDepart(o), rangs = Math.max(12, depart.length * 2 + 2 + Math.max(0, Math.min(30, +o.vides || 0)) * 2);
   return `<div class="lg-mod fm-fiche" data-fm="1" data-o="${encoderObjet(o)}">
     <div class="lg-tete"><span class="lg-drapeau fm-drapeau">√x</span><b>${esc(o.titre || "Brouillon")}</b>${o.consigne ? `<span class="lg-consigne fm-consigne">${esc(o.consigne)}</span>` : ""}</div>
-    ${o.outils !== false ? `<div class="fm-outils" role="toolbar" aria-label="Symboles mathématiques">${FM_OUTILS.map(([t, , titre], i) => `<button type="button" data-fm-outil="${i}" title="${esc(titre)}" aria-label="${esc(titre)}">${t}</button>`).join("")}</div>` : ""}
+    ${o.outils !== false || o.texte || o.reponses ? `<div class="fm-outils" role="toolbar" aria-label="Outils de la feuille">
+      ${o.texte ? `<span class="fm-groupe fm-modes" role="group" aria-label="Ce que l'on écrit en cliquant sur la grille"><button type="button" data-fm-mode="calcul" aria-pressed="true" title="Cliquer sur la grille crée une ligne de calcul">√x Calcul</button><button type="button" data-fm-mode="texte" aria-pressed="false" title="Cliquer sur la grille crée une ligne de texte, pour la phrase réponse">Aa Phrase</button></span>` : ""}
+      ${o.outils !== false ? FM_OUTILS.map(([t, , titre], i) => `<button type="button" data-fm-outil="${i}" title="${esc(titre)}" aria-label="${esc(titre)}">${t}</button>`).join("") : ""}
+      ${+o.reponses ? `<span class="fm-groupe fm-reps" role="group" aria-label="Outil réponse"><span class="fm-reps-lab">✓ Réponse</span>${Array.from({length: +o.reponses}, (_, k) => `<button type="button" data-fm-rep="${k + 1}" title="Marquer la ligne sélectionnée comme réponse à la question ${k + 1}">${k + 1}</button>`).join("")}</span>` : ""}</div>` : ""}
     <div class="fm-page" style="--case:${FM_CASE}px;height:${rangs * FM_CASE}px" data-rangs="${rangs}" tabindex="-1" aria-label="Page de brouillon : clique n'importe où pour écrire un calcul">
       ${depart.map((l, k) => fmBloc(FM_MARGE + 1, 1 + k * 2, l)).join("")}</div>
     <div class="fm-pied"><button type="button" class="mini-btn" data-fm-ajout>+ Agrandir la page</button><button type="button" class="mini-btn" data-fm-vider>↺ Tout effacer</button>
-      <span class="fm-aide">Clique n'importe où sur la grille pour écrire. <b>/</b> fraction, <b>sqrt</b> racine, <b>^</b> exposant, <b>_</b> indice, <b>Entrée</b> = ligne suivante. Glisse <b>⠿</b> pour déplacer un calcul.</span></div></div>`;
+      <span class="fm-aide">Clique n'importe où sur la grille pour écrire. <b>/</b> fraction, <b>sqrt</b> racine, <b>^</b> exposant, <b>_</b> indice, <b>Entrée</b> = ligne suivante. Glisse <b>⠿</b> pour déplacer un calcul.${o.texte ? ` <b>Aa Phrase</b> pour écrire une phrase.` : ""}${+o.reponses ? ` Pour rendre une réponse : clique dans ta ligne, puis sur son numéro dans <b>✓ Réponse</b>.` : ""}</span></div></div>`;
 }
-const fmBloc = (col, rang, ascii) => `<div class="fm-bloc" data-col="${col}" data-rang="${rang}" style="left:${col * FM_CASE}px;top:${rang * FM_CASE}px"><span class="fm-poignee" title="Déplacer" aria-hidden="true">⠿</span><math-field class="fm-champ" data-ascii="${esc(ascii || "")}" aria-label="Calcul"></math-field></div>`;
+const fmBloc = (col, rang, ascii, sorte) => `<div class="fm-bloc${sorte === "texte" ? " fm-bloc-texte" : ""}" data-col="${col}" data-rang="${rang}" style="left:${col * FM_CASE}px;top:${rang * FM_CASE}px"><span class="fm-poignee" title="Déplacer" aria-hidden="true">⠿</span>${sorte === "texte"
+  ? `<span class="fm-txt" contenteditable="true" spellcheck="true" role="textbox" aria-label="Phrase">${esc(ascii || "")}</span>`
+  : `<math-field class="fm-champ" data-ascii="${esc(ascii || "")}" aria-label="Calcul"></math-field>`}</div>`;
+// Lit les lignes marquées comme réponses : {1: {sorte, texte}, …}
+function lireReponsesFiche(fiche){
+  const r = {};
+  (fiche ? fiche.querySelectorAll(".fm-bloc[data-rep]") : []).forEach(b => {
+    const t = b.querySelector(".fm-txt"), mf = b.querySelector(".fm-champ");
+    let texte = "";
+    if (t) texte = t.textContent; else if (mf){ try { texte = mf.getValue("ascii-math"); } catch { texte = mf.value || ""; } }
+    r[b.dataset.rep] = {sorte: t ? "texte" : "calcul", texte: String(texte || "").trim(), bloc: b};
+  });
+  return r;
+}
 function brancherFicheMaths(racine){
   if (!racine || !racine.querySelectorAll) return;
   const fiches = [...racine.querySelectorAll(".fm-fiche[data-fm]")].filter(f => !f.dataset.pret);
@@ -8854,31 +8887,40 @@ function brancherFicheMaths(racine){
   chargerMaths().then(M => fiches.forEach(f => {
     const page = f.querySelector(".fm-page");
     if (!M){ page.insertAdjacentHTML("beforebegin", `<p class="doux">L'éditeur de formules n'a pas pu se charger. Vérifie ta connexion puis recharge la page.</p>`); return; }
-    let dernier = null;
+    let dernier = null, dernierBloc = null, mode = "calcul";
     const blocs = () => [...page.querySelectorAll(".fm-bloc")];
     const placer = (b, col, rang) => { b.dataset.col = col; b.dataset.rang = rang; b.style.left = col * FM_CASE + "px"; b.style.top = rang * FM_CASE + "px";
       const r = +page.dataset.rangs; if (rang + 3 > r){ page.dataset.rangs = rang + 4; page.style.height = (rang + 4) * FM_CASE + "px"; } };
     const occupe = (col, rang, sauf) => blocs().some(b => b !== sauf && Math.abs(+b.dataset.rang - rang) < 2 && col >= +b.dataset.col - 1 && col <= +b.dataset.col + Math.ceil(b.offsetWidth / FM_CASE));
     const preparer = b => {
+      const tx = b.querySelector(".fm-txt");
+      if (tx){ if (tx.dataset.fmPret) return tx; tx.dataset.fmPret = "1";
+        tx.addEventListener("focusin", () => { dernier = null; dernierBloc = b; b.classList.add("actif"); });
+        tx.addEventListener("focusout", () => { b.classList.remove("actif"); setTimeout(() => { if (!tx.textContent.trim() && b.isConnected && document.activeElement !== tx) b.remove(); }, 150); });
+        tx.addEventListener("keydown", ev => { ev.stopPropagation(); if (ev.key === "Enter"){ ev.preventDefault(); let r = +b.dataset.rang + 2; while (occupe(+b.dataset.col, r)) r += 2; nouveau(+b.dataset.col, r, "texte"); } });
+        tx.addEventListener("paste", ev => { ev.preventDefault(); document.execCommand("insertText", false, (ev.clipboardData.getData("text/plain") || "").replace(/\s+/g, " ")); });
+        b.querySelector(".fm-poignee").onpointerdown = poignee(b);
+        return tx; }
       const mf = b.querySelector(".fm-champ"); if (mf.dataset.fmPret) return mf; mf.dataset.fmPret = "1";
       try { mf.mathVirtualKeyboardPolicy = "auto"; mf.smartFence = true; mf.smartSuperscript = true; } catch {}
       if (mf.dataset.ascii){ try { mf.setValue(mf.dataset.ascii, {format: "ascii-math"}); } catch { mf.value = mf.dataset.ascii; } }
-      mf.addEventListener("focusin", () => { dernier = mf; b.classList.add("actif"); });
+      mf.addEventListener("focusin", () => { dernier = mf; dernierBloc = b; b.classList.add("actif"); });
       mf.addEventListener("focusout", () => { b.classList.remove("actif"); setTimeout(() => { if (!mf.value && b.isConnected && document.activeElement !== mf) b.remove(); }, 150); });
-      mf.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); let r = +b.dataset.rang + 2; while (occupe(+b.dataset.col, r)) r += 2; nouveau(+b.dataset.col, r); } });
+      mf.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); let r = +b.dataset.rang + 2; while (occupe(+b.dataset.col, r)) r += 2; nouveau(+b.dataset.col, r, "calcul"); } });
       ["keydown", "keypress", "input", "paste"].forEach(t => mf.addEventListener(t, ev => ev.stopPropagation()));
-      // déplacer le calcul avec sa poignée (aimanté à la grille)
-      b.querySelector(".fm-poignee").onpointerdown = ev => {
-        ev.preventDefault(); const pr = page.getBoundingClientRect(), dx = ev.clientX - b.getBoundingClientRect().left, dy = ev.clientY - b.getBoundingClientRect().top;
-        b.classList.add("deplace");
-        const bouger = e => placer(b, Math.max(0, Math.round((e.clientX - pr.left - dx) / FM_CASE)), Math.max(0, Math.round((e.clientY - pr.top - dy) / FM_CASE)));
-        const fin = () => { b.classList.remove("deplace"); removeEventListener("pointermove", bouger); removeEventListener("pointerup", fin); };
-        addEventListener("pointermove", bouger); addEventListener("pointerup", fin);
-      };
+      b.querySelector(".fm-poignee").onpointerdown = poignee(b);
       return mf;
     };
-    const nouveau = (col, rang) => { const t = document.createElement("div"); t.innerHTML = fmBloc(col, rang, ""); const b = t.firstElementChild; page.appendChild(b); placer(b, col, rang);
-      const mf = preparer(b); setTimeout(() => mf.focus(), 30); return mf; };
+    // déplacer une ligne avec sa poignée (aimantée à la grille)
+    const poignee = b => ev => {
+      ev.preventDefault(); const pr = page.getBoundingClientRect(), dx = ev.clientX - b.getBoundingClientRect().left, dy = ev.clientY - b.getBoundingClientRect().top;
+      b.classList.add("deplace");
+      const bouger = e => placer(b, Math.max(0, Math.round((e.clientX - pr.left - dx) / FM_CASE)), Math.max(0, Math.round((e.clientY - pr.top - dy) / FM_CASE)));
+      const fin = () => { b.classList.remove("deplace"); removeEventListener("pointermove", bouger); removeEventListener("pointerup", fin); };
+      addEventListener("pointermove", bouger); addEventListener("pointerup", fin);
+    };
+    const nouveau = (col, rang, sorte = mode) => { const t = document.createElement("div"); t.innerHTML = fmBloc(col, rang, "", sorte); const b = t.firstElementChild; page.appendChild(b); placer(b, col, rang);
+      const el = preparer(b); setTimeout(() => el.focus(), 30); return el; };
     blocs().forEach(preparer);
     page.addEventListener("pointerdown", ev => {
       if (ev.target !== page) return; ev.preventDefault();
@@ -8888,13 +8930,26 @@ function brancherFicheMaths(racine){
     f.querySelectorAll("[data-fm-outil]").forEach(b => {
       b.onmousedown = ev => ev.preventDefault();
       b.onclick = () => { let mf = dernier && dernier.isConnected ? dernier : null;
-        if (!mf){ let r = 1; while (occupe(FM_MARGE + 1, r)) r += 2; mf = nouveau(FM_MARGE + 1, r); }
+        if (!mf){ let r = 1; while (occupe(FM_MARGE + 1, r)) r += 2; mf = nouveau(FM_MARGE + 1, r, "calcul"); }
         mf.focus(); setTimeout(() => mf.executeCommand(["insert", FM_OUTILS[+b.dataset.fmOutil][1], {focus: true, selectionMode: "placeholder"}]), 40); };
     });
+    f.querySelectorAll("[data-fm-mode]").forEach(b => { b.onmousedown = ev => ev.preventDefault();
+      b.onclick = () => { mode = b.dataset.fmMode; f.querySelectorAll("[data-fm-mode]").forEach(x => x.setAttribute("aria-pressed", x === b)); page.classList.toggle("mode-texte", mode === "texte"); }; });
+    // outil réponse : la ligne sélectionnée devient la réponse à la question n (un nouveau clic l'enlève)
+    f.querySelectorAll("[data-fm-rep]").forEach(b => { b.onmousedown = ev => ev.preventDefault();
+      b.onclick = () => {
+        const bl = dernierBloc && dernierBloc.isConnected ? dernierBloc : null, n = b.dataset.fmRep;
+        if (!bl){ f.dispatchEvent(new CustomEvent("fm-message", {detail: "Clique d'abord dans la ligne qui contient ta réponse, puis sur son numéro."})); return; }
+        if (bl.dataset.rep === n){ delete bl.dataset.rep; }
+        else { page.querySelectorAll(`.fm-bloc[data-rep="${n}"]`).forEach(x => delete x.dataset.rep); bl.dataset.rep = n; }
+        bl.classList.remove("rep-juste", "rep-faux");
+        f.querySelectorAll("[data-fm-rep]").forEach(x => x.classList.toggle("pris", !!page.querySelector(`.fm-bloc[data-rep="${x.dataset.fmRep}"]`)));
+        f.dispatchEvent(new CustomEvent("fm-reponses"));
+      }; });
     f.querySelector("[data-fm-ajout]").onclick = () => { const r = +page.dataset.rangs + 8; page.dataset.rangs = r; page.style.height = r * FM_CASE + "px"; };
     const vider = f.querySelector("[data-fm-vider]"); let confirmer = false;
     vider.onclick = () => { if (!confirmer){ confirmer = true; vider.textContent = "Confirmer ?"; setTimeout(() => { confirmer = false; vider.textContent = "↺ Tout effacer"; }, 2500); return; }
-      confirmer = false; vider.textContent = "↺ Tout effacer"; blocs().forEach(b => b.remove()); dernier = null; };
+      confirmer = false; vider.textContent = "↺ Tout effacer"; blocs().forEach(b => b.remove()); dernier = dernierBloc = null; f.querySelectorAll("[data-fm-rep]").forEach(x => x.classList.remove("pris")); };
   }));
 }
 MODULES.splice(MODULES.findIndex(m => m.id === "fonction"), 0,
@@ -9372,49 +9427,99 @@ function iconeExoType(){
 }
 
 /* ----- Élève : faire un exercice type ----- */
+/* ----- Correction d'une réponse écrite sur la feuille ----- */
+const UNITES_SYN = {"€": ["€", "euro", "euros"], "%": ["%", "pour cent", "pourcent", "pourcents"], "°": ["°", "degre", "degres"], "cm": ["cm", "centimetre", "centimetres"],
+  "m": ["m", "metre", "metres"], "km": ["km", "kilometre", "kilometres"], "km/h": ["km/h", "kilometres par heure", "kilometre par heure", "km.h-1"], "m/s": ["m/s", "metres par seconde", "metre par seconde", "m.s-1"],
+  "h": ["h", "heure", "heures"], "min": ["min", "minute", "minutes"], "s": ["s", "seconde", "secondes"], "j": ["j", "joule", "joules"], "go": ["go", "gigaoctet", "gigaoctets"],
+  "l": ["l", "litre", "litres"], "kg": ["kg", "kilogramme", "kilogrammes"], "g": ["g", "gramme", "grammes"], "m²": ["m²", "m2", "metre carre", "metres carres"], "cm²": ["cm²", "cm2", "centimetre carre", "centimetres carres"],
+  "m³": ["m³", "m3", "metre cube", "metres cubes"], "cm³": ["cm³", "cm3", "centimetre cube", "centimetres cubes"]};
+const sansAccent = t => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[’']/g, " ");
+function uniteDans(phrase, unite){
+  const p = " " + sansAccent(phrase).replace(/\s+/g, " ") + " ", u = sansAccent(unite).trim(); if (!u) return true;
+  const toks = UNITES_SYN[u] || [u];
+  return toks.some(t => new RegExp(`(^|[^a-z0-9])${t.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}(?=[^a-z0-9]|$)`).test(p.replace(/(\d)(?=[a-z€%°])/g, "$1 ")));
+}
+// Nombres d'un texte : « 1 200,5 € » → 1200.5
+const nombresDe = t => [...String(t || "").replace(/(\d)[\s\u00a0\u202f](?=\d{3}(?!\d))/g, "$1").matchAll(/-?\d+(?:[.,]\d+)?/g)].map(m => +m[0].replace(",", "."));
+function valeurCalcul(ascii){
+  const d = String(ascii || "").split(/=|≈|~~/).pop().replace(/xx|\*\*|·|×/g, "*").replace(/÷/g, "/").replace(/−/g, "-").replace(/[a-zA-Z€%°²³\s]+$/g, "");
+  const f = d.trim() ? compilerExpression(d, {degres: true}) : null; if (!f) return NaN; const v = f(0); return Number.isFinite(v) ? v : NaN;
+}
+const procheAttendu = (u, att) => { const tol = att.n === null ? 1e-6 * Math.max(1, Math.abs(att.v)) : 0.5 * 10 ** -att.n + 1e-9;
+  return Number.isFinite(u) && (Math.abs(u - att.v) <= tol || (att.n !== null && Math.abs(u - arrondir(att.v, att.n)) <= 1e-9)); };
+// Vérifie la phrase réponse : {ok, titre, detail}
+function corrigerLigne(q, att, rep){
+  const phrase = q.phrase !== false;
+  if (!rep || !rep.texte) return {ok: false, titre: "Pas de réponse sélectionnée", detail: "Écris ta phrase réponse sur la feuille, clique dedans puis sur ce numéro dans « ✓ Réponse »."};
+  let resultat;
+  if (att.nombre) resultat = (rep.sorte === "calcul" ? [valeurCalcul(rep.texte), ...nombresDe(rep.texte)] : nombresDe(rep.texte)).some(v => procheAttendu(v, att));
+  else { const net = t => sansAccent(t).replace(/[\s*×]/g, "");
+    resultat = att.textes.some(t => t.length <= 3 ? new RegExp(`(^|[^a-z0-9])${sansAccent(t).trim()}(?=[^a-z0-9]|$)`).test(sansAccent(rep.texte)) : net(rep.texte).includes(net(t))); }
+  if (!resultat) return {ok: false, titre: "Résultat faux", detail: ""};
+  if (!phrase) return {ok: true, titre: "Juste", detail: ""};
+  if (rep.sorte !== "texte") return {ok: false, titre: "Résultat juste, mais il manque la phrase réponse", detail: "Avec l'outil « Aa Phrase », écris une phrase qui répond à la question, puis sélectionne-la comme réponse."};
+  const t = rep.texte.trim(), mots = t.split(/\s+/).filter(m => /[a-zA-Zà-ÿ]/.test(m)).length, pb = [];
+  if (mots < 3) pb.push("une vraie phrase (au moins quelques mots, pas seulement le résultat)");
+  if (!/^[A-ZÀ-ÖØ-Þ]/.test(t)) pb.push("une majuscule au début");
+  if (!/[.!]$/.test(t)) pb.push("un point à la fin");
+  if (q.unite && !uniteDans(t, q.unite)) pb.push(`l'unité (${q.unite})`);
+  return pb.length ? {ok: false, titre: "Résultat juste, mais la phrase réponse est incomplète", detail: "Il manque : " + pb.join(", ") + "."} : {ok: true, titre: "Juste, phrase réponse correcte", detail: ""};
+}
+
+/* ----- Élève : faire un exercice type sur une feuille de brouillon ----- */
 function lancerExoType(s, vals){
-  rafraichir = null;
+  rafraichir = null; fermerBrouillon();
   vals = vals || tirerValeurs(s.variables) || {};
   const qs = s.questions.filter(q => String(q.q || "").trim());
   const att = qs.map(q => attenduDe(q, vals));
+  const feuille = {kind: "module", type: "fiche-maths", titre: "Ma copie", consigne: "", lignes: "", vides: 26, outils: true, texte: true, reponses: qs.length};
   zone().innerHTML = entete(esc(nomMatiere(s.matiere) + " · Exercice type"), esc(s.titre)) + `
     <div class="exo-type-page">
       <div class="et-enonce"><div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeExoType()}<span><b>Exercice</b><span class="doux"> · ${qs.length} question${qs.length > 1 ? "s" : ""}</span></span></span>
-        <span class="rangee" style="gap:8px">${s.matiere === "maths" ? `<button type="button" class="btn-brouillon" id="ouvrir-brouillon" title="Ouvrir une page de brouillon pour poser tes calculs">✎ Brouillon</button>` : ""}<button type="button" class="mini-btn" id="et-autres" title="Le même exercice avec d'autres valeurs">↻ Autres valeurs</button></span></div>
-        <div class="et-texte">${esc(remplirTexte(s.enonce, vals)).replace(/\n/g, "<br>")}</div></div>
-      <ol class="et-questions">${qs.map((q, i) => `<li data-i="${i}"><p class="et-q">${esc(remplirTexte(q.q, vals)).replace(/\n/g, "<br>")}</p>
-        <div class="et-saisie"><input type="text" id="et-r${i}" autocomplete="off" spellcheck="false" aria-label="Réponse à la question ${i + 1}" placeholder="${att[i].nombre ? "Ta réponse (nombre)" : "Ta réponse"}">${q.unite ? `<span class="et-unite">${esc(q.unite)}</span>` : ""}</div>
-        <div class="et-corr" hidden></div></li>`).join("")}</ol>
+        <button type="button" class="mini-btn" id="et-autres" title="Le même exercice avec d'autres valeurs (la feuille est effacée)">↻ Autres valeurs</button></div>
+        <div class="et-texte">${esc(remplirTexte(s.enonce, vals)).replace(/\n/g, "<br>")}</div>
+        <ol class="et-consignes">${qs.map((q, i) => `<li data-i="${i}">${esc(remplirTexte(q.q, vals)).replace(/\n/g, "<br>")}${q.phrase !== false ? ` <span class="et-ph" title="La réponse doit être une phrase">phrase réponse</span>` : ""}<div class="et-corr" hidden></div></li>`).join("")}</ol></div>
+      <p class="et-mode-emploi">Fais tes calculs où tu veux sur la feuille (<b>√x Calcul</b>), puis écris ta phrase réponse (<b>Aa Phrase</b>). Pour rendre une réponse : clique dans ta ligne, puis sur le numéro de la question dans <b>✓ Réponse</b>.</p>
+      <div class="et-feuille">${rendreModule(feuille)}</div>
+      <p class="statut" id="et-msg" role="status"></p>
       <div class="rangee"><button class="btn" type="button" id="et-verifier">Vérifier mes réponses</button><button class="btn sec" type="button" id="et-retour">Autres exercices</button></div>
       <div id="et-bilan"></div>
     </div>`;
-  if ($("#ouvrir-brouillon")) $("#ouvrir-brouillon").onclick = () => basculerBrouillon({mat: "maths"});
-  $("#et-autres").onclick = () => { fermerBrouillon(); lancerExoType(s); };
-  $("#et-retour").onclick = () => { fermerBrouillon(); changerVue("exos"); };
-  zone().querySelectorAll(".et-saisie input").forEach((inp, i, tous) => inp.onkeydown = ev => { if (ev.key === "Enter"){ ev.preventDefault(); (tous[i + 1] || $("#et-verifier")).focus(); } });
+  brancherTransitions(zone());
+  const fiche = () => zone().querySelector(".fm-fiche");
+  const msg = (t, ok) => { const m = $("#et-msg"); m.className = "statut " + (ok ? "ok" : "erreur"); m.textContent = t; };
+  zone().addEventListener("fm-message", e => msg(e.detail, false));
+  zone().addEventListener("fm-reponses", () => { const r = lireReponsesFiche(fiche()); msg(`Réponses sélectionnées : ${Object.keys(r).sort().join(", ") || "aucune"} sur ${qs.length}.`, true); });
+  let deja = false;
+  deuxClics($("#et-autres"), () => lancerExoType(s));
+  $("#et-retour").onclick = () => changerVue("exos");
   $("#et-verifier").onclick = () => {
-    let score = 0;
+    const reps = lireReponsesFiche(fiche()); let score = 0;
+    zone().querySelectorAll(".fm-bloc[data-rep]").forEach(b => b.classList.remove("rep-juste", "rep-faux"));
     qs.forEach((q, i) => {
-      const inp = $("#et-r" + i), juste = reponseJusteType(inp.value, att[i]), li = inp.closest("li"), c = li.querySelector(".et-corr");
-      if (juste) score++;
-      li.classList.toggle("juste", juste); li.classList.toggle("faux", !juste); inp.readOnly = true;
-      c.hidden = false;
-      c.innerHTML = `<b>${juste ? "✓ Juste" : "✗ Réponse attendue : " + esc(att[i].texte) + (q.unite ? " " + esc(q.unite) : "")}</b>${q.exp ? `<p>${esc(remplirTexte(q.exp, vals)).replace(/\n/g, "<br>")}</p>` : ""}`;
+      const r = reps[i + 1], c = corrigerLigne(q, att[i], r), li = zone().querySelector(`.et-consignes li[data-i="${i}"]`), box = li.querySelector(".et-corr");
+      if (c.ok) score++;
+      li.classList.toggle("juste", c.ok); li.classList.toggle("faux", !c.ok);
+      if (r) r.bloc.classList.add(c.ok ? "rep-juste" : "rep-faux");
+      box.hidden = false;
+      box.innerHTML = `<b>${c.ok ? "✓ " : "✗ "}${esc(c.titre)}</b>${c.detail ? `<span> ${esc(c.detail)}</span>` : ""}`
+        + (!c.ok && !c.titre.startsWith("Résultat juste") ? `<p>Réponse attendue : <b>${esc(att[i].texte)}${q.unite ? " " + esc(q.unite) : ""}</b>${q.exp ? " — " + esc(remplirTexte(q.exp, vals)) : ""}</p>` : q.exp ? `<p>${esc(remplirTexte(q.exp, vals))}</p>` : "");
     });
+    deja = true;
     const avant = prog.exos[s.id]; let gain = 0, note = "";
     if (avant === undefined || score > avant){ gain = (score - (avant || 0)) * 5; prog.exos[s.id] = score; if (avant !== undefined) note = " Nouveau record."; }
     prog.points += gain; sauver();
-    window.dispatchEvent(new CustomEvent("helper-reponse", {detail: {juste: score === qs.length}}));
-    $("#et-verifier").outerHTML = `<button class="btn" type="button" id="et-encore">↻ Refaire avec d'autres valeurs</button>`;
-    $("#et-encore").onclick = () => { fermerBrouillon(); lancerExoType(s); };
-    $("#et-bilan").innerHTML = `<div class="bloc accent"><div class="score">${score}<small> / ${qs.length}</small></div><p>${gain ? `<strong>+${gain} points.</strong>` : "Aucun nouveau point cette fois."}${note} Les valeurs changent à chaque fois : refais-le pour t'entraîner.</p></div>`;
-    $("#et-bilan").scrollIntoView({behavior: "smooth", block: "nearest"});
+    msg("", true);
+    $("#et-bilan").innerHTML = `<div class="bloc accent"><div class="score">${score}<small> / ${qs.length}</small></div><p>${gain ? `<strong>+${gain} points.</strong>` : "Aucun nouveau point cette fois."}${note} Tu peux corriger ta feuille et vérifier à nouveau, ou refaire l'exercice avec d'autres valeurs.</p>
+      <div class="rangee"><button class="btn" type="button" id="et-encore">↻ Refaire avec d'autres valeurs</button></div></div>`;
+    $("#et-encore").onclick = () => lancerExoType(s);
+    zone().querySelector(".et-consignes").scrollIntoView({behavior: "smooth", block: "start"});
   };
 }
 
 /* ----- Gérant : éditeur d'exercice type ----- */
 let et = null;
-const nouvelleQuestionType = () => ({q: "", rep: "", arrondi: "", unite: "", exp: ""});
+const nouvelleQuestionType = () => ({q: "", rep: "", arrondi: "", unite: "", exp: "", phrase: true});
 function ouvrirExoType(s){
   rafraichir = null;
   et = s ? {id: s.id, integree: !!s.integree, matiere: s.matiere, titre: s.titre || "", enonce: s.enonce || "", variables: s.variables || "", questions: (s.questions || []).map(q => ({...nouvelleQuestionType(), ...q, arrondi: q.arrondi ?? ""}))}
@@ -9449,6 +9554,7 @@ function dessinerExoType(){
               <label class="et-lab" style="flex:1 1 120px">Arrondi<select class="ed-champ" data-k="arrondi">${[["", "exact"], ["0", "à l'unité"], ["1", "au dixième"], ["2", "au centième"], ["3", "au millième"]].map(([v, t]) => `<option value="${v}" ${String(q.arrondi) === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>
               <label class="et-lab" style="flex:1 1 100px">Unité<input type="text" class="ed-champ" data-k="unite" value="${esc(q.unite)}" placeholder="€, cm, km/h…"></label>
             </div>
+            <label class="et-case"><input type="checkbox" data-k="phrase" ${q.phrase !== false ? "checked" : ""}> Phrase réponse obligatoire (une phrase avec majuscule, point${q.unite ? ", unité" : ""} et le bon résultat)</label>
             <label class="et-lab">Correction affichée après (facultatif)<textarea rows="2" class="ed-champ" data-k="exp" placeholder="ex. {n} × {a} = {=n*a} €.">${esc(q.exp)}</textarea></label>
           </div>`).join("")}</div>
         <button type="button" class="ed-ajout" id="et-ajout">+ Ajouter une question</button>
@@ -9471,7 +9577,7 @@ function apercuExoType(){
     + (vals && Object.keys(vals).length ? `<p class="et-vals">${Object.entries(vals).map(([k, v]) => `<span><b>${esc(k)}</b> = ${esc(formatFr(v, 6))}</span>`).join("")}</p>` : "")
     + `<div class="et-enonce"><div class="et-texte">${esc(remplirTexte(et.enonce, vals || {})).replace(/\n/g, "<br>") || `<span class="doux">L'énoncé apparaîtra ici.</span>`}</div></div>
     <ol class="et-questions">${qs.map(q => { const a = vals ? attenduDe(q, vals) : null; return `<li><p class="et-q">${esc(remplirTexte(q.q, vals || {}))}</p>
-      <p class="et-attendu">Réponse : <b>${a ? esc(a.texte) : "?"}</b>${q.unite ? " " + esc(q.unite) : ""}${a && a.nombre && !Number.isFinite(a.v) ? ` <span class="statut erreur">formule incalculable</span>` : ""}</p></li>`; }).join("")}</ol>`;
+      <p class="et-attendu">${q.phrase !== false ? "Phrase réponse · " : ""}Réponse : <b>${a ? esc(a.texte) : "?"}</b>${q.unite ? " " + esc(q.unite) : ""}${a && a.nombre && !Number.isFinite(a.v) ? ` <span class="statut erreur">formule incalculable</span>` : ""}</p></li>`; }).join("")}</ol>`;
 }
 function brancherExoType(){
   const maj = () => apercuExoType();
@@ -9481,7 +9587,7 @@ function brancherExoType(){
   $("#et-enonce").oninput = e => { et.enonce = e.target.value; maj(); };
   $("#et-tirer").onclick = maj;
   zone().querySelectorAll(".et-carte").forEach(c => { const q = et.questions[+c.dataset.i];
-    c.querySelectorAll("[data-k]").forEach(ch => ch[ch.tagName === "SELECT" ? "onchange" : "oninput"] = () => { q[ch.dataset.k] = ch.value; maj(); }); });
+    c.querySelectorAll("[data-k]").forEach(ch => ch[ch.tagName === "SELECT" || ch.type === "checkbox" ? "onchange" : "oninput"] = () => { q[ch.dataset.k] = ch.type === "checkbox" ? ch.checked : ch.value; maj(); }); });
   const bouger = (i, d) => { const t = et.questions.splice(i, 1)[0]; et.questions.splice(i + d, 0, t); dessinerExoType(); };
   zone().querySelectorAll("[data-monte]").forEach(b => b.onclick = () => bouger(+b.dataset.monte, -1));
   zone().querySelectorAll("[data-descend]").forEach(b => b.onclick = () => bouger(+b.dataset.descend, 1));
@@ -9493,7 +9599,7 @@ function brancherExoType(){
   $("#enregistrer").onclick = async () => {
     const pb = problemesExoType(et); if (pb.length){ statut(pb[0] + (pb.length > 1 ? ` (+ ${pb.length - 1} autre${pb.length > 2 ? "s" : ""} problème${pb.length > 2 ? "s" : ""})` : ""), false); return; }
     const id = et.id || nouvelId("t"), btn = $("#enregistrer"); btn.disabled = true;
-    const questions = et.questions.filter(q => q.q.trim()).map(q => ({q: q.q.trim(), rep: q.rep.trim(), arrondi: q.arrondi === "" ? "" : +q.arrondi, unite: q.unite.trim(), exp: q.exp.trim()}));
+    const questions = et.questions.filter(q => q.q.trim()).map(q => ({q: q.q.trim(), rep: q.rep.trim(), arrondi: q.arrondi === "" ? "" : +q.arrondi, unite: q.unite.trim(), exp: q.exp.trim(), phrase: q.phrase !== false}));
     try {
       await db.doc("series/" + id).set({type: "precis", matiere: et.matiere, titre: et.titre.trim(), enonce: et.enonce.trim(), variables: et.variables.trim(), questions, exos: [], majLe: new Date().toISOString()});
       matiereActive = et.matiere; et = null; Formes.succes(); changerVue("g-exos"); statut("Exercice type enregistré.", true);
@@ -9507,11 +9613,11 @@ const EXOS_TYPES_INTEGRES = [
     variables: "prenom = Léa | Tom | Inès | Malik\na = 15..30\nb = 5..12\nc = 2..5\nn = 3..12\ng = 2..6\n? a > b + c\n? b + c*g != a",
     enonce: "Un opérateur propose deux forfaits mensuels.\n• Forfait A : un prix fixe de {a} € par mois, internet illimité.\n• Forfait B : un abonnement de {b} € par mois, plus {c} € par gigaoctet (Go) consommé.\nOn note x le nombre de Go consommés dans le mois.",
     questions: [
-      {q: "Avec le forfait A, combien paie-t-on en tout pour {n} mois ? Écris seulement le nombre.", rep: "=a*n", arrondi: "", unite: "€", exp: "{n} × {a} = {=a*n} €."},
+      {q: "Avec le forfait A, combien paie-t-on en tout pour {n} mois ?", rep: "=a*n", arrondi: "", unite: "€", exp: "{n} × {a} = {=a*n} €."},
       {q: "Avec le forfait B, combien paie-t-on pour un mois où l'on consomme {g} Go ?", rep: "=b+c*g", arrondi: "", unite: "€", exp: "{b} + {c} × {g} = {=b+c*g} €."},
-      {q: "On note f(x) le prix du forfait B pour x Go. Exprime f(x) en fonction de x (écris par exemple 3x + 7).", rep: "{c}x + {b} / {c}x+{b} / {b} + {c}x / {b}+{c}x / f(x) = {c}x + {b} / {c}*x+{b}", arrondi: "", unite: "", exp: "Un prix fixe de {b} € plus {c} € par Go : f(x) = {c}x + {b}. C'est une fonction affine."},
-      {q: "Résous l'équation {c}x + {b} = {a}. Donne la valeur exacte de x, arrondie au centième si besoin.", rep: "=(a-b)/c", arrondi: 2, unite: "Go", exp: "{c}x = {a} − {b} = {=a-b}, donc x = {=a-b} ÷ {c} ≈ {=(a-b)/c;2}."},
-      {q: "Un mois, {prenom} consomme {g} Go. Quel forfait est le moins cher pour ce mois ? Réponds A ou B.", rep: "{?b+c*g < a|B|A} / forfait {?b+c*g < a|B|A}", arrondi: "", unite: "", exp: "Forfait A : {a} €. Forfait B : {b} + {c} × {g} = {=b+c*g} €. Le moins cher est le forfait {?b+c*g < a|B|A}. (Le forfait B est moins cher tant que x < {=(a-b)/c;2} Go.)"}
+      {q: "On note f(x) le prix du forfait B pour x Go. Exprime f(x) en fonction de x : écris par exemple f(x) = 3x + 7 dans une ligne de calcul et sélectionne-la.", rep: "{c}x + {b} / {b} + {c}x", arrondi: "", unite: "", phrase: false, exp: "Un prix fixe de {b} € plus {c} € par Go : f(x) = {c}x + {b}. C'est une fonction affine."},
+      {q: "Résous l'équation {c}x + {b} = {a}. Combien de Go faut-il consommer pour que les deux forfaits coûtent le même prix ? (arrondi au centième si besoin)", rep: "=(a-b)/c", arrondi: 2, unite: "Go", exp: "{c}x = {a} − {b} = {=a-b}, donc x = {=a-b} ÷ {c} ≈ {=(a-b)/c;2}."},
+      {q: "Un mois, {prenom} consomme {g} Go. Quel forfait est le moins cher pour ce mois ?", rep: "forfait {?b+c*g < a|B|A}", arrondi: "", unite: "", exp: "Forfait A : {a} €. Forfait B : {b} + {c} × {g} = {=b+c*g} €. Le moins cher est le forfait {?b+c*g < a|B|A}. (Le forfait B est moins cher tant que x < {=(a-b)/c;2} Go.)"}
     ]},
   {id: "t-rampe", type: "precis", matiere: "maths", titre: "La rampe d'accès",
     variables: "h = 20..60 pas 5\nl = 300..900 pas 50\n? h/l <= 0.08\n? h/l >= 0.03",
