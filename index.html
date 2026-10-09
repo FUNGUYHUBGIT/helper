@@ -1060,6 +1060,13 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .et-case{display:flex;gap:8px;align-items:center;font-size:.86rem;color:var(--doux)}
 .ed-entete .et-theme{flex:0 1 300px;color:#5fa8d3}.et-deux-points{align-self:center;font-size:1.4rem;font-weight:700;color:var(--doux)}
 .et-theme-nom{color:#5fa8d3}
+.et-docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin:14px 0 4px}
+.et-doc{background:var(--surface-2);border:1px solid var(--ligne);border-radius:10px;padding:10px 12px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.et-doc h4{margin:0;font-size:.92rem;font-weight:600}.et-doc-n{color:#5fa8d3;font-family:var(--f-mono);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+.et-doc .fig-exo{margin:0}.et-doc img{max-width:100%;max-height:520px;object-fit:contain;display:block;margin:0 auto;border-radius:6px}
+.doc-texte{margin:0;padding:8px 12px;border-left:3px solid #5fa8d3;font-size:.95rem;line-height:1.6;background:var(--surface)}
+.et-doc:has(.graphe),.et-doc:has(.mod-exo){grid-column:1/-1}.et-doc .fig-exo{width:100%;max-width:none;box-sizing:border-box}.et-doc .graphe{width:100%;max-width:640px;margin:0 auto;display:block}.et-doc .obj-doc{width:100%}
+.et-ajout-docs button{font-size:.85rem}.et-doc-apercu{max-height:420px;overflow:auto}
 @font-face{font-family:"Playwrite FR Moderne";font-style:normal;font-weight:400;font-display:swap;src:url(vendor/fonts/playwrite-fr-moderne-latin-400-normal.woff2) format("woff2")}
 .cp-copie{display:flex;flex-direction:column;gap:8px}
 .cp-tete{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}.cp-tete .doux{font-size:.86rem}
@@ -4197,7 +4204,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.82";
+const VERSION_SITE = "0.83";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5870,7 +5877,9 @@ function figureHtml(fig){
   else if (fig.type === "plan") corps = svgPlan(fig);
   else if (fig.type === "module" && fig.module) corps = `<div class="obj-doc mod-exo" data-obj="${encoderObjet(fig.module)}"></div>`;
   else if (fig.type === "tableau") corps = htmlTableau(fig);
+  else if (fig.type === "image" && fig.url) corps = `<img src="${esc(fig.url)}" ${fig.secours ? `data-secours="${esc(fig.secours)}"` : ""} alt="${esc(fig.alt || fig.legende || "")}" loading="lazy" referrerpolicy="no-referrer" onerror="if(this.dataset.secours&&this.src!==this.dataset.secours){this.src=this.dataset.secours}else{this.replaceWith(Object.assign(document.createElement('p'),{className:'doux',textContent:'Image indisponible pour le moment (vérifie ta connexion).'}))}">`;
   else if (fig.type === "image") corps = `<img ${fig.id ? `data-asset="${esc(fig.id)}"` : `data-ref="${esc(fig.ref || "")}"`} alt="${esc(fig.legende || "")}">`;
+  else if (fig.type === "texte") corps = `<blockquote class="doc-texte">${esc(fig.texte || "").replace(/\n/g, "<br>")}</blockquote>`;
   return corps ? `<figure class="fig-exo">${corps}${fig.legende ? `<figcaption>${esc(fig.legende)}</figcaption>` : ""}</figure>` : "";
 }
 const SCHEMAS = [["avion-forces","Avion : les 4 forces"],["avion-axes","Avion : axes de rotation"],["profil","Profil d'aile et incidence"],["triangle","Triangle rectangle"],["thales","Configuration de Thalès"]];
@@ -9704,6 +9713,13 @@ function corrigerLigne(q, att, rep){
   return pb.length ? {ok: false, titre: "Résultat juste, mais la phrase réponse est incomplète", detail: "Il manque : " + pb.join(", ") + "."} : {ok: true, titre: "Juste, phrase réponse correcte", detail: ""};
 }
 
+/* ----- Documents de l'exercice : images (affiches, tableaux d'art), tableaux, graphiques, modules, textes ----- */
+const TYPES_DOCS = [["image", "🖼 Image"], ["lien", "🔗 Image par lien"], ["texte", "❝ Texte"], ["tableau", "▦ Tableau"], ["graphique", "📊 Graphique"], ["module", "🧩 Module (schéma, frise, carte…)"], ["geo", "📐 Figure"]];
+const htmlDocs = (docs, vals = {}) => (docs || []).length ? `<div class="et-docs">${docs.map((d, i) => `<section class="et-doc">
+    <h4><span class="et-doc-n">Document ${i + 1}</span>${d.titre ? " · " + esc(remplirTexte(d.titre, vals)) : ""}</h4>
+    ${figureHtml(d.fig && d.fig.type === "texte" ? {...d.fig, texte: remplirTexte(d.fig.texte, vals)} : d.fig)}</section>`).join("")}</div>` : "";
+const afficherDocs = racine => { remplirImages(racine); return remplirObjets(racine); };
+
 /* ----- Élève : faire un exercice type sur une feuille de brouillon ----- */
 function lancerExoType(s, vals){
   rafraichir = null; fermerBrouillon();
@@ -9717,6 +9733,7 @@ function lancerExoType(s, vals){
       <div class="et-enonce"><div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeExoType()}<span><b>Exercice</b><span class="doux"> · ${qs.length} question${qs.length > 1 ? "s" : ""}</span></span></span>
         <button type="button" class="mini-btn" id="et-autres" title="Le même exercice avec d'autres valeurs (la feuille est effacée)">↻ Autres valeurs</button></div>
         <div class="et-texte">${esc(remplirTexte(s.enonce, vals)).replace(/\n/g, "<br>")}</div>
+        ${htmlDocs(s.docs, vals)}
         <ol class="et-consignes">${qs.map((q, i) => `<li data-i="${i}">${esc(remplirTexte(q.q, vals)).replace(/\n/g, "<br>")}${q.phrase !== false ? ` <span class="et-ph" title="La réponse doit être une phrase">phrase réponse</span>` : ""}<div class="et-corr" hidden></div></li>`).join("")}</ol></div>
       ${lignes ? `<p class="et-mode-emploi">Rédige tes réponses sur la copie, comme sur une feuille de classe. Commence chaque réponse par le numéro de la question (<b>1.</b>, <b>2.</b>…) et réponds par des phrases complètes. Pour citer le texte, recopie-le exactement entre guillemets.</p>
       <div class="et-feuille">${htmlCopie({titre: "Ma copie", lignes: Math.max(18, qs.length * 4 + 4)})}</div>`
@@ -9726,6 +9743,7 @@ function lancerExoType(s, vals){
       <div class="rangee"><button class="btn" type="button" id="et-verifier">Vérifier mes réponses</button><button class="btn sec" type="button" id="et-retour">Autres exercices</button></div>
       <div id="et-bilan"></div>
     </div>`;
+  afficherDocs(zone());
   if (lignes) brancherCopie(zone()); else brancherTransitions(zone());
   const fiche = () => zone().querySelector(".fm-fiche");
   const msg = (t, ok) => { const m = $("#et-msg"); m.className = "statut " + (ok ? "ok" : "erreur"); m.textContent = t; };
@@ -9780,8 +9798,8 @@ function numeroLibre(theme, matiere, id){
 }
 function ouvrirExoType(s){
   rafraichir = null;
-  et = s ? {id: s.id, integree: !!s.integree, matiere: s.matiere, feuille: feuilleDe(s), theme: s.theme || "", titre: s.titre || "", enonce: s.enonce || "", variables: s.variables || "", questions: (s.questions || []).map(q => ({...nouvelleQuestionType(), ...q, arrondi: q.arrondi ?? ""}))}
-    : {id: null, matiere: matiereActive, feuille: feuilleDe({matiere: matiereActive}), theme: "", titre: "", enonce: "", variables: "", questions: [nouvelleQuestionType(), nouvelleQuestionType()]};
+  et = s ? {id: s.id, integree: !!s.integree, matiere: s.matiere, feuille: feuilleDe(s), theme: s.theme || "", docs: structuredClone(s.docs || []), titre: s.titre || "", enonce: s.enonce || "", variables: s.variables || "", questions: (s.questions || []).map(q => ({...nouvelleQuestionType(), ...q, arrondi: q.arrondi ?? ""}))}
+    : {id: null, matiere: matiereActive, feuille: feuilleDe({matiere: matiereActive}), theme: "", docs: [], titre: "", enonce: "", variables: "", questions: [nouvelleQuestionType(), nouvelleQuestionType()]};
   if (!et.questions.length) et.questions.push(nouvelleQuestionType());
   dessinerExoType();
 }
@@ -9804,7 +9822,12 @@ function dessinerExoType(){
         <div class="ed-etape"><span class="ed-etape-n">2</span><span>Énoncé</span><button type="button" class="mini-btn ed-symb" data-symb>Ω Symboles</button></div>
         <textarea id="et-enonce" rows="7" class="ed-champ" placeholder="ex. {prenom} compare deux forfaits. Le forfait A coûte {a} € par mois. Le forfait B coûte {b} € par mois plus {c} € par Go consommé…">${esc(et.enonce)}</textarea>
         <p class="aide">Écris <code>{a}</code> pour afficher une variable, <code>{=a*b}</code> pour un calcul (arrondi au centième), <code>{=a/3;1}</code> pour l'arrondir au dixième.</p>
-        <div class="ed-etape"><span class="ed-etape-n">3</span><span>Questions</span></div>
+        <div class="ed-etape"><span class="ed-etape-n">3</span><span>Documents (facultatif)</span></div>
+        <p class="aide">Affiches de propagande, tableaux d'art, photos, tableaux de chiffres, graphiques, schémas (modules), extraits de texte… Ils sont numérotés Document 1, 2… : tes questions peuvent y renvoyer.</p>
+        <div id="et-docs-ed">${et.docs.map((d, i) => editeurDoc(d, i)).join("")}</div>
+        <div class="filtres et-ajout-docs">${TYPES_DOCS.map(([k, t]) => `<button type="button" data-doc-ajout="${k}">+ ${t}</button>`).join("")}</div>
+        <input type="file" accept="image/*" hidden id="et-doc-fichier">
+        <div class="ed-etape"><span class="ed-etape-n">4</span><span>Questions</span></div>
         <div id="et-qs">${et.questions.map((q, i) => `
           <div class="et-carte" data-i="${i}">
             <div class="rangee" style="justify-content:space-between"><span class="mono">Question ${i + 1}</span><span class="rangee" style="gap:6px">
@@ -9832,17 +9855,78 @@ function dessinerExoType(){
   brancherExoType();
   apercuExoType();
 }
+function editeurDoc(d, i){
+  const f = d.fig || {};
+  return `<div class="et-carte et-doc-carte" data-doc="${i}">
+    <div class="rangee" style="justify-content:space-between"><span class="mono">Document ${i + 1} · ${esc((TYPES_DOCS.find(t => t[0] === (f.type === "image" && f.url ? "lien" : f.type)) || ["", "Document"])[1].replace(/^\S+\s/, ""))}</span><span class="rangee" style="gap:6px">
+      <button type="button" class="mini-btn" data-doc-monte="${i}" ${i ? "" : "disabled"} aria-label="Monter">↑</button><button type="button" class="mini-btn" data-doc-descend="${i}" ${i < et.docs.length - 1 ? "" : "disabled"} aria-label="Descendre">↓</button>
+      <button type="button" class="mini-btn danger" data-doc-retire="${i}">Supprimer</button></span></div>
+    <label class="et-lab">Titre du document<input type="text" class="ed-champ" data-doc-k="titre" value="${esc(d.titre || "")}" placeholder="ex. Affiche pour le 2e emprunt de la Défense nationale, 1916"></label>
+    ${f.type === "image" && !f.url ? `<div class="rangee"><button type="button" class="btn sec" data-doc-image="${i}">${f.id || f.ref ? "Changer l'image" : "Choisir une image"}</button></div>` : ""}
+    ${f.type === "image" && f.url !== undefined ? `<label class="et-lab">Lien de l'image (https://…)<input type="url" class="ed-champ" data-doc-k="url" value="${esc(f.url || "")}" placeholder="https://upload.wikimedia.org/…"></label>` : ""}
+    ${f.type === "texte" ? `<label class="et-lab">Texte du document<textarea rows="5" class="ed-champ" data-doc-k="texte">${esc(f.texte || "")}</textarea></label>` : ""}
+    ${f.type === "tableau" ? `<div class="tab-ed">${f.lignes.map((l, r) => `<div class="rangee" style="gap:4px;flex-wrap:nowrap">${l.map((c, k) => `<input type="text" class="ed-champ" style="min-width:0" data-doc-cell="${r}:${k}" value="${esc(c)}">`).join("")}</div>`).join("")}
+      <div class="rangee"><button type="button" class="mini-btn" data-doc-ligne="${i}">+ Ligne</button><button type="button" class="mini-btn" data-doc-col="${i}">+ Colonne</button><label class="et-case"><input type="checkbox" data-doc-k="entete" ${f.entete ? "checked" : ""}> 1re ligne = titres</label></div></div>` : ""}
+    ${["graphique", "module", "geo"].includes(f.type) ? `<div class="rangee"><button type="button" class="btn sec" data-doc-modif="${i}">Modifier ${f.type === "graphique" ? "le graphique" : f.type === "module" ? "le module" : "la figure"}</button></div>` : ""}
+    <label class="et-lab">Source ou légende (facultatif)<input type="text" class="ed-champ" data-doc-k="legende" value="${esc(f.legende || "")}" placeholder="ex. Jules-Abel Faivre, 1916, Bibliothèque du Congrès"></label>
+    <div class="et-doc-apercu">${f.type === "texte" ? figureHtml(f) : figureHtml(f) || `<p class="doux">Document vide.</p>`}</div>
+  </div>`;
+}
+function brancherDocs(){
+  const redessiner = () => { const y = scrollY; dessinerExoType(); scrollTo({top: y}); };
+  const ouvrir = (i, f) => {
+    const d = et.docs[i], leg = (d.fig || {}).legende || "";
+    if (f.type === "graphique") fenetreGraphique(d.fig.labels ? {...d.fig, type: d.fig.typeG || "barres"} : null, n => { d.fig = {...n, typeG: n.type, type: "graphique", legende: leg}; redessiner(); });
+    else if (f.type === "module") fenetreModule(d.fig.module || null, n => { d.fig = {type: "module", module: n, legende: leg}; redessiner(); });
+    else if (f.type === "geo") fenetreGeo(d.fig.figure ? d.fig : null, n => { d.fig = {...n, type: "geo", legende: leg}; redessiner(); });
+  };
+  let cibleImage = null;
+  zone().querySelectorAll("[data-doc-ajout]").forEach(b => b.onclick = () => {
+    const k = b.dataset.docAjout, d = {titre: "", fig: null}; et.docs.push(d); const i = et.docs.length - 1;
+    if (k === "image"){ d.fig = {type: "image"}; cibleImage = i; $("#et-doc-fichier").click(); redessiner(); return; }
+    if (k === "lien"){ d.fig = {type: "image", url: ""}; redessiner(); return; }
+    if (k === "texte"){ d.fig = {type: "texte", texte: ""}; redessiner(); return; }
+    if (k === "tableau"){ d.fig = {type: "tableau", entete: true, lignes: [["", "", ""], ["", "", ""], ["", "", ""]]}; redessiner(); return; }
+    d.fig = {type: k}; redessiner(); ouvrir(i, d.fig);
+  });
+  zone().querySelectorAll(".et-doc-carte").forEach(c => { const i = +c.dataset.doc, d = et.docs[i];
+    c.querySelectorAll("[data-doc-k]").forEach(ch => { const k = ch.dataset.docK;
+      ch[ch.type === "checkbox" ? "onchange" : "oninput"] = () => { const v = ch.type === "checkbox" ? ch.checked : ch.value;
+        if (k === "titre") d.titre = v; else d.fig[k] = v;
+        if (k !== "titre" && k !== "legende"){ c.querySelector(".et-doc-apercu").innerHTML = figureHtml(d.fig); afficherDocs(c); } }; });
+    c.querySelectorAll("[data-doc-cell]").forEach(ch => ch.oninput = () => { const [r, k] = ch.dataset.docCell.split(":").map(Number); d.fig.lignes[r][k] = ch.value; c.querySelector(".et-doc-apercu").innerHTML = figureHtml(d.fig); });
+  });
+  zone().querySelectorAll("[data-doc-ligne]").forEach(b => b.onclick = () => { const f = et.docs[+b.dataset.docLigne].fig; f.lignes.push(f.lignes[0].map(() => "")); redessiner(); });
+  zone().querySelectorAll("[data-doc-col]").forEach(b => b.onclick = () => { et.docs[+b.dataset.docCol].fig.lignes.forEach(l => l.push("")); redessiner(); });
+  zone().querySelectorAll("[data-doc-modif]").forEach(b => b.onclick = () => ouvrir(+b.dataset.docModif, et.docs[+b.dataset.docModif].fig));
+  zone().querySelectorAll("[data-doc-image]").forEach(b => b.onclick = () => { cibleImage = +b.dataset.docImage; $("#et-doc-fichier").click(); });
+  zone().querySelectorAll("[data-doc-retire]").forEach(b => b.onclick = () => { et.docs.splice(+b.dataset.docRetire, 1); redessiner(); });
+  const bouger = (i, dd) => { const t = et.docs.splice(i, 1)[0]; et.docs.splice(i + dd, 0, t); redessiner(); };
+  zone().querySelectorAll("[data-doc-monte]").forEach(b => b.onclick = () => bouger(+b.dataset.docMonte, -1));
+  zone().querySelectorAll("[data-doc-descend]").forEach(b => b.onclick = () => bouger(+b.dataset.docDescend, 1));
+  $("#et-doc-fichier").onchange = async () => {
+    const fi = $("#et-doc-fichier").files[0], d = et.docs[cibleImage]; if (!fi || !d) return; statut("Envoi de l'image…", true);
+    try {
+      const leg = (d.fig || {}).legende || "";
+      if (assets){ const r = await assets.upload(await reduireImage(fi)); urlsImages[r.id] = r.url; d.fig = {type: "image", id: r.id, legende: leg}; }
+      else d.fig = {type: "image", ref: await imageEnDocument(fi), legende: leg};
+      redessiner(); statut("Image ajoutée.", true);
+    } catch { statut("L'envoi de l'image a échoué.", false); }
+  };
+  afficherDocs(zone());
+}
 function apercuExoType(){
   const box = $("#et-apercu"); if (!box) return;
   const lv = lireVariables(et.variables), vals = lv.erreurs.length ? null : tirerValeurs(et.variables);
   const qs = et.questions.filter(q => q.q.trim());
   box.innerHTML = (lv.erreurs.length ? `<p class="statut erreur">${lv.erreurs.map(esc).join("<br>")}</p>` : !vals ? `<p class="statut erreur">Impossible de tirer des valeurs qui respectent les conditions.</p>` : "")
     + (vals && Object.keys(vals).length ? `<p class="et-vals">${Object.entries(vals).map(([k, v]) => `<span><b>${esc(k)}</b> = ${esc(formatFr(v, 6))}</span>`).join("")}</p>` : "")
-    + `<div class="et-enonce"><div class="et-texte">${esc(remplirTexte(et.enonce, vals || {})).replace(/\n/g, "<br>") || `<span class="doux">L'énoncé apparaîtra ici.</span>`}</div></div>
+    + `<div class="et-enonce"><div class="et-texte">${esc(remplirTexte(et.enonce, vals || {})).replace(/\n/g, "<br>") || `<span class="doux">L'énoncé apparaîtra ici.</span>`}</div>${htmlDocs(et.docs, vals || {})}</div>
     <ol class="et-questions">${qs.map(q => { if (et.feuille === "lignes"){ const a = lireIdees(remplirTexte(q.attendu, vals || {}));
       return `<li><p class="et-q">${esc(remplirTexte(q.q, vals || {}))}</p><p class="et-attendu">${q.phrase !== false ? "Phrase réponse · " : ""}${a.idees.map(x => `<b>${esc(x.join(" / "))}</b>`).join(" + ") || "—"}${a.contresens.length ? ` · contresens : ${a.contresens.map(x => esc(x.join(" / "))).join(", ")}` : ""}${a.citations.length ? ` · citation : ${a.citations.map(x => "« " + x.map(esc).join(" » ou « ") + " »").join(", ")}` : ""}</p></li>`; }
       const a = vals ? attenduDe(q, vals) : null; return `<li><p class="et-q">${esc(remplirTexte(q.q, vals || {}))}</p>
       <p class="et-attendu">${q.phrase !== false ? "Phrase réponse · " : ""}Réponse : <b>${a ? esc(a.texte) : "?"}</b>${q.unite ? " " + esc(q.unite) : ""}${a && a.nombre && !Number.isFinite(a.v) ? ` <span class="statut erreur">formule incalculable</span>` : ""}</p></li>`; }).join("")}</ol>`;
+  afficherDocs(box);
 }
 function brancherExoType(){
   const maj = () => apercuExoType();
@@ -9853,6 +9937,7 @@ function brancherExoType(){
   $("#et-vars").oninput = e => { et.variables = e.target.value; maj(); };
   $("#et-enonce").oninput = e => { et.enonce = e.target.value; maj(); };
   $("#et-tirer").onclick = maj;
+  brancherDocs();
   zone().querySelectorAll(".et-carte").forEach(c => { const q = et.questions[+c.dataset.i];
     c.querySelectorAll("[data-k]").forEach(ch => ch[ch.tagName === "SELECT" || ch.type === "checkbox" ? "onchange" : "oninput"] = () => { q[ch.dataset.k] = ch.type === "checkbox" ? ch.checked : ch.value; maj(); }); });
   const bouger = (i, d) => { const t = et.questions.splice(i, 1)[0]; et.questions.splice(i + d, 0, t); dessinerExoType(); };
@@ -9870,7 +9955,7 @@ function brancherExoType(){
     const id = et.id || nouvelId("t"), btn = $("#enregistrer"); btn.disabled = true;
     const questions = et.questions.filter(q => q.q.trim()).map(q => ({q: q.q.trim(), rep: (q.rep || "").trim(), arrondi: q.arrondi === "" ? "" : +q.arrondi, unite: (q.unite || "").trim(), exp: (q.exp || "").trim(), phrase: q.phrase !== false, attendu: (q.attendu || "").trim()}));
     try {
-      await db.doc("series/" + id).set({type: "precis", feuille: et.feuille, matiere: et.matiere, theme: et.theme.trim(), titre: et.titre.trim(), enonce: et.enonce.trim(), variables: et.variables.trim(), questions, exos: [], majLe: new Date().toISOString()});
+      await db.doc("series/" + id).set({type: "precis", feuille: et.feuille, matiere: et.matiere, theme: et.theme.trim(), docs: et.docs.filter(d => d.fig && (d.fig.type !== "image" || d.fig.id || d.fig.ref || d.fig.url)), titre: et.titre.trim(), enonce: et.enonce.trim(), variables: et.variables.trim(), questions, exos: [], majLe: new Date().toISOString()});
       matiereActive = et.matiere; et = null; Formes.succes(); changerVue("g-exos"); statut("Exercice type enregistré.", true);
     } catch (e){ btn.disabled = false; statut("Enregistrement impossible : " + (e.message || e), false); }
   };
@@ -9900,20 +9985,36 @@ const EXOS_TYPES_INTEGRES = [
     ]},
   {id: "t-guerre-totale", type: "precis", feuille: "lignes", matiere: "histoire", theme: "Analyse de document", titre: "Première Guerre mondiale 1",
     variables: "",
-    enonce: "Document : de 1914 à 1918, la France mobilise près de 8 millions d'hommes. À l'arrière, les femmes remplacent les hommes partis au front, dans les champs et dans les usines, où elles fabriquent notamment des obus. L'État contrôle l'économie et l'information : la censure interdit de publier certaines nouvelles et la propagande appelle toute la population à soutenir l'effort de guerre. Des emprunts sont lancés pour financer le conflit. Les colonies fournissent aussi des soldats et des travailleurs.",
+    enonce: "Observe les documents sur la Première Guerre mondiale (1914-1918), puis réponds aux questions en rédigeant des phrases complètes. Commence chaque réponse par son numéro.",
+    docs: [
+      {titre: "La France dans la guerre", fig: {type: "texte", texte: "De 1914 à 1918, la France mobilise environ 8 millions d'hommes. À l'arrière, les femmes remplacent les hommes partis au front, dans les champs et dans les usines, où elles fabriquent notamment des obus. L'État contrôle l'économie et l'information : la censure interdit de publier certaines nouvelles et la propagande appelle toute la population à soutenir l'effort de guerre. Des emprunts sont lancés pour financer le conflit. Les colonies fournissent aussi des soldats et des travailleurs.", legende: "Texte de synthèse."}},
+      {titre: "Affiche « On les aura ! », 1916", fig: {type: "image", url: "https://commons.wikimedia.org/wiki/Special:FilePath/On_les_aura!_2e_Emprunt_de_la_D%C3%A9fense_Nationale._Souscrivez_LCCN99613629.jpg?width=640", secours: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/On_les_aura!_2e_Emprunt_de_la_D%C3%A9fense_Nationale._Souscrivez_LCCN99613629.jpg/640px-On_les_aura!_2e_Emprunt_de_la_D%C3%A9fense_Nationale._Souscrivez_LCCN99613629.jpg", alt: "Affiche : un soldat français en capote bleue, le bras levé, appelle ses camarades à le suivre. Texte : On les aura ! 2e emprunt de la Défense nationale. Souscrivez.", legende: "Jules-Abel Faivre, affiche pour le 2e emprunt de la Défense nationale, 1916 (Bibliothèque du Congrès, domaine public)."}},
+      {titre: "Soldats morts pendant la guerre (estimations, en millions)", fig: {type: "graphique", typeG: "barres", titre: "", labels: ["Allemagne", "Russie", "France", "Autr.-Hong.", "R.-Uni", "Italie", "États-Unis"], series: [{nom: "Soldats morts (millions)", couleur: "#e86f9a", valeurs: [2, 1.8, 1.4, 1.1, 0.9, 0.6, 0.1]}], legende: "Ordres de grandeur couramment retenus par les historiens."}},
+      {titre: "Le bilan pour la France", fig: {type: "tableau", entete: true, lignes: [["", "Nombre (environ)"], ["Hommes mobilisés", "8 millions"], ["Soldats morts", "1,4 million"], ["Soldats blessés", "4,2 millions"]], legende: "Estimations arrondies."}},
+      {titre: "Repères", fig: {type: "module", module: {kind: "module", type: "frise", titre: "La Première Guerre mondiale", debut: 1913, fin: 1919, periodes: [{debut: 1914, fin: 1918, texte: "Guerre", couleur: "#e86f9a"}], evenements: [{date: 1914, texte: "Début de la guerre", couleur: "#f2ae02"}, {date: 1916, texte: "Bataille de Verdun", couleur: "#f2ae02"}, {date: 1917, texte: "Entrée en guerre des États-Unis", couleur: "#f2ae02"}, {date: 1918, texte: "Armistice (11 novembre)", couleur: "#f2ae02"}]}}}
+    ],
     questions: [
-      {q: "Quel rôle jouent les femmes à l'arrière pendant la guerre ?", phrase: true,
+      {q: "Document 1. Quel rôle jouent les femmes à l'arrière pendant la guerre ?", phrase: true,
         attendu: "remplacent | remplacer | remplacement | remplaçant | travaillent | travailler | travail\nusine | obus | munitions | champ | agriculture | industrie",
         exp: "Les femmes remplacent les hommes partis au front : elles travaillent dans les champs et dans les usines d'armement (obus)."},
-      {q: "Comment l'État contrôle-t-il l'information ? Cite les deux moyens du document.", phrase: true,
+      {q: "Document 1. Comment l'État contrôle-t-il l'information ? Cite les deux moyens.", phrase: true,
         attendu: "censure | censurer\npropagande",
         exp: "Par la censure (on interdit certaines nouvelles) et par la propagande (on pousse la population à soutenir la guerre)."},
-      {q: "Pourquoi parle-t-on de « guerre totale » ? Donne deux arguments.", phrase: true,
+      {q: "Document 2. Relève le slogan de l'affiche, entre guillemets.", phrase: true,
+        attendu: "= On les aura",
+        exp: "Le slogan est « On les aura ! » : il exprime la certitude de la victoire."},
+      {q: "Document 2. Que demande cette affiche à la population, et dans quel but ?", phrase: true,
+        attendu: "emprunt | souscrire | souscrivez | prêter | prêt | argent | épargne\nfinancer | financement | payer | guerre | victoire | effort de guerre",
+        exp: "Elle demande aux Français de souscrire à l'emprunt, c'est-à-dire de prêter leur argent à l'État pour financer la guerre : c'est de la propagande."},
+      {q: "Document 3. Quel pays a perdu le plus de soldats ?", phrase: true,
+        attendu: "Allemagne | allemand | allemands",
+        exp: "L'Allemagne, avec environ 2 millions de soldats morts."},
+      {q: "Documents 1 et 4. Pourquoi parle-t-on de « guerre totale » ? Donne deux arguments.", phrase: true,
         attendu: "population | civils | civil | société | arrière | femmes | nation\néconomie | économique | usines | production | industrie | emprunts\n- seulement les soldats | uniquement les soldats | seulement l'armée",
-        exp: "C'est une guerre totale car toute la population (les civils, les femmes à l'arrière) et toute l'économie (usines, emprunts) sont mobilisées, pas seulement les soldats."},
-      {q: "Qu'apportent les colonies à la France pendant la guerre ?", phrase: true,
-        attendu: "soldats | troupes | combattants | tirailleurs\ntravailleurs | ouvriers | main-d'œuvre | main d'œuvre",
-        exp: "Les colonies fournissent des soldats et des travailleurs."}
+        exp: "C'est une guerre totale car toute la population (les civils, les femmes à l'arrière) et toute l'économie (usines, emprunts) sont mobilisées, pas seulement les soldats : 8 millions de mobilisés en France."},
+      {q: "Document 5. En quelle année a lieu la bataille de Verdun ?", phrase: true,
+        attendu: "1916\n- 1914 | 1917 | 1918",
+        exp: "La bataille de Verdun a lieu en 1916."}
     ]},
   {id: "t-forfaits", type: "precis", matiere: "maths", theme: "Fonctions", titre: "Fonctions affines 1",
     variables: "prenom = Léa | Tom | Inès | Malik\na = 15..30\nb = 5..12\nc = 2..5\nn = 3..12\ng = 2..6\n? a > b + c\n? b + c*g != a",
