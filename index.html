@@ -1058,6 +1058,8 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .et-mode-emploi{margin:0;font-size:.9rem;color:var(--doux)}.et-mode-emploi b{color:var(--texte)}
 .et-feuille .obj-doc,.et-feuille .lg-mod{width:100%;max-width:none}
 .et-case{display:flex;gap:8px;align-items:center;font-size:.86rem;color:var(--doux)}
+.ed-entete .et-theme{flex:0 1 300px;color:#5fa8d3}.et-deux-points{align-self:center;font-size:1.4rem;font-weight:700;color:var(--doux)}
+.et-theme-nom{color:#5fa8d3}
 @font-face{font-family:"Playwrite FR Moderne";font-style:normal;font-weight:400;font-display:swap;src:url(vendor/fonts/playwrite-fr-moderne-latin-400-normal.woff2) format("woff2")}
 .cp-copie{display:flex;flex-direction:column;gap:8px}
 .cp-tete{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}.cp-tete .doux{font-size:.86rem}
@@ -4195,7 +4197,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.81";
+const VERSION_SITE = "0.82";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4475,7 +4477,7 @@ let filtreExos = "tous";
 VUES.exos = function vueExos(){
   rafraichir = vueExos;
   const toutes = seriesDe(matiereActive).filter(l => estPrecis(l) ? (l.questions || []).length : l.exos.length);
-  const ch = toutes.filter(l => !estPrecis(l)), ty = toutes.filter(estPrecis);
+  const ch = toutes.filter(l => !estPrecis(l)), ty = toutes.filter(estPrecis).sort((a, b) => String(a.theme || "~").localeCompare(String(b.theme || "~"), "fr") || String(a.titre).localeCompare(String(b.titre), "fr", {numeric: true}));
   const carteChaine = l => { const best = prog.exos[l.id]; return `
       <button type="button" data-l="${esc(l.id)}">
         <span class="exo-tete">${iconeExoChaine()}<span class="titre"><strong>${esc(l.titre)}</strong><span class="doux" style="font-size:.85rem">Exercice en chaîne · ${l.exos.length} questions différentes, une par une · +5 points par nouvelle bonne réponse</span>${pucesTypes(l)}</span></span>
@@ -4483,7 +4485,7 @@ VUES.exos = function vueExos(){
       </button>`; };
   const carteType = l => { const best = prog.exos[l.id], n = l.questions.length; return `
       <button type="button" data-l="${esc(l.id)}" class="carte-exo-type">
-        <span class="exo-tete">${iconeExoType()}<span class="titre"><strong>${esc(l.titre)}</strong><span class="doux" style="font-size:.85rem">Exercice type · un énoncé, ${n} question${n > 1 ? "s" : ""} · les valeurs changent à chaque fois</span>
+        <span class="exo-tete">${iconeExoType()}<span class="titre"><strong>${l.theme ? `<span class="et-theme-nom">${esc(l.theme)} :</span> ` : ""}${esc(l.titre)}</strong><span class="doux" style="font-size:.85rem">Exercice type · un énoncé, ${n} question${n > 1 ? "s" : ""} · les valeurs changent à chaque fois</span>
           <span class="exo-types"><span class="exo-type et-pastille"><i aria-hidden="true">↻</i>Valeurs différentes à chaque essai</span></span></span></span>
         <span class="etat ${best === n ? "fait" : ""}">${best === undefined ? "Non commencé" : "Record " + best + "/" + n}</span>
       </button>`; };
@@ -5881,7 +5883,7 @@ VUES["g-exos"] = function vueGExos(){
     <p id="statut" class="statut" role="status"></p>
     ${ls.length ? `<div class="liste">${ls.map(s => { const n = estPrecis(s) ? (s.questions || []).length : s.exos.length; return `
       <div class="ligne-liste">
-        <span class="exo-tete">${estPrecis(s) ? iconeExoType() : iconeExoChaine()}<span class="titre"><strong>${esc(s.titre)}</strong><span class="doux" style="font-size:.85rem">${estPrecis(s) ? "Exercice type" : "Exercice en chaîne"} · ${n} question${n > 1 ? "s" : ""}${s.integree ? (s.modifiee ? " · fourni avec le site, modifié" : " · fourni avec le site") : ""}</span></span></span>
+        <span class="exo-tete">${estPrecis(s) ? iconeExoType() : iconeExoChaine()}<span class="titre"><strong>${esc(estPrecis(s) ? nomExoType(s) : s.titre)}</strong><span class="doux" style="font-size:.85rem">${estPrecis(s) ? "Exercice type" : "Exercice en chaîne"} · ${n} question${n > 1 ? "s" : ""}${s.integree ? (s.modifiee ? " · fourni avec le site, modifié" : " · fourni avec le site") : ""}</span></span></span>
         <span class="rangee"><button type="button" class="mini-btn" data-modif="${esc(s.id)}">Modifier</button><button type="button" class="mini-btn danger" data-suppr="${esc(s.id)}">Supprimer</button></span>
       </div>`; }).join("")}</div>` : `<div class="vide">Aucune série en ${nomMatiere(matiereActive)}.</div>`}`;
   brancherFiltres(vueGExos);
@@ -9526,6 +9528,21 @@ function corrigerRedaction(q, numero, lignes, vals){
      {?a > b|texte si vrai|texte sinon} un texte qui dépend des valeurs.
    - réponse : « =formule » pour un nombre (ex. =a*b+c), sinon le ou les textes acceptés séparés par « / ». */
 const estPrecis = s => !!s && s.type === "precis";
+// Nom affiché d'un exercice type : « Thème : nom de l'exercice »
+const nomExoType = s => s.theme ? `${s.theme} : ${s.titre}` : s.titre;
+const THEMES_TYPES = {
+  maths: ["Calcul numérique", "Calcul littéral", "Développement", "Factorisation", "Équations", "Inéquations", "Fonctions", "Proportionnalité", "Pourcentages", "Pythagore", "Thalès", "Trigonométrie", "Aires et volumes", "Statistiques", "Probabilités", "Arithmétique", "Grandeurs et mesures"],
+  francais: ["Compréhension de texte", "Réécriture", "Grammaire", "Conjugaison", "Vocabulaire", "Figures de style", "Rédaction"],
+  anglais: ["Traduction", "Compréhension", "Grammaire", "Conjugaison", "Vocabulaire", "Rédaction"],
+  espagnol: ["Traduction", "Compréhension", "Grammaire", "Conjugaison", "Vocabulaire", "Rédaction"],
+  latin: ["Traduction", "Version", "Grammaire", "Vocabulaire"],
+  histoire: ["Analyse de document", "Repères", "Développement construit", "Vocabulaire"],
+  geo: ["Analyse de document", "Croquis", "Développement construit", "Vocabulaire"],
+  emc: ["Analyse de document", "Situation pratique", "Vocabulaire"],
+  pc: ["Mouvement et vitesse", "Énergie", "Électricité", "Chimie", "Conversions"],
+  svt: ["Analyse de document", "Démarche expérimentale", "Calculs en SVT"],
+  musique: ["Écoute", "Vocabulaire"]
+};
 const NOM_VAR = /^[A-Za-z][A-Za-z0-9_]*$/;
 const FONCTIONS_EXPR = new Set(["sin", "cos", "tan", "asin", "acos", "atan", "arcsin", "arccos", "arctan", "sqrt", "racine", "abs", "exp", "ln", "arrondi", "pi", "x", "pas"]);
 const nombreFr = v => String(v).trim().replace(/\s+/g, "").replace(",", ".");
@@ -9695,7 +9712,7 @@ function lancerExoType(s, vals){
   const lignes = feuilleDe(s) === "lignes";
   const att = qs.map(q => lignes ? null : attenduDe(q, vals));
   const feuille = {kind: "module", type: "fiche-maths", titre: "Ma copie", consigne: "", lignes: "", vides: 26, outils: true, texte: true, reponses: qs.length};
-  zone().innerHTML = entete(esc(nomMatiere(s.matiere) + " · Exercice type"), esc(s.titre)) + `
+  zone().innerHTML = entete(esc(nomMatiere(s.matiere) + " · Exercice type"), esc(nomExoType(s))) + `
     <div class="exo-type-page">
       <div class="et-enonce"><div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeExoType()}<span><b>Exercice</b><span class="doux"> · ${qs.length} question${qs.length > 1 ? "s" : ""}</span></span></span>
         <button type="button" class="mini-btn" id="et-autres" title="Le même exercice avec d'autres valeurs (la feuille est effacée)">↻ Autres valeurs</button></div>
@@ -9754,17 +9771,27 @@ const nouvelleQuestionType = () => ({q: "", rep: "", arrondi: "", unite: "", exp
 // Feuille de l'exercice : « grille » (calculs) ou « lignes » (rédaction) ; par défaut selon la matière
 const MATIERES_CALCUL = ["maths", "pc", "svt"];
 const feuilleDe = s => s.feuille === "lignes" || s.feuille === "grille" ? s.feuille : MATIERES_CALCUL.includes(s.matiere) ? "grille" : "lignes";
+// prochain numéro libre pour un thème : « Factorisation 3 »
+function numeroLibre(theme, matiere, id){
+  const t = String(theme || "").trim().toLowerCase(); let n = 1;
+  const pris = new Set(toutesSeries().filter(x => estPrecis(x) && x.id !== id && x.matiere === matiere && String(x.theme || "").trim().toLowerCase() === t).map(x => String(x.titre || "").trim().toLowerCase()));
+  while (pris.has(`${t} ${n}`)) n++;
+  return n;
+}
 function ouvrirExoType(s){
   rafraichir = null;
-  et = s ? {id: s.id, integree: !!s.integree, matiere: s.matiere, feuille: feuilleDe(s), titre: s.titre || "", enonce: s.enonce || "", variables: s.variables || "", questions: (s.questions || []).map(q => ({...nouvelleQuestionType(), ...q, arrondi: q.arrondi ?? ""}))}
-    : {id: null, matiere: matiereActive, feuille: feuilleDe({matiere: matiereActive}), titre: "", enonce: "", variables: "", questions: [nouvelleQuestionType(), nouvelleQuestionType()]};
+  et = s ? {id: s.id, integree: !!s.integree, matiere: s.matiere, feuille: feuilleDe(s), theme: s.theme || "", titre: s.titre || "", enonce: s.enonce || "", variables: s.variables || "", questions: (s.questions || []).map(q => ({...nouvelleQuestionType(), ...q, arrondi: q.arrondi ?? ""}))}
+    : {id: null, matiere: matiereActive, feuille: feuilleDe({matiere: matiereActive}), theme: "", titre: "", enonce: "", variables: "", questions: [nouvelleQuestionType(), nouvelleQuestionType()]};
   if (!et.questions.length) et.questions.push(nouvelleQuestionType());
   dessinerExoType();
 }
 function dessinerExoType(){
   zone().innerHTML = `<button type="button" class="retour" id="retour">← Exercices</button>
     <div class="ed-entete">
-      <input id="et-titre" class="ed-titre-serie" type="text" value="${esc(et.titre)}" placeholder="Titre de l'exercice (ex. Le forfait de téléphone)" aria-label="Titre de l'exercice">
+      <input id="et-theme" class="ed-titre-serie et-theme" type="text" list="et-themes" value="${esc(et.theme)}" placeholder="Thème (ex. Factorisation)" aria-label="Thème de l'exercice">
+      <datalist id="et-themes">${(THEMES_TYPES[et.matiere] || []).map(t => `<option value="${esc(t)}">`).join("")}</datalist>
+      <span class="et-deux-points" aria-hidden="true">:</span>
+      <input id="et-titre" class="ed-titre-serie" type="text" value="${esc(et.titre)}" placeholder="Nom (ex. ${esc((et.theme || "Factorisation") + " " + (numeroLibre(et.theme, et.matiere, et.id)))})" aria-label="Nom de l'exercice">
       <select id="et-matiere" aria-label="Matière">${MATIERES.map(m => `<option value="${m.id}" ${m.id === et.matiere ? "selected" : ""}>${m.nom}</option>`).join("")}</select>
     </div>
     <p class="doux" style="font-size:.88rem;max-width:80ch">${iconeExoType().replace('width="36" height="44"', 'width="18" height="22" style="display:inline-block;vertical-align:-5px;margin-right:6px"')}<b>Exercice type</b> : un exercice de manuel avec un grand énoncé et des questions numérotées. Les valeurs écrites entre accolades changent à chaque fois que l'élève le fait.</p>
@@ -9820,7 +9847,8 @@ function apercuExoType(){
 function brancherExoType(){
   const maj = () => apercuExoType();
   $("#et-titre").oninput = e => et.titre = e.target.value;
-  $("#et-matiere").onchange = e => et.matiere = e.target.value;
+  $("#et-theme").oninput = e => { et.theme = e.target.value; $("#et-titre").placeholder = "Nom (ex. " + (et.theme.trim() || "Factorisation") + " " + numeroLibre(et.theme, et.matiere, et.id) + ")"; };
+  $("#et-matiere").onchange = e => { et.matiere = e.target.value; $("#et-themes").innerHTML = (THEMES_TYPES[et.matiere] || []).map(t => `<option value="${esc(t)}">`).join(""); };
   zone().querySelectorAll("#et-feuille button").forEach(b => b.onclick = () => { et.feuille = b.dataset.v; dessinerExoType(); });
   $("#et-vars").oninput = e => { et.variables = e.target.value; maj(); };
   $("#et-enonce").oninput = e => { et.enonce = e.target.value; maj(); };
@@ -9836,11 +9864,13 @@ function brancherExoType(){
   const symb = zone().querySelector("[data-symb]"); symb.onmousedown = ev => ev.preventDefault(); symb.onclick = () => ouvrirSymboles(symb, x => { insererDansChamp(dernier, x); dernier.dispatchEvent(new Event("input")); });
   $("#retour").onclick = $("#annuler").onclick = () => { matiereActive = et.matiere; et = null; changerVue("g-exos"); };
   $("#enregistrer").onclick = async () => {
+    if (!et.theme.trim()){ statut("Choisis un thème (ex. Factorisation, Réécriture, Traduction).", false); $("#et-theme").focus(); return; }
+    if (!et.titre.trim()) et.titre = et.theme.trim() + " " + numeroLibre(et.theme, et.matiere, et.id);
     const pb = problemesExoType(et); if (pb.length){ statut(pb[0] + (pb.length > 1 ? ` (+ ${pb.length - 1} autre${pb.length > 2 ? "s" : ""} problème${pb.length > 2 ? "s" : ""})` : ""), false); return; }
     const id = et.id || nouvelId("t"), btn = $("#enregistrer"); btn.disabled = true;
     const questions = et.questions.filter(q => q.q.trim()).map(q => ({q: q.q.trim(), rep: (q.rep || "").trim(), arrondi: q.arrondi === "" ? "" : +q.arrondi, unite: (q.unite || "").trim(), exp: (q.exp || "").trim(), phrase: q.phrase !== false, attendu: (q.attendu || "").trim()}));
     try {
-      await db.doc("series/" + id).set({type: "precis", feuille: et.feuille, matiere: et.matiere, titre: et.titre.trim(), enonce: et.enonce.trim(), variables: et.variables.trim(), questions, exos: [], majLe: new Date().toISOString()});
+      await db.doc("series/" + id).set({type: "precis", feuille: et.feuille, matiere: et.matiere, theme: et.theme.trim(), titre: et.titre.trim(), enonce: et.enonce.trim(), variables: et.variables.trim(), questions, exos: [], majLe: new Date().toISOString()});
       matiereActive = et.matiere; et = null; Formes.succes(); changerVue("g-exos"); statut("Exercice type enregistré.", true);
     } catch (e){ btn.disabled = false; statut("Enregistrement impossible : " + (e.message || e), false); }
   };
@@ -9848,7 +9878,7 @@ function brancherExoType(){
 
 /* ----- Exercices types fournis avec le site (modifiables par le gérant) ----- */
 const EXOS_TYPES_INTEGRES = [
-  {id: "t-phare", type: "precis", feuille: "lignes", matiere: "francais", titre: "Une nuit au phare",
+  {id: "t-phare", type: "precis", feuille: "lignes", matiere: "francais", theme: "Compréhension de texte", titre: "Compréhension 1",
     variables: "prenom = Malo | Yanis | Erwan | Théo | Nathan",
     enonce: "Lis ce texte puis réponds aux questions en rédigeant des phrases complètes.\n\nCe soir-là, {prenom} grimpa seul les cent marches du phare. Le vent hurlait contre les vitres et la mer, noire comme de l'encre, se jetait sur les rochers. Son cœur battait si fort qu'il l'entendait dans ses oreilles. Pourtant, il ne redescendit pas : son grand-père lui avait confié la lampe, et il avait promis de la garder allumée jusqu'à l'aube. Il serra la rambarde glacée, ferma les yeux un instant, puis alluma la mèche. Aussitôt, un long faisceau doré balaya les vagues. Au loin, une petite barque cherchait le port. « Je suis là », murmura-t-il, et sa peur se changea lentement en fierté.",
     questions: [
@@ -9868,7 +9898,7 @@ const EXOS_TYPES_INTEGRES = [
         attendu: "passé simple\n- imparfait | passé composé | présent | plus-que-parfait",
         exp: "« grimpa » est au passé simple de l'indicatif (verbe grimper, 3e personne du singulier)."}
     ]},
-  {id: "t-guerre-totale", type: "precis", feuille: "lignes", matiere: "histoire", titre: "1914-1918 : une guerre totale",
+  {id: "t-guerre-totale", type: "precis", feuille: "lignes", matiere: "histoire", theme: "Analyse de document", titre: "Première Guerre mondiale 1",
     variables: "",
     enonce: "Document : de 1914 à 1918, la France mobilise près de 8 millions d'hommes. À l'arrière, les femmes remplacent les hommes partis au front, dans les champs et dans les usines, où elles fabriquent notamment des obus. L'État contrôle l'économie et l'information : la censure interdit de publier certaines nouvelles et la propagande appelle toute la population à soutenir l'effort de guerre. Des emprunts sont lancés pour financer le conflit. Les colonies fournissent aussi des soldats et des travailleurs.",
     questions: [
@@ -9885,7 +9915,7 @@ const EXOS_TYPES_INTEGRES = [
         attendu: "soldats | troupes | combattants | tirailleurs\ntravailleurs | ouvriers | main-d'œuvre | main d'œuvre",
         exp: "Les colonies fournissent des soldats et des travailleurs."}
     ]},
-  {id: "t-forfaits", type: "precis", matiere: "maths", titre: "Deux forfaits de téléphone",
+  {id: "t-forfaits", type: "precis", matiere: "maths", theme: "Fonctions", titre: "Fonctions affines 1",
     variables: "prenom = Léa | Tom | Inès | Malik\na = 15..30\nb = 5..12\nc = 2..5\nn = 3..12\ng = 2..6\n? a > b + c\n? b + c*g != a",
     enonce: "Un opérateur propose deux forfaits mensuels.\n• Forfait A : un prix fixe de {a} € par mois, internet illimité.\n• Forfait B : un abonnement de {b} € par mois, plus {c} € par gigaoctet (Go) consommé.\nOn note x le nombre de Go consommés dans le mois.",
     questions: [
@@ -9895,7 +9925,7 @@ const EXOS_TYPES_INTEGRES = [
       {q: "Résous l'équation {c}x + {b} = {a}. Combien de Go faut-il consommer pour que les deux forfaits coûtent le même prix ? (arrondi au centième si besoin)", rep: "=(a-b)/c", arrondi: 2, unite: "Go", exp: "{c}x = {a} − {b} = {=a-b}, donc x = {=a-b} ÷ {c} ≈ {=(a-b)/c;2}."},
       {q: "Un mois, {prenom} consomme {g} Go. Quel forfait est le moins cher pour ce mois ?", rep: "forfait {?b+c*g < a|B|A}", arrondi: "", unite: "", exp: "Forfait A : {a} €. Forfait B : {b} + {c} × {g} = {=b+c*g} €. Le moins cher est le forfait {?b+c*g < a|B|A}. (Le forfait B est moins cher tant que x < {=(a-b)/c;2} Go.)"}
     ]},
-  {id: "t-rampe", type: "precis", matiere: "maths", titre: "La rampe d'accès",
+  {id: "t-rampe", type: "precis", matiere: "maths", theme: "Trigonométrie", titre: "Pythagore et trigonométrie 1",
     variables: "h = 20..60 pas 5\nl = 300..900 pas 50\n? h/l <= 0.08\n? h/l >= 0.03",
     enonce: "Pour rendre l'entrée d'un collège accessible en fauteuil roulant, on construit une rampe. Elle monte d'une hauteur de {h} cm sur une longueur au sol de {l} cm. Le sol est horizontal et le mur de l'entrée est vertical : la rampe, le sol et le mur forment un triangle rectangle dont l'hypoténuse est la rampe.\nLa pente d'une rampe, en %, est égale à (hauteur ÷ longueur au sol) × 100. La réglementation impose une pente d'au plus 5 % pour une longue rampe.",
     questions: [
@@ -9904,7 +9934,7 @@ const EXOS_TYPES_INTEGRES = [
       {q: "Quelle longueur au sol faudrait-il au minimum pour que la pente soit exactement de 5 %, avec la même hauteur ?", rep: "=h*100/5", arrondi: "", unite: "cm", exp: "Il faut {h} ÷ longueur × 100 = 5, donc longueur = {h} × 100 ÷ 5 = {=h*20} cm."},
       {q: "Calcule l'angle que fait la rampe avec le sol, arrondi au dixième de degré (utilise la tangente).", rep: "=atan(h/l)", arrondi: 1, unite: "°", exp: "tan(angle) = {h} ÷ {l} ≈ {=h/l;4}, donc angle ≈ {=atan(h/l);1}° (touche tan⁻¹ ou arctan de la calculatrice)."}
     ]},
-  {id: "t-soldes", type: "precis", matiere: "maths", titre: "Les soldes",
+  {id: "t-soldes", type: "precis", matiere: "maths", theme: "Pourcentages", titre: "Pourcentages 1",
     variables: "prenom = Léa | Tom | Inès | Malik | Chloé\np = 30..120 pas 5\nr = 10 | 15 | 20 | 25 | 30 | 40\nr2 = 10 | 20 | 30",
     enonce: "Pendant les soldes, un magasin de sport affiche une réduction de {r} % sur toutes les chaussures. {prenom} veut acheter une paire qui coûtait {p} € avant les soldes.\nLe dernier jour, le magasin applique une deuxième réduction de {r2} % sur les prix déjà soldés.",
     questions: [
@@ -9914,7 +9944,7 @@ const EXOS_TYPES_INTEGRES = [
       {q: "Le dernier jour, quel est le prix de la paire après les deux réductions, arrondi au centime ?", rep: "=p*(1-r/100)*(1-r2/100)", arrondi: 2, unite: "€", exp: "{p} × {=1-r/100} × {=1-r2/100} = {=p*(1-r/100)*(1-r2/100)} €."},
       {q: "{prenom} pense que les deux réductions font une baisse de {=r+r2;0} %. Quel est en réalité le pourcentage de baisse total, arrondi au dixième ?", rep: "=100-100*(1-r/100)*(1-r2/100)", arrondi: 1, unite: "%", exp: "Coefficient global : {=1-r/100} × {=1-r2/100} = {=(1-r/100)*(1-r2/100);4}. La baisse totale est de {=100-100*(1-r/100)*(1-r2/100);1} %, et non {=r+r2;0} % : les pourcentages ne s'additionnent pas."}
     ]},
-  {id: "t-vitesse", type: "precis", matiere: "pc", titre: "Le trajet en scooter",
+  {id: "t-vitesse", type: "precis", matiere: "pc", theme: "Mouvement et vitesse", titre: "Vitesse et énergie 1",
     variables: "d = 6..24\nt = 15 | 20 | 30 | 40 | 45\nm = 90..130 pas 5\n? d/(t/60) <= 45",
     enonce: "Un livreur parcourt {d} km en scooter pour aller du dépôt à un client. Le trajet dure {t} minutes. La masse totale du scooter avec son conducteur est de {m} kg.\nRappels : v = d ÷ t ; 1 m/s = 3,6 km/h ; énergie cinétique Ec = ½ × m × v² (m en kg, v en m/s, Ec en joules).",
     questions: [
