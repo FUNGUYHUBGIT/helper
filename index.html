@@ -1066,7 +1066,23 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .et-doc .fig-exo{margin:0}.et-doc img{max-width:100%;max-height:520px;object-fit:contain;display:block;margin:0 auto;border-radius:6px}
 .doc-texte{margin:0;padding:8px 12px;border-left:3px solid #5fa8d3;font-size:.95rem;line-height:1.6;background:var(--surface)}
 .et-doc:has(.graphe),.et-doc:has(.mod-exo){grid-column:1/-1}.et-doc .fig-exo{width:100%;max-width:none;box-sizing:border-box}.et-doc .graphe{width:100%;max-width:640px;margin:0 auto;display:block}.et-doc .obj-doc{width:100%}
-.et-ajout-docs button{font-size:.85rem}.et-doc-apercu{max-height:420px;overflow:auto}
+.et-ajout-docs button{font-size:.85rem}
+.cp-sauter .cp-corr{min-height:var(--lh);line-height:var(--lh);white-space:normal;overflow:visible;padding:0 2px;font:400 16px/var(--lh) "Playwrite FR Moderne",cursive;color:#6fbf73;cursor:text;user-select:none}
+.cp-ligne.corrigee{cursor:default;background:none}
+.dt-err{text-decoration:underline wavy #e86f9a;text-decoration-thickness:1.5px;text-underline-offset:5px;cursor:help}
+.dt-accent{text-decoration-color:#f2ae02}.dt-lettre{color:#f2ae02;font-weight:400}.dt-majuscule,.dt-ponctuation{text-decoration-color:#5fa8d3}
+.dt-conjugaison{text-decoration-color:#b06bff}.dt-accord{text-decoration-color:#ff9f43}.dt-ajout{text-decoration:line-through #e86f9a}.dt-oubli{color:#e86f9a;font-weight:700;text-decoration:none}
+.dt-bon{text-decoration:underline #6fbf73;text-underline-offset:4px;font-weight:400;color:#8fe39a}
+.dt-pastille{display:inline-block;margin:2px 4px 2px 0;padding:1px 9px;border-radius:999px;border:1.5px solid #e86f9a;font-size:.82rem}
+.dt-pastille.dt-accent{border-color:#f2ae02}.dt-pastille.dt-conjugaison{border-color:#b06bff}.dt-pastille.dt-accord{border-color:#ff9f43}.dt-pastille.dt-majuscule,.dt-pastille.dt-ponctuation{border-color:#5fa8d3}
+.dt-commandes{gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}.dt-vitesse{display:inline-flex;gap:6px;align-items:center;font-size:.85rem}
+.dt-avance{height:4px;border-radius:4px;background:var(--surface-2);overflow:hidden;margin-top:6px}.dt-avance i{display:block;height:100%;background:#b06bff;transition:width .3s}
+.dt-texte{font-size:1rem;line-height:1.9}
+.carte-dictee{align-items:center}
+.demande-code{margin-top:4px}.lien-demande{background:none;border:0;padding:0;color:var(--doux);font:inherit;font-size:.92rem;cursor:pointer;text-align:left}.lien-demande b{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.demande-form,.demande-suivi{display:flex;flex-direction:column;gap:10px;max-width:420px;padding:14px 16px;border:1px solid var(--ligne);border-radius:var(--r);background:var(--surface)}
+.demande-suivi .doux{font-size:.88rem}.dm-code{font-size:1.5rem;letter-spacing:.12em;font-weight:700;color:var(--accent)}.dm-ok{color:#6fbf73}.dm-non{color:#e86f9a}
+.demandes-bloc{border-color:color-mix(in srgb,var(--accent) 50%,var(--ligne))}.dm-oui{border-color:#6fbf73;color:#6fbf73}.dt-options{gap:8px;margin-top:6px;flex-wrap:wrap}.dt-options .segment button{padding:4px 10px;font-size:.82rem}.et-doc-apercu{max-height:420px;overflow:auto}
 @font-face{font-family:"Playwrite FR Moderne";font-style:normal;font-weight:400;font-display:swap;src:url(vendor/fonts/playwrite-fr-moderne-latin-400-normal.woff2) format("woff2")}
 .cp-copie{display:flex;flex-direction:column;gap:8px}
 .cp-tete{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}.cp-tete .doux{font-size:.86rem}
@@ -1452,6 +1468,7 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
       <p id="msg-acces" class="message" role="status"></p>
       <div class="rangee"><button class="btn" type="submit" id="valider">Créer mon compte</button></div>
     </form>
+    <div id="demande-code" class="demande-code"></div>
     <div id="bloc-gerant" class="formulaire" hidden style="display:flex;flex-direction:column;gap:18px;max-width:400px">
       <p>Tu es propriétaire de cette page. L'espace gérant sert à créer les premiers codes d'accès (dont le tien, au rang Gérant) et à gérer le site sans compte.</p>
       <div class="rangee"><button class="btn" type="button" id="entrer-gerant">Ouvrir l'espace gérant</button></div>
@@ -4013,7 +4030,7 @@ function choisirMode(m){
   mode = m;
   document.querySelectorAll(".bascule button").forEach(b => b.setAttribute("aria-selected", b.dataset.mode === m));
   const creer = m === "creer", gerant = m === "gerant";
-  $("#form-acces").hidden = gerant; $("#bloc-gerant").hidden = !gerant;
+  $("#form-acces").hidden = gerant; $("#bloc-gerant").hidden = !gerant; if ($("#demande-code")) $("#demande-code").hidden = gerant;
   $("#bloc-code").hidden = !creer; $("#aide-id").hidden = !creer; $("#aide-mdp").hidden = !creer;
   $("#sur-acces").textContent = gerant ? "Espace gérant" : "Accès sur invitation";
   $("#titre-acces").textContent = creer ? "Créer un compte" : gerant ? "Se connecter en gérant" : "Se connecter";
@@ -4204,7 +4221,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.84";
+const VERSION_SITE = "0.85";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4497,13 +4514,20 @@ VUES.exos = function vueExos(){
         <span class="etat ${best === n ? "fait" : ""}">${best === undefined ? "Non commencé" : "Record " + best + "/" + n}</span>
       </button>`; };
   const section = (titre, aide, ls, carte) => ls.length ? `<div class="exos-section"><h3>${titre}</h3><p class="doux">${aide}</p><div class="liste">${ls.map(carte).join("")}</div></div>` : "";
-  zone().innerHTML = entete("Exercices", "S'entraîner") + filtres() + (toutes.length ? `
+  const dictees = matiereActive === "francais" ? `<div class="exos-section"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3><p class="doux">Un texte nouveau à chaque fois, lu à voix haute. Tu l'écris, puis la correction souligne chaque faute.</p>
+      <div class="liste"><div class="ligne-liste carte-dictee"><span class="exo-tete">${iconeDictee()}<span class="titre"><strong><span class="et-theme-nom">Dictée :</span> Dictée aléatoire</strong><span class="doux" style="font-size:.85rem">Thème au hasard (la mer, la forêt, la ville, la montagne)${prog.dictees && prog.dictees[auj()] !== undefined ? ` · meilleure note aujourd'hui : ${String(prog.dictees[auj()]).replace(".", ",")} / 10` : ""}</span>
+        <span class="rangee dt-options">${segment("dt-long", [["3", "Courte"], ["5", "Moyenne"], ["7", "Longue"]], String(choixDictee.phrases))}${segment("dt-temps", [["passe", "Passé"], ["present", "Présent"], ["futur", "Futur"]], choixDictee.temps)}</span></span></span>
+        <button type="button" class="btn" id="dt-lancer">Commencer</button></div></div></div>` : "";
+  zone().innerHTML = entete("Exercices", "S'entraîner") + filtres() + dictees + (toutes.length ? `
     ${segment("filtre-exos", [["tous", "Tous"], ["chaine", `Exercices en chaîne (${ch.length})`], ["type", `Exercices types (${ty.length})`]], filtreExos)}
     ${filtreExos !== "type" ? section(`${iconeExoChaine().replace('width="36" height="44"', 'width="16" height="20"')} Exercices en chaîne`, "Plusieurs questions différentes qui s'enchaînent, une à la fois.", ch, carteChaine) : ""}
     ${filtreExos !== "chaine" ? section(`${iconeExoType().replace('width="36" height="44"', 'width="16" height="20"')} Exercices types`, "Comme dans le manuel : un grand énoncé et des questions numérotées. Les valeurs changent un peu à chaque fois.", ty, carteType) : ""}`
-    : `<div class="vide">Aucun exercice en ${nomMatiere(matiereActive)} pour le moment.</div>`);
+    : dictees ? "" : `<div class="vide">Aucun exercice en ${nomMatiere(matiereActive)} pour le moment.</div>`);
   brancherFiltres(vueExos);
   zone().querySelectorAll("#filtre-exos button").forEach(b => b.onclick = () => { filtreExos = b.dataset.v; vueExos(); });
+  if ($("#dt-lancer")){ $("#dt-lancer").onclick = () => lancerDictee(choixDictee);
+    zone().querySelectorAll("#dt-long button").forEach(b => b.onclick = () => { choixDictee.phrases = +b.dataset.v; vueExos(); });
+    zone().querySelectorAll("#dt-temps button").forEach(b => b.onclick = () => { choixDictee.temps = b.dataset.v; vueExos(); }); }
   zone().querySelectorAll(".liste button").forEach(b => b.onclick = () => { const l = toutes.find(x => x.id === b.dataset.l);
     if (estPrecis(l)) lancerExoType(l); else lancerQuiz(questionsDe(l), {titre: l.titre, sur: nomMatiere(l.matiere) + " · Exercices", lecon: l}); });
 };
@@ -9331,11 +9355,14 @@ function brancherEditeurSerie(){
      - heureux | joyeux             → contresens : ne doit pas être affirmé
      = comme un oiseau blessé       → citation à recopier exactement, au mot près */
 const CP_LH = 36, CP_LIGNES = 22;
+// pas de correction automatique ni de suggestions (navigateur, Google, Grammarly, LanguageTool…)
+const CP_SANS_CORRECTEUR = `spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" translate="no" writingsuggestions="false" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lt-active="false" data-ms-editor="false"`;
+const cpLigneHtml = () => `<div class="cp-ligne" contenteditable="true" ${CP_SANS_CORRECTEUR} role="textbox" aria-label="Ligne de la copie"></div>`;
 function htmlCopie(o = {}){
   const n = Math.max(8, +o.lignes || CP_LIGNES);
   return `<div class="cp-copie" data-cp="1">
     <div class="cp-tete"><b>${esc(o.titre || "Ma copie")}</b><span class="doux">${esc(o.aide || "Clique sur une ligne pour écrire. Commence chaque réponse par son numéro : 1. 2. 3. …")}</span></div>
-    <div class="cp-page" style="--lh:${CP_LH}px">${Array.from({length: n}, () => `<div class="cp-ligne" contenteditable="true" spellcheck="false" role="textbox" aria-label="Ligne de la copie"></div>`).join("")}</div>
+    <div class="cp-page${o.sauter ? " cp-sauter" : ""}" style="--lh:${CP_LH}px" ${o.sauter ? `data-sauter="1"` : ""}>${Array.from({length: n}, () => (o.sauter ? `<div class="cp-corr" aria-hidden="true"></div>` : "") + cpLigneHtml()).join("")}</div>
     <div class="fm-pied"><button type="button" class="mini-btn" data-cp-ajout>+ Ajouter des lignes</button><button type="button" class="mini-btn" data-cp-vider>↺ Tout effacer</button>
       <span class="fm-aide"><b>Entrée</b> = ligne suivante · <b>↑ ↓</b> pour changer de ligne · le texte passe tout seul à la ligne quand elle est pleine.</span></div></div>`;
 }
@@ -9352,10 +9379,13 @@ function cpPosition(el){ const s = getSelection(); if (!s.rangeCount || !el.cont
 function brancherCopie(racine){
   (racine.querySelectorAll ? racine.querySelectorAll(".cp-copie[data-cp]") : []).forEach(c => {
     if (c.dataset.pret) return; c.dataset.pret = "1";
-    const page = c.querySelector(".cp-page");
-    const nouvelleLigne = apres => { const d = document.createElement("div"); d.className = "cp-ligne"; d.contentEditable = "true"; d.spellcheck = false; d.setAttribute("role", "textbox"); d.setAttribute("aria-label", "Ligne de la copie");
-      if (apres) apres.after(d); else page.appendChild(d); return d; };
-    const suivante = el => el.nextElementSibling || nouvelleLigne(el);
+    const page = c.querySelector(".cp-page"), sauter = !!page.dataset.sauter;
+    // avec « sauter » : chaque ligne d'écriture est précédée d'une ligne laissée vide pour la correction
+    const nouvelleLigne = apres => { const t = document.createElement("div"); t.innerHTML = (sauter ? `<div class="cp-corr" aria-hidden="true"></div>` : "") + cpLigneHtml();
+      const els = [...t.children]; if (apres) apres.after(...els); else page.append(...els); return els[els.length - 1]; };
+    const apresL = el => { let n = el.nextElementSibling; while (n && !n.classList.contains("cp-ligne")) n = n.nextElementSibling; return n; };
+    const avantL = el => { let n = el.previousElementSibling; while (n && !n.classList.contains("cp-ligne")) n = n.previousElementSibling; return n; };
+    const suivante = el => apresL(el) || nouvelleLigne(el);
     // texte trop long : les derniers mots passent au début de la ligne suivante
     const deborder = el => {
       let pos = cpPosition(el), focus = document.activeElement === el, cible = null;
@@ -9380,24 +9410,24 @@ function brancherCopie(racine){
       if (e.key === "Enter"){ e.preventDefault();
         // coupe la ligne au curseur : la fin descend sur une nouvelle ligne
         const fin = t.slice(pos); el.textContent = t.slice(0, pos);
-        const n = nouvelleLigne(el); n.textContent = fin;
-        const vide = [...page.children].reverse().find(x => x !== n && !cpTexte(x).trim() && x.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_PRECEDING);
-        if (vide && page.children.length > CP_LIGNES) vide.remove();
+        const n = fin.trim() || !apresL(el) ? nouvelleLigne(el) : apresL(el); if (fin.trim()) n.textContent = fin;
         cpCurseur(n, 0); return; }
-      if (e.key === "Backspace" && pos === 0 && el.previousElementSibling && !getSelection().toString()){ e.preventDefault();
-        const p = el.previousElementSibling, pt = cpTexte(p).replace(/\s+$/, ""), joint = pt + (pt && t ? " " : "") + t;
-        p.textContent = joint; el.remove(); nouvelleLigne(null); cpCurseur(p, pt.length + (pt && t ? 1 : 0)); deborder(p); return; }
-      if (e.key === "ArrowUp" && el.previousElementSibling){ e.preventDefault(); cpCurseur(el.previousElementSibling, pos); }
+      if (e.key === "Backspace" && pos === 0 && avantL(el) && !getSelection().toString()){ e.preventDefault();
+        const p = avantL(el), pt = cpTexte(p).replace(/\s+$/, ""), joint = pt + (pt && t ? " " : "") + t;
+        p.textContent = joint; if (sauter && el.previousElementSibling && el.previousElementSibling.classList.contains("cp-corr")) el.previousElementSibling.remove(); el.remove(); nouvelleLigne(null); cpCurseur(p, pt.length + (pt && t ? 1 : 0)); deborder(p); return; }
+      if (e.key === "ArrowUp" && avantL(el)){ e.preventDefault(); cpCurseur(avantL(el), pos); }
       if (e.key === "ArrowDown"){ e.preventDefault(); cpCurseur(suivante(el), pos); }
     });
     // un clic sur la ligne place le curseur en fin de texte si l'on clique après le texte
-    page.addEventListener("mousedown", e => { const el = e.target; if (!el.classList.contains("cp-ligne")) return;
+    page.addEventListener("mousedown", e => { let el = e.target;
+      if (el.classList.contains("cp-corr") && !el.textContent){ const n = apresL(el); if (n){ e.preventDefault(); cpCurseur(n, cpTexte(n).length); } return; }   // clic sur une ligne sautée : on écrit sur la ligne suivante
+      if (!el.classList.contains("cp-ligne") || el.contentEditable === "false") return;
       const r = document.createRange(); r.selectNodeContents(el); const b = r.getBoundingClientRect();
       if (!cpTexte(el) || e.clientX > b.right){ e.preventDefault(); cpCurseur(el, cpTexte(el).length); } });
     c.querySelector("[data-cp-ajout]").onclick = () => { for (let i = 0; i < 8; i++) nouvelleLigne(null); };
     const vider = c.querySelector("[data-cp-vider]"); let conf = false;
     vider.onclick = () => { if (!conf){ conf = true; vider.textContent = "Confirmer ?"; setTimeout(() => { conf = false; vider.textContent = "↺ Tout effacer"; }, 2500); return; }
-      conf = false; vider.textContent = "↺ Tout effacer"; cpLignes(c).forEach(l => l.textContent = ""); };
+      conf = false; vider.textContent = "↺ Tout effacer"; cpLignes(c).forEach(l => { l.textContent = ""; l.contentEditable = "true"; l.classList.remove("corrigee"); }); c.querySelectorAll(".cp-corr").forEach(x => x.textContent = ""); };
   });
 }
 const lireCopie = racine => cpLignes(racine).map(cpTexte);
@@ -9524,6 +9554,298 @@ function corrigerRedaction(q, numero, lignes, vals){
   if (!d.length) return {ok: true, titre: "Juste", details: [], trouve: best.c};
   const fond = best.idees.some(i => i.etat === "manque" || i.etat === "niee") || best.contre.length;
   return {ok: false, titre: (fond ? "Réponse incomplète ou inexacte" : "Presque : réponse juste mais à corriger") + sansSec, details: d, trouve: best.c};
+}
+/* ===================== DICTÉES (français) =====================
+   Un texte inventé à chaque fois mais correct et qui a du sens : phrases construites à partir de thèmes
+   (la mer, la forêt, la ville, la montagne), avec accords des déterminants, des adjectifs et des verbes.
+   Le texte est lu à voix haute, l'élève l'écrit sur une copie (une ligne sur deux), puis la correction
+   souligne chaque faute (accent, accord, conjugaison, orthographe, ponctuation) et réécrit la ligne en dessous. */
+
+/* ----- Lexique : noms, adjectifs, verbes (toutes les formes écrites, pour être sûr qu'elles sont justes) ----- */
+const DN = (s, g, p, o = {}) => ({s, g, p: p || s + "s", ...o});                       // nom : singulier, genre, pluriel
+const DA = (ms, fs, mp, fp) => ({ms, fs: fs ?? (ms.endsWith("e") ? ms : ms + "e"), mp: mp ?? (/[sx]$/.test(ms) ? ms : ms + "s"), fp: fp ?? ((fs ?? (ms.endsWith("e") ? ms : ms + "e")) + "s")});
+// verbe régulier en -er : formes à la 3e personne (singulier / pluriel)
+function DV1(inf){
+  const r = inf.slice(0, -2), g = /ger$/.test(inf), c = /cer$/.test(inf), ra = g ? r + "e" : c ? r.slice(0, -1) + "ç" : r;
+  return {inf, present: [r + "e", r + "ent"], imparfait: [ra + "ait", ra + "aient"], passe: [ra + "a", r + "èrent"], futur: [inf + "a", inf + "ont"]};
+}
+const DVX = (inf, present, imparfait, passe, futur) => ({inf, present, imparfait, passe, futur});
+const DVERBES = {
+  etre: DVX("être", ["est", "sont"], ["était", "étaient"], ["fut", "furent"], ["sera", "seront"]),
+  attendre: DVX("attendre", ["attend", "attendent"], ["attendait", "attendaient"], ["attendit", "attendirent"], ["attendra", "attendront"]),
+  descendre: DVX("descendre", ["descend", "descendent"], ["descendait", "descendaient"], ["descendit", "descendirent"], ["descendra", "descendront"]),
+  courir: DVX("courir", ["court", "courent"], ["courait", "couraient"], ["courut", "coururent"], ["courra", "courront"]),
+  cueillir: DVX("cueillir", ["cueille", "cueillent"], ["cueillait", "cueillaient"], ["cueillit", "cueillirent"], ["cueillera", "cueilleront"]),
+  partir: DVX("partir", ["part", "partent"], ["partait", "partaient"], ["partit", "partirent"], ["partira", "partiront"]),
+  voir: DVX("voir", ["voit", "voient"], ["voyait", "voyaient"], ["vit", "virent"], ["verra", "verront"]),
+  saisir: DVX("saisir", ["saisit", "saisissent"], ["saisissait", "saisissaient"], ["saisit", "saisirent"], ["saisira", "saisiront"]),
+  franchir: DVX("franchir", ["franchit", "franchissent"], ["franchissait", "franchissaient"], ["franchit", "franchirent"], ["franchira", "franchiront"]),
+  remplir: DVX("remplir", ["remplit", "remplissent"], ["remplissait", "remplissaient"], ["remplit", "remplirent"], ["remplira", "rempliront"]),
+  disparaitre: DVX("disparaître", ["disparaît", "disparaissent"], ["disparaissait", "disparaissaient"], ["disparut", "disparurent"], ["disparaîtra", "disparaîtront"]),
+  porter: DV1("porter"), marcher: DV1("marcher"), regarder: DV1("regarder"), observer: DV1("observer"), admirer: DV1("admirer"), reparer: DV1("réparer"),
+  ramasser: DV1("ramasser"), nager: DV1("nager"), plonger: DV1("plonger"), rentrer: DV1("rentrer"), chanter: DV1("chanter"), briller: DV1("briller"),
+  souffler: DV1("souffler"), frapper: DV1("frapper"), flotter: DV1("flotter"), avancer: DV1("avancer"), tomber: DV1("tomber"), grimper: DV1("grimper"),
+  couper: DV1("couper"), traverser: DV1("traverser"), sonner: DV1("sonner"), siffler: DV1("siffler"), voler: DV1("voler"), garder: DV1("garder"),
+  chercher: DV1("chercher"), danser: DV1("danser"), glisser: DV1("glisser"), longer: DV1("longer"), tirer: DV1("tirer"), installer: DV1("installer"),
+  trembler: DV1("trembler"), murmurer: DV1("murmurer"), rouler: DV1("rouler"), monter: DV1("monter")
+};
+const ADJ = {
+  vieux: DA("vieux", "vieille", "vieux", "vieilles"), jeune: DA("jeune"), petit: DA("petit"), grand: DA("grand"), beau: DA("beau", "belle", "beaux", "belles"),
+  courageux: DA("courageux", "courageuse", "courageux", "courageuses"), fatigue: DA("fatigué"), joyeux: DA("joyeux", "joyeuse", "joyeux", "joyeuses"),
+  silencieux: DA("silencieux", "silencieuse", "silencieux", "silencieuses"), presse: DA("pressé"), curieux: DA("curieux", "curieuse", "curieux", "curieuses"),
+  calme: DA("calme"), agite: DA("agité"), immense: DA("immense"), gris: DA("gris", "grise", "gris", "grises"), haut: DA("haut"), puissant: DA("puissant"),
+  froid: DA("froid"), violent: DA("violent"), leger: DA("léger", "légère", "légers", "légères"), chaud: DA("chaud"), dore: DA("doré"), mouille: DA("mouillé"),
+  bleu: DA("bleu"), clair: DA("clair"), sombre: DA("sombre"), roux: DA("roux", "rousse", "roux", "rousses"), sec: DA("sec", "sèche", "secs", "sèches"),
+  humide: DA("humide"), etroit: DA("étroit"), boueux: DA("boueux", "boueuse", "boueux", "boueuses"), anime: DA("animé"), bruyant: DA("bruyant"),
+  ancien: DA("ancien", "ancienne", "anciens", "anciennes"), nombreux: DA("nombreux", "nombreuse", "nombreux", "nombreuses"), blanc: DA("blanc", "blanche", "blancs", "blanches"),
+  epais: DA("épais", "épaisse", "épais", "épaisses"), frais: DA("frais", "fraîche", "frais", "fraîches"), pur: DA("pur"), majestueux: DA("majestueux", "majestueuse", "majestueux", "majestueuses"),
+  tranquille: DA("tranquille"), lumineux: DA("lumineux", "lumineuse", "lumineux", "lumineuses"), glace: DA("glacé")
+};
+const AVANT = ["vieux", "jeune", "petit", "grand", "beau"];      // adjectifs placés avant le nom
+const voyelleDict = s => /^[aeiouyhâàéèêîïôûœ]/i.test(s);
+/* Thèmes. persos : noms de personnes ou d'animaux ; actions : [verbe, suites possibles] (intransitif) ou [verbe, null, compléments d'objet] ;
+   choses : [nom, adjectifs possibles, actions possibles] ; nb : "s" = toujours au singulier, "p" = toujours au pluriel. */
+const DTHEMES = [
+  {nom: "La mer", cct: ["Ce matin-là", "Au lever du soleil", "Chaque été", "Le soir venu", "Pendant les vacances", "À marée basse"],
+    persos: [[DN("pêcheur", "m"), ["vieux", "jeune", "courageux", "fatigue"]], [DN("marin", "m"), ["vieux", "jeune", "courageux", "fatigue"]], [DN("enfant", "m"), ["petit", "joyeux", "curieux"]],
+      [DN("promeneuse", "f"), ["jeune", "vieux", "silencieux"]], [DN("baigneur", "m"), ["jeune", "courageux"]], [DN("fillette", "f"), ["petit", "joyeux", "curieux"]]],
+    actions: [["marcher", ["le long de la plage", "sur le sable mouillé", "vers le phare"]], ["nager", ["près des rochers", "dans l'eau froide"]], ["rentrer", ["au port", "à la maison"]],
+      ["courir", ["vers les vagues", "sur la jetée"]], ["reparer", null, [DN("filet", "m"), DN("barque", "f"), DN("voile", "f")]], ["observer", null, [DN("bateau", "m", "bateaux"), DN("mouette", "f"), DN("horizon", "m", null, {nb: "s"})]],
+      ["ramasser", null, [DN("coquillage", "m", null, {nb: "p"}), DN("galet", "m", null, {nb: "p"}), DN("algue", "f", null, {nb: "p"})]], ["attendre", null, [DN("retour des bateaux", "m", null, {nb: "s"}), DN("marée", "f", null, {nb: "s"})]]],
+    choses: [[DN("mer", "f", null, {nb: "s"}), ["calme", "agite", "immense", "gris"], []], [DN("vague", "f", null, {nb: "p"}), ["haut", "gris", "puissant"], [["frapper", ["les rochers", "la digue"]], ["rouler", ["sur le sable"]]]],
+      [DN("vent", "m", null, {nb: "s"}), ["froid", "violent", "leger"], [["souffler", ["sur la côte", "très fort"]]]], [DN("sable", "m", null, {nb: "s"}), ["chaud", "dore", "mouille"], []],
+      [DN("soleil", "m", null, {nb: "s"}), ["chaud", "lumineux"], [["briller", ["au-dessus des flots", "dans le ciel"]], ["disparaitre", ["derrière l'horizon"]]]], [DN("bateau", "m", "bateaux", {nb: "p"}), ["ancien", "nombreux"], [["flotter", ["dans le port"]], ["glisser", ["sur l'eau"]]]]]},
+  {nom: "La forêt", cct: ["Un matin d'automne", "À la tombée de la nuit", "Chaque dimanche", "Après la pluie", "Au cœur de l'hiver"],
+    persos: [[DN("bûcheron", "m"), ["vieux", "jeune", "courageux", "fatigue"]], [DN("promeneur", "m"), ["jeune", "vieux", "silencieux", "curieux"]], [DN("promeneuse", "f"), ["jeune", "vieux", "silencieux"]],
+      [DN("chasseur", "m"), ["vieux", "silencieux"]], [DN("randonneuse", "f"), ["jeune", "courageux", "fatigue"]], [DN("enfant", "m"), ["petit", "curieux", "joyeux"]]],
+    actions: [["marcher", ["entre les arbres", "sur le sentier", "dans les feuilles mortes"]], ["avancer", ["sans bruit", "vers la clairière"]], ["rentrer", ["au village", "avant la nuit"]],
+      ["ramasser", null, [DN("champignon", "m", null, {nb: "p"}), DN("branche", "f"), DN("châtaigne", "f", null, {nb: "p"})]], ["observer", null, [DN("biche", "f"), DN("oiseau", "m", "oiseaux"), DN("écureuil", "m")]],
+      ["couper", null, [DN("branche", "f"), DN("bûche", "f")]], ["cueillir", null, [DN("fleur", "f"), DN("mûre", "f", null, {nb: "p"}), DN("noisette", "f", null, {nb: "p"})]], ["chercher", null, [DN("chemin", "m", null, {nb: "s"}), DN("cabane", "f", null, {nb: "s"})]]],
+    choses: [[DN("forêt", "f", null, {nb: "s"}), ["sombre", "silencieux", "immense", "humide"], []], [DN("feuille", "f", null, {nb: "p"}), ["roux", "sec", "humide"], [["tomber", ["sur le sol", "doucement"]], ["trembler", ["sous le vent"]]]],
+      [DN("vent", "m", null, {nb: "s"}), ["froid", "leger"], [["souffler", ["dans les branches"]], ["murmurer", ["entre les troncs"]]]], [DN("sentier", "m", null, {nb: "s"}), ["etroit", "boueux", "humide"], []],
+      [DN("oiseau", "m", "oiseaux", {nb: "p"}), ["nombreux", "silencieux"], [["chanter", ["dans les branches", "au lever du jour"]], ["voler", ["au-dessus des arbres"]]]], [DN("renard", "m", null, {nb: "s"}), ["roux", "curieux"], [["courir", ["entre les arbres", "vers le terrier"]], ["disparaitre", ["dans les fourrés"]]]]]},
+  {nom: "La ville", cct: ["Ce soir-là", "Chaque matin", "Le samedi", "En plein hiver", "À l'heure de pointe"],
+    persos: [[DN("passant", "m"), ["jeune", "vieux", "presse", "fatigue"]], [DN("passante", "f"), ["jeune", "vieux", "presse"]], [DN("commerçant", "m"), ["vieux", "jeune", "joyeux"]],
+      [DN("vendeuse", "f"), ["jeune", "joyeux", "fatigue"]], [DN("policier", "m"), ["jeune", "courageux"]], [DN("écolier", "m"), ["petit", "joyeux", "presse"]]],
+    actions: [["marcher", ["dans les rues animées", "sur le trottoir", "vers la gare"]], ["rentrer", ["à la maison", "avant la nuit"]], ["monter", ["dans le bus", "vers le quartier ancien"]],
+      ["traverser", null, [DN("place", "f", null, {nb: "s"}), DN("boulevard", "m", null, {nb: "s"}), DN("pont", "m", null, {nb: "s"})]], ["regarder", null, [DN("vitrine", "f"), DN("affiche", "f"), DN("passant", "m")]],
+      ["attendre", null, [DN("bus", "m", "bus", {nb: "s"}), DN("tramway", "m", null, {nb: "s"})]], ["porter", null, [DN("sac", "m"), DN("paquet", "m"), DN("valise", "f")]]],
+    choses: [[DN("rue", "f", null, {nb: "p"}), ["anime", "bruyant", "etroit"], []], [DN("ville", "f", null, {nb: "s"}), ["immense", "bruyant", "silencieux", "lumineux"], []],
+      [DN("voiture", "f", null, {nb: "p"}), ["nombreux"], [["avancer", ["lentement", "dans les embouteillages"]], ["rouler", ["sur le boulevard"]]]], [DN("immeuble", "m", null, {nb: "p"}), ["haut", "gris", "ancien"], []],
+      [DN("cloche", "f", null, {nb: "p"}), ["ancien"], [["sonner", ["au loin", "dans le quartier"]]]], [DN("lumière", "f", null, {nb: "p"}), ["nombreux"], [["briller", ["dans la nuit", "derrière les fenêtres"]]]]]},
+  {nom: "La montagne", cct: ["Au petit matin", "Ce jour-là", "En plein été", "À la fin de l'hiver", "Avant l'orage"],
+    persos: [[DN("berger", "m"), ["vieux", "jeune", "courageux", "fatigue"]], [DN("bergère", "f"), ["vieux", "jeune", "courageux"]], [DN("skieur", "m"), ["jeune", "courageux", "fatigue"]],
+      [DN("skieuse", "f"), ["jeune", "courageux"]], [DN("randonneur", "m"), ["jeune", "vieux", "fatigue", "courageux"]], [DN("guide", "m"), ["vieux", "jeune", "silencieux"]]],
+    actions: [["grimper", ["vers le sommet", "le long de la pente"]], ["descendre", ["vers la vallée", "vers le refuge"]], ["marcher", ["sur le sentier", "dans la neige fraîche"]],
+      ["observer", null, [DN("sommet", "m"), DN("glacier", "m"), DN("vallée", "f", null, {nb: "s"})]], ["garder", null, [DN("troupeau", "m", "troupeaux"), DN("mouton", "m", null, {nb: "p"})]],
+      ["franchir", null, [DN("col", "m", null, {nb: "s"}), DN("torrent", "m", null, {nb: "s"})]], ["remplir", null, [DN("gourde", "f"), DN("sac", "m")]]],
+    choses: [[DN("neige", "f", null, {nb: "s"}), ["blanc", "epais", "frais"], [["tomber", ["sur les sommets", "toute la nuit"]]]], [DN("montagne", "f", null, {nb: "p"}), ["haut", "majestueux", "silencieux"], []],
+      [DN("air", "m", null, {nb: "s"}), ["frais", "pur", "froid"], []], [DN("marmotte", "f", null, {nb: "p"}), ["curieux", "nombreux"], [["siffler", ["entre les rochers"]]]],
+      [DN("aigle", "m", null, {nb: "s"}), ["majestueux"], [["voler", ["au-dessus des cimes"]]]], [DN("torrent", "m", null, {nb: "s"}), ["glace", "puissant"], [["rouler", ["entre les pierres"]]]]]}
+];
+const choisir = l => l[Math.floor(Math.random() * l.length)];
+const majusculeDebut = t => t.charAt(0).toUpperCase() + t.slice(1);
+// groupe nominal accordé : {txt, nb}
+function groupeNominal(n, nb, adjs, opts = {}){
+  nb = n.nb || nb; const pl = nb === "p", nom = pl ? n.p : n.s, f = n.g === "f";
+  let avant = "", apres = "";
+  const libres = (adjs || []).filter(a => ADJ[a] && !((a === "vieux" || a === "beau") && voyelleDict(nom)));
+  if (opts.adj !== false && libres.length && Math.random() < (opts.p ?? .55)){
+    const a = choisir(libres), forme = ADJ[a][(f ? "f" : "m") + (pl ? "p" : "s")];
+    if (AVANT.includes(a)) avant = forme + " "; else apres = " " + forme;
+  }
+  const premier = avant || nom, det = pl ? "les" : voyelleDict(premier) ? "l'" : f ? "la" : "le";
+  return {txt: det + (det === "l'" ? "" : " ") + avant + nom + apres, nb};
+}
+// temps de chaque verbe : récit au passé = imparfait pour décrire, passé simple pour les actions
+const formeVerbe = (cle, nb, temps, description) => { const v = DVERBES[cle], k = nb === "p" ? 1 : 0;
+  if (temps === "passe") return (description ? v.imparfait : v.passe)[k];
+  return v[temps][k]; };
+function genererDictee({phrases = 5, temps = "passe", theme} = {}){
+  const T = theme ? DTHEMES.find(x => x.nom === theme) || choisir(DTHEMES) : choisir(DTHEMES);
+  const verbes = new Set(), sortie = [], dejaNoms = new Set();
+  const perso = () => { let p, g = 0; do { p = choisir(T.persos); g++; } while (dejaNoms.has(p[0].s) && g < 10); dejaNoms.add(p[0].s); return groupeNominal(p[0], Math.random() < .45 ? "p" : "s", p[1]); };
+  const chose = (avecAction) => { const l = T.choses.filter(c => !avecAction || c[2].length); let c, g = 0; do { c = choisir(l); g++; } while (dejaNoms.has(c[0].s) && g < 10); dejaNoms.add(c[0].s); return c; };
+  const V = (cle, nb, desc) => { const f = formeVerbe(cle, nb, temps, desc); verbes.add(f); return f; };
+  let dernierVerbe = null;
+  const action = (sujet, desc = false) => { let a, g = 0; do { a = choisir(T.actions); g++; } while (a[0] === dernierVerbe && g < 10); dernierVerbe = a[0];
+    if (a[1]) return V(a[0], sujet.nb, desc) + " " + choisir(a[1]);
+    const o = choisir(a[2]); return V(a[0], sujet.nb, desc) + " " + groupeNominal(o, Math.random() < .5 ? "p" : "s", [], {adj: false}).txt; };
+  const description = () => { const c = chose(false), adjs = c[1].slice().sort(() => Math.random() - .5), gn = groupeNominal(c[0], "s", [], {adj: false}), k = (c[0].g === "f" ? "f" : "m") + gn.nb;
+    const a1 = ADJ[adjs[0]][k], a2 = adjs[1] ? ADJ[adjs[1]][k] : null;
+    return gn.txt + " " + V("etre", gn.nb, true) + " " + a1 + (a2 && Math.random() < .6 ? " et " + a2 : ""); };
+  const choseAgit = () => { const c = chose(true), gn = groupeNominal(c[0], "s", [], {adj: false}), a = choisir(c[2]); return gn.txt + " " + V(a[0], gn.nb, true) + " " + choisir(a[1]); };
+  const cct = () => choisir(T.cct.filter(c => temps === "passe" || !/-là|venu/.test(c)));
+  const faire = k => {
+    switch (k){
+      case 0: { const s = perso(); return `${cct()}, ${s.txt} ${action(s)}.`; }
+      case 1: { const s = perso(); return `${majusculeDebut(s.txt)} ${action(s)}.`; }
+      case 2: return `${majusculeDebut(description())}.`;
+      case 3: return `${majusculeDebut(choseAgit())}.`;
+      case 4: { const s = perso(); return `Quand ${s.txt} ${action(s)}, ${description()}.`; }
+      case 5: { const s = perso(); return `${majusculeDebut(s.txt)} ${action(s)}, puis ${action(s)}.`; }
+      case 6: { const s = perso(); return `${majusculeDebut(choseAgit())} pendant que ${s.txt} ${action(s, true)}.`; }
+    }
+  };
+  // ordre : une description pour commencer, puis des actions variées
+  const ordre = [2, 0, 3, 1, 4, 6, 5, 3, 1].slice(0, phrases);
+  ordre.forEach(k => sortie.push(faire(k)));
+  return {texte: sortie.join(" ").replace(/\s+/g, " "), theme: T.nom, verbes: [...verbes], temps};
+}
+
+/* ----- Lecture à voix haute ----- */
+// découpe en groupes de mots avec la ponctuation dite à voix haute (« virgule », « point »)
+function groupesDictee(texte){
+  const g = [];
+  texte.split(/(?<=[.,])\s+/).forEach(part => {
+    const mots = part.split(" "), fin = /[.,]$/.test(part) ? part.slice(-1) : "";
+    for (let i = 0; i < mots.length; i += 5){ const bout = mots.slice(i, i + 5).join(" "), dernier = i + 5 >= mots.length;
+      g.push({ecrit: bout, dit: (dernier && fin ? bout.slice(0, -1) + (fin === "," ? ", virgule." : ". Point.") : bout)}); }
+  });
+  return g;
+}
+function lireDictee(t, vitesse, fini){
+  if (!("speechSynthesis" in window)) return false;
+  speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "fr-FR"; u.rate = vitesse;
+  const v = speechSynthesis.getVoices().find(x => /^fr/i.test(x.lang)); if (v) u.voice = v;
+  if (fini) u.onend = fini; speechSynthesis.speak(u); return true;
+}
+
+/* ----- Correction : alignement mot à mot entre la copie et le texte ----- */
+const dTokens = t => [...String(t).replace(/[’`]/g, "'").matchAll(/[A-Za-zÀ-ÖØ-öø-ÿœŒæÆ]+(?:['-][A-Za-zÀ-ÖØ-öø-ÿœŒæÆ]+)*'?|[.,;:!?«»]/g)].map(m => m[0]);
+const dSans = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+function dCout(a, b){ if (a === b) return 0; if (a.toLowerCase() === b.toLowerCase()) return .2; if (dSans(a) === dSans(b)) return .3;
+  const p = x => /^[.,;:!?«»]$/.test(x); if (p(a) !== p(b)) return 9; if (p(a)) return .8;
+  const d = cpLev(dSans(a), dSans(b)); return d <= Math.max(1, Math.floor(b.length / 3)) ? .5 + d * .1 : 1.4; }
+function alignerDictee(eleve, ref){
+  const n = eleve.length, m = ref.length, D = Array.from({length: n + 1}, () => new Float64Array(m + 1));
+  for (let i = 1; i <= n; i++) D[i][0] = i; for (let j = 1; j <= m; j++) D[0][j] = j;
+  // deux mots de l'élève pour un mot composé du texte (« matin la » pour « matin-là ») : une seule faute
+  const joint = (i, j) => i >= 2 && ref[j - 1].includes("-") ? dCout(eleve[i - 2].t + "-" + eleve[i - 1].t, ref[j - 1]) + .4 : 99;
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) D[i][j] = Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1, D[i - 1][j - 1] + dCout(eleve[i - 1].t, ref[j - 1]), i >= 2 ? D[i - 2][j - 1] + joint(i, j) : 99);
+  const paires = []; let i = n, j = m;
+  while (i > 0 || j > 0){
+    if (i > 0 && j > 0 && Math.abs(D[i][j] - (D[i - 1][j - 1] + dCout(eleve[i - 1].t, ref[j - 1]))) < 1e-9){ paires.unshift([i - 1, j - 1]); i--; j--; }
+    else if (i > 1 && j > 0 && Math.abs(D[i][j] - (D[i - 2][j - 1] + joint(i, j))) < 1e-9){ paires.unshift([[i - 2, i - 1], j - 1]); i -= 2; j--; }
+    else if (i > 0 && Math.abs(D[i][j] - (D[i - 1][j] + 1)) < 1e-9){ paires.unshift([i - 1, null]); i--; }
+    else { paires.unshift([null, j - 1]); j--; }
+  }
+  return paires;
+}
+const finSansAccord = w => dSans(w).replace(/(es|s|x|e|nt|ent)$/, "");
+function natureFaute(e, r, verbes){
+  const p = x => /^[.,;:!?«»]$/.test(x);
+  if (p(r) || p(e)) return "ponctuation";
+  if (e.toLowerCase() === r.toLowerCase()) return "majuscule";
+  if (dSans(e) === dSans(r)) return "accent";
+  if (verbes.has(r)) return "conjugaison";
+  if (finSansAccord(e) === finSansAccord(r)) return "accord";
+  return "orthographe";
+}
+const NOMS_FAUTES = {accent: "Accent", majuscule: "Majuscule", conjugaison: "Conjugaison", accord: "Accord", orthographe: "Orthographe", ponctuation: "Ponctuation", oubli: "Mot oublié", ajout: "Mot en trop"};
+function corrigerDictee(lignes, d){
+  const eleve = []; lignes.forEach((l, k) => dTokens(l).forEach(t => eleve.push({t, l: k})));
+  const ref = dTokens(d.texte), verbes = new Set(d.verbes), paires = alignerDictee(eleve, ref);
+  const fautes = [], parLigne = lignes.map(() => ({mots: [], corr: []}));
+  let derniereLigne = 0;
+  paires.forEach(([i0, j]) => {
+    let i = i0;
+    if (Array.isArray(i0)){ const [a, b] = i0; i = a; eleve[a] = {t: eleve[a].t + " " + eleve[b].t, l: eleve[a].l}; }
+    if (i !== null) derniereLigne = eleve[i].l;
+    const L = parLigne[derniereLigne];
+    if (i !== null && j !== null){
+      const e = eleve[i].t, r = ref[j], ok = e === r, nat = ok ? null : natureFaute(e, r, verbes);
+      if (nat) fautes.push({nat, e, r});
+      L.mots.push({t: e, nat, r}); L.corr.push({t: r, faute: !!nat});
+    } else if (i !== null){ fautes.push({nat: "ajout", e: eleve[i].t}); L.mots.push({t: eleve[i].t, nat: "ajout"}); }
+    else { const nat = /^[.,;:!?«»]$/.test(ref[j]) ? "ponctuation" : "oubli"; fautes.push({nat, r: ref[j]}); L.mots.push({t: "", nat: "oubli", r: ref[j], vrai: nat}); L.corr.push({t: ref[j], faute: true}); }
+  });
+  const points = fautes.reduce((s, f) => s + (["majuscule", "ponctuation"].includes(f.nat) ? .5 : 1), 0);
+  return {fautes, parLigne, points};
+}
+// mot de l'élève avec les lettres corrigées en couleur (accents ajoutés là où il faut)
+function motCorrige(e, r){
+  if (!r) return esc(e);
+  let i = 0; while (i < e.length && i < r.length && e[i] === r[i]) i++;
+  let k = 0; while (k < e.length - i && k < r.length - i && e[e.length - 1 - k] === r[r.length - 1 - k]) k++;
+  return esc(r.slice(0, i)) + `<b class="dt-lettre">${esc(r.slice(i, r.length - k))}</b>` + esc(r.slice(r.length - k));
+}
+const collerPonct = l => l.replace(/ ([.,;:!?»])/g, "$1").replace(/« /g, "« ").replace(/(<\/span>) (<span[^>]*>[.,;:!?»]<\/span>)/g, "$1$2");
+
+/* ----- Page d'une dictée ----- */
+let choixDictee = {phrases: 5, temps: "passe"};
+function lancerDictee(opts = choixDictee, deja = null){
+  rafraichir = null; if ("speechSynthesis" in window) speechSynthesis.cancel();
+  const d = deja || genererDictee(opts), groupes = groupesDictee(d.texte), audio = "speechSynthesis" in window;
+  zone().innerHTML = entete("Français · Dictée", "Dictée : " + esc(d.theme)) + `
+    <div class="exo-type-page dictee-page">
+      <div class="et-enonce dt-lecteur">
+        <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(" ").length} mots · ${{passe: "récit au passé", present: "au présent", futur: "au futur"}[d.temps]}</span></span></span>
+          <button type="button" class="mini-btn" id="dt-nouvelle" title="Un autre texte">↻ Nouvelle dictée</button></div>
+        ${audio ? `<div class="rangee dt-commandes">
+          <button type="button" class="btn sec" id="dt-tout">🔊 Lire tout le texte</button>
+          <button type="button" class="btn" id="dt-groupe">▶ Groupe suivant</button>
+          <button type="button" class="mini-btn" id="dt-redire">↺ Répéter</button>
+          <button type="button" class="mini-btn" id="dt-prec">⏮ Groupe précédent</button>
+          <label class="doux dt-vitesse">Vitesse <input type="range" id="dt-vitesse" min="0.5" max="1.1" step="0.05" value="0.75"></label></div>
+          <p class="doux dt-etat" id="dt-etat">Écoute d'abord tout le texte, puis écris-le groupe par groupe. La ponctuation est dite à voix haute.</p>
+          <div class="dt-avance"><i id="dt-barre" style="width:0"></i></div>`
+        : `<p class="statut erreur">La lecture à voix haute n'est pas disponible sur ce navigateur. Demande à quelqu'un de te lire le texte, ou essaie Chrome, Edge ou Safari.</p>`}
+      </div>
+      <p class="et-mode-emploi">Écris sur les lignes bleues : le texte saute une ligne à chaque fois, pour laisser la place à la correction. La correction automatique du navigateur est désactivée : c'est ton orthographe qui compte.</p>
+      <div class="et-feuille">${htmlCopie({titre: "Ma dictée", lignes: Math.max(10, Math.ceil(d.texte.length / 55) + 4), sauter: true, aide: "Clique sur une ligne bleue pour écrire."})}</div>
+      <div class="rangee"><button class="btn" type="button" id="dt-corriger">Corriger ma dictée</button><button class="btn sec" type="button" id="dt-retour">Autres exercices</button></div>
+      <div id="dt-bilan"></div>
+    </div>`;
+  brancherCopie(zone());
+  let g = -1;
+  const vitesse = () => +($("#dt-vitesse") || {value: .75}).value;
+  const etat = t => { const e = $("#dt-etat"); if (e) e.textContent = t; };
+  const dire = k => { if (k < 0 || k >= groupes.length) return; g = k; $("#dt-barre").style.width = ((k + 1) / groupes.length * 100) + "%";
+    etat(`Groupe ${k + 1} sur ${groupes.length}.`); lireDictee(groupes[k].dit, vitesse() * .85); };
+  if (audio){
+    $("#dt-tout").onclick = () => { etat("Lecture de tout le texte…"); lireDictee(d.texte, vitesse() + .1, () => etat(g < 0 ? "Clique sur « Groupe suivant » pour commencer à écrire." : "Texte relu en entier.")); };
+    $("#dt-groupe").onclick = () => { if (g >= groupes.length - 1){ etat("C'est la fin du texte. Relis-toi, puis écoute une dernière fois le texte en entier."); return; } dire(g + 1); };
+    $("#dt-redire").onclick = () => g >= 0 ? dire(g) : $("#dt-tout").click();
+    $("#dt-prec").onclick = () => dire(Math.max(0, g - 1));
+    [$("#dt-tout"), $("#dt-groupe"), $("#dt-redire"), $("#dt-prec")].forEach(b => b.onmousedown = ev => ev.preventDefault());
+  }
+  deuxClics($("#dt-nouvelle"), () => lancerDictee(opts));
+  $("#dt-retour").onclick = () => { if ("speechSynthesis" in window) speechSynthesis.cancel(); changerVue("exos"); };
+  $("#dt-corriger").onclick = () => {
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+    const lignes = cpLignes(zone());
+    if (!lignes.some(l => cpTexte(l).trim())){ $("#dt-bilan").innerHTML = `<p class="statut erreur">Ta copie est vide : écris la dictée avant de la corriger.</p>`; return; }
+    const c = corrigerDictee(lignes.map(cpTexte), d);
+    // chaque ligne : les mots fautifs soulignés ; la ligne sautée en dessous : la ligne corrigée
+    lignes.forEach((l, k) => {
+      const L = c.parLigne[k]; l.contentEditable = "false"; l.classList.add("corrigee");
+      if (!L.mots.length) return;
+      l.innerHTML = collerPonct(L.mots.map(m => m.nat === "oubli" ? `<span class="dt-err dt-oubli" title="Mot oublié : ${esc(m.r)}">‸</span>`
+        : m.nat ? `<span class="dt-err dt-${m.nat}" title="${NOMS_FAUTES[m.nat]}${m.r ? " : " + esc(m.r) : ""}">${m.nat === "accent" ? motCorrige(m.t, m.r) : esc(m.t)}</span>` : `<span>${esc(m.t)}</span>`).join(" "));
+      const corr = l.nextElementSibling;
+      if (corr && corr.classList.contains("cp-corr")) corr.innerHTML = collerPonct(L.corr.map(x => x.faute ? `<span class="dt-bon">${esc(x.t)}</span>` : `<span>${esc(x.t)}</span>`).join(" "));
+    });
+    const parNat = {}; c.fautes.forEach(f => parNat[f.nat] = (parNat[f.nat] || 0) + 1);
+    const note = Math.max(0, 10 - c.points), cle = auj();
+    prog.dictees = prog.dictees || {}; const avant = prog.dictees[cle]; let gain = 0;
+    if (avant === undefined || note > avant){ gain = Math.round((note - (avant || 0)) * 2); prog.dictees[cle] = note; prog.points += gain; sauver(); }
+    $("#dt-corriger").disabled = true;
+    $("#dt-bilan").innerHTML = `<div class="bloc accent"><div class="score">${c.fautes.length}<small> faute${c.fautes.length > 1 ? "s" : ""}</small></div>
+      <p>${c.fautes.length ? Object.entries(parNat).map(([k, n]) => `<span class="dt-pastille dt-${k}">${NOMS_FAUTES[k]} : ${n}</span>`).join(" ") : "Aucune faute, bravo !"}</p>
+      <p>Note : <b>${note % 1 ? String(note).replace(".", ",") : note} / 10</b> (1 point par faute, ½ point pour une majuscule ou une ponctuation). ${gain ? `<strong>+${gain} points.</strong>` : ""}</p>
+      <p class="doux">Sur ta copie : les fautes sont soulignées (survole un mot pour voir la bonne forme), les accents manquants sont ajoutés en couleur et chaque ligne est réécrite juste en dessous.</p>
+      <details><summary>Le texte de la dictée</summary><p class="cp-ecrit dt-texte">${esc(d.texte)}</p></details>
+      <div class="rangee"><button class="btn" type="button" id="dt-encore">↻ Nouvelle dictée</button></div></div>`;
+    $("#dt-encore").onclick = () => lancerDictee(opts);
+  };
+}
+function iconeDictee(){
+  return `<svg class="exo-doc" width="36" height="44" viewBox="0 0 32 40" aria-hidden="true">
+    <path d="M3 2h26a3 3 0 0 1 3 3v31a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3z" fill="#b06bff"/>
+    <g stroke="#fff" stroke-opacity=".55" stroke-width="1"><path d="M3 12h26M3 18h26M3 24h26M3 30h26"/></g><path d="M7 2v37" stroke="#e86f9a" stroke-width="1.2"/>
+    <path d="M12 9.5h3l4-3.5v12l-4-3.5h-3z" fill="#fff"/><path d="M21.5 9a4 4 0 0 1 0 6" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="18" y="36" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-weight="700" font-size="5.2" fill="#fff">DICTÉE</text></svg>`;
 }
 /* ===================== EXERCICES TYPES (« exos précis ») =====================
    Deux sortes d'exercices :
@@ -11437,6 +11759,116 @@ function fenetreSemaine(l){
     annee = {semaines}; fermerFenetre(); dessinerAnneeGerant(); ecrireAnnee("Semaine enregistrée.");
   };
 }
+/* ===================== DEMANDES DE CODE D'ACCÈS =====================
+   Sur la page de connexion, une personne sans code peut en demander un au gérant.
+   La demande arrive chez le gérant (dans « Signalements », avec une notification) ; il répond Oui ou Non.
+   Si c'est oui, un code est créé et la personne le voit s'afficher sur la page de connexion de son appareil
+   (une clé secrète gardée sur cet appareil prouve que c'est bien elle qui a fait la demande). */
+let demandesCode = [], demandesConnues = null, minuteurDemande = null;
+const CLE_DEMANDE = "helper.demandeCode";
+const quandFr = iso => { const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleDateString("fr-FR") + " à " + d.toLocaleTimeString("fr-FR", {hour: "2-digit", minute: "2-digit"}); };
+const maDemande = () => { try { return JSON.parse(lsGet(CLE_DEMANDE) || "null"); } catch { return null; } };
+const MSG_DEMANDE = {nom_invalide: "Indique ton prénom et ton nom (2 à 60 caractères).", trop_de_demandes: "Trop de demandes sont en attente : réessaie plus tard ou parle directement au gérant.",
+  deja_demande: "Une demande est déjà en attente pour ce nom."};
+function dessinerDemande(){
+  const box = document.getElementById("demande-code"); if (!box) return;
+  clearInterval(minuteurDemande);
+  const d = maDemande();
+  if (!d){
+    box.innerHTML = `<button type="button" class="lien-demande" id="ouvrir-demande">Pas encore de code ? <b>Demander un code au gérant</b></button>`;
+    box.querySelector("#ouvrir-demande").onclick = formulaireDemande; return;
+  }
+  box.innerHTML = `<div class="demande-suivi" id="demande-suivi"><span class="doux">Vérification de ta demande…</span></div>`;
+  verifierDemande();
+  minuteurDemande = setInterval(() => { const a = document.getElementById("acces"); if (a && !a.hidden) verifierDemande(); }, 15000);
+}
+function formulaireDemande(){
+  const box = document.getElementById("demande-code");
+  box.innerHTML = `<form class="demande-form" id="demande-form" novalidate>
+    <b>Demander un code d'accès</b>
+    <span class="doux">Le gérant reçoit ta demande et répond oui ou non. Si c'est oui, ton code apparaîtra ici, sur cet appareil.</span>
+    <div class="champ"><label for="dm-nom">Prénom et nom</label><input id="dm-nom" type="text" maxlength="60" autocomplete="name" placeholder="ex. Léa Martin"></div>
+    <div class="champ"><label for="dm-classe">Classe</label><input id="dm-classe" type="text" maxlength="12" value="3C"></div>
+    <div class="champ"><label for="dm-msg">Message pour le gérant (facultatif)</label><input id="dm-msg" type="text" maxlength="300" placeholder="ex. Je suis dans le groupe de Gabriel."></div>
+    <p class="message" id="dm-statut" role="status"></p>
+    <div class="rangee"><button class="btn" type="submit" id="dm-envoyer">Envoyer la demande</button><button class="btn sec" type="button" id="dm-annuler">Annuler</button></div></form>`;
+  box.querySelector("#dm-annuler").onclick = dessinerDemande;
+  box.querySelector("#dm-nom").focus();
+  box.querySelector("#demande-form").onsubmit = async ev => {
+    ev.preventDefault();
+    const nom = box.querySelector("#dm-nom").value.trim(), classe = box.querySelector("#dm-classe").value.trim(), message = box.querySelector("#dm-msg").value.trim(), st = box.querySelector("#dm-statut");
+    if (nom.length < 2){ st.textContent = MSG_DEMANDE.nom_invalide; return; }
+    if (!sb){ st.textContent = "Connexion au serveur impossible pour le moment."; return; }
+    const btn = box.querySelector("#dm-envoyer"); btn.disabled = true; st.textContent = "Envoi…";
+    const cle = [...crypto.getRandomValues(new Uint8Array(24))].map(x => x.toString(16).padStart(2, "0")).join("");
+    const {data, error} = await sb.rpc("demander_code", {p_nom: nom, p_classe: classe, p_message: message, p_cle: cle});
+    if (error || !data){
+      const m = String(error && error.message || ""), k = Object.keys(MSG_DEMANDE).find(x => m.includes(x));
+      st.textContent = k ? MSG_DEMANDE[k] : /function|schema cache|demander_code/i.test(m) ? "Les demandes de code ne sont pas encore activées : préviens le gérant." : "La demande n'a pas pu être envoyée. Réessaie dans un instant.";
+      btn.disabled = false; return;
+    }
+    lsSet(CLE_DEMANDE, JSON.stringify({id: data, cle, nom, le: new Date().toISOString()}));
+    dessinerDemande();
+  };
+}
+async function verifierDemande(){
+  const d = maDemande(), z = document.getElementById("demande-suivi"); if (!d || !z || !sb) return;
+  const {data, error} = await sb.rpc("etat_demande", {p_id: d.id, p_cle: d.cle});
+  const oublier = `<button type="button" class="mini-btn" id="dm-oublier">Faire une nouvelle demande</button>`;
+  if (error) z.innerHTML = `<span class="doux">Impossible de vérifier ta demande pour l'instant. Nouvel essai dans quelques secondes…</span>`;
+  else if (!data) z.innerHTML = `<b>Ta demande n'existe plus.</b><span class="doux">Le gérant l'a peut-être supprimée.</span>${oublier}`;
+  else if (data.statut === "acceptee" && data.code){
+    clearInterval(minuteurDemande);
+    z.innerHTML = `<b class="dm-ok">✓ Le gérant a accepté ta demande !</b><span>Ton identifiant d'accès unique :</span><span class="dm-code code-clair">${esc(data.code)}</span>
+      <span class="doux">Note-le : il ne sert qu'une fois, pour créer ton compte.</span>
+      <div class="rangee"><button type="button" class="btn" id="dm-utiliser">Utiliser ce code</button>${oublier}</div>`;
+    z.querySelector("#dm-utiliser").onclick = () => { choisirMode("creer"); $("#code").value = data.code; $("#code").type = "text"; $("#identifiant").focus(); };
+  }
+  else if (data.statut === "refusee"){ clearInterval(minuteurDemande); z.innerHTML = `<b class="dm-non">✕ Le gérant a refusé ta demande.</b>${oublier}`; }
+  else z.innerHTML = `<b>⏳ Demande envoyée</b><span class="doux">Au nom de ${esc(d.nom)}, le ${quandFr(d.le)}. En attente de la réponse du gérant : cette page vérifie toute seule, tu peux la laisser ouverte ou revenir plus tard sur cet appareil.</span>
+      <div class="rangee"><button type="button" class="mini-btn" id="dm-verif">Vérifier maintenant</button><button type="button" class="mini-btn" id="dm-annul">Annuler ma demande</button></div>`;
+  const o = z.querySelector("#dm-oublier"); if (o) o.onclick = () => { lsSet(CLE_DEMANDE, null); dessinerDemande(); };
+  const v = z.querySelector("#dm-verif"); if (v) v.onclick = verifierDemande;
+  const a = z.querySelector("#dm-annul"); if (a) deuxClics(a, () => { lsSet(CLE_DEMANDE, null); dessinerDemande(); });
+}
+
+/* ----- Côté gérant : réception, notification, réponse ----- */
+function recevoirDemandes(l){
+  const attente = l.filter(x => x.statut === "attente");
+  if (demandesConnues) attente.filter(x => !demandesConnues.has(x.id)).forEach(x => toast(`Nouvelle demande de code : ${x.nom}${x.classe ? " (" + x.classe + ")" : ""}. Réponds dans Signalements.`));
+  demandesConnues = new Set(l.map(x => x.id));
+  demandesCode = l; majBadgeSignal();
+}
+function htmlDemandesGerant(){
+  const l = demandesCode.slice().sort((a, b) => String(b.le).localeCompare(String(a.le))), attente = l.filter(x => x.statut === "attente"), finies = l.filter(x => x.statut !== "attente");
+  if (!l.length) return "";
+  const ligne = x => `<div class="ligne-liste demande-ligne ${x.statut}" style="align-items:flex-start">
+      <span class="titre" style="min-width:0"><span class="rangee" style="gap:8px"><span class="badge ${x.statut === "attente" ? "accent" : ""}">Demande de code</span><strong>${esc(x.nom)}</strong>${x.classe ? `<span class="doux">${esc(x.classe)}</span>` : ""}</span>
+        ${x.message ? `<span class="sig-msg">${esc(x.message)}</span>` : ""}
+        <span class="doux" style="font-size:.8rem">${quandFr(x.le)}${x.statut === "acceptee" ? ` · acceptée · code <span class="code-clair">${esc(x.code || "")}</span>` : x.statut === "refusee" ? " · refusée" : ""}</span></span>
+      <span class="rangee">${x.statut === "attente" ? `<button type="button" class="mini-btn dm-oui" data-dm-oui="${esc(x.id)}">✓ Oui</button><button type="button" class="mini-btn danger" data-dm-non="${esc(x.id)}">✕ Non</button>` : ""}
+        <button type="button" class="mini-btn danger" data-dm-suppr="${esc(x.id)}">Supprimer</button></span></div>`;
+  return `<div class="bloc demandes-bloc"><span class="mono">Demandes de code d'accès${attente.length ? ` · ${attente.length} en attente` : ""}</span>
+    <p class="doux" style="font-size:.86rem;margin:0">Oui : un code d'accès (rang Élève) est créé au nom de la personne, et il s'affiche sur la page de connexion de son appareil. Tu le retrouves aussi dans « Élèves et codes ».</p>
+    <div class="liste">${attente.map(ligne).join("")}</div>
+    ${finies.length ? `<details><summary class="doux">Demandes déjà traitées (${finies.length})</summary><div class="liste">${finies.map(ligne).join("")}</div></details>` : ""}</div>`;
+}
+function brancherDemandesGerant(){
+  zone().querySelectorAll("[data-dm-oui]").forEach(b => b.onclick = async () => {
+    const x = demandesCode.find(y => y.id === b.dataset.dmOui); if (!x) return; b.disabled = true;
+    try {
+      let code, h; do { code = genererCode(); h = await hashCode(code); } while ((await db.doc("codes/" + h).get()).exists);
+      await db.doc("codes/" + h).set({nom: x.nom, rang: "eleve", classe: x.classe || "", creeLe: new Date().toISOString(), demande: x.id});
+      codesClairs[h] = code; await enregistrerCodesClairs();
+      await db.doc("demandes/" + x.id).update({statut: "acceptee", code, codeHash: h, reponduLe: new Date().toISOString()});
+      statut(`Code ${code} créé pour ${x.nom} : il s'affiche maintenant sur son appareil.`, true); Formes.succes();
+    } catch (err){ b.disabled = false; statut(erreurEcriture(err)); }
+  });
+  zone().querySelectorAll("[data-dm-non]").forEach(b => deuxClics(b, () => db.doc("demandes/" + b.dataset.dmNon).update({statut: "refusee", reponduLe: new Date().toISOString()})));
+  zone().querySelectorAll("[data-dm-suppr]").forEach(b => deuxClics(b, () => db.doc("demandes/" + b.dataset.dmSuppr).delete()));
+}
+
+dessinerDemande();
 /* ===================== QUIZ ===================== */
 // Mélange l'ordre des réponses (sauf si une réponse dépend de la position : « toutes », « aucune »…)
 function melangerChoix(q){
@@ -11623,7 +12055,7 @@ function fenetrePrevenir(q, ctx, numero, capture){
   };
 }
 function majBadgeSignal(){
-  const n = signalements.filter(x => !x.traite).length, b = document.querySelector('#nav button[data-vue="g-signal"]');
+  const n = signalements.filter(x => !x.traite).length + demandesCode.filter(x => x.statut === "attente").length, b = document.querySelector('#nav button[data-vue="g-signal"]');
   if (b) b.dataset.n = n ? String(n) : "";
 }
 const capCache = {};
@@ -11641,6 +12073,7 @@ VUES["g-signal"] = function vueSignal(){
     <p class="doux">Les problèmes signalés par les élèves avec le bouton « ⚑ Prévenir » des exercices et du cloud.</p>
     ${segment("sig-filtre", [["ouverts", `À traiter (${ouverts})`], ["tous", `Tous (${signalements.length})`]], filtreSignal)}
     <p id="statut" class="statut" role="status"></p>
+    ${htmlDemandesGerant()}
     ${liste.length ? `<div class="liste">${liste.map(x => `
       <div class="ligne-liste${x.traite ? " traite" : ""}" style="align-items:flex-start">
         <span class="titre" style="min-width:0">
@@ -11670,6 +12103,7 @@ VUES["g-signal"] = function vueSignal(){
     };
   });
   zone().querySelectorAll("#sig-filtre button").forEach(b => b.onclick = () => { filtreSignal = b.dataset.v; vueSignal(); });
+  brancherDemandesGerant();
   zone().querySelectorAll("[data-traite]").forEach(b => b.onclick = async () => {
     const x = signalements.find(y => y.id === b.dataset.traite);
     try { await db.doc("signalements/" + x.id).update({traite: !x.traite}); } catch (err){ statut(erreurEcriture(err)); }
@@ -11689,6 +12123,7 @@ function suivreGestion(){
   suivre("codes", l => codes = l);
   suivre("utilisations", l => utilisations = Object.fromEntries(l.map(u => [u.id, u])));
   suivre("comptes", l => comptes = l);
+  suivre("demandes", recevoirDemandes);
   suivre("signalements", l => {
 signalements = l; majBadgeSignal(); });
   suivre("progres", l => progresTous = Object.fromEntries(l.map(p => [p.id, p])));
