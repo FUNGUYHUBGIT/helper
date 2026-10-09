@@ -1034,6 +1034,32 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .exo-types{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
 .exo-type{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface-2);font-size:.74rem;color:var(--doux)}
 .exo-type i{font-style:normal;color:var(--accent)}.exo-type b{color:var(--texte)}
+.exos-section{margin-top:18px}.exos-section h3{display:flex;align-items:center;gap:8px;margin:0 0 2px;font-size:1.05rem}.exos-section>p{margin:0 0 10px;font-size:.86rem}
+.et-pastille i{color:#5fa8d3}
+.exo-type-page{display:flex;flex-direction:column;gap:16px}
+.et-enonce{background:var(--surface);border:1px solid var(--ligne);border-left:4px solid #5fa8d3;border-radius:var(--r);padding:16px 18px}
+.et-etiquette{display:inline-flex;align-items:center;gap:10px}.et-etiquette .exo-doc{width:24px;height:30px}
+.et-texte{margin-top:10px;font-size:1.04rem;line-height:1.7;max-width:80ch}
+.et-questions{margin:0;padding-left:1.6em;display:flex;flex-direction:column;gap:14px}
+.et-questions>li{padding:12px 14px;background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r)}
+.et-questions>li::marker{font-weight:700;color:#5fa8d3}
+.et-questions>li.juste{border-color:#6fbf73}.et-questions>li.faux{border-color:#e86f9a}
+.et-q{margin:0 0 8px;line-height:1.6}
+.et-saisie{display:flex;align-items:center;gap:8px;max-width:420px}.et-saisie input{flex:1;padding:9px 12px;background:var(--surface-2);border:1px solid var(--ligne);border-radius:6px;color:var(--texte);font:inherit}
+.et-saisie input:focus{outline:none;border-color:#5fa8d3}.et-unite{color:var(--doux);font-weight:600}
+.et-corr{margin-top:8px;font-size:.92rem}.et-corr p{margin:4px 0 0;color:var(--doux)}
+li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
+.et-editeur{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.et-editeur{grid-template-columns:1fr}}
+.et-col{display:flex;flex-direction:column;gap:10px;min-width:0}
+.et-apercu-col{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;background:var(--surface-2);border:1px solid var(--ligne);border-radius:var(--r);padding:14px}
+.et-mono{font-family:var(--f-mono);font-size:.9rem}
+.et-carte{display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);margin-bottom:10px}
+.et-lab{display:flex;flex-direction:column;gap:4px;font-size:.84rem;color:var(--doux)}
+.et-ligne{display:flex;flex-wrap:wrap;gap:10px}
+.et-vals{display:flex;flex-wrap:wrap;gap:6px;margin:0;font:.8rem var(--f-mono)}.et-vals span{padding:2px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--ligne)}
+.et-attendu{margin:4px 0 0;font-size:.86rem;color:var(--doux)}.et-attendu b{color:#6fbf73}
+.et-apercu-col .et-questions>li{padding:8px 10px}
 .pseudo-regles{font-size:.85rem;line-height:1.45;padding:10px 12px;border-radius:8px;border-left:3px solid #e5484d;background:color-mix(in srgb,#e5484d 9%,transparent);margin:0 0 12px}
 .pseudo-bloque,.pseudo-attente,.pseudo-modere{font-size:.9rem;padding:9px 12px;border-radius:8px;margin:0 0 10px;background:var(--surface-2);border:1.5px solid var(--ligne)}
 .pseudo-bloque{border-color:color-mix(in srgb,#e5484d 55%,transparent)}.pseudo-modere{border-color:color-mix(in srgb,#f2ae02 60%,transparent)}
@@ -3663,7 +3689,7 @@ function compteRelance(d){
   relanceMinuteur = setInterval(() => { reste--; if (compte) compte.textContent = Math.max(0, reste); if (reste <= 0){ clearInterval(relanceMinuteur); relancerMaintenant(el); } }, 1000);
   el.querySelector("[data-maintenant]").onclick = () => { clearInterval(relanceMinuteur); relancerMaintenant(el); };
 }
-const editeurOuvert = () => (typeof ed !== "undefined" && ed) || (typeof se !== "undefined" && se);
+const editeurOuvert = () => (typeof ed !== "undefined" && ed) || (typeof se !== "undefined" && se) || (typeof et !== "undefined" && et);
 // enregistre la leçon ou la série en cours de modification (titre provisoire s'il manque)
 async function sauvegarderEditeurs(){
   if (!editeurOuvert()) return true;
@@ -3671,6 +3697,7 @@ async function sauvegarderEditeurs(){
   const titreAuto = "Brouillon du " + new Date().toLocaleDateString("fr-FR");
   if (typeof ed !== "undefined" && ed){ const t = document.getElementById("ed-titre"); if (t && !t.value.trim()) t.value = titreAuto; }
   if (typeof se !== "undefined" && se && !String(se.titre || "").trim()) se.titre = titreAuto;
+  if (typeof et !== "undefined" && et && !String(et.titre || "").trim()) et.titre = titreAuto;
   btn.disabled = false; btn.click();
   for (let i = 0; i < 50 && editeurOuvert(); i++) await new Promise(r => setTimeout(r, 200));
   return !editeurOuvert();
@@ -4137,7 +4164,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.77";
+const VERSION_SITE = "0.78";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4148,7 +4175,7 @@ const trierCreneaux = c => c.slice().sort((a, b) => a.jour - b.jour || String(a.
 function statsMatiere(m){
   let total = 0, faits = 0;
   leconsDe(m.id).forEach(l => { total++; if (prog.lecons[l.id]) faits++; });
-  seriesDe(m.id).forEach(sr => { total += sr.exos.length; faits += Math.min(prog.exos[sr.id] || 0, sr.exos.length); });
+  seriesDe(m.id).forEach(sr => { const n = estPrecis(sr) ? (sr.questions || []).length : sr.exos.length; total += n; faits += Math.min(prog.exos[sr.id] || 0, n); });
   return total ? Math.round(faits / total * 100) : 0;
 }
 /* Réduit une image en carré (photo de profil) ou à une taille max, renvoie une data URL JPEG */
@@ -4412,26 +4439,33 @@ const questionsDe = l => l.exos.map((e, i) => ({...e, n: e.n || 1, cle: l.id + "
 const genreExo = e => e.genre && GENRES.some(g => g[0] === e.genre) ? e.genre : e.choix ? (e.choix.length === 2 && e.choix[0] === "Vrai" && e.choix[1] === "Faux" ? "vf" : "qcm") : "rep";
 const infoGenre = g => GENRES.find(x => x[0] === g) || ["qcm", "Choix multiple", "☑"];
 function typesSerie(l){ const n = {}; l.exos.forEach(e => { const g = genreExo(e); n[g] = (n[g] || 0) + 1; }); return Object.entries(n).sort((a, b) => b[1] - a[1]); }
-// Icône principale : le format « exercices » (une fiche d'exercices), comme les icônes de fichiers du Cloud
-function iconeSerie(){
-  return `<svg class="exo-doc" width="36" height="44" viewBox="0 0 32 40" aria-hidden="true">
-    <path d="M4 0h17l11 11v25a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="var(--accent)"/>
-    <path d="M21 0v7a4 4 0 0 0 4 4h7z" fill="#fff" fill-opacity=".4"/>
-    <g fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15.5l1.8 1.8 3-3.2M6 23.5l1.8 1.8 3-3.2"/><path d="M14 16h10M14 24h8"/></g>
-    <text x="16" y="36" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-weight="700" font-size="6.5" fill="#fff">EXO</text></svg>`;
-}
 const pucesTypes = l => `<span class="exo-types">${typesSerie(l).map(([g, n]) => { const [, nom, ico] = infoGenre(g); return `<span class="exo-type" title="${esc(nom)}"><i aria-hidden="true">${ico}</i>${esc(nom)}${typesSerie(l).length > 1 ? ` <b>${n}</b>` : ""}</span>`; }).join("")}</span>`;
+let filtreExos = "tous";
 VUES.exos = function vueExos(){
   rafraichir = vueExos;
-  const ls = seriesDe(matiereActive).filter(l => l.exos.length);
-  zone().innerHTML = entete("Exercices", "S'entraîner") + filtres() + (ls.length ? `
-    <div class="liste">${ls.map(l => { const best = prog.exos[l.id]; return `
+  const toutes = seriesDe(matiereActive).filter(l => estPrecis(l) ? (l.questions || []).length : l.exos.length);
+  const ch = toutes.filter(l => !estPrecis(l)), ty = toutes.filter(estPrecis);
+  const carteChaine = l => { const best = prog.exos[l.id]; return `
       <button type="button" data-l="${esc(l.id)}">
-        <span class="exo-tete">${iconeSerie(l)}<span class="titre"><strong>${esc(l.titre)}</strong><span class="doux" style="font-size:.85rem">${l.exos.length} questions · +5 points par nouvelle bonne réponse</span>${pucesTypes(l)}</span></span>
+        <span class="exo-tete">${iconeExoChaine()}<span class="titre"><strong>${esc(l.titre)}</strong><span class="doux" style="font-size:.85rem">Exercice en chaîne · ${l.exos.length} questions différentes, une par une · +5 points par nouvelle bonne réponse</span>${pucesTypes(l)}</span></span>
         <span class="etat ${best === l.exos.length ? "fait" : ""}">${best === undefined ? "Non commencé" : "Record " + best + "/" + l.exos.length}</span>
-      </button>`; }).join("")}</div>` : `<div class="vide">Aucun exercice en ${nomMatiere(matiereActive)} pour le moment.</div>`);
+      </button>`; };
+  const carteType = l => { const best = prog.exos[l.id], n = l.questions.length; return `
+      <button type="button" data-l="${esc(l.id)}" class="carte-exo-type">
+        <span class="exo-tete">${iconeExoType()}<span class="titre"><strong>${esc(l.titre)}</strong><span class="doux" style="font-size:.85rem">Exercice type · un énoncé, ${n} question${n > 1 ? "s" : ""} · les valeurs changent à chaque fois</span>
+          <span class="exo-types"><span class="exo-type et-pastille"><i aria-hidden="true">↻</i>Valeurs différentes à chaque essai</span></span></span></span>
+        <span class="etat ${best === n ? "fait" : ""}">${best === undefined ? "Non commencé" : "Record " + best + "/" + n}</span>
+      </button>`; };
+  const section = (titre, aide, ls, carte) => ls.length ? `<div class="exos-section"><h3>${titre}</h3><p class="doux">${aide}</p><div class="liste">${ls.map(carte).join("")}</div></div>` : "";
+  zone().innerHTML = entete("Exercices", "S'entraîner") + filtres() + (toutes.length ? `
+    ${segment("filtre-exos", [["tous", "Tous"], ["chaine", `Exercices en chaîne (${ch.length})`], ["type", `Exercices types (${ty.length})`]], filtreExos)}
+    ${filtreExos !== "type" ? section(`${iconeExoChaine().replace('width="36" height="44"', 'width="16" height="20"')} Exercices en chaîne`, "Plusieurs questions différentes qui s'enchaînent, une à la fois.", ch, carteChaine) : ""}
+    ${filtreExos !== "chaine" ? section(`${iconeExoType().replace('width="36" height="44"', 'width="16" height="20"')} Exercices types`, "Comme dans le manuel : un grand énoncé et des questions numérotées. Les valeurs changent un peu à chaque fois.", ty, carteType) : ""}`
+    : `<div class="vide">Aucun exercice en ${nomMatiere(matiereActive)} pour le moment.</div>`);
   brancherFiltres(vueExos);
-  zone().querySelectorAll(".liste button").forEach(b => b.onclick = () => { const l = ls.find(x => x.id === b.dataset.l); lancerQuiz(questionsDe(l), {titre: l.titre, sur: nomMatiere(l.matiere) + " · Exercices", lecon: l}); });
+  zone().querySelectorAll("#filtre-exos button").forEach(b => b.onclick = () => { filtreExos = b.dataset.v; vueExos(); });
+  zone().querySelectorAll(".liste button").forEach(b => b.onclick = () => { const l = toutes.find(x => x.id === b.dataset.l);
+    if (estPrecis(l)) lancerExoType(l); else lancerQuiz(questionsDe(l), {titre: l.titre, sur: nomMatiere(l.matiere) + " · Exercices", lecon: l}); });
 };
 
 /* ----- Exercices Brevet : séries de 50 questions tirées au hasard dans les sujets (DNB ou BIA) ----- */
@@ -4708,9 +4742,11 @@ const leconsDe = m => toutesLecons().filter(l => l.matiere === m);
 /* Exercices : séries indépendantes des leçons (séries intégrées + anciennes leçons avec exercices) */
 function toutesSeries(){
   const parId = Object.fromEntries(serDb.map(x => [x.id, x]));
-  const valide = x => x && typeof x.titre === "string" && Array.isArray(x.exos) && MATIERES.some(m => m.id === x.matiere);
+  const valide = x => x && typeof x.titre === "string" && (Array.isArray(x.exos) || (estPrecis(x) && Array.isArray(x.questions))) && MATIERES.some(m => m.id === x.matiere);
   const s = LECONS_INTEGREES.filter(l => !(parId[l.id] && parId[l.id].supprime)).map(l => valide(parId[l.id]) ? {...parId[l.id], integree: true, modifiee: true} : {id: l.id, matiere: l.matiere, titre: l.titre, exos: l.exos, integree: true});
-  serDb.filter(x => !x.supprime && valide(x) && !LECONS_INTEGREES.some(l => l.id === x.id)).forEach(x => s.push({...x}));
+  EXOS_TYPES_INTEGRES.filter(t => !(parId[t.id] && parId[t.id].supprime)).forEach(t => s.push(valide(parId[t.id]) ? {...parId[t.id], integree: true, modifiee: true} : {...t, exos: [], integree: true}));
+  const integre = id => LECONS_INTEGREES.some(l => l.id === id) || EXOS_TYPES_INTEGRES.some(t => t.id === id);
+  serDb.filter(x => !x.supprime && valide(x) && !integre(x.id)).forEach(x => s.push({...x, exos: Array.isArray(x.exos) ? x.exos : []}));
   lecDb.filter(l => !l.supprime && Array.isArray(l.exos) && l.exos.length && !LECONS_INTEGREES.some(x => x.id === l.id) && !parId[l.id]).forEach(l => s.push({id: l.id, matiere: l.matiere, titre: l.titre, exos: l.exos, ancienne: true}));
   return s;
 }
@@ -5607,12 +5643,14 @@ function fenetreForme(depart, valider){
    ex  = texte d'exemple facultatif, affiché au-dessus de la question */
 
 /* Petit analyseur d'expressions : nombres, x, + - * / ^, parenthèses, sin cos tan sqrt abs, pi */
-function compilerExpression(src){
+function compilerExpression(src, opt = {}){
   const s = String(src).toLowerCase().replace(/,/g, ".").replace(/\s+/g, "").replace(/²/g, "^2").replace(/³/g, "^3").replace(/×/g, "*").replace(/−/g, "-");
   let i = 0;
   const voir = () => s[i], prendre = () => s[i++];
   const nombre = () => { const m = /^\d*\.?\d+/.exec(s.slice(i)); if (!m) throw 0; i += m[0].length; const v = +m[0]; return () => v; };
-  const FN = {sin: Math.sin, cos: Math.cos, tan: Math.tan, sqrt: Math.sqrt, racine: Math.sqrt, abs: Math.abs, exp: Math.exp, ln: Math.log};
+  const D = opt.degres ? Math.PI / 180 : 1;   // en degrés pour les exercices types (collège)
+  const FN = {sin: v => Math.sin(v * D), cos: v => Math.cos(v * D), tan: v => Math.tan(v * D), asin: v => Math.asin(v) / D, acos: v => Math.acos(v) / D, atan: v => Math.atan(v) / D, arcsin: v => Math.asin(v) / D, arccos: v => Math.acos(v) / D, arctan: v => Math.atan(v) / D,
+    sqrt: Math.sqrt, racine: Math.sqrt, abs: Math.abs, exp: Math.exp, ln: Math.log, arrondi: Math.round};
   function primaire(){
     const c = voir();
     if (c === "(") { prendre(); const e = somme(); if (prendre() !== ")") throw 0; return e; }
@@ -5808,16 +5846,17 @@ const SCHEMAS = [["avion-forces","Avion : les 4 forces"],["avion-axes","Avion : 
 VUES["g-exos"] = function vueGExos(){
   rafraichir = vueGExos;
   const ls = seriesDe(matiereActive);
-  zone().innerHTML = entete("Gérant", "Exercices", `<button class="btn" type="button" id="nouvelle-serie">Nouvelle série</button>`) + filtres() + `
+  zone().innerHTML = entete("Gérant", "Exercices", `<span class="rangee" style="gap:8px"><button class="btn" type="button" id="nouvelle-serie" title="Plusieurs questions différentes, une par une">+ Exercice en chaîne</button><button class="btn sec" type="button" id="nouvel-exo-type" title="Un grand énoncé et des questions numérotées dont les valeurs changent">+ Exercice type</button></span>`) + filtres() + `
     <p id="statut" class="statut" role="status"></p>
-    ${ls.length ? `<div class="liste">${ls.map(s => `
+    ${ls.length ? `<div class="liste">${ls.map(s => { const n = estPrecis(s) ? (s.questions || []).length : s.exos.length; return `
       <div class="ligne-liste">
-        <span class="titre"><strong>${esc(s.titre)}</strong><span class="doux" style="font-size:.85rem">${s.exos.length} question${s.exos.length > 1 ? "s" : ""}${s.integree ? (s.modifiee ? " · série de départ, modifiée" : " · série de départ") : ""}</span></span>
+        <span class="exo-tete">${estPrecis(s) ? iconeExoType() : iconeExoChaine()}<span class="titre"><strong>${esc(s.titre)}</strong><span class="doux" style="font-size:.85rem">${estPrecis(s) ? "Exercice type" : "Exercice en chaîne"} · ${n} question${n > 1 ? "s" : ""}${s.integree ? (s.modifiee ? " · fourni avec le site, modifié" : " · fourni avec le site") : ""}</span></span></span>
         <span class="rangee"><button type="button" class="mini-btn" data-modif="${esc(s.id)}">Modifier</button><button type="button" class="mini-btn danger" data-suppr="${esc(s.id)}">Supprimer</button></span>
-      </div>`).join("")}</div>` : `<div class="vide">Aucune série en ${nomMatiere(matiereActive)}.</div>`}`;
+      </div>`; }).join("")}</div>` : `<div class="vide">Aucune série en ${nomMatiere(matiereActive)}.</div>`}`;
   brancherFiltres(vueGExos);
   $("#nouvelle-serie").onclick = () => ouvrirSerie(null);
-  zone().querySelectorAll("[data-modif]").forEach(b => b.onclick = () => ouvrirSerie(ls.find(s => s.id === b.dataset.modif)));
+  $("#nouvel-exo-type").onclick = () => ouvrirExoType(null);
+  zone().querySelectorAll("[data-modif]").forEach(b => b.onclick = () => { const s = ls.find(x => x.id === b.dataset.modif); if (estPrecis(s)) ouvrirExoType(s); else ouvrirSerie(s); });
   zone().querySelectorAll("[data-suppr]").forEach(b => deuxClics(b, async () => {
     const s = ls.find(x => x.id === b.dataset.suppr);
     if (s.integree) await db.doc("series/" + s.id).set({supprime: true});
@@ -9202,6 +9241,307 @@ function brancherEditeurSerie(){
     } catch (err){ statut(erreurEcriture(err)); btn.disabled = false; }
   };
 }
+/* ===================== EXERCICES TYPES (« exos précis ») =====================
+   Deux sortes d'exercices :
+   - les exercices en chaîne (type "chaine", par défaut) : une suite de questions différentes, une par une ;
+   - les exercices types (type "precis") : un exercice de manuel avec un grand énoncé et plusieurs questions
+     numérotées, dont les valeurs changent un peu à chaque fois.
+   Un exercice type : {type:"precis", titre, matiere, enonce, variables, questions:[{q, rep, arrondi, unite, exp}]}
+   - variables : une par ligne. « a = 3..12 » (entier), « p = 0,5..4 pas 0,5 », « nom = Léa | Tom » (au choix),
+     « c = a*b » (calculée), « ? a > b » (condition à respecter).
+   - dans les textes : {a} affiche une variable, {=a*b} un calcul (arrondi au centième), {=a/3;1} au dixième,
+     {?a > b|texte si vrai|texte sinon} un texte qui dépend des valeurs.
+   - réponse : « =formule » pour un nombre (ex. =a*b+c), sinon le ou les textes acceptés séparés par « / ». */
+const estPrecis = s => !!s && s.type === "precis";
+const NOM_VAR = /^[A-Za-z][A-Za-z0-9_]*$/;
+const FONCTIONS_EXPR = new Set(["sin", "cos", "tan", "asin", "acos", "atan", "arcsin", "arccos", "arctan", "sqrt", "racine", "abs", "exp", "ln", "arrondi", "pi", "x", "pas"]);
+const nombreFr = v => String(v).trim().replace(/\s+/g, "").replace(",", ".");
+// Remplace les variables par leur valeur puis calcule l'expression
+function calculerExpr(expr, vals){
+  let s = String(expr);
+  Object.keys(vals).sort((a, b) => b.length - a.length).forEach(k => {
+    if (typeof vals[k] !== "number") return;
+    s = s.replace(new RegExp(`(^|[^A-Za-z0-9_])${k}(?![A-Za-z0-9_])`, "g"), (m, av) => `${av}(${vals[k]})`);
+  });
+  const f = compilerExpression(s, {degres: true}); if (!f) return NaN;
+  const v = f(0); return Number.isFinite(v) ? v : NaN;
+}
+const arrondir = (v, n) => { const p = 10 ** n; return Math.round(v * p) / p; };
+const formatFr = (v, n = 2) => typeof v === "number" ? arrondir(v, n).toLocaleString("fr-FR", {maximumFractionDigits: n}) : String(v);
+// Lit la définition des variables : [{nom, sorte, …}] et les conditions
+function lireVariables(txt){
+  const vars = [], conditions = [], erreurs = [];
+  String(txt || "").split("\n").map(l => l.trim()).filter(l => l && !l.startsWith("//")).forEach(l => {
+    if (l.startsWith("?")){ conditions.push(l.slice(1).trim()); return; }
+    const m = /^([^=]+)=(.+)$/.exec(l); if (!m){ erreurs.push(`« ${l} » : il manque le signe =.`); return; }
+    const nom = m[1].trim(), def = m[2].trim();
+    if (!NOM_VAR.test(nom) || FONCTIONS_EXPR.has(nom.toLowerCase())){ erreurs.push(`« ${nom} » : nom de variable invalide (lettres et chiffres, sans accent ; pas x, pi, sin…).`); return; }
+    const plage = /^(-?[\d.,]+)\s*\.\.\s*(-?[\d.,]+)(?:\s+pas\s+([\d.,]+))?$/i.exec(def);
+    if (plage){ const [mi, ma, pas] = [plage[1], plage[2], plage[3] || "1"].map(x => +nombreFr(x));
+      if (![mi, ma, pas].every(Number.isFinite) || ma < mi || pas <= 0){ erreurs.push(`« ${l} » : intervalle invalide.`); return; }
+      vars.push({nom, sorte: "plage", mi, ma, pas}); return; }
+    if (def.includes("|")){ const choix = def.split("|").map(x => x.trim()).filter(Boolean);
+      vars.push({nom, sorte: "liste", choix: choix.map(c => /^-?[\d\s]*[.,]?\d+$/.test(c) ? +nombreFr(c) : c)}); return; }
+    vars.push({nom, sorte: "calcul", expr: def});
+  });
+  return {vars, conditions, erreurs};
+}
+function verifierCondition(c, vals){
+  const m = /^(.+?)(<=|>=|!=|≠|≤|≥|<|>|=)(.+)$/.exec(c); if (!m) return true;
+  const a = calculerExpr(m[1], vals), b = calculerExpr(m[3], vals), e = 1e-9;
+  if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
+  return {"<": a < b - e, ">": a > b + e, "<=": a <= b + e, "≤": a <= b + e, ">=": a >= b - e, "≥": a >= b - e, "=": Math.abs(a - b) <= e, "!=": Math.abs(a - b) > e, "≠": Math.abs(a - b) > e}[m[2]];
+}
+// Tire des valeurs qui respectent les conditions (null si impossible)
+function tirerValeurs(def){
+  const {vars, conditions} = lireVariables(def);
+  for (let essai = 0; essai < 300; essai++){
+    const vals = {}; let ok = true;
+    for (const v of vars){
+      if (v.sorte === "plage"){ const n = Math.floor((v.ma - v.mi) / v.pas + 1e-9); vals[v.nom] = arrondir(v.mi + v.pas * Math.floor(Math.random() * (n + 1)), 6); }
+      else if (v.sorte === "liste") vals[v.nom] = v.choix[Math.floor(Math.random() * v.choix.length)];
+      else { const r = calculerExpr(v.expr, vals); if (!Number.isFinite(r)){ ok = false; break; } vals[v.nom] = arrondir(r, 9); }
+    }
+    if (ok && conditions.every(c => verifierCondition(c, vals))) return vals;
+  }
+  return null;
+}
+// Remplace {a} et {=expr;n} dans un texte
+const remplirTexte = (t, vals) => String(t || "").replace(/\{(=?)([^{}]+)\}/g, (m, calc, corps) => {
+  if (calc){ const [e, n] = corps.split(";"); const v = calculerExpr(e, vals); return Number.isFinite(v) ? formatFr(v, n !== undefined && n.trim() !== "" ? +n : 2) : "?"; }
+  const k = corps.trim();
+  if (k.startsWith("?")){ const [c, oui = "", non = ""] = k.slice(1).split("|"); return verifierCondition(c, vals) ? oui.trim() : non.trim(); }   // {?a > b|texte si vrai|texte sinon}
+  return k in vals ? formatFr(vals[k], 6) : m;
+});
+// Réponse attendue d'une question pour ces valeurs
+function attenduDe(q, vals){
+  const r = String(q.rep || "").trim();
+  if (r.startsWith("=")){ const v = calculerExpr(r.slice(1), vals), n = q.arrondi === "" || q.arrondi === undefined || q.arrondi === null ? null : +q.arrondi;
+    return {nombre: true, v, n, texte: Number.isFinite(v) ? formatFr(n === null ? v : arrondir(v, n), n === null ? 6 : n) : "?"}; }
+  const textes = r.split("/").map(x => remplirTexte(x.trim(), vals)).filter(Boolean);
+  return {nombre: false, textes, texte: textes[0] || ""};
+}
+function reponseJusteType(saisie, att){
+  if (!String(saisie).trim()) return false;
+  const net = t => normaliser(t).replace(/[\s*×]/g, "");
+  if (!att.nombre) return att.textes.some(t => net(t) === net(saisie));
+  if (!Number.isFinite(att.v)) return false;
+  const s = nombreFr(saisie).replace(/[a-zA-Zéèàù°%²³€$£]+\.?$/g, "").replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
+  const f = compilerExpression(s); if (!f) return false;
+  const u = f(0); if (!Number.isFinite(u)) return false;
+  const tol = att.n === null ? 1e-6 * Math.max(1, Math.abs(att.v)) : 0.5 * 10 ** -att.n + 1e-9;
+  return Math.abs(u - att.v) <= tol || (att.n !== null && Math.abs(u - arrondir(att.v, att.n)) <= 1e-9);
+}
+// Vérifie un exercice type avant l'enregistrement : renvoie la liste des problèmes
+function problemesExoType(x){
+  const p = [], lv = lireVariables(x.variables);
+  if (!String(x.titre || "").trim()) p.push("Donne un titre à l'exercice.");
+  if (!String(x.enonce || "").trim()) p.push("Écris l'énoncé.");
+  p.push(...lv.erreurs);
+  const qs = (x.questions || []).filter(q => String(q.q || "").trim() || String(q.rep || "").trim());
+  if (!qs.length) p.push("Ajoute au moins une question.");
+  qs.forEach((q, i) => { if (!String(q.q || "").trim()) p.push(`Question ${i + 1} : écris la consigne.`); if (!String(q.rep || "").trim()) p.push(`Question ${i + 1} : indique la réponse attendue.`); });
+  if (!lv.erreurs.length){
+    for (let k = 0; k < 20 && p.length < 8; k++){
+      const vals = tirerValeurs(x.variables);
+      if (!vals){ p.push("Les conditions (lignes « ? ») ne sont presque jamais respectées : élargis les intervalles."); break; }
+      qs.forEach((q, i) => { const a = attenduDe(q, vals); if (a.nombre && !Number.isFinite(a.v) && !p.some(t => t.startsWith(`Question ${i + 1} : la formule`))) p.push(`Question ${i + 1} : la formule « ${q.rep} » ne se calcule pas (variable inconnue ou division par zéro ?).`); });
+      const txt = [x.enonce, ...qs.map(q => q.q + " " + (q.exp || ""))].join(" ");
+      (txt.match(/\{(?![=?])([^{}]+)\}/g) || []).forEach(t => { const k = t.slice(1, -1).trim(); if (!(k in vals) && !p.some(e => e.includes(`{${k}}`))) p.push(`{${k}} est utilisé dans un texte mais n'est pas défini dans les variables.`); });
+    }
+  }
+  return p;
+}
+
+/* ----- Icônes : exercices en chaîne / exercices types ----- */
+function iconeExoChaine(){
+  return `<svg class="exo-doc" width="36" height="44" viewBox="0 0 32 40" aria-hidden="true">
+    <path d="M4 0h17l11 11v25a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="var(--accent)"/>
+    <path d="M21 0v7a4 4 0 0 0 4 4h7z" fill="#fff" fill-opacity=".4"/>
+    <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="5" y="14" width="11" height="7" rx="3.5"/><rect x="13" y="19" width="11" height="7" rx="3.5"/></g>
+    <text x="16" y="36" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-weight="700" font-size="5.6" fill="#fff">CHAÎNE</text></svg>`;
+}
+function iconeExoType(){
+  return `<svg class="exo-doc" width="36" height="44" viewBox="0 0 32 40" aria-hidden="true">
+    <path d="M3 2h26a3 3 0 0 1 3 3v31a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3z" fill="#5fa8d3"/>
+    <path d="M0 5a3 3 0 0 1 3-3h4v37H3a3 3 0 0 1-3-3z" fill="#000" fill-opacity=".22"/>
+    <g fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><path d="M11 9h15M11 13h15M11 17h10"/></g>
+    <g fill="#fff" font-family="IBM Plex Mono,monospace" font-weight="700" font-size="5"><text x="11" y="24.5">1.</text><text x="11" y="30">2.</text></g>
+    <g stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M17 23h9M17 28.5h7"/></g>
+    <text x="18.5" y="37" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-weight="700" font-size="5.6" fill="#fff">TYPE</text></svg>`;
+}
+
+/* ----- Élève : faire un exercice type ----- */
+function lancerExoType(s, vals){
+  rafraichir = null;
+  vals = vals || tirerValeurs(s.variables) || {};
+  const qs = s.questions.filter(q => String(q.q || "").trim());
+  const att = qs.map(q => attenduDe(q, vals));
+  zone().innerHTML = entete(esc(nomMatiere(s.matiere) + " · Exercice type"), esc(s.titre)) + `
+    <div class="exo-type-page">
+      <div class="et-enonce"><div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeExoType()}<span><b>Exercice</b><span class="doux"> · ${qs.length} question${qs.length > 1 ? "s" : ""}</span></span></span>
+        <span class="rangee" style="gap:8px">${s.matiere === "maths" ? `<button type="button" class="btn-brouillon" id="ouvrir-brouillon" title="Ouvrir une page de brouillon pour poser tes calculs">✎ Brouillon</button>` : ""}<button type="button" class="mini-btn" id="et-autres" title="Le même exercice avec d'autres valeurs">↻ Autres valeurs</button></span></div>
+        <div class="et-texte">${esc(remplirTexte(s.enonce, vals)).replace(/\n/g, "<br>")}</div></div>
+      <ol class="et-questions">${qs.map((q, i) => `<li data-i="${i}"><p class="et-q">${esc(remplirTexte(q.q, vals)).replace(/\n/g, "<br>")}</p>
+        <div class="et-saisie"><input type="text" id="et-r${i}" autocomplete="off" spellcheck="false" aria-label="Réponse à la question ${i + 1}" placeholder="${att[i].nombre ? "Ta réponse (nombre)" : "Ta réponse"}">${q.unite ? `<span class="et-unite">${esc(q.unite)}</span>` : ""}</div>
+        <div class="et-corr" hidden></div></li>`).join("")}</ol>
+      <div class="rangee"><button class="btn" type="button" id="et-verifier">Vérifier mes réponses</button><button class="btn sec" type="button" id="et-retour">Autres exercices</button></div>
+      <div id="et-bilan"></div>
+    </div>`;
+  if ($("#ouvrir-brouillon")) $("#ouvrir-brouillon").onclick = () => basculerBrouillon({mat: "maths"});
+  $("#et-autres").onclick = () => { fermerBrouillon(); lancerExoType(s); };
+  $("#et-retour").onclick = () => { fermerBrouillon(); changerVue("exos"); };
+  zone().querySelectorAll(".et-saisie input").forEach((inp, i, tous) => inp.onkeydown = ev => { if (ev.key === "Enter"){ ev.preventDefault(); (tous[i + 1] || $("#et-verifier")).focus(); } });
+  $("#et-verifier").onclick = () => {
+    let score = 0;
+    qs.forEach((q, i) => {
+      const inp = $("#et-r" + i), juste = reponseJusteType(inp.value, att[i]), li = inp.closest("li"), c = li.querySelector(".et-corr");
+      if (juste) score++;
+      li.classList.toggle("juste", juste); li.classList.toggle("faux", !juste); inp.readOnly = true;
+      c.hidden = false;
+      c.innerHTML = `<b>${juste ? "✓ Juste" : "✗ Réponse attendue : " + esc(att[i].texte) + (q.unite ? " " + esc(q.unite) : "")}</b>${q.exp ? `<p>${esc(remplirTexte(q.exp, vals)).replace(/\n/g, "<br>")}</p>` : ""}`;
+    });
+    const avant = prog.exos[s.id]; let gain = 0, note = "";
+    if (avant === undefined || score > avant){ gain = (score - (avant || 0)) * 5; prog.exos[s.id] = score; if (avant !== undefined) note = " Nouveau record."; }
+    prog.points += gain; sauver();
+    window.dispatchEvent(new CustomEvent("helper-reponse", {detail: {juste: score === qs.length}}));
+    $("#et-verifier").outerHTML = `<button class="btn" type="button" id="et-encore">↻ Refaire avec d'autres valeurs</button>`;
+    $("#et-encore").onclick = () => { fermerBrouillon(); lancerExoType(s); };
+    $("#et-bilan").innerHTML = `<div class="bloc accent"><div class="score">${score}<small> / ${qs.length}</small></div><p>${gain ? `<strong>+${gain} points.</strong>` : "Aucun nouveau point cette fois."}${note} Les valeurs changent à chaque fois : refais-le pour t'entraîner.</p></div>`;
+    $("#et-bilan").scrollIntoView({behavior: "smooth", block: "nearest"});
+  };
+}
+
+/* ----- Gérant : éditeur d'exercice type ----- */
+let et = null;
+const nouvelleQuestionType = () => ({q: "", rep: "", arrondi: "", unite: "", exp: ""});
+function ouvrirExoType(s){
+  rafraichir = null;
+  et = s ? {id: s.id, integree: !!s.integree, matiere: s.matiere, titre: s.titre || "", enonce: s.enonce || "", variables: s.variables || "", questions: (s.questions || []).map(q => ({...nouvelleQuestionType(), ...q, arrondi: q.arrondi ?? ""}))}
+    : {id: null, matiere: matiereActive, titre: "", enonce: "", variables: "", questions: [nouvelleQuestionType(), nouvelleQuestionType()]};
+  if (!et.questions.length) et.questions.push(nouvelleQuestionType());
+  dessinerExoType();
+}
+function dessinerExoType(){
+  zone().innerHTML = `<button type="button" class="retour" id="retour">← Exercices</button>
+    <div class="ed-entete">
+      <input id="et-titre" class="ed-titre-serie" type="text" value="${esc(et.titre)}" placeholder="Titre de l'exercice (ex. Le forfait de téléphone)" aria-label="Titre de l'exercice">
+      <select id="et-matiere" aria-label="Matière">${MATIERES.map(m => `<option value="${m.id}" ${m.id === et.matiere ? "selected" : ""}>${m.nom}</option>`).join("")}</select>
+    </div>
+    <p class="doux" style="font-size:.88rem;max-width:80ch">${iconeExoType().replace('width="36" height="44"', 'width="18" height="22" style="display:inline-block;vertical-align:-5px;margin-right:6px"')}<b>Exercice type</b> : un exercice de manuel avec un grand énoncé et des questions numérotées. Les valeurs écrites entre accolades changent à chaque fois que l'élève le fait.</p>
+    <div class="et-editeur">
+      <div class="et-col">
+        <div class="ed-etape"><span class="ed-etape-n">1</span><span>Variables (valeurs qui changent)</span></div>
+        <textarea id="et-vars" rows="6" class="ed-champ et-mono" spellcheck="false" placeholder="a = 3..12\np = 5..40 pas 5\nprenom = Léa | Tom | Inès\nc = a*p/100\n? a > 4">${esc(et.variables)}</textarea>
+        <p class="aide">Une variable par ligne : <code>a = 3..12</code> nombre entier entre 3 et 12 · <code>t = 0,5..4 pas 0,5</code> · <code>nom = Léa | Tom</code> au choix · <code>c = a*b</code> calculée à partir des autres · <code>? a > b</code> condition à respecter.</p>
+        <div class="ed-etape"><span class="ed-etape-n">2</span><span>Énoncé</span><button type="button" class="mini-btn ed-symb" data-symb>Ω Symboles</button></div>
+        <textarea id="et-enonce" rows="7" class="ed-champ" placeholder="ex. {prenom} compare deux forfaits. Le forfait A coûte {a} € par mois. Le forfait B coûte {b} € par mois plus {c} € par Go consommé…">${esc(et.enonce)}</textarea>
+        <p class="aide">Écris <code>{a}</code> pour afficher une variable, <code>{=a*b}</code> pour un calcul (arrondi au centième), <code>{=a/3;1}</code> pour l'arrondir au dixième.</p>
+        <div class="ed-etape"><span class="ed-etape-n">3</span><span>Questions</span></div>
+        <div id="et-qs">${et.questions.map((q, i) => `
+          <div class="et-carte" data-i="${i}">
+            <div class="rangee" style="justify-content:space-between"><span class="mono">Question ${i + 1}</span><span class="rangee" style="gap:6px">
+              <button type="button" class="mini-btn" data-monte="${i}" ${i ? "" : "disabled"} aria-label="Monter">↑</button><button type="button" class="mini-btn" data-descend="${i}" ${i < et.questions.length - 1 ? "" : "disabled"} aria-label="Descendre">↓</button>
+              <button type="button" class="mini-btn danger" data-retire="${i}" ${et.questions.length > 1 ? "" : "disabled"}>Supprimer</button></span></div>
+            <label class="et-lab">Consigne<textarea rows="2" class="ed-champ" data-k="q" placeholder="ex. Calcule le prix payé par {prenom} avec le forfait A pour {n} mois.">${esc(q.q)}</textarea></label>
+            <div class="et-ligne">
+              <label class="et-lab" style="flex:2 1 220px">Réponse attendue<input type="text" class="ed-champ et-mono" data-k="rep" value="${esc(q.rep)}" placeholder="=a*n   ou   texte accepté / autre texte"></label>
+              <label class="et-lab" style="flex:1 1 120px">Arrondi<select class="ed-champ" data-k="arrondi">${[["", "exact"], ["0", "à l'unité"], ["1", "au dixième"], ["2", "au centième"], ["3", "au millième"]].map(([v, t]) => `<option value="${v}" ${String(q.arrondi) === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+              <label class="et-lab" style="flex:1 1 100px">Unité<input type="text" class="ed-champ" data-k="unite" value="${esc(q.unite)}" placeholder="€, cm, km/h…"></label>
+            </div>
+            <label class="et-lab">Correction affichée après (facultatif)<textarea rows="2" class="ed-champ" data-k="exp" placeholder="ex. {n} × {a} = {=n*a} €.">${esc(q.exp)}</textarea></label>
+          </div>`).join("")}</div>
+        <button type="button" class="ed-ajout" id="et-ajout">+ Ajouter une question</button>
+      </div>
+      <div class="et-col et-apercu-col">
+        <div class="rangee" style="justify-content:space-between"><span class="mono">Aperçu élève (valeurs tirées au hasard)</span><button type="button" class="mini-btn" id="et-tirer">↻ Autres valeurs</button></div>
+        <div id="et-apercu"></div>
+      </div>
+    </div>
+    <p id="statut" class="statut" role="status"></p>
+    <div class="ed-barre"><button class="btn" type="button" id="enregistrer">Enregistrer l'exercice</button><button class="btn sec" type="button" id="annuler">Annuler</button></div>`;
+  brancherExoType();
+  apercuExoType();
+}
+function apercuExoType(){
+  const box = $("#et-apercu"); if (!box) return;
+  const lv = lireVariables(et.variables), vals = lv.erreurs.length ? null : tirerValeurs(et.variables);
+  const qs = et.questions.filter(q => q.q.trim());
+  box.innerHTML = (lv.erreurs.length ? `<p class="statut erreur">${lv.erreurs.map(esc).join("<br>")}</p>` : !vals ? `<p class="statut erreur">Impossible de tirer des valeurs qui respectent les conditions.</p>` : "")
+    + (vals && Object.keys(vals).length ? `<p class="et-vals">${Object.entries(vals).map(([k, v]) => `<span><b>${esc(k)}</b> = ${esc(formatFr(v, 6))}</span>`).join("")}</p>` : "")
+    + `<div class="et-enonce"><div class="et-texte">${esc(remplirTexte(et.enonce, vals || {})).replace(/\n/g, "<br>") || `<span class="doux">L'énoncé apparaîtra ici.</span>`}</div></div>
+    <ol class="et-questions">${qs.map(q => { const a = vals ? attenduDe(q, vals) : null; return `<li><p class="et-q">${esc(remplirTexte(q.q, vals || {}))}</p>
+      <p class="et-attendu">Réponse : <b>${a ? esc(a.texte) : "?"}</b>${q.unite ? " " + esc(q.unite) : ""}${a && a.nombre && !Number.isFinite(a.v) ? ` <span class="statut erreur">formule incalculable</span>` : ""}</p></li>`; }).join("")}</ol>`;
+}
+function brancherExoType(){
+  const maj = () => apercuExoType();
+  $("#et-titre").oninput = e => et.titre = e.target.value;
+  $("#et-matiere").onchange = e => et.matiere = e.target.value;
+  $("#et-vars").oninput = e => { et.variables = e.target.value; maj(); };
+  $("#et-enonce").oninput = e => { et.enonce = e.target.value; maj(); };
+  $("#et-tirer").onclick = maj;
+  zone().querySelectorAll(".et-carte").forEach(c => { const q = et.questions[+c.dataset.i];
+    c.querySelectorAll("[data-k]").forEach(ch => ch[ch.tagName === "SELECT" ? "onchange" : "oninput"] = () => { q[ch.dataset.k] = ch.value; maj(); }); });
+  const bouger = (i, d) => { const t = et.questions.splice(i, 1)[0]; et.questions.splice(i + d, 0, t); dessinerExoType(); };
+  zone().querySelectorAll("[data-monte]").forEach(b => b.onclick = () => bouger(+b.dataset.monte, -1));
+  zone().querySelectorAll("[data-descend]").forEach(b => b.onclick = () => bouger(+b.dataset.descend, 1));
+  zone().querySelectorAll("[data-retire]").forEach(b => b.onclick = () => { et.questions.splice(+b.dataset.retire, 1); dessinerExoType(); });
+  $("#et-ajout").onclick = () => { et.questions.push(nouvelleQuestionType()); dessinerExoType(); const l = zone().querySelectorAll(".et-carte"); l[l.length - 1].scrollIntoView({block: "center"}); l[l.length - 1].querySelector("textarea").focus({preventScroll: true}); };
+  let dernier = $("#et-enonce"); zone().addEventListener("focusin", e => { if (e.target.matches("textarea, input[type=text]")) dernier = e.target; });
+  const symb = zone().querySelector("[data-symb]"); symb.onmousedown = ev => ev.preventDefault(); symb.onclick = () => ouvrirSymboles(symb, x => { insererDansChamp(dernier, x); dernier.dispatchEvent(new Event("input")); });
+  $("#retour").onclick = $("#annuler").onclick = () => { matiereActive = et.matiere; et = null; changerVue("g-exos"); };
+  $("#enregistrer").onclick = async () => {
+    const pb = problemesExoType(et); if (pb.length){ statut(pb[0] + (pb.length > 1 ? ` (+ ${pb.length - 1} autre${pb.length > 2 ? "s" : ""} problème${pb.length > 2 ? "s" : ""})` : ""), false); return; }
+    const id = et.id || nouvelId("t"), btn = $("#enregistrer"); btn.disabled = true;
+    const questions = et.questions.filter(q => q.q.trim()).map(q => ({q: q.q.trim(), rep: q.rep.trim(), arrondi: q.arrondi === "" ? "" : +q.arrondi, unite: q.unite.trim(), exp: q.exp.trim()}));
+    try {
+      await db.doc("series/" + id).set({type: "precis", matiere: et.matiere, titre: et.titre.trim(), enonce: et.enonce.trim(), variables: et.variables.trim(), questions, exos: [], majLe: new Date().toISOString()});
+      matiereActive = et.matiere; et = null; Formes.succes(); changerVue("g-exos"); statut("Exercice type enregistré.", true);
+    } catch (e){ btn.disabled = false; statut("Enregistrement impossible : " + (e.message || e), false); }
+  };
+}
+
+/* ----- Exercices types fournis avec le site (modifiables par le gérant) ----- */
+const EXOS_TYPES_INTEGRES = [
+  {id: "t-forfaits", type: "precis", matiere: "maths", titre: "Deux forfaits de téléphone",
+    variables: "prenom = Léa | Tom | Inès | Malik\na = 15..30\nb = 5..12\nc = 2..5\nn = 3..12\ng = 2..6\n? a > b + c\n? b + c*g != a",
+    enonce: "Un opérateur propose deux forfaits mensuels.\n• Forfait A : un prix fixe de {a} € par mois, internet illimité.\n• Forfait B : un abonnement de {b} € par mois, plus {c} € par gigaoctet (Go) consommé.\nOn note x le nombre de Go consommés dans le mois.",
+    questions: [
+      {q: "Avec le forfait A, combien paie-t-on en tout pour {n} mois ? Écris seulement le nombre.", rep: "=a*n", arrondi: "", unite: "€", exp: "{n} × {a} = {=a*n} €."},
+      {q: "Avec le forfait B, combien paie-t-on pour un mois où l'on consomme {g} Go ?", rep: "=b+c*g", arrondi: "", unite: "€", exp: "{b} + {c} × {g} = {=b+c*g} €."},
+      {q: "On note f(x) le prix du forfait B pour x Go. Exprime f(x) en fonction de x (écris par exemple 3x + 7).", rep: "{c}x + {b} / {c}x+{b} / {b} + {c}x / {b}+{c}x / f(x) = {c}x + {b} / {c}*x+{b}", arrondi: "", unite: "", exp: "Un prix fixe de {b} € plus {c} € par Go : f(x) = {c}x + {b}. C'est une fonction affine."},
+      {q: "Résous l'équation {c}x + {b} = {a}. Donne la valeur exacte de x, arrondie au centième si besoin.", rep: "=(a-b)/c", arrondi: 2, unite: "Go", exp: "{c}x = {a} − {b} = {=a-b}, donc x = {=a-b} ÷ {c} ≈ {=(a-b)/c;2}."},
+      {q: "Un mois, {prenom} consomme {g} Go. Quel forfait est le moins cher pour ce mois ? Réponds A ou B.", rep: "{?b+c*g < a|B|A} / forfait {?b+c*g < a|B|A}", arrondi: "", unite: "", exp: "Forfait A : {a} €. Forfait B : {b} + {c} × {g} = {=b+c*g} €. Le moins cher est le forfait {?b+c*g < a|B|A}. (Le forfait B est moins cher tant que x < {=(a-b)/c;2} Go.)"}
+    ]},
+  {id: "t-rampe", type: "precis", matiere: "maths", titre: "La rampe d'accès",
+    variables: "h = 20..60 pas 5\nl = 300..900 pas 50\n? h/l <= 0.08\n? h/l >= 0.03",
+    enonce: "Pour rendre l'entrée d'un collège accessible en fauteuil roulant, on construit une rampe. Elle monte d'une hauteur de {h} cm sur une longueur au sol de {l} cm. Le sol est horizontal et le mur de l'entrée est vertical : la rampe, le sol et le mur forment un triangle rectangle dont l'hypoténuse est la rampe.\nLa pente d'une rampe, en %, est égale à (hauteur ÷ longueur au sol) × 100. La réglementation impose une pente d'au plus 5 % pour une longue rampe.",
+    questions: [
+      {q: "Calcule la longueur de la rampe elle-même (l'hypoténuse), en cm, arrondie au dixième. Utilise le théorème de Pythagore.", rep: "=sqrt(h^2+l^2)", arrondi: 1, unite: "cm", exp: "Rampe² = {h}² + {l}² = {=h^2+l^2;0}, donc rampe = √{=h^2+l^2;0} ≈ {=sqrt(h^2+l^2);1} cm."},
+      {q: "Calcule la pente de cette rampe, en %, arrondie au centième.", rep: "=h/l*100", arrondi: 2, unite: "%", exp: "{h} ÷ {l} × 100 ≈ {=h/l*100;2} %."},
+      {q: "Quelle longueur au sol faudrait-il au minimum pour que la pente soit exactement de 5 %, avec la même hauteur ?", rep: "=h*100/5", arrondi: "", unite: "cm", exp: "Il faut {h} ÷ longueur × 100 = 5, donc longueur = {h} × 100 ÷ 5 = {=h*20} cm."},
+      {q: "Calcule l'angle que fait la rampe avec le sol, arrondi au dixième de degré (utilise la tangente).", rep: "=atan(h/l)", arrondi: 1, unite: "°", exp: "tan(angle) = {h} ÷ {l} ≈ {=h/l;4}, donc angle ≈ {=atan(h/l);1}° (touche tan⁻¹ ou arctan de la calculatrice)."}
+    ]},
+  {id: "t-soldes", type: "precis", matiere: "maths", titre: "Les soldes",
+    variables: "prenom = Léa | Tom | Inès | Malik | Chloé\np = 30..120 pas 5\nr = 10 | 15 | 20 | 25 | 30 | 40\nr2 = 10 | 20 | 30",
+    enonce: "Pendant les soldes, un magasin de sport affiche une réduction de {r} % sur toutes les chaussures. {prenom} veut acheter une paire qui coûtait {p} € avant les soldes.\nLe dernier jour, le magasin applique une deuxième réduction de {r2} % sur les prix déjà soldés.",
+    questions: [
+      {q: "Quel est le montant de la réduction de {r} %, en euros ?", rep: "=p*r/100", arrondi: 2, unite: "€", exp: "{p} × {r} ÷ 100 = {=p*r/100} €."},
+      {q: "Quel est le prix soldé de la paire, en euros ?", rep: "=p*(1-r/100)", arrondi: 2, unite: "€", exp: "{p} − {=p*r/100} = {=p*(1-r/100)} €. On peut aussi calculer {p} × {=1-r/100}."},
+      {q: "Par quel nombre faut-il multiplier le prix de départ pour obtenir le prix soldé ? (coefficient multiplicateur)", rep: "=1-r/100", arrondi: 2, unite: "", exp: "Baisser de {r} %, c'est multiplier par 1 − {r}/100 = {=1-r/100}."},
+      {q: "Le dernier jour, quel est le prix de la paire après les deux réductions, arrondi au centime ?", rep: "=p*(1-r/100)*(1-r2/100)", arrondi: 2, unite: "€", exp: "{p} × {=1-r/100} × {=1-r2/100} = {=p*(1-r/100)*(1-r2/100)} €."},
+      {q: "{prenom} pense que les deux réductions font une baisse de {=r+r2;0} %. Quel est en réalité le pourcentage de baisse total, arrondi au dixième ?", rep: "=100-100*(1-r/100)*(1-r2/100)", arrondi: 1, unite: "%", exp: "Coefficient global : {=1-r/100} × {=1-r2/100} = {=(1-r/100)*(1-r2/100);4}. La baisse totale est de {=100-100*(1-r/100)*(1-r2/100);1} %, et non {=r+r2;0} % : les pourcentages ne s'additionnent pas."}
+    ]},
+  {id: "t-vitesse", type: "precis", matiere: "pc", titre: "Le trajet en scooter",
+    variables: "d = 6..24\nt = 15 | 20 | 30 | 40 | 45\nm = 90..130 pas 5\n? d/(t/60) <= 45",
+    enonce: "Un livreur parcourt {d} km en scooter pour aller du dépôt à un client. Le trajet dure {t} minutes. La masse totale du scooter avec son conducteur est de {m} kg.\nRappels : v = d ÷ t ; 1 m/s = 3,6 km/h ; énergie cinétique Ec = ½ × m × v² (m en kg, v en m/s, Ec en joules).",
+    questions: [
+      {q: "Convertis la durée du trajet en heures (nombre décimal).", rep: "=t/60", arrondi: 2, unite: "h", exp: "{t} min = {t} ÷ 60 h = {=t/60} h."},
+      {q: "Calcule la vitesse moyenne du scooter en km/h, arrondie au dixième.", rep: "=d/(t/60)", arrondi: 1, unite: "km/h", exp: "v = {d} ÷ {=t/60} ≈ {=d/(t/60);1} km/h."},
+      {q: "Convertis cette vitesse en m/s, arrondie au dixième.", rep: "=d/(t/60)/3.6", arrondi: 1, unite: "m/s", exp: "{=d/(t/60);1} ÷ 3,6 ≈ {=d/(t/60)/3.6;1} m/s."},
+      {q: "Calcule l'énergie cinétique du scooter à cette vitesse moyenne, arrondie au joule (utilise la vitesse en m/s non arrondie si tu peux).", rep: "=0.5*m*(d/(t/60)/3.6)^2", arrondi: 0, unite: "J", exp: "Ec = ½ × {m} × {=d/(t/60)/3.6;2}² ≈ {=0.5*m*(d/(t/60)/3.6)^2;0} J."}
+    ]}
+];
 /* ===================== CLOUD : fichiers de la classe ===================== */
 /* Document cloud/<id> = {nom, id (stockage de la page), type, taille, dossier, le}.
    Le gérant dépose les fichiers ; les élèves de 3C les consultent et les téléchargent. */
