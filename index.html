@@ -3972,7 +3972,7 @@ let connecteLe = 0;
 const progVide = () => ({lecons:{}, exos:{}, brevet:{}, defis:{}, points:0, serie:0, dernierDefi:""});
 // Le rang vient du compte Helper (code IAUWL) ; estGerant = droit d'écriture sur la page claude.ai
 const estGerantCompte = () => !!profil && profil.rang === "gerant";
-// Administrateur : modifie les leçons et l'emploi du temps (moins de droits que le gérant)
+// Administrateur : modifie les leçons, les exercices, l'emploi du temps et les D.S. (moins de droits que le gérant)
 const estAdminCompte = () => !!profil && profil.rang === "administrateur";
 const normClasse = c => String(c || "").replace(/\s+/g, "").toUpperCase();
 const est3C = () => modeGerant || estGerantCompte() || (!!profil && normClasse(profil.classe) === "3C");
@@ -4146,7 +4146,8 @@ function notifierEnDirect(type, docs){
 
 /* ===================== NAVIGATION ===================== */
 const ONGLETS_ELEVE = [["profil","Profil"],["prefs","Préférences"],["edt","Emploi du temps"],["lecons","Leçons"],["exos","Exercices"],["brevet","Exercices Brevet"],["defi","Défi"],["actu","Actualité"],["cloud","Cloud"]];
-const ONGLETS_ADMIN = [["g-lecons","Leçons"],["g-edt","Emploi du temps"]];
+const ONGLETS_ADMIN = [["g-lecons","Leçons"],["g-exos","Exercices"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"]];
+const espaceNom = () => modeGerant || estGerantCompte() ? "Gérant" : "Administration";
 const ONGLETS_GERANT = [["g-site","Mise à jour du site"],["g-eleves","Élèves et codes"],["g-lecons","Leçons"],["g-exos","Exercices"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"],["a-actus","Actus"],["g-cloud","Cloud"],["g-signal","Signalements"]];
 const zone = () => $("#vue");
 function initiale(p){ return esc(((p && (p.pseudo || p.nom)) || "?").slice(0, 1).toUpperCase()); }
@@ -4181,7 +4182,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.79";
+const VERSION_SITE = "0.80";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4936,7 +4937,7 @@ function lireLecon(l){
 VUES["g-lecons"] = function vueGLecons(){
   rafraichir = vueGLecons;
   const ls = leconsDe(matiereActive);
-  zone().innerHTML = entete("Gérant", "Leçons", `<button class="btn" type="button" id="nouvelle">Nouvelle leçon</button>`) + filtres() + `
+  zone().innerHTML = entete(espaceNom(), "Leçons", `<button class="btn" type="button" id="nouvelle">Nouvelle leçon</button>`) + filtres() + `
     <p id="statut" class="statut" role="status"></p>
     ${ls.length ? parGroupes(ls).map(([g, l2]) => `<section class="groupe-lecons"><h3 class="titre-groupe">${g ? esc(g) : "Sans groupe"}<span class="doux">${l2.length} leçon${l2.length > 1 ? "s" : ""}</span></h3><div class="cartes-lecons">${l2.map(l => `
       <div class="carte-lecon">${miniLecon(l, `data-modif="${esc(l.id)}"`)}
@@ -5863,7 +5864,7 @@ const SCHEMAS = [["avion-forces","Avion : les 4 forces"],["avion-axes","Avion : 
 VUES["g-exos"] = function vueGExos(){
   rafraichir = vueGExos;
   const ls = seriesDe(matiereActive);
-  zone().innerHTML = entete("Gérant", "Exercices", `<span class="rangee" style="gap:8px"><button class="btn" type="button" id="nouvelle-serie" title="Plusieurs questions différentes, une par une">+ Exercice en chaîne</button><button class="btn sec" type="button" id="nouvel-exo-type" title="Un grand énoncé et des questions numérotées dont les valeurs changent">+ Exercice type</button></span>`) + filtres() + `
+  zone().innerHTML = entete(espaceNom(), "Exercices", `<span class="rangee" style="gap:8px"><button class="btn" type="button" id="nouvelle-serie" title="Plusieurs questions différentes, une par une">+ Exercice en chaîne</button><button class="btn sec" type="button" id="nouvel-exo-type" title="Un grand énoncé et des questions numérotées dont les valeurs changent">+ Exercice type</button></span>`) + filtres() + `
     <p id="statut" class="statut" role="status"></p>
     ${ls.length ? `<div class="liste">${ls.map(s => { const n = estPrecis(s) ? (s.questions || []).length : s.exos.length; return `
       <div class="ligne-liste">
@@ -10710,7 +10711,7 @@ function dessinerGrilleGerant(){
 VUES["g-edt"] = function vueGEdt(){
   rafraichir = dessinerGrilleGerant;
   const modele = modeEdtGerant === "modele";
-  zone().innerHTML = entete("Gérant", "Emploi du temps", modele ? `<button class="btn" type="button" id="ajout-cours">Ajouter un cours</button>` : "")
+  zone().innerHTML = entete(espaceNom(), "Emploi du temps", modele ? `<button class="btn" type="button" id="ajout-cours">Ajouter un cours</button>` : "")
     + segment("mode-edt", [["modele","Modifier l'emploi du temps"],["annuler","Annuler des cours"]], modeEdtGerant) + `
     <p class="doux" style="max-width:75ch">${modele ? "Clique dans la grille pour ajouter un cours à cette heure, ou sur un cours pour le modifier. Pour deux cours à la même heure, mets l'un en semaines paires et l'autre en semaines impaires."
       : "Choisis la semaine, puis clique sur un cours et coche « Cours annulé ». Les élèves de 3C le voient barré dans leur emploi du temps."}</p>
@@ -10848,7 +10849,7 @@ VUES["g-eleves"] = function vueGEleves(){
       <div class="grille-form">
         <div class="champ" style="grid-column:span 2"><label for="nc-code">Code</label><div class="rangee" style="flex-wrap:nowrap"><input id="nc-code" type="text" class="code-clair" spellcheck="false" autocapitalize="characters" value="${genererCode()}" style="flex:1;min-width:0"><button type="button" class="mini-btn" id="nc-gen">Générer</button></div></div>
         <div class="champ"><label for="nc-nom">Nom</label><input id="nc-nom" type="text" placeholder="Gabriel.C." maxlength="40"></div>
-        <div class="champ"><label for="nc-rang">Rang</label><select id="nc-rang"><option value="eleve">Élève</option><option value="administrateur">Administrateur (leçons, emploi du temps)</option><option value="gerant">Gérant</option></select></div>
+        <div class="champ"><label for="nc-rang">Rang</label><select id="nc-rang"><option value="eleve">Élève</option><option value="administrateur">Administrateur (leçons, exercices, emploi du temps, D.S.)</option><option value="gerant">Gérant</option></select></div>
         <div class="champ"><label for="nc-classe">Classe</label><input id="nc-classe" type="text" value="3C" maxlength="10"></div>
       </div>
       <p id="statut" class="statut" role="status"></p>
@@ -10956,7 +10957,7 @@ function ecrireAnnee(ok){
 VUES["g-annee"] = function vueGAnnee(){
   rafraichir = dessinerAnneeGerant;
   const y = debutAnneeScolaire();
-  zone().innerHTML = entete("Gérant", `D.S. et semaines ${y}-${y + 1}`) + `
+  zone().innerHTML = entete(espaceNom(), `D.S. et semaines ${y}-${y + 1}`) + `
     <p class="doux" style="max-width:75ch">Clique sur une semaine pour y placer des D.S. et choisir son type : semaine normale, vacances ou événement (avec un nom et une couleur). Les élèves de 3C voient ces blocs dans Emploi du temps → D.S. année.</p>
     <p id="statut" class="statut" role="status"></p>
     <div class="annee-blocs" id="annee-gerant"></div>`;
