@@ -1096,6 +1096,15 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .dt-commandes{gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}.dt-vitesse{display:inline-flex;gap:6px;align-items:center;font-size:.85rem}
 .dt-avance{height:4px;border-radius:4px;background:var(--surface-2);overflow:hidden;margin-top:6px}.dt-avance i{display:block;height:100%;background:#b06bff;transition:width .3s}
 .dt-texte{font-size:1rem;line-height:1.9}
+.dt-ref{margin:6px 0;padding:8px 12px;border-left:3px solid #b06bff;background:color-mix(in srgb,#b06bff 10%,transparent);border-radius:6px;font-style:italic}
+/* Dictée : feuille et écriture dans les violets (comme l'icône) */
+.dictee-page .cp-page{background-color:#1d1530;border-color:#4a3570;
+  background-image:linear-gradient(90deg,transparent 58px,#c77dff 58px,#c77dff 60px,transparent 60px),
+    repeating-linear-gradient(180deg,transparent 0,transparent calc(var(--lh) - 1px),rgba(176,107,255,.42) calc(var(--lh) - 1px),rgba(176,107,255,.42) var(--lh))}
+.dictee-page .cp-ligne{color:#dcc8ff}.dictee-page .cp-curseur{background:#c77dff}
+.dictee-page .cp-page[tabindex]:focus{box-shadow:0 0 0 2px rgba(176,107,255,.55)}
+.dictee-page .cp-accents button{border-color:#4a3570;background:#241a3a;color:#dcc8ff}.dictee-page .cp-accents button:hover{border-color:#c77dff;color:#fff}
+.dictee-page .cp-tete b{color:#c9a6ff}.dictee-page .dt-lecteur{border-left-color:#b06bff}
 .dt-niveau-info{display:flex;gap:10px;align-items:center;margin-top:8px;font-size:.88rem;flex-wrap:wrap}
 .dt-badge{padding:2px 10px;border-radius:999px;font:700 .75rem var(--f-mono);text-transform:uppercase;letter-spacing:.05em;border:1.5px solid}
 .dt-facile{color:#6fbf73;border-color:#6fbf73}.dt-moyen{color:#f2ae02;border-color:#f2ae02}.dt-difficile{color:#e86f9a;border-color:#e86f9a}
@@ -4249,7 +4258,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.92";
+const VERSION_SITE = "0.93";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4543,8 +4552,8 @@ VUES.exos = function vueExos(){
       </button>`; };
   const section = (titre, aide, ls, carte) => ls.length ? `<div class="exos-section"><h3>${titre}</h3><p class="doux">${aide}</p><div class="liste">${ls.map(carte).join("")}</div></div>` : "";
   const dictees = matiereActive === "francais" ? `<div class="exos-section"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3><p class="doux">Un texte nouveau à chaque fois, lu à voix haute. Tu l'écris, puis la correction souligne chaque faute.</p>
-      <div class="liste"><div class="ligne-liste carte-dictee"><span class="exo-tete">${iconeDictee()}<span class="titre"><strong><span class="et-theme-nom">Dictée :</span> Dictée aléatoire</strong><span class="doux" style="font-size:.85rem">Thème au hasard (la mer, la forêt, la ville, la montagne)${prog.dictees && prog.dictees[auj()] !== undefined ? ` · meilleure note aujourd'hui : ${String(prog.dictees[auj()]).replace(".", ",")} / 10` : ""}</span>
-        <span class="rangee dt-options">${segment("dt-long", [["3", "Courte"], ["5", "Moyenne"], ["7", "Longue"]], String(choixDictee.phrases))}${segment("dt-temps", [["passe", "Passé"], ["present", "Présent"], ["futur", "Futur"]], choixDictee.temps)}${segment("dt-niv", [["facile", "Facile"], ["moyen", "Moyen"], ["difficile", "Difficile"]], choixDictee.niveau)}</span></span></span>
+      <div class="liste"><div class="ligne-liste carte-dictee"><span class="exo-tete">${iconeDictee()}<span class="titre"><strong><span class="et-theme-nom">Dictée :</span> ${choixDictee.source === "auteur" ? "Texte d'auteur" : "Histoire inventée"}</strong><span class="doux" style="font-size:.85rem">${choixDictee.source === "auteur" ? "Un extrait de Maupassant, Daudet, Zola, Verne, Flaubert, Hugo… La référence est donnée à la fin." : "Une petite histoire nouvelle à chaque fois (la mer, la forêt, la ville, la montagne)"}${prog.dictees && prog.dictees[auj()] !== undefined ? ` · meilleure note aujourd'hui : ${String(prog.dictees[auj()]).replace(".", ",")} / 10` : ""}</span>
+        <span class="rangee dt-options">${segment("dt-src", [["invente", "Texte inventé"], ["auteur", "Texte d'auteur"]], choixDictee.source || "invente")}${choixDictee.source === "auteur" ? "" : segment("dt-long", [["3", "Courte"], ["5", "Moyenne"], ["7", "Longue"]], String(choixDictee.phrases))}${choixDictee.source === "auteur" ? "" : segment("dt-temps", [["passe", "Passé"], ["present", "Présent"], ["futur", "Futur"]], choixDictee.temps)}${segment("dt-niv", [["facile", "Facile"], ["moyen", "Moyen"], ["difficile", "Difficile"]], choixDictee.niveau)}</span></span></span>
         <button type="button" class="btn" id="dt-lancer">Commencer</button></div></div></div>` : "";
   zone().innerHTML = entete("Exercices", "S'entraîner") + filtres() + dictees + (toutes.length ? `
     ${segment("filtre-exos", [["tous", "Tous"], ["chaine", `Exercices en chaîne (${ch.length})`], ["type", `Exercices types (${ty.length})`]], filtreExos)}
@@ -4556,7 +4565,8 @@ VUES.exos = function vueExos(){
   if ($("#dt-lancer")){ $("#dt-lancer").onclick = () => lancerDictee(choixDictee);
     zone().querySelectorAll("#dt-long button").forEach(b => b.onclick = () => { choixDictee.phrases = +b.dataset.v; vueExos(); });
     zone().querySelectorAll("#dt-temps button").forEach(b => b.onclick = () => { choixDictee.temps = b.dataset.v; vueExos(); });
-    zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; vueExos(); }); }
+    zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; vueExos(); });
+    zone().querySelectorAll("#dt-src button").forEach(b => b.onclick = () => { choixDictee.source = b.dataset.v; vueExos(); }); }
   zone().querySelectorAll(".liste button[data-l]").forEach(b => b.onclick = () => { const l = toutes.find(x => x.id === b.dataset.l);
     if (estPrecis(l)) lancerExoType(l); else lancerQuiz(questionsDe(l), {titre: l.titre, sur: nomMatiere(l.matiere) + " · Exercices", lecon: l}); });
 };
@@ -9874,40 +9884,6 @@ function groupeNominal(n, nb, adjs, opts = {}){
 const formeVerbe = (cle, nb, temps, description) => { const v = DVERBES[cle], k = nb === "p" ? 1 : 0;
   if (temps === "passe") return (description ? v.imparfait : v.passe)[k];
   return v[temps][k]; };
-function genererDictee({phrases = 5, temps = "passe", theme} = {}){
-  const T = theme ? DTHEMES.find(x => x.nom === theme) || choisir(DTHEMES) : choisir(DTHEMES);
-  const verbes = new Set(), sortie = [], dejaNoms = new Set();
-  const perso = () => { let p, g = 0; do { p = choisir(T.persos); g++; } while (dejaNoms.has(p[0].s) && g < 10); dejaNoms.add(p[0].s); return groupeNominal(p[0], Math.random() < .45 ? "p" : "s", p[1]); };
-  const chose = (avecAction) => { const l = T.choses.filter(c => !avecAction || c[2].length); let c, g = 0; do { c = choisir(l); g++; } while (dejaNoms.has(c[0].s) && g < 10); dejaNoms.add(c[0].s); return c; };
-  const V = (cle, nb, desc) => { const f = formeVerbe(cle, nb, temps, desc); verbes.add(f); return f; };
-  let dernierVerbe = null;
-  const action = (sujet, desc = false) => { let a, g = 0; do { a = choisir(T.actions); g++; } while (a[0] === dernierVerbe && g < 10); dernierVerbe = a[0];
-    if (a[1]) return V(a[0], sujet.nb, desc) + " " + choisir(a[1]);
-    const o = choisir(a[2]); return V(a[0], sujet.nb, desc) + " " + groupeNominal(o, Math.random() < .5 ? "p" : "s", [], {adj: false}).txt; };
-  const description = () => { const c = chose(false), adjs = c[1].slice().sort(() => Math.random() - .5), gn = groupeNominal(c[0], "s", [], {adj: false}), k = (c[0].g === "f" ? "f" : "m") + gn.nb;
-    const a1 = ADJ[adjs[0]][k], a2 = adjs[1] ? ADJ[adjs[1]][k] : null;
-    return gn.txt + " " + V("etre", gn.nb, true) + " " + a1 + (a2 && Math.random() < .6 ? " et " + a2 : ""); };
-  const choseAgit = () => { const c = chose(true), gn = groupeNominal(c[0], "s", [], {adj: false}), a = choisir(c[2]); return gn.txt + " " + V(a[0], gn.nb, true) + " " + choisir(a[1]); };
-  const cct = () => choisir(T.cct.filter(c => temps === "passe" || !/-là|venu/.test(c)));
-  const faire = k => {
-    switch (k){
-      case 0: { const s = perso(); return `${cct()}, ${s.txt} ${action(s)}.`; }
-      case 1: { const s = perso(); return `${majusculeDebut(s.txt)} ${action(s)}.`; }
-      case 2: return `${majusculeDebut(description())}.`;
-      case 3: return `${majusculeDebut(choseAgit())}.`;
-      case 4: { const s = perso(); return `Quand ${s.txt} ${action(s)}, ${description()}.`; }
-      case 5: { const s = perso(); return `${majusculeDebut(s.txt)} ${action(s)}, puis ${action(s)}.`; }
-      case 6: { const s = perso(); return `${majusculeDebut(choseAgit())} pendant que ${s.txt} ${action(s, true)}.`; }
-      case 7: return `${majusculeDebut(description())} ; ${choseAgit()}.`;
-      case 8: return choisir(T.excl);
-      case 9: { const s = perso(); return `${majusculeDebut(s.txt)} ${action(s)} : ${description()}.`; }
-    }
-  };
-  // ordre : une description pour commencer, puis des actions variées
-  const ordre = [[2, 0, 8], [2, 0, 7, 4, 8], [2, 0, 7, 1, 4, 8, 6]][phrases <= 3 ? 0 : phrases <= 5 ? 1 : 2];
-  ordre.forEach(k => sortie.push(faire(k)));
-  return {texte: sortie.join(" ").replace(/\s+/g, " "), theme: T.nom, verbes: [...verbes], temps};
-}
 
 /* ----- Lecture à voix haute ----- */
 // découpe en groupes de mots avec la ponctuation dite à voix haute (« virgule », « point »)
@@ -10014,14 +9990,14 @@ function motCorrige(e, r){
 }
 const collerPonct = l => l.replace(/ ([.,;:!?»])/g, "$1").replace(/« /g, "« ").replace(/(<\/span>) (<span[^>]*>[.,;:!?»]<\/span>)/g, "$1$2");
 
-let choixDictee = {phrases: 5, temps: "passe", niveau: "facile"};
+let choixDictee = {phrases: 5, temps: "passe", niveau: "facile", source: "invente"};
 function lancerDictee(opts = choixDictee, deja = null){
   rafraichir = null; arreterLecture();
-  const d = deja || genererDictee(opts), groupes = groupesDictee(d.texte), audio = "speechSynthesis" in window, niveau = opts.niveau || "facile";
-  zone().innerHTML = entete("Français · Dictée", "Dictée : " + esc(d.theme)) + `
+  const d = deja || (opts.source === "auteur" ? dicteeAuteur() : genererDictee(opts)), ref = referenceDictee(d), groupes = groupesDictee(d.texte), audio = "speechSynthesis" in window, niveau = opts.niveau || "facile";
+  zone().innerHTML = entete("Français · Dictée", d.auteur ? "Dictée : texte d'auteur" : "Dictée : " + esc(d.theme)) + `
     <div class="exo-type-page dictee-page">
       <div class="et-enonce dt-lecteur">
-        <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(" ").length} mots · ${{passe: "récit au passé", present: "au présent", futur: "au futur"}[d.temps]}</span></span></span>
+        <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(" ").length} mots · ${{passe: "récit au passé", present: "au présent", futur: "au futur", auteur: "texte d'un écrivain, la référence est donnée à la fin"}[d.temps] || ""}</span></span></span>
           <button type="button" class="mini-btn" id="dt-nouvelle" title="Un autre texte">↻ Nouvelle dictée</button></div>
         ${audio ? `<div class="dt-niveau-info"><span class="dt-badge dt-${niveau}">${{facile: "Facile", moyen: "Moyen", difficile: "Difficile"}[niveau]}</span>
           <span class="doux">${{facile: "Tu peux réécouter chaque groupe autant de fois que tu veux.", moyen: `Tu peux réécouter chaque groupe ${MAX_REPET} fois au maximum, et le texte entier 2 fois.`, difficile: "Comme en classe : la voix lit tout le texte, puis dicte chaque groupe 3 fois et continue toute seule. Écris pendant les répétitions."}[niveau]}</span></div>
@@ -10038,8 +10014,8 @@ function lancerDictee(opts = choixDictee, deja = null){
           <div class="dt-avance"><i id="dt-barre" style="width:0"></i></div>`
         : `<p class="statut erreur">La lecture à voix haute n'est pas disponible sur ce navigateur. Demande à quelqu'un de te lire le texte, ou essaie Chrome, Edge ou Safari.</p>`}
       </div>
-      <p class="et-mode-emploi">Écris sur les lignes bleues : le texte saute une ligne à chaque fois, pour laisser la place à la correction. La correction automatique du navigateur est désactivée : c'est ton orthographe qui compte.</p>
-      <div class="et-feuille">${htmlCopie({titre: "Ma dictée", lignes: Math.max(10, Math.ceil(d.texte.length / 55) + 4), sauter: true, aide: "Clique sur une ligne bleue pour écrire."})}</div>
+      <p class="et-mode-emploi">Écris sur les lignes violettes : le texte saute une ligne à chaque fois, pour laisser la place à la correction. La correction automatique du navigateur est désactivée : c'est ton orthographe qui compte.</p>
+      <div class="et-feuille">${htmlCopie({titre: "Ma dictée", lignes: Math.max(10, Math.ceil(d.texte.length / 55) + 4), sauter: true, aide: "Clique sur une ligne pour écrire."})}</div>
       <div class="rangee"><button class="btn" type="button" id="dt-corriger">Corriger ma dictée</button><button class="btn sec" type="button" id="dt-retour">Autres exercices</button></div>
       <div id="dt-bilan"></div>
     </div>`;
@@ -10062,7 +10038,7 @@ function lancerDictee(opts = choixDictee, deja = null){
     if (niveau !== "difficile"){
       $("#dt-tout").onclick = () => {
         if (niveau === "moyen"){ if (restantsTout <= 0) return; restantsTout--; $("#dt-compte-tout").textContent = `(${restantsTout})`; if (!restantsTout) $("#dt-tout").disabled = true; }
-        etat("Lecture de tout le texte…"); lireDictee(direPonct() ? direPonctuation(d.texte) : d.texte, vitesse() + .05, () => etat(g < 0 ? "Clique sur « Groupe suivant » pour commencer à écrire." : "Texte relu en entier.")); };
+        etat("Lecture de tout le texte…"); lireDictee((direPonct() ? direPonctuation(d.texte) : d.texte) + (ref ? " " + ref : ""), vitesse() + .05, () => etat(g < 0 ? "Clique sur « Groupe suivant » pour commencer à écrire." : "Texte relu en entier.")); };
       $("#dt-groupe").onclick = () => { if (g >= groupes.length - 1){ etat("C'est la fin du texte. Relis-toi, puis écoute une dernière fois le texte en entier."); return; } dire(g + 1); };
       $("#dt-redire").onclick = () => { if (g < 0) return $("#dt-tout").click();
         if (niveau === "moyen"){ if ((repet[g] || 0) >= MAX_REPET) return; repet[g] = (repet[g] || 0) + 1; }
@@ -10091,7 +10067,7 @@ function lancerDictee(opts = choixDictee, deja = null){
             await pauseDictee(r < 3 ? temps(k) * .55 : temps(k));
           }
         }
-        if (vivant()){ await attendrePause(); etat("Dernière lecture : relis ta copie en même temps."); await parler(d.texte, vitesse()); etat("La dictée est terminée. Relis-toi, puis clique sur « Corriger ma dictée »."); }
+        if (vivant()){ await attendrePause(); etat("Dernière lecture : relis ta copie en même temps."); await parler(d.texte + (ref ? " " + ref : ""), vitesse()); etat("La dictée est terminée. Relis-toi, puis clique sur « Corriger ma dictée »."); }
         $("#dt-pause").disabled = true;
       };
     }
@@ -10101,7 +10077,7 @@ function lancerDictee(opts = choixDictee, deja = null){
   $("#dt-corriger").onclick = () => {
     arreterLecture();
     const lignes = cpLignes(zone());
-    if (!lignes.some(l => cpTexte(l).trim())){ $("#dt-bilan").innerHTML = `<p class="statut erreur">Ta copie est vide : écris la dictée avant de la corriger.</p>`; return; }
+    if (!lignes.some(l => cpTexte(l).trim())){ $("#dt-bilan").innerHTML = `<p class="statut erreur">Ta copie est vide : clique sur une ligne de la feuille, écris la dictée, puis corrige-la.</p>`; $("#dt-bilan").scrollIntoView({block: "nearest"}); return; }
     const c = corrigerDictee(lignes.map(cpTexte), d);
     // chaque ligne : les mots fautifs soulignés ; la ligne sautée en dessous : la ligne corrigée
     lignes.forEach((l, k) => {
@@ -10114,14 +10090,16 @@ function lancerDictee(opts = choixDictee, deja = null){
     });
     const parNat = {}; c.fautes.forEach(f => parNat[f.nat] = (parNat[f.nat] || 0) + 1);
     const note = Math.max(0, 10 - c.points), cle = auj();
-    prog.dictees = prog.dictees || {}; const avant = prog.dictees[cle]; let gain = 0;
-    if (avant === undefined || note > avant){ gain = Math.round((note - (avant || 0)) * 2); prog.dictees[cle] = note; prog.points += gain; sauver(); }
+    let gain = 0;
+    if (prog){ prog.dictees = prog.dictees || {}; const avant = prog.dictees[cle];
+      if (avant === undefined || note > avant){ gain = Math.round((note - (avant || 0)) * 2); prog.dictees[cle] = note; prog.points += gain; sauver(); } }
     $("#dt-corriger").disabled = true;
     $("#dt-bilan").innerHTML = `<div class="bloc accent"><div class="score">${c.fautes.length}<small> faute${c.fautes.length > 1 ? "s" : ""}</small></div>
       <p>${c.fautes.length ? Object.entries(parNat).map(([k, n]) => `<span class="dt-pastille dt-${k}">${NOMS_FAUTES[k]} : ${n}</span>`).join(" ") : "Aucune faute, bravo !"}</p>
       <p>Note : <b>${note % 1 ? String(note).replace(".", ",") : note} / 10</b> (1 point par faute, ½ point pour une majuscule ou une ponctuation). ${gain ? `<strong>+${gain} points.</strong>` : ""}</p>
       <p class="doux">Sur ta copie : les fautes sont soulignées (survole un mot pour voir la bonne forme), les accents manquants sont ajoutés en couleur et chaque ligne est réécrite juste en dessous.</p>
-      <details><summary>Le texte de la dictée</summary><p class="cp-ecrit dt-texte">${esc(d.texte)}</p></details>
+      ${ref ? `<p class="dt-ref">📖 ${esc(ref)}</p>` : ""}
+      <details ${ref ? "open" : ""}><summary>Le texte de la dictée</summary><p class="cp-ecrit dt-texte">${esc(d.texte)}</p></details>
       <div class="rangee"><button class="btn" type="button" id="dt-encore">↻ Nouvelle dictée</button></div></div>`;
     $("#dt-encore").onclick = () => lancerDictee(opts);
   };
@@ -10133,6 +10111,163 @@ function iconeDictee(){
     <path d="M12 9.5h3l4-3.5v12l-4-3.5h-3z" fill="#fff"/><path d="M21.5 9a4 4 0 0 1 0 6" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
     <text x="18" y="36" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-weight="700" font-size="5.2" fill="#fff">DICTÉE</text></svg>`;
 }
+/* ===================== DICTÉES : textes =====================
+   1) Dictées inventées : de petites histoires suivies (un personnage, des actions qui s'enchaînent), écrites à la main
+      phrase par phrase avec des emplacements variables : le personnage (masculin / féminin, singulier / pluriel),
+      les adjectifs, le temps du récit (passé, présent, futur) et quelques mots au choix. Tous les accords sont prévus.
+   2) Dictées d'auteurs : extraits de textes du domaine public (Maupassant, Daudet, Zola, Verne, Flaubert, Hugo…),
+      avec la référence lue à la fin.
+   Jetons des phrases :
+     {S} sujet avec adjectif (1re fois) · {N} le même sans adjectif · {P} il / elle / ils / elles (^ = majuscule)
+     {v:verbe} action (passé simple au passé) · {d:verbe} description (imparfait au passé) · :s / :p = autre sujet singulier / pluriel
+     {a:adjectif} accordé avec le personnage ({A:…} avec majuscule) · {son} {sa} {ses} → son/sa/ses ou leur/leur/leurs
+     {t:passé|présent|futur} selon le temps · {x:mot|autre mot} au hasard */
+Object.assign(DVERBES, {
+  devenir: DVX("devenir", ["devient", "deviennent"], ["devenait", "devenaient"], ["devint", "devinrent"], ["deviendra", "deviendront"]),
+  avoir: DVX("avoir", ["a", "ont"], ["avait", "avaient"], ["eut", "eurent"], ["aura", "auront"]),
+  perdre: DVX("perdre", ["perd", "perdent"], ["perdait", "perdaient"], ["perdit", "perdirent"], ["perdra", "perdront"]),
+  apparaitre: DVX("apparaître", ["apparaît", "apparaissent"], ["apparaissait", "apparaissaient"], ["apparut", "apparurent"], ["apparaîtra", "apparaîtront"]),
+  construire: DVX("construire", ["construit", "construisent"], ["construisait", "construisaient"], ["construisit", "construisirent"], ["construira", "construiront"]),
+  decouvrir: DVX("découvrir", ["découvre", "découvrent"], ["découvrait", "découvraient"], ["découvrit", "découvrirent"], ["découvrira", "découvriront"]),
+  sentir: DVX("sentir", ["sent", "sentent"], ["sentait", "sentaient"], ["sentit", "sentirent"], ["sentira", "sentiront"]),
+  atteindre: DVX("atteindre", ["atteint", "atteignent"], ["atteignait", "atteignaient"], ["atteignit", "atteignirent"], ["atteindra", "atteindront"]),
+  conduire: DVX("conduire", ["conduit", "conduisent"], ["conduisait", "conduisaient"], ["conduisit", "conduisirent"], ["conduira", "conduiront"]),
+  preparer: DV1("préparer"), hisser: DV1("hisser"), quitter: DV1("quitter"), emporter: DV1("emporter"), eclater: DV1("éclater"), recommencer: DV1("recommencer"),
+  allumer: DV1("allumer"), pousser: DV1("pousser"), continuer: DV1("continuer"), reposer: DV1("reposer"), disposer: DV1("disposer"), compter: DV1("compter"),
+  ranger: DV1("ranger"), retrouver: DV1("retrouver"), resonner: DV1("résonner"), changer: DV1("changer"), arriver: DV1("arriver"), eclairer: DV1("éclairer"),
+  craquer: DV1("craquer"), renoncer: DV1("renoncer"), sembler: DV1("sembler"), tinter: DV1("tinter"), surveiller: DV1("surveiller"), rassembler: DV1("rassembler"),
+  manquer: DV1("manquer"), contempler: DV1("contempler")
+});
+Object.assign(ADJ, {heureux: DA("heureux", "heureuse", "heureux", "heureuses"), assis: DA("assis", "assise", "assis", "assises")});
+const DSCENARIOS = [
+  {theme: "La mer", titre: "La tempête", persos: [[DN("pêcheur", "m"), ["vieux", "jeune", "courageux"]], [DN("marin", "m"), ["vieux", "jeune", "courageux"]], [DN("pêcheuse", "f"), ["vieux", "jeune", "courageux"]]],
+    phrases: ["{t:Ce matin-là|Ce matin|Demain matin}, {S} {v:preparer} {sa}barque pour partir en mer.",
+      "Le ciel {d:etre:s} gris, et le vent {d:souffler:s} déjà très fort.",
+      "{P^} {v:hisser} la voile et {v:quitter} le port sans hésiter.",
+      "Au large, les vagues {d:devenir:p} immenses ; la barque {d:danser:s} comme une coquille de noix.",
+      "{N^} {d:avoir} froid, mais {P} ne {d:perdre} pas courage.",
+      "{x:Soudain|Tout à coup}, la lumière du phare {v:apparaitre:s} au loin.",
+      "{N^} {v:tirer} sur la barre de toutes {ses}forces et {v:rentrer} enfin au port.",
+      "Sur le quai, toute la famille {d:attendre:s} {son}retour avec impatience."]},
+  {theme: "La mer", titre: "Le château de sable", persos: [[DN("enfant", "m"), ["petit", "jeune", "curieux"]], [DN("fillette", "f"), ["petit", "joyeux", "curieux"]], [DN("garçon", "m"), ["petit", "jeune", "joyeux"]]],
+    phrases: ["{t:Ce jour-là|Aujourd'hui|Demain}, {S} {v:courir} vers la plage avec {son}seau et {sa}pelle.",
+      "Le soleil {d:briller:s} dans un ciel sans nuages, et le sable {d:etre:s} chaud sous les pieds.",
+      "{P^} {v:construire} un château avec des tours et un pont-levis.",
+      "Puis {P} {v:ramasser} des coquillages roses et des galets polis par la mer.",
+      "Une mouette curieuse {v:observer:s} la scène du haut d'un rocher.",
+      "{x:Soudain|Tout à coup}, une grosse vague {v:emporter:s} le château.",
+      "{N^} {v:eclater} de rire et {v:recommencer} aussitôt {son}travail."]},
+  {theme: "La forêt", titre: "La cueillette", persos: [[DN("promeneur", "m"), ["vieux", "jeune", "curieux"]], [DN("promeneuse", "f"), ["vieux", "jeune", "curieux"]], [DN("bûcheron", "m"), ["vieux", "courageux"]]],
+    phrases: ["{t:Un matin d'automne|Ce matin d'automne|Demain matin}, {S} {v:partir} dans la forêt avec un grand panier.",
+      "Les feuilles rousses {d:tomber:p} doucement, et le sous-bois {d:sentir:s} la mousse humide.",
+      "{P^} {v:avancer} sans bruit sur le sentier étroit.",
+      "Au pied d'un vieux chêne, {P} {v:decouvrir} des champignons et des châtaignes.",
+      "Un écureuil {v:grimper:s} le long du tronc et {v:disparaitre:s} dans les branches.",
+      "Bientôt, {son}panier {d:etre:s} plein.",
+      "{N^} {v:rentrer} au village, {a:heureux} de {sa}promenade."]},
+  {theme: "La forêt", titre: "La nuit tombe", persos: [[DN("randonneur", "m"), ["jeune", "fatigue", "courageux"]], [DN("randonneuse", "f"), ["jeune", "fatigue", "courageux"]], [DN("chasseur", "m"), ["vieux", "silencieux"]]],
+    phrases: ["{t:À la tombée de la nuit|À la tombée de la nuit|Ce soir}, {S} {v:chercher} encore le chemin du refuge.",
+      "La forêt {d:etre:s} sombre et silencieuse ; seul le vent {d:murmurer:s} entre les arbres.",
+      "{P^} {v:allumer} {sa}lampe et {v:regarder} {sa}carte avec attention.",
+      "Au loin, une chouette {v:pousser:s} un long cri.",
+      "{N^} {d:avoir} un peu peur, mais {P} {v:continuer} {sa}route.",
+      "Enfin, les fenêtres du refuge {v:apparaitre:p} entre les troncs.",
+      "{P^} {v:pousser} la porte et se {v:reposer} près du feu."]},
+  {theme: "La ville", titre: "Le marché", persos: [[DN("commerçant", "m"), ["vieux", "jeune", "joyeux"]], [DN("commerçante", "f"), ["vieux", "jeune", "joyeux"]], [DN("marchand", "m"), ["vieux", "jeune"]]],
+    phrases: ["{t:Ce samedi-là|Ce samedi|Samedi prochain}, {S} {v:installer} {son}étal sur la place du marché.",
+      "Les premiers clients {d:arriver:p} déjà, et les rues {d:etre:p} pleines de monde.",
+      "{P^} {v:disposer} les fruits et les légumes avec soin.",
+      "Les pommes rouges {d:briller:p} au soleil, à côté des poireaux et des carottes.",
+      "{x:Vers midi|À midi}, {P} {v:compter} {sa}recette avec un grand sourire.",
+      "Puis {P} {v:ranger} {ses}caisses vides dans la camionnette.",
+      "Le soir, la place {v:retrouver:s} son calme."]},
+  {theme: "La ville", titre: "Le dernier train", persos: [[DN("voyageur", "m"), ["jeune", "presse", "fatigue"]], [DN("voyageuse", "f"), ["jeune", "presse", "fatigue"]], [DN("étudiant", "m"), ["jeune", "presse"]]],
+    phrases: ["{t:Ce soir-là|Ce soir|Demain soir}, {S} {v:traverser} la ville à toute vitesse.",
+      "Les voitures {d:avancer:p} lentement, et les klaxons {d:resonner:p} dans les rues.",
+      "{P^} {v:arriver} enfin devant la gare, le souffle court.",
+      "Sur le grand tableau, les horaires {d:changer:p} sans cesse.",
+      "{N^} {v:courir} jusqu'au quai numéro trois.",
+      "Le train {d:etre:s} encore là ; {P} {v:monter} juste avant le départ.",
+      "{A:assis} près de la fenêtre, {P} {v:regarder} défiler les lumières de la ville."]},
+  {theme: "La montagne", titre: "Le sommet", persos: [[DN("randonneur", "m"), ["jeune", "courageux"]], [DN("randonneuse", "f"), ["jeune", "courageux"]], [DN("guide", "m"), ["vieux", "jeune"]]],
+    phrases: ["{t:Au petit matin|Ce matin|Demain matin}, {S} {v:quitter} le refuge sous un ciel étoilé.",
+      "L'air {d:etre:s} froid et pur, et la neige {d:craquer:s} sous les chaussures.",
+      "{P^} {v:grimper} lentement le long de la pente.",
+      "{x:Peu à peu|Bientôt}, le soleil {v:eclairer:s} les sommets enneigés.",
+      "{N^} {d:avoir} les jambes lourdes, mais {P} ne {v:renoncer} pas.",
+      "{x:Enfin|Vers midi}, {P} {v:atteindre} le sommet.",
+      "De là-haut, la vallée {d:sembler:s} minuscule, et les lacs {d:briller:p} comme des miroirs."]},
+  {theme: "La montagne", titre: "L'orage", persos: [[DN("berger", "m"), ["vieux", "jeune"]], [DN("bergère", "f"), ["vieux", "jeune"]]],
+    phrases: ["{t:Chaque matin d'été|Chaque matin d'été|Cet été, chaque matin}, {S} {d:conduire} {son}troupeau vers les alpages.",
+      "Les moutons {d:avancer:p} en bêlant, et les cloches {d:tinter:p} doucement.",
+      "Le chien {d:surveiller:s} le troupeau sans jamais se fatiguer.",
+      "Un après-midi, un violent orage {v:eclater:s} au-dessus des sommets.",
+      "{N^} {v:rassembler} vite les bêtes et {v:descendre} vers la bergerie.",
+      "La pluie {v:tomber:s} toute la nuit sur le toit de la cabane.",
+      "Au matin, {P} {v:compter} {ses}moutons : aucun ne {d:manquer:s}."]}
+];
+function genererDictee({phrases = 5, temps = "passe"} = {}){
+  const sc = choisir(DSCENARIOS), [nom, adjs] = choisir(sc.persos), nb = Math.random() < .4 ? "p" : "s";
+  const pl = nb === "p", f = nom.g === "f", k = (f ? "f" : "m") + (pl ? "p" : "s");
+  const S = groupeNominal(nom, nb, adjs, {p: .85}).txt, N = groupeNominal(nom, nb, [], {adj: false}).txt, P = pl ? (f ? "elles" : "ils") : (f ? "elle" : "il");
+  const iT = {passe: 0, present: 1, futur: 2}[temps] ?? 0, verbes = new Set();
+  const V = (cle, n, desc) => { const forme = formeVerbe(cle, n, temps, desc); verbes.add(forme); return forme; };
+  const remplir = ph => ph
+    .replace(/\{t:([^}]*)\}/g, (m, l) => l.split("|")[iT] ?? l.split("|")[0])
+    .replace(/\{x:([^}]*)\}/g, (m, l) => choisir(l.split("|")))
+    .replace(/\{([vd]):(\w+)(?::([sp]))?\}/g, (m, t, cle, n) => V(cle, n || nb, t === "d"))
+    .replace(/\{([aA]):(\w+)\}/g, (m, t, cle) => { const a = ADJ[cle][k]; return t === "A" ? majusculeDebut(a) : a; })
+    .replace(/\{son\}/g, pl ? "leur " : "son ").replace(/\{sa\}/g, pl ? "leur " : "sa ").replace(/\{ses\}/g, pl ? "leurs " : "ses ")
+    .replace(/\{S\^\}/g, majusculeDebut(S)).replace(/\{S\}/g, S).replace(/\{N\^\}/g, majusculeDebut(N)).replace(/\{N\}/g, N)
+    .replace(/\{P\^\}/g, majusculeDebut(P)).replace(/\{P\}/g, P);
+  const n = Math.min(sc.phrases.length, phrases <= 3 ? 3 : phrases <= 5 ? 5 : sc.phrases.length);
+  // au futur, une phrase ne commence pas par « Ce matin-là » : les jetons {t:} s'en chargent
+  const texte = sc.phrases.slice(0, n).map(remplir).map(majusculeDebut).join(" ").replace(/\s+/g, " ").replace(/\s+([,.])/g, "$1");
+  return {texte, theme: sc.theme + " · " + sc.titre, verbes: [...verbes], temps};
+}
+
+/* ----- Dictées d'auteurs (textes du domaine public) ----- */
+const DICTEES_AUTEURS = [
+  {auteur: "Guy de Maupassant", titre: "La Parure", source: "conte paru en 1884, recueilli dans Contes du jour et de la nuit",
+    texte: "C'était une de ces jolies et charmantes filles, nées, comme par une erreur du destin, dans une famille d'employés. Elle n'avait pas de dot, pas d'espérances, aucun moyen d'être connue, comprise, aimée, épousée par un homme riche et distingué ; et elle se laissa marier avec un petit commis du ministère de l'Instruction publique.",
+    verbes: ["C'était", "était", "avait", "n'avait", "laissa"]},
+  {auteur: "Guy de Maupassant", titre: "Aux champs", source: "Contes de la bécasse, 1883",
+    texte: "Les deux chaumières étaient côte à côte, au pied d'une colline, proches d'une petite ville de bains. Les deux paysans besognaient dur sur la terre inféconde pour élever tous leurs petits. Chaque ménage en avait quatre.",
+    verbes: ["étaient", "besognaient", "avait"]},
+  {auteur: "Guy de Maupassant", titre: "Le Horla", source: "nouvelle, 1887",
+    texte: "Quelle journée admirable ! J'ai passé toute la matinée étendu sur l'herbe, devant ma maison, sous l'énorme platane qui la couvre, l'abrite et l'ombrage tout entière.",
+    verbes: ["passé", "couvre", "l'abrite", "l'ombrage", "J'ai"]},
+  {auteur: "Guy de Maupassant", titre: "Une vie", source: "roman, 1883",
+    texte: "Jeanne, ayant fini ses malles, s'approcha de la fenêtre, mais la pluie ne cessait pas.",
+    verbes: ["s'approcha", "cessait", "ayant", "fini"]},
+  {auteur: "Guy de Maupassant", titre: "Bel-Ami", source: "roman, 1885",
+    texte: "Quand la caissière lui eut rendu la monnaie de sa pièce de cent sous, Georges Duroy sortit du restaurant.",
+    verbes: ["eut", "rendu", "sortit"]},
+  {auteur: "Alphonse Daudet", titre: "La Chèvre de monsieur Seguin", source: "Lettres de mon moulin, 1869",
+    texte: "M. Seguin n'avait jamais eu de bonheur avec ses chèvres. Il les perdait toutes de la même façon : un beau matin, elles cassaient leur corde, s'en allaient dans la montagne, et là-haut le loup les mangeait.",
+    verbes: ["n'avait", "eu", "perdait", "cassaient", "allaient", "mangeait"]},
+  {auteur: "Alphonse Daudet", titre: "La Dernière Classe", source: "Contes du lundi, 1873",
+    texte: "Ce matin-là, j'étais très en retard pour aller à l'école, et j'avais grand-peur d'être grondé, d'autant que M. Hamel nous avait dit qu'il nous interrogerait sur les participes, et je n'en savais pas le premier mot.",
+    verbes: ["j'étais", "j'avais", "avait", "dit", "interrogerait", "savais"]},
+  {auteur: "Émile Zola", titre: "Germinal", source: "roman, 1885",
+    texte: "Dans la plaine rase, sous la nuit sans étoiles, d'une obscurité et d'une épaisseur d'encre, un homme suivait seul la grande route de Marchiennes à Montsou, dix kilomètres de pavé coupant tout droit, à travers les champs de betteraves.",
+    verbes: ["suivait", "coupant"]},
+  {auteur: "Jules Verne", titre: "Vingt mille lieues sous les mers", source: "roman, 1870",
+    texte: "L'année 1866 fut marquée par un événement bizarre, un phénomène inexpliqué et inexplicable que personne n'a sans doute oublié.",
+    verbes: ["fut", "marquée", "oublié"]},
+  {auteur: "Gustave Flaubert", titre: "Un cœur simple", source: "Trois contes, 1877",
+    texte: "Pendant un demi-siècle, les bourgeoises de Pont-l'Évêque envièrent à Mme Aubain sa servante Félicité.",
+    verbes: ["envièrent"]},
+  {auteur: "Victor Hugo", titre: "Les Misérables", source: "roman, 1862",
+    texte: "En 1815, M. Charles-François-Bienvenu Myriel était évêque de Digne. C'était un vieillard d'environ soixante-quinze ans ; il occupait le siège de Digne depuis 1806.",
+    verbes: ["était", "C'était", "occupait"]},
+  {auteur: "Alain-Fournier", titre: "Le Grand Meaulnes", source: "roman, 1913",
+    texte: "Il arriva chez nous un dimanche de novembre 189… Je continue à dire « chez nous », bien que la maison ne nous appartienne plus.",
+    verbes: ["arriva", "continue", "appartienne"]}
+];
+// « Extrait de La Parure, de Guy de Maupassant (Contes du jour et de la nuit). »
+const referenceDictee = d => d.auteur ? `Extrait de « ${d.titre} », de ${d.auteur} (${d.source}).` : "";
+function dicteeAuteur(){ const t = choisir(DICTEES_AUTEURS); return {...t, theme: "Texte d'auteur", temps: "auteur"}; }
 /* ===================== EXERCICES TYPES (« exos précis ») =====================
    Deux sortes d'exercices :
    - les exercices en chaîne (type "chaine", par défaut) : une suite de questions différentes, une par une ;
