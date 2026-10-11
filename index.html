@@ -1106,9 +1106,13 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .dictee-page .cp-accents button{border-color:#4a3570;background:#241a3a;color:#dcc8ff}.dictee-page .cp-accents button:hover{border-color:#c77dff;color:#fff}
 .dictee-page .cp-tete b{color:#c9a6ff}
 /* ambiance violette pendant la dictée : menu de côté */
-body.ambiance-dictee .lateral{background:linear-gradient(180deg,#1f1533,#140f22);border-right-color:#3d2a5e;transition:background .6s}
-body.ambiance-dictee .lateral .nav button[aria-selected="true"]{background:rgba(176,107,255,.16);color:#e6d6ff}
-body.ambiance-dictee .lateral .nav-groupe{color:#a98bd6}.dictee-page .dt-lecteur{border-left-color:#b06bff}
+@property --accent{syntax:"<color>";inherits:true;initial-value:#f2ae02}
+:root{transition:--accent 1.4s ease}
+.lateral{transition:background-color 1.4s ease,border-color 1.4s ease}.lateral .nav button,.lateral .nav-groupe{transition:background-color 1.4s ease,color 1.4s ease}
+body.ambiance-dictee .lateral{background-color:rgba(26,20,38,.9);border-right-color:#33284a}
+.dt-quitter{border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+body.ambiance-dictee .lateral .nav button[aria-selected="true"]{background-color:rgba(176,107,255,.13);color:#e2d4fb}
+body.ambiance-dictee .lateral .nav-groupe{color:#a08cc4}.dictee-page .dt-lecteur{border-left-color:#b06bff}
 .dt-niveau-info{display:flex;gap:10px;align-items:center;margin-top:8px;font-size:.88rem;flex-wrap:wrap}
 .dt-badge{padding:2px 10px;border-radius:999px;font:700 .75rem var(--f-mono);text-transform:uppercase;letter-spacing:.05em;border:1.5px solid}
 .dt-facile{color:#6fbf73;border-color:#6fbf73}.dt-moyen{color:#f2ae02;border-color:#f2ae02}.dt-difficile{color:#e86f9a;border-color:#e86f9a}
@@ -3919,7 +3923,7 @@ const Formes = (() => {
     ajuster();
   }
   // ambiance (ex. violet pour la dictée) puis réaction (succès / échec)
-  const melange = c => { e.amb += (e.ambCible - e.amb) * .04; const b = c.map((v, k) => v + (e.ambTeinte[k] - v) * e.amb * .85);
+  const melange = c => { e.amb += (e.ambCible - e.amb) * .012; const b = c.map((v, k) => v + (e.ambTeinte[k] - v) * e.amb * .6);
     return `rgb(${b.map((v, k) => Math.round(v + (e.teinte[k] - v) * e.mix)).join(",")})`; };
   function trace(f, s){
     cx.beginPath();
@@ -4255,7 +4259,7 @@ const VUES = {};
 // ambiance violette de la dictée : formes du fond, menu de côté et couleur d'accent
 function ambianceDictee(on){
   document.body.classList.toggle("ambiance-dictee", !!on);
-  if (on){ document.documentElement.style.setProperty("--accent", "#b06bff"); Formes.accent("#b06bff"); Formes.ambiance([176,107,255]); }
+  if (on){ document.documentElement.style.setProperty("--accent", "#b06bff"); Formes.ambiance([176,107,255]); }
   else if (document.documentElement.style.getPropertyValue("--accent") === "#b06bff" || Formes){ appliquerPrefs(profil && profil.prefs ? profil.prefs : PREFS_DEFAUT); Formes.ambiance(null); }
 }
 function changerVue(v){
@@ -4271,7 +4275,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.94";
+const VERSION_SITE = "0.95";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -10015,7 +10019,7 @@ function lancerDictee(opts = choixDictee, deja = null){
     <div class="exo-type-page dictee-page">
       <div class="et-enonce dt-lecteur">
         <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(/\s+/).filter(w => /\w/.test(w)).length} mots · ${{passe: "récit au passé", present: "au présent", futur: "au futur", auteur: "texte d'un écrivain, la référence est donnée à la fin"}[d.temps] || ""}</span></span></span>
-          <button type="button" class="mini-btn" id="dt-nouvelle" title="Un autre texte">↻ Nouvelle dictée</button></div>
+          <span class="rangee"><button type="button" class="mini-btn" id="dt-nouvelle" title="Un autre texte">↻ Nouvelle dictée</button><button type="button" class="mini-btn dt-quitter" id="dt-quitter" title="Revenir à la page des exercices">✕ Quitter la dictée</button></span></div>
         ${audio ? `<div class="dt-niveau-info"><span class="dt-badge dt-${niveau}">${{facile: "Facile", moyen: "Moyen", difficile: "Difficile"}[niveau]}</span>
           <span class="doux">${{facile: "Tu peux réécouter chaque groupe autant de fois que tu veux.", moyen: `Tu peux réécouter chaque groupe ${MAX_REPET} fois au maximum, et le texte entier 2 fois.`, difficile: "Comme en classe : la voix lit tout le texte, puis dicte chaque groupe 3 fois et continue toute seule. Écris pendant les répétitions."}[niveau]}</span></div>
           <div class="rangee dt-commandes">${niveau === "difficile"
@@ -10090,7 +10094,7 @@ function lancerDictee(opts = choixDictee, deja = null){
     }
   }
   deuxClics($("#dt-nouvelle"), () => lancerDictee(opts));
-  $("#dt-retour").onclick = () => { arreterLecture(); changerVue("exos"); };
+  $("#dt-retour").onclick = $("#dt-quitter").onclick = () => { arreterLecture(); changerVue("exos"); };
   $("#dt-corriger").onclick = () => {
     arreterLecture();
     const lignes = cpLignes(zone());
