@@ -1121,6 +1121,7 @@ body.ambiance-dictee .lateral .nav-groupe{color:#a08cc4}.dictee-page .dt-lecteur
 .dt-reglages{gap:10px;margin-top:6px;flex-wrap:wrap;align-items:center}.dt-voix{max-width:240px;font-size:.82rem;padding:3px 6px;background:var(--surface-2);color:var(--texte);border:1px solid var(--ligne);border-radius:6px}
 .dt-compte{font-size:.78rem;opacity:.75}
 .carte-dictee{align-items:center}
+.lien-catalogue{display:flex;align-items:center;gap:12px;max-width:400px;padding:12px 14px;border:1px solid var(--ligne);border-radius:var(--r);background:var(--surface);color:var(--texte);text-decoration:none;transition:border-color .2s,background .2s}.lien-catalogue:hover{border-color:color-mix(in srgb,var(--accent) 60%,transparent);background:var(--surface-2)}.lc-icone{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);flex:none}.lc-texte{display:flex;flex-direction:column;gap:2px;min-width:0}.lc-texte .doux{font-size:.84rem}.lc-fleche{margin-left:auto;color:var(--doux);font-size:1.1rem}
 .demande-code{margin-top:4px}.lien-demande{background:none;border:0;padding:0;color:var(--doux);font:inherit;font-size:.92rem;cursor:pointer;text-align:left}.lien-demande b{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 .demande-form,.demande-suivi{display:flex;flex-direction:column;gap:10px;max-width:420px;padding:14px 16px;border:1px solid var(--ligne);border-radius:var(--r);background:var(--surface)}
 .demande-suivi .doux{font-size:.88rem}.dm-code{font-size:1.5rem;letter-spacing:.12em;font-weight:700;color:var(--accent)}.dm-ok{color:#6fbf73}.dm-non{color:#e86f9a}
@@ -1516,6 +1517,11 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
       <div class="rangee"><button class="btn" type="submit" id="valider">Créer mon compte</button></div>
     </form>
     <div id="demande-code" class="demande-code"></div>
+    <a class="lien-catalogue" href="https://entarsh-studio.github.io/" target="_blank" rel="noopener">
+      <span class="lc-icone" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+      <span class="lc-texte"><b>Entarsh Catalogue</b><span class="doux">Jeux, logiciels et fichiers d'Entarsh Studio · sans compte</span></span>
+      <span class="lc-fleche" aria-hidden="true">↗</span>
+    </a>
     <div id="bloc-gerant" class="formulaire" hidden style="display:flex;flex-direction:column;gap:18px;max-width:400px">
       <p>Tu es propriétaire de cette page. L'espace gérant sert à créer les premiers codes d'accès (dont le tien, au rang Gérant) et à gérer le site sans compte.</p>
       <div class="rangee"><button class="btn" type="button" id="entrer-gerant">Ouvrir l'espace gérant</button></div>
@@ -4277,7 +4283,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.99";
+const VERSION_SITE = "1.00";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
