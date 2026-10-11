@@ -415,7 +415,16 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .doc-lecon ul.puce-fleche{--forme-puce:"➤"}.doc-lecon ul.puce-coche{--forme-puce:"✓"}.doc-lecon ul.puce-etoile{--forme-puce:"★"}.doc-lecon ul.puce-tiret{--forme-puce:"–"}
 .doc-lecon ul[class*="puce-"]>li::before{font-size:.85em;top:.12em}
 .barre-outils [data-cmd].actif{background:color-mix(in srgb,var(--accent) 22%,var(--surface-2));border-color:var(--accent);color:var(--accent)}
-.barre-outils .o-couleur{border-bottom:3px solid var(--c,#f4f2ed)}.barre-outils .o-couleur-puce{color:var(--accent)}
+.barre-outils .o-couleur{border-bottom:3px solid var(--c,#f4f2ed)}
+.barre-outils{position:sticky}.o-pal{display:inline-flex;align-items:center;gap:3px;position:relative;padding:2px 6px 5px 8px!important}
+.o-pal-a{font-weight:800;font-size:.95rem;line-height:1}.o-pal-surl{padding:0 3px;border-radius:3px;background:rgba(245,197,24,.38)}.o-pal-fl{font-size:.65rem;color:var(--doux)}
+.o-pal-barre{position:absolute;left:6px;right:18px;bottom:2px;height:4px;border-radius:2px;background:#f4f2ed;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
+.pop-couleurs{position:absolute;z-index:30;width:280px;padding:10px;border-radius:12px;background:var(--surface);border:1px solid var(--ligne);box-shadow:0 14px 40px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:6px}
+.pc-titre{font:600 .75rem var(--f-mono);color:var(--doux);text-transform:uppercase;letter-spacing:.05em}
+.pc-grille{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}
+.pc-c{aspect-ratio:1;border-radius:6px;border:1px solid rgba(255,255,255,.18);background:var(--c);cursor:pointer;padding:0;min-width:0}
+.pc-c:hover{transform:scale(1.15);border-color:#fff}.pc-c.pc-surl{background:linear-gradient(var(--c),var(--c)),var(--surface-2)}
+.pc-pied{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}.pc-autre{position:relative;cursor:pointer}.pc-autre input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}.barre-outils .o-couleur-puce{color:var(--accent)}
 .obj-doc:has(.fm-fiche){width:min(680px,100%)}.fig-exo .obj-doc:has(.fm-fiche){width:100%}
 .fm-drapeau{font-family:var(--f-texte)}
 .fm-outils{display:flex;flex-wrap:wrap;gap:4px;padding:6px;border:1px solid var(--ligne);border-radius:10px;background:var(--surface-2)}
@@ -4221,7 +4230,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.86";
+const VERSION_SITE = "0.87";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4528,7 +4537,7 @@ VUES.exos = function vueExos(){
   if ($("#dt-lancer")){ $("#dt-lancer").onclick = () => lancerDictee(choixDictee);
     zone().querySelectorAll("#dt-long button").forEach(b => b.onclick = () => { choixDictee.phrases = +b.dataset.v; vueExos(); });
     zone().querySelectorAll("#dt-temps button").forEach(b => b.onclick = () => { choixDictee.temps = b.dataset.v; vueExos(); }); }
-  zone().querySelectorAll(".liste button").forEach(b => b.onclick = () => { const l = toutes.find(x => x.id === b.dataset.l);
+  zone().querySelectorAll(".liste button[data-l]").forEach(b => b.onclick = () => { const l = toutes.find(x => x.id === b.dataset.l);
     if (estPrecis(l)) lancerExoType(l); else lancerQuiz(questionsDe(l), {titre: l.titre, sur: nomMatiere(l.matiere) + " · Exercices", lecon: l}); });
 };
 
@@ -4865,6 +4874,85 @@ function allerAPartie(h, doc){
     if (boite !== doc) doc.addEventListener("input", () => r.remove(), {once: true}); }
   (fenetre ? window : zone).scrollTo({top: Math.max(0, cible), behavior: "smooth"});
 }
+/* ----- Couleurs du texte : application fiable sur la sélection ----- */
+// a-t-on une couleur posée sur cet élément ? (style ou ancienne balise <font color>)
+const BALISES_EN_LIGNE = new Set(["SPAN", "FONT", "B", "STRONG", "I", "EM", "U", "S", "STRIKE", "SUB", "SUP"]);
+const aCouleur = (el, prop) => el.nodeType === 1 && BALISES_EN_LIGNE.has(el.tagName) && !!(el.style && el.style[prop] || (prop === "color" && el.tagName === "FONT" && el.getAttribute("color")));
+function oterCouleur(el, prop){
+  el.style[prop] = ""; if (prop === "color" && el.tagName === "FONT") el.removeAttribute("color");
+  if (el.getAttribute("style") !== null && !el.getAttribute("style").trim()) el.removeAttribute("style");
+  if ((el.tagName === "SPAN" || el.tagName === "FONT") && !el.attributes.length){ const p = el.parentNode; while (el.firstChild) p.insertBefore(el.firstChild, el); el.remove(); }
+}
+// sort un nœud texte des éléments colorés qui l'entourent (en gardant gras, italique, police…)
+function isolerTexte(t, doc, prop){
+  let anc = null; for (let x = t.parentNode; x && x !== doc; x = x.parentNode) if (aCouleur(x, prop)) anc = x;
+  if (!anc) return;
+  let node = t;
+  while (node.parentNode !== anc.parentNode){
+    const p = node.parentNode, apres = p.cloneNode(false), milieu = p.cloneNode(false);
+    while (node.nextSibling) apres.appendChild(node.nextSibling);
+    p.parentNode.insertBefore(milieu, p.nextSibling); milieu.appendChild(node);
+    if (apres.childNodes.length) milieu.after(apres);
+    if (!p.childNodes.length) p.remove();
+    if (p === anc){ oterCouleur(milieu, prop); break; }
+    node = milieu;
+  }
+}
+// applique (ou retire si val est vide) une couleur de texte / de surlignage sur la plage ; renvoie la nouvelle plage
+function appliquerStyle(doc, range, prop, val){
+  if (!range || !doc.contains(range.commonAncestorContainer)) return null;
+  if (range.collapsed){
+    const sp = document.createElement("span"); if (val) sp.style[prop] = val; sp.textContent = "\u200b"; range.insertNode(sp);
+    const r = document.createRange(); r.setStart(sp.firstChild, 1); r.collapse(true); return r;
+  }
+  const racine = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentNode : range.commonAncestorContainer;
+  const tw = document.createTreeWalker(racine, NodeFilter.SHOW_TEXT, {acceptNode: n => range.intersectsNode(n) && n.length && !n.parentElement.closest("figure, .sommaire-lecon, [contenteditable=false]") ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT});
+  let textes = []; for (let n = tw.nextNode(); n; n = tw.nextNode()) textes.push(n);
+  if (!textes.length) return null;
+  let {startContainer: sc, startOffset: so, endContainer: ec, endOffset: eo} = range;
+  if (textes[0] === sc && so > 0){ const queue = sc.splitText(so); if (ec === sc){ ec = queue; eo -= so; } textes[0] = queue; }
+  const der = textes[textes.length - 1];
+  if (der === ec && eo < ec.length){ ec.splitText(eo); }
+  else if (ec.nodeType !== 3 && der !== ec){ /* fin sur un élément : le dernier nœud texte est entièrement pris */ }
+  textes = textes.filter(t => t.length);
+  textes.forEach(t => {
+    isolerTexte(t, doc, prop);
+    if (val){ const p = t.parentNode;
+      if (p.tagName === "SPAN" && p.childNodes.length === 1 && p !== doc) p.style[prop] = val;
+      else { const sp = document.createElement("span"); sp.style[prop] = val; p.insertBefore(sp, t); sp.appendChild(t); } }
+  });
+  // fusionne les morceaux voisins identiques
+  doc.querySelectorAll("span[style]").forEach(sp => { const n = sp.nextSibling; if (n && n.nodeType === 1 && n.tagName === "SPAN" && n.getAttribute("style") === sp.getAttribute("style") && !n.className && !sp.className){ while (n.firstChild) sp.appendChild(n.firstChild); n.remove(); } });
+  doc.normalize();
+  const r = document.createRange(), a = textes[0], z = textes[textes.length - 1];
+  try { r.setStart(a, 0); r.setEnd(z, z.length); } catch { r.selectNodeContents(doc); r.collapse(false); }
+  return r;
+}
+const PALETTE_TEXTE = ["#f4f2ed", "#b9bcc4", "#7d808a", "#3a3d45", "#ff5c5c", "#ff9f43", "#f2ae02", "#ffe066", "#6fbf73", "#2ec4b6", "#5fa8d3", "#4d7cff", "#b06bff", "#e86f9a",
+  "#c0392b", "#d35400", "#b7950b", "#9a7d0a", "#1e8449", "#117a8b", "#1f6fa8", "#1f4e9c", "#6c3483", "#a93266"];
+const PALETTE_SURLIGNE = ["245,197,24", "111,191,115", "95,168,211", "232,111,154", "245,140,40", "165,133,242", "46,196,182", "255,92,92"].map(c => `rgba(${c}, 0.38)`);
+const couleursRecentes = prop => { try { return JSON.parse(lsGet("helper.couleurs." + prop) || "[]"); } catch { return []; } };
+const couleurRecente = (prop, v) => lsSet("helper.couleurs." + prop, JSON.stringify([v, ...couleursRecentes(prop).filter(x => x !== v)].slice(0, 8)));
+function fermerPalette(){ document.getElementById("pop-couleurs")?.remove(); document.querySelectorAll(".o-pal[aria-expanded=true]").forEach(b => b.setAttribute("aria-expanded", "false")); }
+function ouvrirPalette(btn, prop, choisir){
+  const deja = btn.getAttribute("aria-expanded") === "true"; fermerPalette(); if (deja) return;
+  const texte = prop === "color", base = texte ? PALETTE_TEXTE : PALETTE_SURLIGNE, rec = couleursRecentes(prop).filter(c => !base.includes(c));
+  const pastille = c => `<button type="button" class="pc-c${texte ? "" : " pc-surl"}" data-c="${esc(c)}" style="--c:${esc(c)}" title="${esc(c)}" aria-label="Couleur ${esc(c)}"></button>`;
+  const p = document.createElement("div"); p.className = "pop-couleurs"; p.id = "pop-couleurs"; p.setAttribute("role", "dialog"); p.setAttribute("aria-label", texte ? "Couleur du texte" : "Surlignage");
+  p.innerHTML = `<div class="pc-titre">${texte ? "Couleur du texte" : "Surlignage"}</div><div class="pc-grille">${base.map(pastille).join("")}</div>
+    ${rec.length ? `<div class="pc-titre">Récentes</div><div class="pc-grille">${rec.map(pastille).join("")}</div>` : ""}
+    <div class="pc-pied"><button type="button" class="mini-btn" data-c="">${texte ? "↺ Couleur par défaut" : "✕ Sans surlignage"}</button>
+      <label class="mini-btn pc-autre">🎨 Autre couleur…<input type="color" id="pc-autre" value="${texte ? "#f2ae02" : "#f5c518"}"></label></div>`;
+  btn.after(p); btn.setAttribute("aria-expanded", "true");
+  const r = btn.getBoundingClientRect(), barre = btn.closest(".barre-outils").getBoundingClientRect();
+  p.style.left = Math.max(0, Math.min(r.left - barre.left, barre.width - 290)) + "px"; p.style.top = (r.bottom - barre.top + 4) + "px";
+  p.querySelectorAll("[data-c]").forEach(x => { x.onmousedown = ev => ev.preventDefault(); x.onclick = () => { fermerPalette(); choisir(x.dataset.c); }; });
+  const autre = p.querySelector("#pc-autre");
+  autre.onchange = () => { const v = autre.value, c = texte ? v : `rgba(${parseInt(v.slice(1, 3), 16)}, ${parseInt(v.slice(3, 5), 16)}, ${parseInt(v.slice(5, 7), 16)}, 0.38)`; fermerPalette(); choisir(c); };
+  setTimeout(() => { const loin = ev => { if (!p.isConnected){ document.removeEventListener("mousedown", loin, true); return; } if (!p.contains(ev.target) && ev.target !== btn && !btn.contains(ev.target)){ fermerPalette(); document.removeEventListener("mousedown", loin, true); } };
+    document.addEventListener("mousedown", loin, true); }, 0);
+}
+
 /* ----- Nettoyage du HTML : seules les balises et styles de mise en forme sont gardés ----- */
 const BALISES_OK = new Set(["P","DIV","BR","SPAN","FONT","B","STRONG","I","EM","U","S","STRIKE","H1","H2","H3","UL","OL","LI","BLOCKQUOTE","FIGURE","IMG","FIGCAPTION","TABLE","THEAD","TBODY","TR","TH","TD","SUP","SUB"]);
 const STYLES_OK = ["color","background-color","font-family","font-size","font-weight","font-style","text-decoration","text-decoration-line","text-align","left","top","width","vertical-align","--puce"];
@@ -5034,11 +5122,8 @@ function dessinerEditeur(){
         <button type="button" data-cmd="italic" title="Italique" aria-label="Italique"><i>I</i></button>
         <button type="button" data-cmd="underline" title="Souligné" aria-label="Souligné"><u>S</u></button>
         <span class="sep"></span>
-        <label class="o-couleur" title="Couleur du texte">A<input type="color" id="o-couleur" value="#f4f2ed" aria-label="Couleur du texte"></label>
-        <select id="o-surligne" aria-label="Surlignage" title="Surlignage">
-          <option value="">Surlignage…</option><option value="aucun">Aucune couleur</option>
-          <option value="245,197,24">Jaune</option><option value="111,191,115">Vert</option><option value="95,168,211">Bleu</option><option value="232,111,154">Rose</option><option value="245,140,40">Orange</option><option value="165,133,242">Violet</option>
-        </select>
+        <button type="button" class="o-pal" id="o-couleur" data-pal="color" title="Couleur du texte" aria-haspopup="true" aria-expanded="false"><span class="o-pal-a">A</span><i class="o-pal-barre" id="o-couleur-barre"></i><span class="o-pal-fl">▾</span></button>
+        <button type="button" class="o-pal" id="o-surligne" data-pal="backgroundColor" title="Surlignage" aria-haspopup="true" aria-expanded="false"><span class="o-pal-a o-pal-surl">ab</span><i class="o-pal-barre" id="o-surligne-barre"></i><span class="o-pal-fl">▾</span></button>
         <span class="sep"></span>
         <button type="button" data-cmd="superscript" title="Exposant" aria-label="Exposant">x²</button>
         <button type="button" data-cmd="subscript" title="Indice" aria-label="Indice">x₂</button>
@@ -5117,7 +5202,9 @@ function dessinerEditeur(){
     if (trouvee) pol.value = trouvee[0]; else { const o = document.createElement("option"); o.dataset.autre = "1"; o.value = ""; o.textContent = cs.fontFamily.split(",")[0].replace(/['"]/g, ""); pol.prepend(o); pol.value = ""; }
     const px = parseFloat(cs.fontSize) || 16; $("#o-taille").value = PX_TAILLES.reduce((a, b) => Math.abs(b[1] - px) < Math.abs(a[1] - px) ? b : a)[0];
     zone().querySelectorAll("[data-cmd]").forEach(b => { let on = false; try { on = document.queryCommandState(b.dataset.cmd); } catch {} b.classList.toggle("actif", !!on); b.setAttribute("aria-pressed", !!on); });
-    $("#o-couleur").value = versHex(cs.color); $("#o-couleur").parentElement.style.setProperty("--c", cs.color);
+    $("#o-couleur-barre").style.background = cs.color;
+    let fond = "transparent"; for (let x = el; x && x !== doc && doc.contains(x); x = x.parentElement){ const b = getComputedStyle(x).backgroundColor; if (b && !/rgba\(0, 0, 0, 0\)|transparent/.test(b)){ fond = b; break; } }
+    $("#o-surligne-barre").style.background = fond;
     const ul = el.closest("ul"); $("#o-puce").value = ul && doc.contains(ul) ? ((ul.className.match(/puce-(\w+)/) || [, "disque"])[1]) : "";
     if (ul && doc.contains(ul)) $("#o-puce-couleur").value = versHex(ul.style.getPropertyValue("--puce") || cs.color);
   };
@@ -5127,9 +5214,15 @@ function dessinerEditeur(){
   zone().querySelectorAll("[data-cmd]").forEach(b => { b.onmousedown = ev => ev.preventDefault(); b.onclick = () => cmd(b.dataset.cmd); });
   $("#o-police").onchange = () => cmd("fontName", $("#o-police").value);
   $("#o-taille").onchange = () => cmd("fontSize", $("#o-taille").value);
-  $("#o-couleur").oninput = () => $("#o-couleur").parentElement.style.setProperty("--c", $("#o-couleur").value);
-  $("#o-couleur").onchange = () => cmd("foreColor", $("#o-couleur").value);
-  $("#o-couleur").onmousedown = () => garder();
+  // ----- Couleur du texte et surlignage : palette maison (la sélection reste en place) -----
+  const appliquerCouleur = (prop, val) => {
+    const r = appliquerStyle(doc, selection, prop, val); if (!r) return;
+    doc.focus({preventScroll: true}); const s = getSelection(); s.removeAllRanges(); s.addRange(r); selection = r.cloneRange();
+    if (val) couleurRecente(prop, val);
+    doc.dispatchEvent(new Event("input", {bubbles: true})); majRuban();
+  };
+  zone().querySelectorAll(".o-pal").forEach(b => { b.onmousedown = ev => { ev.preventDefault(); garder(); };
+    b.onclick = () => ouvrirPalette(b, b.dataset.pal, v => appliquerCouleur(b.dataset.pal, v)); });
   // ----- Puces : forme et couleur de la liste -----
   const listeCourante = () => { const sel = getSelection(); if (!sel.rangeCount) return null; const n = sel.anchorNode; const el = n && (n.nodeType === 1 ? n : n.parentElement); const ul = el && el.closest("ul"); return ul && doc.contains(ul) ? ul : null; };
   $("#o-puce").onchange = () => { const forme = $("#o-puce").value; if (!forme) return; rendre(); let ul = listeCourante();
@@ -5139,8 +5232,6 @@ function dessinerEditeur(){
   $("#o-puce-couleur").onmousedown = () => garder();
   $("#o-puce-couleur").onchange = () => { rendre(); let ul = listeCourante(); if (!ul){ document.execCommand("insertUnorderedList"); ul = listeCourante(); }
     if (ul){ ul.style.setProperty("--puce", $("#o-puce-couleur").value); if (!/puce-/.test(ul.className)) ul.classList.add("puce-disque"); } garder(); majRuban(); };
-  // Surlignage translucide : la couleur et la police du texte restent visibles
-  $("#o-surligne").onchange = () => { const v = $("#o-surligne").value; if (v) cmd("hiliteColor", v === "aucun" ? "transparent" : `rgba(${v}, 0.38)`); $("#o-surligne").value = ""; };
   doc.addEventListener("paste", ev => { ev.preventDefault(); document.execCommand("insertText", false, ev.clipboardData.getData("text/plain")); });
 
   // ----- Symboles -----
@@ -9706,11 +9797,17 @@ function groupesDictee(texte){
   });
   return g;
 }
+// lecture par phrases (Chrome coupe les longues lectures) et petit délai après cancel() (sinon Chrome n'enchaîne pas)
 function lireDictee(t, vitesse, fini){
   if (!("speechSynthesis" in window)) return false;
-  speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "fr-FR"; u.rate = vitesse;
-  const v = speechSynthesis.getVoices().find(x => /^fr/i.test(x.lang)); if (v) u.voice = v;
-  if (fini) u.onend = fini; speechSynthesis.speak(u); return true;
+  speechSynthesis.cancel();
+  const morceaux = String(t).split(/(?<=[.!?])\s+/).filter(Boolean), voix = speechSynthesis.getVoices().find(x => /^fr/i.test(x.lang));
+  setTimeout(() => morceaux.forEach((m, k) => {
+    const u = new SpeechSynthesisUtterance(m); u.lang = "fr-FR"; u.rate = vitesse; if (voix) u.voice = voix;
+    if (fini && k === morceaux.length - 1) u.onend = fini;
+    speechSynthesis.speak(u);
+  }), 80);
+  return true;
 }
 
 /* ----- Correction : alignement mot à mot entre la copie et le texte ----- */
