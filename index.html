@@ -416,6 +416,7 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .doc-lecon ul[class*="puce-"]>li::before{font-size:.85em;top:.12em}
 .barre-outils [data-cmd].actif{background:color-mix(in srgb,var(--accent) 22%,var(--surface-2));border-color:var(--accent);color:var(--accent)}
 .barre-outils .o-couleur{border-bottom:3px solid var(--c,#f4f2ed)}
+.doc-lecon span[style*="background"]{-webkit-box-decoration-break:clone;box-decoration-break:clone;border-radius:.18em;padding:.02em .08em}
 .barre-outils{position:sticky}
 .barre-outils .o-pal{display:inline-flex;align-items:center;gap:2px;height:34px;padding:0 4px 0 7px;border-radius:6px;color:var(--texte)}
 .barre-outils .o-pal:hover,.barre-outils .o-pal[aria-expanded=true]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
@@ -4923,12 +4924,26 @@ function appliquerStyle(doc, range, prop, val){
   if (der === ec && eo < ec.length){ ec.splitText(eo); }
   else if (ec.nodeType !== 3 && der !== ec){ /* fin sur un élément : le dernier nœud texte est entièrement pris */ }
   textes = textes.filter(t => t.length);
-  textes.forEach(t => {
-    isolerTexte(t, doc, prop);
-    if (val){ const p = t.parentNode;
-      if (p.tagName === "SPAN" && p.childNodes.length === 1 && p !== doc) p.style[prop] = val;
-      else { const sp = document.createElement("span"); sp.style[prop] = val; p.insertBefore(sp, t); sp.appendChild(t); } }
-  });
+  textes.forEach(t => isolerTexte(t, doc, prop));
+  if (val){
+    // on enveloppe des morceaux entiers (pas mot par mot) : un seul fond régulier par ligne, même sur de l'italique ou du gras
+    const pris = new Set(textes);
+    const entier = el => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); for (let n = w.nextNode(); n; n = w.nextNode()) if (!pris.has(n) && n.textContent.replace(/\u200b/g, "").trim()) return false; return true; };
+    let cibles = [];
+    textes.forEach(t => { let c = t; while (c.parentNode && c.parentNode !== doc && BALISES_EN_LIGNE.has(c.parentNode.tagName) && entier(c.parentNode)) c = c.parentNode; if (!cibles.includes(c)) cibles.push(c); });
+    cibles = cibles.filter(c => !cibles.some(d => d !== c && d.contains(c)));
+    // regroupe les cibles voisines (frères qui se suivent, espaces compris)
+    const groupes = [];
+    cibles.forEach(c => { const g = groupes[groupes.length - 1]; let prec = c.previousSibling; while (prec && prec.nodeType === 3 && !prec.textContent.trim() && !pris.has(prec)) prec = prec.previousSibling;
+      if (g && prec === g[g.length - 1]){ let x = g[g.length - 1].nextSibling; while (x && x !== c){ g.push(x); x = x.nextSibling; } g.push(c); } else groupes.push([c]); });
+    groupes.forEach(g => {
+      let sp;
+      if (g.length === 1 && g[0].nodeType === 1 && g[0].tagName === "SPAN" && !g[0].className) sp = g[0];
+      else { sp = document.createElement("span"); g[0].parentNode.insertBefore(sp, g[0]); g.forEach(x => sp.appendChild(x)); }
+      sp.querySelectorAll("*").forEach(x => { if (aCouleur(x, prop)) oterCouleur(x, prop); });
+      sp.style[prop] = val;
+    });
+  }
   // fusionne les morceaux voisins identiques
   doc.querySelectorAll("span[style]").forEach(sp => { const n = sp.nextSibling; if (n && n.nodeType === 1 && n.tagName === "SPAN" && n.getAttribute("style") === sp.getAttribute("style") && !n.className && !sp.className){ while (n.firstChild) sp.appendChild(n.firstChild); n.remove(); } });
   doc.normalize();
