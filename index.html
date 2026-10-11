@@ -1096,6 +1096,11 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
 .dt-commandes{gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}.dt-vitesse{display:inline-flex;gap:6px;align-items:center;font-size:.85rem}
 .dt-avance{height:4px;border-radius:4px;background:var(--surface-2);overflow:hidden;margin-top:6px}.dt-avance i{display:block;height:100%;background:#b06bff;transition:width .3s}
 .dt-texte{font-size:1rem;line-height:1.9}
+.dt-niveau-info{display:flex;gap:10px;align-items:center;margin-top:8px;font-size:.88rem;flex-wrap:wrap}
+.dt-badge{padding:2px 10px;border-radius:999px;font:700 .75rem var(--f-mono);text-transform:uppercase;letter-spacing:.05em;border:1.5px solid}
+.dt-facile{color:#6fbf73;border-color:#6fbf73}.dt-moyen{color:#f2ae02;border-color:#f2ae02}.dt-difficile{color:#e86f9a;border-color:#e86f9a}
+.dt-reglages{gap:10px;margin-top:6px;flex-wrap:wrap;align-items:center}.dt-voix{max-width:240px;font-size:.82rem;padding:3px 6px;background:var(--surface-2);color:var(--texte);border:1px solid var(--ligne);border-radius:6px}
+.dt-compte{font-size:.78rem;opacity:.75}
 .carte-dictee{align-items:center}
 .demande-code{margin-top:4px}.lien-demande{background:none;border:0;padding:0;color:var(--doux);font:inherit;font-size:.92rem;cursor:pointer;text-align:left}.lien-demande b{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 .demande-form,.demande-suivi{display:flex;flex-direction:column;gap:10px;max-width:420px;padding:14px 16px;border:1px solid var(--ligne);border-radius:var(--r);background:var(--surface)}
@@ -4227,7 +4232,7 @@ let vueActive = "";
 function marquerNav(v){ document.querySelectorAll("#nav button").forEach(b => b.setAttribute("aria-selected", b.dataset.vue === v)); }
 const VUES = {};
 function changerVue(v){
-  marquerNav(v); rafraichir = null; fermerFenetre();
+  marquerNav(v); rafraichir = null; fermerFenetre(); if (typeof arreterLecture === "function") arreterLecture();
   vueActive = v;
   Formes.chantier(EN_CHANTIER.includes(v) || bloqueParMaj());
   VUES[v]();
@@ -4239,7 +4244,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.90";
+const VERSION_SITE = "0.91";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4534,7 +4539,7 @@ VUES.exos = function vueExos(){
   const section = (titre, aide, ls, carte) => ls.length ? `<div class="exos-section"><h3>${titre}</h3><p class="doux">${aide}</p><div class="liste">${ls.map(carte).join("")}</div></div>` : "";
   const dictees = matiereActive === "francais" ? `<div class="exos-section"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3><p class="doux">Un texte nouveau à chaque fois, lu à voix haute. Tu l'écris, puis la correction souligne chaque faute.</p>
       <div class="liste"><div class="ligne-liste carte-dictee"><span class="exo-tete">${iconeDictee()}<span class="titre"><strong><span class="et-theme-nom">Dictée :</span> Dictée aléatoire</strong><span class="doux" style="font-size:.85rem">Thème au hasard (la mer, la forêt, la ville, la montagne)${prog.dictees && prog.dictees[auj()] !== undefined ? ` · meilleure note aujourd'hui : ${String(prog.dictees[auj()]).replace(".", ",")} / 10` : ""}</span>
-        <span class="rangee dt-options">${segment("dt-long", [["3", "Courte"], ["5", "Moyenne"], ["7", "Longue"]], String(choixDictee.phrases))}${segment("dt-temps", [["passe", "Passé"], ["present", "Présent"], ["futur", "Futur"]], choixDictee.temps)}</span></span></span>
+        <span class="rangee dt-options">${segment("dt-long", [["3", "Courte"], ["5", "Moyenne"], ["7", "Longue"]], String(choixDictee.phrases))}${segment("dt-temps", [["passe", "Passé"], ["present", "Présent"], ["futur", "Futur"]], choixDictee.temps)}${segment("dt-niv", [["facile", "Facile"], ["moyen", "Moyen"], ["difficile", "Difficile"]], choixDictee.niveau)}</span></span></span>
         <button type="button" class="btn" id="dt-lancer">Commencer</button></div></div></div>` : "";
   zone().innerHTML = entete("Exercices", "S'entraîner") + filtres() + dictees + (toutes.length ? `
     ${segment("filtre-exos", [["tous", "Tous"], ["chaine", `Exercices en chaîne (${ch.length})`], ["type", `Exercices types (${ty.length})`]], filtreExos)}
@@ -4545,7 +4550,8 @@ VUES.exos = function vueExos(){
   zone().querySelectorAll("#filtre-exos button").forEach(b => b.onclick = () => { filtreExos = b.dataset.v; vueExos(); });
   if ($("#dt-lancer")){ $("#dt-lancer").onclick = () => lancerDictee(choixDictee);
     zone().querySelectorAll("#dt-long button").forEach(b => b.onclick = () => { choixDictee.phrases = +b.dataset.v; vueExos(); });
-    zone().querySelectorAll("#dt-temps button").forEach(b => b.onclick = () => { choixDictee.temps = b.dataset.v; vueExos(); }); }
+    zone().querySelectorAll("#dt-temps button").forEach(b => b.onclick = () => { choixDictee.temps = b.dataset.v; vueExos(); });
+    zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; vueExos(); }); }
   zone().querySelectorAll(".liste button[data-l]").forEach(b => b.onclick = () => { const l = toutes.find(x => x.id === b.dataset.l);
     if (estPrecis(l)) lancerExoType(l); else lancerQuiz(questionsDe(l), {titre: l.titre, sur: nomMatiere(l.matiere) + " · Exercices", lecon: l}); });
 };
@@ -9819,8 +9825,9 @@ function genererDictee({phrases = 5, temps = "passe", theme} = {}){
 /* ----- Lecture à voix haute ----- */
 // découpe en groupes de mots avec la ponctuation dite à voix haute (« virgule », « point »)
 // ponctuation dite à voix haute, comme en classe
+const MAX_REPET = 2;   // niveau moyen : répétitions par groupe
 const PONCT_DITE = {",": "virgule", ";": "point-virgule", ":": "deux-points", ".": "point", "!": "point d'exclamation", "?": "point d'interrogation", "«": "ouvrez les guillemets", "»": "fermez les guillemets", "…": "points de suspension"};
-const direPonctuation = t => String(t).replace(/\s*([,;:.!?«»…])\s*/g, (m, c) => ` — ${PONCT_DITE[c]} — `).replace(/\s+/g, " ").trim();
+const direPonctuation = t => String(t).replace(/\s*([,;:.!?«»…])\s*/g, (m, c) => `${/[«»]/.test(c) ? ", " : c} ${PONCT_DITE[c]}${/[.!?…]/.test(c) ? ". " : ", "}`).replace(/\s+/g, " ").replace(/\s+([,.])/g, "$1").trim();
 // groupes de quelques mots, coupés de préférence après une ponctuation
 function groupesDictee(texte){
   const g = []; let cur = [];
@@ -9833,98 +9840,53 @@ function groupesDictee(texte){
   });
   return g;
 }
-// lecture par phrases (Chrome coupe les longues lectures) et petit délai après cancel() (sinon Chrome n'enchaîne pas)
-function lireDictee(t, vitesse, fini){
-  if (!("speechSynthesis" in window)) return false;
-  speechSynthesis.cancel();
-  const morceaux = String(t).split(/(?<=[.!?]|(?:point|exclamation|interrogation) —)\s+/).filter(Boolean), voix = speechSynthesis.getVoices().find(x => /^fr/i.test(x.lang));
-  setTimeout(() => morceaux.forEach((m, k) => {
-    const u = new SpeechSynthesisUtterance(m); u.lang = "fr-FR"; u.rate = vitesse; if (voix) u.voice = voix;
-    if (fini && k === morceaux.length - 1) u.onend = fini;
-    speechSynthesis.speak(u);
-  }), 80);
-  return true;
+/* ----- Voix : la plus naturelle disponible (voix « Natural/Online » d'Edge, Google, Apple…), au choix de l'élève ----- */
+const VOIX_BONNES = [[/natural|neural|online/i, 6], [/google/i, 5], [/premium|enhanced|amélioré/i, 5], [/amélie|amelie|thomas|audrey|aurélie|marie|denise|henri|eloise|vivienne|remy/i, 3]];
+function voixFrancaises(){
+  if (!("speechSynthesis" in window)) return [];
+  return speechSynthesis.getVoices().filter(v => /^fr/i.test(v.lang))
+    .map(v => ({v, score: (/fr[-_]FR/i.test(v.lang) ? 4 : 0) + VOIX_BONNES.reduce((s, [r, p]) => s + (r.test(v.name) ? p : 0), 0) + (v.localService ? 0 : 1)}))
+    .sort((a, b) => b.score - a.score).map(x => x.v);
 }
-
-/* ----- Correction : alignement mot à mot entre la copie et le texte ----- */
-const dTokens = t => [...String(t).replace(/[’`]/g, "'").matchAll(/[A-Za-zÀ-ÖØ-öø-ÿœŒæÆ]+(?:['-][A-Za-zÀ-ÖØ-öø-ÿœŒæÆ]+)*'?|[.,;:!?«»]/g)].map(m => m[0]);
-const dSans = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-function dCout(a, b){ if (a === b) return 0; if (a.toLowerCase() === b.toLowerCase()) return .2; if (dSans(a) === dSans(b)) return .3;
-  const p = x => /^[.,;:!?«»]$/.test(x); if (p(a) !== p(b)) return 9; if (p(a)) return .8;
-  const d = cpLev(dSans(a), dSans(b)); return d <= Math.max(1, Math.floor(b.length / 3)) ? .5 + d * .1 : 1.4; }
-function alignerDictee(eleve, ref){
-  const n = eleve.length, m = ref.length, D = Array.from({length: n + 1}, () => new Float64Array(m + 1));
-  for (let i = 1; i <= n; i++) D[i][0] = i; for (let j = 1; j <= m; j++) D[0][j] = j;
-  // deux mots de l'élève pour un mot composé du texte (« matin la » pour « matin-là ») : une seule faute
-  const joint = (i, j) => i >= 2 && ref[j - 1].includes("-") ? dCout(eleve[i - 2].t + "-" + eleve[i - 1].t, ref[j - 1]) + .4 : 99;
-  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) D[i][j] = Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1, D[i - 1][j - 1] + dCout(eleve[i - 1].t, ref[j - 1]), i >= 2 ? D[i - 2][j - 1] + joint(i, j) : 99);
-  const paires = []; let i = n, j = m;
-  while (i > 0 || j > 0){
-    if (i > 0 && j > 0 && Math.abs(D[i][j] - (D[i - 1][j - 1] + dCout(eleve[i - 1].t, ref[j - 1]))) < 1e-9){ paires.unshift([i - 1, j - 1]); i--; j--; }
-    else if (i > 1 && j > 0 && Math.abs(D[i][j] - (D[i - 2][j - 1] + joint(i, j))) < 1e-9){ paires.unshift([[i - 2, i - 1], j - 1]); i -= 2; j--; }
-    else if (i > 0 && Math.abs(D[i][j] - (D[i - 1][j] + 1)) < 1e-9){ paires.unshift([i - 1, null]); i--; }
-    else { paires.unshift([null, j - 1]); j--; }
-  }
-  return paires;
-}
-const finSansAccord = w => dSans(w).replace(/(es|s|x|e|nt|ent)$/, "");
-function natureFaute(e, r, verbes){
-  const p = x => /^[.,;:!?«»]$/.test(x);
-  if (p(r) || p(e)) return "ponctuation";
-  if (e.toLowerCase() === r.toLowerCase()) return "majuscule";
-  if (dSans(e) === dSans(r)) return "accent";
-  if (verbes.has(r)) return "conjugaison";
-  if (finSansAccord(e) === finSansAccord(r)) return "accord";
-  return "orthographe";
-}
-const NOMS_FAUTES = {accent: "Accent", majuscule: "Majuscule", conjugaison: "Conjugaison", accord: "Accord", orthographe: "Orthographe", ponctuation: "Ponctuation", oubli: "Mot oublié", ajout: "Mot en trop"};
-function corrigerDictee(lignes, d){
-  const eleve = []; lignes.forEach((l, k) => dTokens(l).forEach(t => eleve.push({t, l: k})));
-  const ref = dTokens(d.texte), verbes = new Set(d.verbes), paires = alignerDictee(eleve, ref);
-  const fautes = [], parLigne = lignes.map(() => ({mots: [], corr: []}));
-  let derniereLigne = 0;
-  paires.forEach(([i0, j]) => {
-    let i = i0;
-    if (Array.isArray(i0)){ const [a, b] = i0; i = a; eleve[a] = {t: eleve[a].t + " " + eleve[b].t, l: eleve[a].l}; }
-    if (i !== null) derniereLigne = eleve[i].l;
-    const L = parLigne[derniereLigne];
-    if (i !== null && j !== null){
-      const e = eleve[i].t, r = ref[j], ok = e === r, nat = ok ? null : natureFaute(e, r, verbes);
-      if (nat) fautes.push({nat, e, r});
-      L.mots.push({t: e, nat, r}); L.corr.push({t: r, faute: !!nat});
-    } else if (i !== null){ fautes.push({nat: "ajout", e: eleve[i].t}); L.mots.push({t: eleve[i].t, nat: "ajout"}); }
-    else { const nat = /^[.,;:!?«»]$/.test(ref[j]) ? "ponctuation" : "oubli"; fautes.push({nat, r: ref[j]}); L.mots.push({t: "", nat: "oubli", r: ref[j], vrai: nat}); L.corr.push({t: ref[j], faute: true}); }
+const voixChoisie = () => { const l = voixFrancaises(), nom = lsGet("helper.voixDictee"); return l.find(v => v.name === nom) || l[0] || null; };
+let jetonLecture = 0;
+const arreterLecture = () => { jetonLecture++; if ("speechSynthesis" in window) speechSynthesis.cancel(); };
+// lit un texte (par phrases : Chrome coupe les longues lectures) ; la promesse se termine à la fin ou si on arrête
+function parler(t, vitesse){
+  return new Promise(fin => {
+    if (!("speechSynthesis" in window)) return fin(false);
+    speechSynthesis.cancel(); const jeton = ++jetonLecture, voix = voixChoisie();
+    const morceaux = String(t).split(/(?<=[.!?])\s+/).filter(Boolean);
+    let reste = morceaux.length, fini = false; const terminer = ok => { if (!fini){ fini = true; clearTimeout(garde); fin(ok); } };
+    const garde = setTimeout(() => terminer(true), 4000 + t.length * 110 / vitesse);   // filet si la voix ne signale pas la fin
+    setTimeout(() => { if (jeton !== jetonLecture) return terminer(false);
+      morceaux.forEach(m => { const u = new SpeechSynthesisUtterance(m); u.lang = voix ? voix.lang : "fr-FR"; if (voix) u.voice = voix; u.rate = vitesse; u.pitch = 1;
+        u.onend = u.onerror = () => { if (--reste <= 0) terminer(jeton === jetonLecture); }; speechSynthesis.speak(u); }); }, 90);
   });
-  const points = fautes.reduce((s, f) => s + (["majuscule", "ponctuation"].includes(f.nat) ? .5 : 1), 0);
-  return {fautes, parLigne, points};
 }
-// mot de l'élève avec les lettres corrigées en couleur (accents ajoutés là où il faut)
-function motCorrige(e, r){
-  if (!r) return esc(e);
-  let i = 0; while (i < e.length && i < r.length && e[i] === r[i]) i++;
-  let k = 0; while (k < e.length - i && k < r.length - i && e[e.length - 1 - k] === r[r.length - 1 - k]) k++;
-  return esc(r.slice(0, i)) + `<b class="dt-lettre">${esc(r.slice(i, r.length - k))}</b>` + esc(r.slice(r.length - k));
-}
-const collerPonct = l => l.replace(/ ([.,;:!?»])/g, "$1").replace(/« /g, "« ").replace(/(<\/span>) (<span[^>]*>[.,;:!?»]<\/span>)/g, "$1$2");
-
-/* ----- Page d'une dictée ----- */
-let choixDictee = {phrases: 5, temps: "passe"};
+const lireDictee = (t, vitesse, apres) => { parler(t, vitesse).then(ok => ok && apres && apres()); return "speechSynthesis" in window; };
+const pauseDictee = ms => new Promise(r => setTimeout(r, ms));
+let choixDictee = {phrases: 5, temps: "passe", niveau: "facile"};
 function lancerDictee(opts = choixDictee, deja = null){
-  rafraichir = null; if ("speechSynthesis" in window) speechSynthesis.cancel();
-  const d = deja || genererDictee(opts), groupes = groupesDictee(d.texte), audio = "speechSynthesis" in window;
+  rafraichir = null; arreterLecture();
+  const d = deja || genererDictee(opts), groupes = groupesDictee(d.texte), audio = "speechSynthesis" in window, niveau = opts.niveau || "facile";
   zone().innerHTML = entete("Français · Dictée", "Dictée : " + esc(d.theme)) + `
     <div class="exo-type-page dictee-page">
       <div class="et-enonce dt-lecteur">
         <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(" ").length} mots · ${{passe: "récit au passé", present: "au présent", futur: "au futur"}[d.temps]}</span></span></span>
           <button type="button" class="mini-btn" id="dt-nouvelle" title="Un autre texte">↻ Nouvelle dictée</button></div>
-        ${audio ? `<div class="rangee dt-commandes">
-          <button type="button" class="btn sec" id="dt-tout">🔊 Lire tout le texte</button>
-          <button type="button" class="btn" id="dt-groupe">▶ Groupe suivant</button>
-          <button type="button" class="mini-btn" id="dt-redire">↺ Répéter</button>
-          <button type="button" class="mini-btn" id="dt-prec">⏮ Groupe précédent</button>
-          <label class="doux dt-vitesse"><input type="checkbox" id="dt-ponct" checked> Dire la ponctuation</label>
-          <label class="doux dt-vitesse">Vitesse <input type="range" id="dt-vitesse" min="0.5" max="1.1" step="0.05" value="0.75"></label></div>
-          <p class="doux dt-etat" id="dt-etat">Écoute d'abord tout le texte, puis écris-le groupe par groupe. La ponctuation est dite à voix haute : virgule, point, point-virgule, deux-points, point d'exclamation…</p>
+        ${audio ? `<div class="dt-niveau-info"><span class="dt-badge dt-${niveau}">${{facile: "Facile", moyen: "Moyen", difficile: "Difficile"}[niveau]}</span>
+          <span class="doux">${{facile: "Tu peux réécouter chaque groupe autant de fois que tu veux.", moyen: `Tu peux réécouter chaque groupe ${MAX_REPET} fois au maximum, et le texte entier 2 fois.`, difficile: "Comme en classe : la voix lit tout le texte, puis dicte chaque groupe 3 fois et continue toute seule. Écris pendant les répétitions."}[niveau]}</span></div>
+          <div class="rangee dt-commandes">${niveau === "difficile"
+            ? `<button type="button" class="btn" id="dt-auto">▶ Commencer la dictée</button><button type="button" class="btn sec" id="dt-pause" disabled>⏸ Pause</button>`
+            : `<button type="button" class="btn sec" id="dt-tout">🔊 Lire tout le texte${niveau === "moyen" ? ` <span class="dt-compte" id="dt-compte-tout">(2)</span>` : ""}</button>
+              <button type="button" class="btn" id="dt-groupe">▶ Groupe suivant</button>
+              <button type="button" class="mini-btn" id="dt-redire">↺ Répéter${niveau === "moyen" ? ` <span class="dt-compte" id="dt-compte">(${MAX_REPET})</span>` : ""}</button>
+              ${niveau === "facile" ? `<button type="button" class="mini-btn" id="dt-prec">⏮ Groupe précédent</button>` : ""}`}</div>
+          <div class="rangee dt-reglages"><label class="doux dt-vitesse"><input type="checkbox" id="dt-ponct" checked> Dire la ponctuation</label>
+            <label class="doux dt-vitesse">Vitesse <input type="range" id="dt-vitesse" min="0.6" max="1.15" step="0.05" value="0.9"></label>
+            <label class="doux dt-vitesse">Voix <select id="dt-voix" class="dt-voix"></select></label><button type="button" class="mini-btn" id="dt-test-voix">Tester</button></div>
+          <p class="doux dt-etat" id="dt-etat">${niveau === "difficile" ? "Clique sur « Commencer la dictée » quand tu es prêt." : "Écoute d'abord tout le texte, puis écris-le groupe par groupe."} La ponctuation est dite à voix haute : virgule, point, point-virgule, deux-points, point d'exclamation…</p>
           <div class="dt-avance"><i id="dt-barre" style="width:0"></i></div>`
         : `<p class="statut erreur">La lecture à voix haute n'est pas disponible sur ce navigateur. Demande à quelqu'un de te lire le texte, ou essaie Chrome, Edge ou Safari.</p>`}
       </div>
@@ -9934,23 +9896,62 @@ function lancerDictee(opts = choixDictee, deja = null){
       <div id="dt-bilan"></div>
     </div>`;
   brancherCopie(zone());
-  let g = -1;
-  const vitesse = () => +($("#dt-vitesse") || {value: .75}).value;
+  let g = -1, restantsTout = 2; const repet = {};
+  const vitesse = () => +($("#dt-vitesse") || {value: .9}).value;
   const etat = t => { const e = $("#dt-etat"); if (e) e.textContent = t; };
-  const dire = k => { if (k < 0 || k >= groupes.length) return; g = k; $("#dt-barre").style.width = ((k + 1) / groupes.length * 100) + "%";
-    etat(`Groupe ${k + 1} sur ${groupes.length}.`); lireDictee(direPonct() ? groupes[k].dit : groupes[k].ecrit, vitesse() * .85); };
   const direPonct = () => !$("#dt-ponct") || $("#dt-ponct").checked;
+  const texteGroupe = k => direPonct() ? groupes[k].dit : groupes[k].ecrit;
+  const barre = k => { const b = $("#dt-barre"); if (b) b.style.width = ((k + 1) / groupes.length * 100) + "%"; };
   if (audio){
-    $("#dt-tout").onclick = () => { etat("Lecture de tout le texte…"); lireDictee(direPonct() ? direPonctuation(d.texte) : d.texte, vitesse() + .1, () => etat(g < 0 ? "Clique sur « Groupe suivant » pour commencer à écrire." : "Texte relu en entier.")); };
-    $("#dt-groupe").onclick = () => { if (g >= groupes.length - 1){ etat("C'est la fin du texte. Relis-toi, puis écoute une dernière fois le texte en entier."); return; } dire(g + 1); };
-    $("#dt-redire").onclick = () => g >= 0 ? dire(g) : $("#dt-tout").click();
-    $("#dt-prec").onclick = () => dire(Math.max(0, g - 1));
-    [$("#dt-tout"), $("#dt-groupe"), $("#dt-redire"), $("#dt-prec")].forEach(b => b.onmousedown = ev => ev.preventDefault());
+    // liste des voix françaises (elles arrivent parfois après le chargement de la page)
+    const remplirVoix = () => { const sel = $("#dt-voix"); if (!sel) return; const l = voixFrancaises(), c = voixChoisie();
+      sel.innerHTML = l.length ? l.map(v => `<option value="${esc(v.name)}" ${c && c.name === v.name ? "selected" : ""}>${esc(v.name.replace(/^Microsoft |^Google /, "").replace(/ Online \(Natural\)/, " (naturelle)").replace(/ - .*$/, ""))} · ${esc(v.lang)}</option>`).join("") : `<option>Voix française par défaut</option>`; };
+    remplirVoix(); speechSynthesis.addEventListener("voiceschanged", remplirVoix);
+    $("#dt-voix").onchange = () => lsSet("helper.voixDictee", $("#dt-voix").value);
+    $("#dt-test-voix").onclick = () => parler("Bonjour, je vais te lire la dictée. Écoute bien, virgule, et écris lentement.", vitesse());
+    const compte = () => { const c = $("#dt-compte"); if (c) c.textContent = `(${Math.max(0, MAX_REPET - (repet[g] || 0))})`; const r = $("#dt-redire"); if (r && niveau === "moyen") r.disabled = g >= 0 && (repet[g] || 0) >= MAX_REPET; };
+    const dire = k => { if (k < 0 || k >= groupes.length) return; g = k; barre(k); compte(); etat(`Groupe ${k + 1} sur ${groupes.length}.`); parler(texteGroupe(k), vitesse()); };
+    if (niveau !== "difficile"){
+      $("#dt-tout").onclick = () => {
+        if (niveau === "moyen"){ if (restantsTout <= 0) return; restantsTout--; $("#dt-compte-tout").textContent = `(${restantsTout})`; if (!restantsTout) $("#dt-tout").disabled = true; }
+        etat("Lecture de tout le texte…"); lireDictee(direPonct() ? direPonctuation(d.texte) : d.texte, vitesse() + .05, () => etat(g < 0 ? "Clique sur « Groupe suivant » pour commencer à écrire." : "Texte relu en entier.")); };
+      $("#dt-groupe").onclick = () => { if (g >= groupes.length - 1){ etat("C'est la fin du texte. Relis-toi, puis écoute une dernière fois le texte en entier."); return; } dire(g + 1); };
+      $("#dt-redire").onclick = () => { if (g < 0) return $("#dt-tout").click();
+        if (niveau === "moyen"){ if ((repet[g] || 0) >= MAX_REPET) return; repet[g] = (repet[g] || 0) + 1; }
+        dire(g); };
+      if ($("#dt-prec")) $("#dt-prec").onclick = () => dire(Math.max(0, g - 1));
+      zone().querySelectorAll(".dt-commandes button").forEach(b => b.onmousedown = ev => ev.preventDefault());
+    } else {
+      // difficile : tout s'enchaîne tout seul, avec le temps d'écrire entre les répétitions
+      let pause = false, enCours = false;
+      const attendrePause = async () => { while (pause) await pauseDictee(200); };
+      const temps = k => 1600 + groupes[k].ecrit.length * 230 / vitesse();
+      $("#dt-pause").onclick = () => { pause = !pause; $("#dt-pause").textContent = pause ? "▶ Reprendre" : "⏸ Pause"; if (pause){ arreterLecture(); etat("En pause."); } };
+      $("#dt-pause").onmousedown = $("#dt-auto").onmousedown = ev => ev.preventDefault();
+      $("#dt-auto").onclick = async () => {
+        if (enCours) return; enCours = true; $("#dt-auto").disabled = true; $("#dt-pause").disabled = false;
+        const page = zone().querySelector(".dictee-page"), vivant = () => page.isConnected && !$("#dt-corriger").disabled;
+        etat("Première lecture de tout le texte : écoute sans écrire.");
+        await parler(d.texte, vitesse() + .05); await pauseDictee(1500);
+        for (let k = 0; k < groupes.length && vivant(); k++){
+          g = k; barre(k);
+          for (let r = 1; r <= 3 && vivant(); r++){
+            await attendrePause(); if (!vivant()) break;
+            etat(`Groupe ${k + 1} sur ${groupes.length} · lecture ${r} sur 3`);
+            const ok = await parler(texteGroupe(k), vitesse());
+            if (!ok && pause){ r--; continue; }            // interrompu par la pause : on relit cette lecture
+            await pauseDictee(r < 3 ? temps(k) * .55 : temps(k));
+          }
+        }
+        if (vivant()){ await attendrePause(); etat("Dernière lecture : relis ta copie en même temps."); await parler(d.texte, vitesse()); etat("La dictée est terminée. Relis-toi, puis clique sur « Corriger ma dictée »."); }
+        $("#dt-pause").disabled = true;
+      };
+    }
   }
   deuxClics($("#dt-nouvelle"), () => lancerDictee(opts));
-  $("#dt-retour").onclick = () => { if ("speechSynthesis" in window) speechSynthesis.cancel(); changerVue("exos"); };
+  $("#dt-retour").onclick = () => { arreterLecture(); changerVue("exos"); };
   $("#dt-corriger").onclick = () => {
-    if ("speechSynthesis" in window) speechSynthesis.cancel();
+    arreterLecture();
     const lignes = cpLignes(zone());
     if (!lignes.some(l => cpTexte(l).trim())){ $("#dt-bilan").innerHTML = `<p class="statut erreur">Ta copie est vide : écris la dictée avant de la corriger.</p>`; return; }
     const c = corrigerDictee(lignes.map(cpTexte), d);
