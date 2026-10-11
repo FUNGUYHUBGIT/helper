@@ -422,7 +422,7 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .o-pal-ic{position:relative;display:flex;flex-direction:column;align-items:center;width:20px}
 .o-pal-ic svg{width:18px;height:18px;display:block}
 .o-pal-barre{display:block;width:22px;height:5px;margin-top:1px;border-radius:2px;background:#f4f2ed;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
-.o-pal-barre.vide{background:repeating-linear-gradient(45deg,var(--surface-2) 0 3px,var(--ligne) 3px 6px)}
+.o-pal-barre.o-sans{background:repeating-linear-gradient(45deg,var(--surface-2) 0 3px,var(--ligne) 3px 6px)}
 .o-pal-fl{display:flex;width:10px;height:10px;color:var(--doux)}.o-pal-fl svg{width:10px;height:10px}
 .barre-outils .pop-couleurs{position:absolute;z-index:30;width:288px;padding:12px;border-radius:12px;background:var(--surface);border:1px solid var(--ligne);box-shadow:0 14px 40px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:8px}
 .pop-couleurs .pc-titre{font:600 .72rem var(--f-mono);color:var(--doux);text-transform:uppercase;letter-spacing:.06em}
@@ -4238,7 +4238,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.88";
+const VERSION_SITE = "0.89";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5135,7 +5135,7 @@ function dessinerEditeur(){
         <button type="button" class="o-pal" id="o-couleur" data-pal="color" title="Couleur du texte" aria-label="Couleur du texte" aria-haspopup="true" aria-expanded="false">
           <span class="o-pal-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 17 11 3.8h2L18.5 17h-2.4l-1.4-3.6H9.3L7.9 17zm4.6-5.7h3.8L12 6.4z" fill="currentColor"/></svg><i class="o-pal-barre" id="o-couleur-barre"></i></span><span class="o-pal-fl" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
         <button type="button" class="o-pal" id="o-surligne" data-pal="backgroundColor" title="Surlignage" aria-label="Surlignage" aria-haspopup="true" aria-expanded="false">
-          <span class="o-pal-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.6 3.3 20.7 9.4 12.1 18H6v-6.1zM8 12.7V16h3.3l6.6-6.6-3.3-3.3z" fill="currentColor"/><path d="M4 21h4l1.2-1.4H5.4z" fill="currentColor" opacity=".6"/></svg><i class="o-pal-barre vide" id="o-surligne-barre"></i></span><span class="o-pal-fl" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+          <span class="o-pal-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.6 3.3 20.7 9.4 12.1 18H6v-6.1zM8 12.7V16h3.3l6.6-6.6-3.3-3.3z" fill="currentColor"/><path d="M4 21h4l1.2-1.4H5.4z" fill="currentColor" opacity=".6"/></svg><i class="o-pal-barre o-sans" id="o-surligne-barre"></i></span><span class="o-pal-fl" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
         <span class="sep"></span>
         <button type="button" data-cmd="superscript" title="Exposant" aria-label="Exposant">x²</button>
         <button type="button" data-cmd="subscript" title="Indice" aria-label="Indice">x₂</button>
@@ -5216,7 +5216,7 @@ function dessinerEditeur(){
     zone().querySelectorAll("[data-cmd]").forEach(b => { let on = false; try { on = document.queryCommandState(b.dataset.cmd); } catch {} b.classList.toggle("actif", !!on); b.setAttribute("aria-pressed", !!on); });
     $("#o-couleur-barre").style.background = cs.color;
     let fond = "transparent"; for (let x = el; x && x !== doc && doc.contains(x); x = x.parentElement){ const b = getComputedStyle(x).backgroundColor; if (b && !/rgba\(0, 0, 0, 0\)|transparent/.test(b)){ fond = b; break; } }
-    $("#o-surligne-barre").style.background = fond; $("#o-surligne-barre").classList.toggle("vide", fond === "transparent");
+    $("#o-surligne-barre").style.background = fond; $("#o-surligne-barre").classList.toggle("o-sans", fond === "transparent");
     const ul = el.closest("ul"); $("#o-puce").value = ul && doc.contains(ul) ? ((ul.className.match(/puce-(\w+)/) || [, "disque"])[1]) : "";
     if (ul && doc.contains(ul)) $("#o-puce-couleur").value = versHex(ul.style.getPropertyValue("--puce") || cs.color);
   };
