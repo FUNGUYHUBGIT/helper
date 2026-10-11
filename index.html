@@ -4239,7 +4239,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.89";
+const VERSION_SITE = "0.90";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -9726,7 +9726,7 @@ const voyelleDict = s => /^[aeiouyhâàéèêîïôûœ]/i.test(s);
 /* Thèmes. persos : noms de personnes ou d'animaux ; actions : [verbe, suites possibles] (intransitif) ou [verbe, null, compléments d'objet] ;
    choses : [nom, adjectifs possibles, actions possibles] ; nb : "s" = toujours au singulier, "p" = toujours au pluriel. */
 const DTHEMES = [
-  {nom: "La mer", cct: ["Ce matin-là", "Au lever du soleil", "Chaque été", "Le soir venu", "Pendant les vacances", "À marée basse"],
+  {nom: "La mer", excl: ["Quel spectacle magnifique !", "Quelle tempête !", "Quelle belle journée au bord de l'eau !"], cct: ["Ce matin-là", "Au lever du soleil", "Chaque été", "Le soir venu", "Pendant les vacances", "À marée basse"],
     persos: [[DN("pêcheur", "m"), ["vieux", "jeune", "courageux", "fatigue"]], [DN("marin", "m"), ["vieux", "jeune", "courageux", "fatigue"]], [DN("enfant", "m"), ["petit", "joyeux", "curieux"]],
       [DN("promeneuse", "f"), ["jeune", "vieux", "silencieux"]], [DN("baigneur", "m"), ["jeune", "courageux"]], [DN("fillette", "f"), ["petit", "joyeux", "curieux"]]],
     actions: [["marcher", ["le long de la plage", "sur le sable mouillé", "vers le phare"]], ["nager", ["près des rochers", "dans l'eau froide"]], ["rentrer", ["au port", "à la maison"]],
@@ -9735,7 +9735,7 @@ const DTHEMES = [
     choses: [[DN("mer", "f", null, {nb: "s"}), ["calme", "agite", "immense", "gris"], []], [DN("vague", "f", null, {nb: "p"}), ["haut", "gris", "puissant"], [["frapper", ["les rochers", "la digue"]], ["rouler", ["sur le sable"]]]],
       [DN("vent", "m", null, {nb: "s"}), ["froid", "violent", "leger"], [["souffler", ["sur la côte", "très fort"]]]], [DN("sable", "m", null, {nb: "s"}), ["chaud", "dore", "mouille"], []],
       [DN("soleil", "m", null, {nb: "s"}), ["chaud", "lumineux"], [["briller", ["au-dessus des flots", "dans le ciel"]], ["disparaitre", ["derrière l'horizon"]]]], [DN("bateau", "m", "bateaux", {nb: "p"}), ["ancien", "nombreux"], [["flotter", ["dans le port"]], ["glisser", ["sur l'eau"]]]]]},
-  {nom: "La forêt", cct: ["Un matin d'automne", "À la tombée de la nuit", "Chaque dimanche", "Après la pluie", "Au cœur de l'hiver"],
+  {nom: "La forêt", excl: ["Quel silence !", "Quelle forêt mystérieuse !", "Quelle belle promenade !"], cct: ["Un matin d'automne", "À la tombée de la nuit", "Chaque dimanche", "Après la pluie", "Au cœur de l'hiver"],
     persos: [[DN("bûcheron", "m"), ["vieux", "jeune", "courageux", "fatigue"]], [DN("promeneur", "m"), ["jeune", "vieux", "silencieux", "curieux"]], [DN("promeneuse", "f"), ["jeune", "vieux", "silencieux"]],
       [DN("chasseur", "m"), ["vieux", "silencieux"]], [DN("randonneuse", "f"), ["jeune", "courageux", "fatigue"]], [DN("enfant", "m"), ["petit", "curieux", "joyeux"]]],
     actions: [["marcher", ["entre les arbres", "sur le sentier", "dans les feuilles mortes"]], ["avancer", ["sans bruit", "vers la clairière"]], ["rentrer", ["au village", "avant la nuit"]],
@@ -9744,7 +9744,7 @@ const DTHEMES = [
     choses: [[DN("forêt", "f", null, {nb: "s"}), ["sombre", "silencieux", "immense", "humide"], []], [DN("feuille", "f", null, {nb: "p"}), ["roux", "sec", "humide"], [["tomber", ["sur le sol", "doucement"]], ["trembler", ["sous le vent"]]]],
       [DN("vent", "m", null, {nb: "s"}), ["froid", "leger"], [["souffler", ["dans les branches"]], ["murmurer", ["entre les troncs"]]]], [DN("sentier", "m", null, {nb: "s"}), ["etroit", "boueux", "humide"], []],
       [DN("oiseau", "m", "oiseaux", {nb: "p"}), ["nombreux", "silencieux"], [["chanter", ["dans les branches", "au lever du jour"]], ["voler", ["au-dessus des arbres"]]]], [DN("renard", "m", null, {nb: "s"}), ["roux", "curieux"], [["courir", ["entre les arbres", "vers le terrier"]], ["disparaitre", ["dans les fourrés"]]]]]},
-  {nom: "La ville", cct: ["Ce soir-là", "Chaque matin", "Le samedi", "En plein hiver", "À l'heure de pointe"],
+  {nom: "La ville", excl: ["Quel vacarme !", "Quelle agitation !", "Quelle ville animée !"], cct: ["Ce soir-là", "Chaque matin", "Le samedi", "En plein hiver", "À l'heure de pointe"],
     persos: [[DN("passant", "m"), ["jeune", "vieux", "presse", "fatigue"]], [DN("passante", "f"), ["jeune", "vieux", "presse"]], [DN("commerçant", "m"), ["vieux", "jeune", "joyeux"]],
       [DN("vendeuse", "f"), ["jeune", "joyeux", "fatigue"]], [DN("policier", "m"), ["jeune", "courageux"]], [DN("écolier", "m"), ["petit", "joyeux", "presse"]]],
     actions: [["marcher", ["dans les rues animées", "sur le trottoir", "vers la gare"]], ["rentrer", ["à la maison", "avant la nuit"]], ["monter", ["dans le bus", "vers le quartier ancien"]],
@@ -9753,7 +9753,7 @@ const DTHEMES = [
     choses: [[DN("rue", "f", null, {nb: "p"}), ["anime", "bruyant", "etroit"], []], [DN("ville", "f", null, {nb: "s"}), ["immense", "bruyant", "silencieux", "lumineux"], []],
       [DN("voiture", "f", null, {nb: "p"}), ["nombreux"], [["avancer", ["lentement", "dans les embouteillages"]], ["rouler", ["sur le boulevard"]]]], [DN("immeuble", "m", null, {nb: "p"}), ["haut", "gris", "ancien"], []],
       [DN("cloche", "f", null, {nb: "p"}), ["ancien"], [["sonner", ["au loin", "dans le quartier"]]]], [DN("lumière", "f", null, {nb: "p"}), ["nombreux"], [["briller", ["dans la nuit", "derrière les fenêtres"]]]]]},
-  {nom: "La montagne", cct: ["Au petit matin", "Ce jour-là", "En plein été", "À la fin de l'hiver", "Avant l'orage"],
+  {nom: "La montagne", excl: ["Quel paysage grandiose !", "Quelle vue magnifique !", "Quel froid !"], cct: ["Au petit matin", "Ce jour-là", "En plein été", "À la fin de l'hiver", "Avant l'orage"],
     persos: [[DN("berger", "m"), ["vieux", "jeune", "courageux", "fatigue"]], [DN("bergère", "f"), ["vieux", "jeune", "courageux"]], [DN("skieur", "m"), ["jeune", "courageux", "fatigue"]],
       [DN("skieuse", "f"), ["jeune", "courageux"]], [DN("randonneur", "m"), ["jeune", "vieux", "fatigue", "courageux"]], [DN("guide", "m"), ["vieux", "jeune", "silencieux"]]],
     actions: [["grimper", ["vers le sommet", "le long de la pente"]], ["descendre", ["vers la vallée", "vers le refuge"]], ["marcher", ["sur le sentier", "dans la neige fraîche"]],
@@ -9805,22 +9805,31 @@ function genererDictee({phrases = 5, temps = "passe", theme} = {}){
       case 4: { const s = perso(); return `Quand ${s.txt} ${action(s)}, ${description()}.`; }
       case 5: { const s = perso(); return `${majusculeDebut(s.txt)} ${action(s)}, puis ${action(s)}.`; }
       case 6: { const s = perso(); return `${majusculeDebut(choseAgit())} pendant que ${s.txt} ${action(s, true)}.`; }
+      case 7: return `${majusculeDebut(description())} ; ${choseAgit()}.`;
+      case 8: return choisir(T.excl);
+      case 9: { const s = perso(); return `${majusculeDebut(s.txt)} ${action(s)} : ${description()}.`; }
     }
   };
   // ordre : une description pour commencer, puis des actions variées
-  const ordre = [2, 0, 3, 1, 4, 6, 5, 3, 1].slice(0, phrases);
+  const ordre = [[2, 0, 8], [2, 0, 7, 4, 8], [2, 0, 7, 1, 4, 8, 6]][phrases <= 3 ? 0 : phrases <= 5 ? 1 : 2];
   ordre.forEach(k => sortie.push(faire(k)));
   return {texte: sortie.join(" ").replace(/\s+/g, " "), theme: T.nom, verbes: [...verbes], temps};
 }
 
 /* ----- Lecture à voix haute ----- */
 // découpe en groupes de mots avec la ponctuation dite à voix haute (« virgule », « point »)
+// ponctuation dite à voix haute, comme en classe
+const PONCT_DITE = {",": "virgule", ";": "point-virgule", ":": "deux-points", ".": "point", "!": "point d'exclamation", "?": "point d'interrogation", "«": "ouvrez les guillemets", "»": "fermez les guillemets", "…": "points de suspension"};
+const direPonctuation = t => String(t).replace(/\s*([,;:.!?«»…])\s*/g, (m, c) => ` — ${PONCT_DITE[c]} — `).replace(/\s+/g, " ").trim();
+// groupes de quelques mots, coupés de préférence après une ponctuation
 function groupesDictee(texte){
-  const g = [];
-  texte.split(/(?<=[.,])\s+/).forEach(part => {
-    const mots = part.split(" "), fin = /[.,]$/.test(part) ? part.slice(-1) : "";
-    for (let i = 0; i < mots.length; i += 5){ const bout = mots.slice(i, i + 5).join(" "), dernier = i + 5 >= mots.length;
-      g.push({ecrit: bout, dit: (dernier && fin ? bout.slice(0, -1) + (fin === "," ? ", virgule." : ". Point.") : bout)}); }
+  const g = []; let cur = [];
+  const mots = texte.split(/\s+/);
+  mots.forEach((m, k) => {
+    cur.push(m);
+    const petit = /^(le|la|les|l'|un|une|des|de|du|d'|au|aux|à|et|ou|sur|dans|vers|entre|par|pour|avec|sous|son|sa|ses|leur|leurs|ce|cette|ces|qui|que|quand|pendant|toute|tout)$/i.test(m);
+    const fin = /[,;:.!?»…]$/.test(m), long = cur.length >= 4 && !petit && !/^[«]/.test(mots[k + 1] || "") && !/^[,;:.!?»]/.test(mots[k + 1] || "");
+    if (fin || long || k === mots.length - 1){ const ecrit = cur.join(" "); g.push({ecrit, dit: direPonctuation(ecrit)}); cur = []; }
   });
   return g;
 }
@@ -9828,7 +9837,7 @@ function groupesDictee(texte){
 function lireDictee(t, vitesse, fini){
   if (!("speechSynthesis" in window)) return false;
   speechSynthesis.cancel();
-  const morceaux = String(t).split(/(?<=[.!?])\s+/).filter(Boolean), voix = speechSynthesis.getVoices().find(x => /^fr/i.test(x.lang));
+  const morceaux = String(t).split(/(?<=[.!?]|(?:point|exclamation|interrogation) —)\s+/).filter(Boolean), voix = speechSynthesis.getVoices().find(x => /^fr/i.test(x.lang));
   setTimeout(() => morceaux.forEach((m, k) => {
     const u = new SpeechSynthesisUtterance(m); u.lang = "fr-FR"; u.rate = vitesse; if (voix) u.voice = voix;
     if (fini && k === morceaux.length - 1) u.onend = fini;
@@ -9913,8 +9922,9 @@ function lancerDictee(opts = choixDictee, deja = null){
           <button type="button" class="btn" id="dt-groupe">▶ Groupe suivant</button>
           <button type="button" class="mini-btn" id="dt-redire">↺ Répéter</button>
           <button type="button" class="mini-btn" id="dt-prec">⏮ Groupe précédent</button>
+          <label class="doux dt-vitesse"><input type="checkbox" id="dt-ponct" checked> Dire la ponctuation</label>
           <label class="doux dt-vitesse">Vitesse <input type="range" id="dt-vitesse" min="0.5" max="1.1" step="0.05" value="0.75"></label></div>
-          <p class="doux dt-etat" id="dt-etat">Écoute d'abord tout le texte, puis écris-le groupe par groupe. La ponctuation est dite à voix haute.</p>
+          <p class="doux dt-etat" id="dt-etat">Écoute d'abord tout le texte, puis écris-le groupe par groupe. La ponctuation est dite à voix haute : virgule, point, point-virgule, deux-points, point d'exclamation…</p>
           <div class="dt-avance"><i id="dt-barre" style="width:0"></i></div>`
         : `<p class="statut erreur">La lecture à voix haute n'est pas disponible sur ce navigateur. Demande à quelqu'un de te lire le texte, ou essaie Chrome, Edge ou Safari.</p>`}
       </div>
@@ -9928,9 +9938,10 @@ function lancerDictee(opts = choixDictee, deja = null){
   const vitesse = () => +($("#dt-vitesse") || {value: .75}).value;
   const etat = t => { const e = $("#dt-etat"); if (e) e.textContent = t; };
   const dire = k => { if (k < 0 || k >= groupes.length) return; g = k; $("#dt-barre").style.width = ((k + 1) / groupes.length * 100) + "%";
-    etat(`Groupe ${k + 1} sur ${groupes.length}.`); lireDictee(groupes[k].dit, vitesse() * .85); };
+    etat(`Groupe ${k + 1} sur ${groupes.length}.`); lireDictee(direPonct() ? groupes[k].dit : groupes[k].ecrit, vitesse() * .85); };
+  const direPonct = () => !$("#dt-ponct") || $("#dt-ponct").checked;
   if (audio){
-    $("#dt-tout").onclick = () => { etat("Lecture de tout le texte…"); lireDictee(d.texte, vitesse() + .1, () => etat(g < 0 ? "Clique sur « Groupe suivant » pour commencer à écrire." : "Texte relu en entier.")); };
+    $("#dt-tout").onclick = () => { etat("Lecture de tout le texte…"); lireDictee(direPonct() ? direPonctuation(d.texte) : d.texte, vitesse() + .1, () => etat(g < 0 ? "Clique sur « Groupe suivant » pour commencer à écrire." : "Texte relu en entier.")); };
     $("#dt-groupe").onclick = () => { if (g >= groupes.length - 1){ etat("C'est la fin du texte. Relis-toi, puis écoute une dernière fois le texte en entier."); return; } dire(g + 1); };
     $("#dt-redire").onclick = () => g >= 0 ? dire(g) : $("#dt-tout").click();
     $("#dt-prec").onclick = () => dire(Math.max(0, g - 1));
