@@ -1115,6 +1115,11 @@ body.maj-gerant-dedans #vue{padding-bottom:90px}
     repeating-linear-gradient(180deg,transparent 0,transparent calc(var(--lh) - 1px),color-mix(in srgb,#5fa8d3 45%,transparent) calc(var(--lh) - 1px),color-mix(in srgb,#5fa8d3 45%,transparent) var(--lh));
   background-position:0 0,0 calc(var(--lh) * .9);background-repeat:no-repeat,repeat;cursor:text}
 .cp-ligne{height:var(--lh);line-height:calc(var(--lh) * 1.05);white-space:pre;overflow:hidden;outline:none;font:400 17px/calc(var(--lh) * 1.02) "Playwrite FR Moderne","Segoe Script","Bradley Hand",cursive;color:color-mix(in srgb,#9cc8ff 80%,var(--texte));padding:0 2px;caret-color:var(--accent)}
+.cp-page[tabindex]{outline:none}.cp-page[tabindex]:focus{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent)}
+.cp-page[tabindex] .cp-ligne{cursor:text;user-select:none}
+.cp-accents{display:flex;flex-wrap:wrap;gap:4px}.cp-accents button{min-width:30px;height:30px;padding:0 6px;border-radius:6px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:1rem "Playwrite FR Moderne",var(--f-texte);cursor:pointer}.cp-accents button:hover{border-color:var(--accent);color:var(--accent)}
+.cp-curseur{position:absolute;width:2px;border-radius:1px;background:var(--accent);pointer-events:none;z-index:2}
+.cp-curseur.clignote{animation:cp-clignote 1.05s steps(1) infinite}@keyframes cp-clignote{0%,55%{opacity:1}56%,100%{opacity:0}}
 .cp-ligne:focus{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 .cp-ecrit{font-family:"Playwrite FR Moderne",cursive;font-size:.95rem;color:color-mix(in srgb,#9cc8ff 80%,var(--texte))}
 .et-details{margin:4px 0 0;padding-left:1.2em}.et-details li{margin:2px 0}
@@ -4244,7 +4249,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "0.91";
+const VERSION_SITE = "0.92";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -9489,6 +9494,7 @@ function htmlCopie(o = {}){
   return `<div class="cp-copie" data-cp="1">
     <div class="cp-tete"><b>${esc(o.titre || "Ma copie")}</b><span class="doux">${esc(o.aide || "Clique sur une ligne pour écrire. Commence chaque réponse par son numéro : 1. 2. 3. …")}</span></div>
     <div class="cp-page${o.sauter ? " cp-sauter" : ""}" style="--lh:${CP_LH}px" ${o.sauter ? `data-sauter="1"` : ""}>${Array.from({length: n}, () => (o.sauter ? `<div class="cp-corr" aria-hidden="true"></div>` : "") + cpLigneHtml()).join("")}</div>
+    <div class="cp-accents" role="toolbar" aria-label="Lettres accentuées">${["é", "è", "ê", "ë", "à", "â", "ù", "û", "ç", "î", "ï", "ô", "œ", "É", "À", "Ç", "«", "»"].map(x => `<button type="button" data-cp-car="${x}" title="Insérer ${x}">${x}</button>`).join("")}</div>
     <div class="fm-pied"><button type="button" class="mini-btn" data-cp-ajout>+ Ajouter des lignes</button><button type="button" class="mini-btn" data-cp-vider>↺ Tout effacer</button>
       <span class="fm-aide"><b>Entrée</b> = ligne suivante · <b>↑ ↓</b> pour changer de ligne · le texte passe tout seul à la ligne quand elle est pleine.</span></div></div>`;
 }
@@ -9511,6 +9517,8 @@ function brancherCopie(racine){
       const els = [...t.children]; if (apres) apres.after(...els); else page.append(...els); return els[els.length - 1]; };
     const apresL = el => { let n = el.nextElementSibling; while (n && !n.classList.contains("cp-ligne")) n = n.nextElementSibling; return n; };
     const avantL = el => { let n = el.previousElementSibling; while (n && !n.classList.contains("cp-ligne")) n = n.previousElementSibling; return n; };
+    // ordinateur (souris + clavier) : la copie n'est pas un champ de texte → aucune suggestion ni correction (navigateur, Windows, extensions)
+    if (window.matchMedia && matchMedia("(pointer: fine)").matches){ brancherClavierCopie(c, page, nouvelleLigne, apresL, avantL); brancherPiedCopie(c, apres => { const l = nouvelleLigne(apres); l.removeAttribute("contenteditable"); l.removeAttribute("role"); return l; }); return; }
     const suivante = el => apresL(el) || nouvelleLigne(el);
     // texte trop long : les derniers mots passent au début de la ligne suivante
     const deborder = el => {
@@ -9550,11 +9558,90 @@ function brancherCopie(racine){
       if (!el.classList.contains("cp-ligne") || el.contentEditable === "false") return;
       const r = document.createRange(); r.selectNodeContents(el); const b = r.getBoundingClientRect();
       if (!cpTexte(el) || e.clientX > b.right){ e.preventDefault(); cpCurseur(el, cpTexte(el).length); } });
+    let derniereLigne = null; page.addEventListener("focusin", e => { if (e.target.classList.contains("cp-ligne")) derniereLigne = e.target; });
+    c.querySelectorAll("[data-cp-car]").forEach(b => { b.onmousedown = ev => ev.preventDefault(); b.onclick = () => { const l = derniereLigne || cpLignes(c)[0]; if (document.activeElement !== l) cpCurseur(l, cpTexte(l).length); document.execCommand("insertText", false, b.dataset.cpCar); }; });
+    brancherPiedCopie(c, nouvelleLigne);
+  });
+}
+function brancherPiedCopie(c, nouvelleLigne){
+  const page = c.querySelector(".cp-page"), sauter = !!page.dataset.sauter;
+  nouvelleLigne = nouvelleLigne || (apres => { const t = document.createElement("div"); t.innerHTML = (sauter ? `<div class="cp-corr" aria-hidden="true"></div>` : "") + cpLigneHtml(); const els = [...t.children]; if (apres) apres.after(...els); else page.append(...els); return els[els.length - 1]; });
     c.querySelector("[data-cp-ajout]").onclick = () => { for (let i = 0; i < 8; i++) nouvelleLigne(null); };
     const vider = c.querySelector("[data-cp-vider]"); let conf = false;
     vider.onclick = () => { if (!conf){ conf = true; vider.textContent = "Confirmer ?"; setTimeout(() => { conf = false; vider.textContent = "↺ Tout effacer"; }, 2500); return; }
-      conf = false; vider.textContent = "↺ Tout effacer"; cpLignes(c).forEach(l => { l.textContent = ""; l.contentEditable = "true"; l.classList.remove("corrigee"); }); c.querySelectorAll(".cp-corr").forEach(x => x.textContent = ""); };
+      conf = false; vider.textContent = "↺ Tout effacer"; cpLignes(c).forEach(l => { l.textContent = ""; if (!c.dataset.clavier) l.contentEditable = "true"; l.classList.remove("corrigee"); }); c.dispatchEvent(new Event("cp-vide")); c.querySelectorAll(".cp-corr").forEach(x => x.textContent = ""); };
+}
+// Éditeur « maison » : on lit les touches du clavier et on écrit nous-mêmes dans les lignes (curseur dessiné)
+function brancherClavierCopie(c, page, nouvelleLigne, apresL, avantL){
+  c.dataset.clavier = "1"; page.tabIndex = 0; page.setAttribute("role", "textbox"); page.setAttribute("aria-multiline", "true"); page.setAttribute("aria-label", "Copie : clique sur une ligne puis écris");
+  const prep = l => { l.removeAttribute("contenteditable"); l.removeAttribute("role"); };
+  cpLignes(c).forEach(prep);
+  const curseur = document.createElement("span"); curseur.className = "cp-curseur"; curseur.setAttribute("aria-hidden", "true"); page.appendChild(curseur);
+  let ligne = cpLignes(c)[0], pos = 0;
+  const fige = () => !!(ligne && ligne.classList.contains("corrigee"));
+  const nouvelle = apres => { const l = nouvelleLigne(apres); prep(l); return l; };
+  const suivante = el => apresL(el) || nouvelle(el);
+  const dessiner = () => {
+    if (!ligne || fige() || document.activeElement !== page){ curseur.hidden = true; return; }
+    curseur.hidden = false;
+    const t = cpTexte(ligne), pr = page.getBoundingClientRect(), lr = ligne.getBoundingClientRect();
+    let x = lr.left + parseFloat(getComputedStyle(ligne).paddingLeft || 0);
+    if (ligne.firstChild && pos > 0){ const r = document.createRange(); const n = ligne.firstChild; r.setStart(n, Math.min(pos, n.length)); r.collapse(true); const rr = r.getClientRects()[0] || r.getBoundingClientRect(); if (rr && (rr.left || rr.right)) x = rr.left; else { r.setStart(n, 0); r.setEnd(n, Math.min(pos, n.length)); x = r.getBoundingClientRect().right; } }
+    curseur.style.left = (x - pr.left + page.scrollLeft) + "px"; curseur.style.top = (lr.top - pr.top + page.scrollTop + lr.height * .18) + "px"; curseur.style.height = (lr.height * .66) + "px";
+    curseur.classList.remove("clignote"); void curseur.offsetWidth; curseur.classList.add("clignote");
+  };
+  const placer = (l, p) => { ligne = l; pos = Math.max(0, Math.min(p, cpTexte(l).length)); dessiner(); };
+  // texte trop long : les derniers mots passent au début de la ligne suivante (le curseur suit)
+  const deborder = el => {
+    for (let garde = 0; el.scrollWidth > el.clientWidth + 1 && garde < 60; garde++){
+      const t = cpTexte(el), k = t.trimEnd().lastIndexOf(" "); if (k <= 0) break;
+      const n = suivante(el), reste = t.slice(k + 1);
+      el.textContent = t.slice(0, k);
+      n.textContent = reste + (cpTexte(n).trim() ? " " + cpTexte(n).trimStart() : "");
+      if (ligne === el && pos > k){ ligne = n; pos = pos - k - 1; }
+      deborder(n);
+    }
+  };
+  const inserer = txt => { if (fige()) return; const t = cpTexte(ligne); ligne.textContent = t.slice(0, pos) + txt + t.slice(pos); pos += txt.length; deborder(ligne); dessiner(); c.dispatchEvent(new Event("input", {bubbles: true})); };
+  page.addEventListener("keydown", e => {
+    if (!ligne || fige()) return;
+    const t = cpTexte(ligne), k = e.key;
+    if ((e.ctrlKey || e.metaKey) && !e.altKey){ return; }                       // raccourcis (copier, coller…) : le collage passe par l'évènement paste
+    if (k === "Dead" || k === "Process" || k === "Unidentified") return;
+    if (k.length === 1){ e.preventDefault(); inserer(k); return; }            // lettres, accents (é, è, à, ç, ù, et ê… après la touche ^), chiffres, ponctuation
+    if (k === "Enter"){ e.preventDefault(); const fin = t.slice(pos); ligne.textContent = t.slice(0, pos); const n = fin.trim() || !apresL(ligne) ? nouvelle(ligne) : apresL(ligne); if (fin.trim()) n.textContent = fin; placer(n, 0); return; }
+    if (k === "Backspace"){ e.preventDefault();
+      if (pos > 0){ ligne.textContent = t.slice(0, pos - 1) + t.slice(pos); pos--; }
+      else { const p = avantL(ligne); if (p){ const pt = cpTexte(p).replace(/\s+$/, ""), joint = pt + (pt && t ? " " : "") + t; p.textContent = joint;
+        const corr = ligne.previousElementSibling; if (corr && corr.classList.contains("cp-corr")) corr.remove(); ligne.remove(); nouvelle(null); ligne = p; pos = pt.length + (pt && t ? 1 : 0); deborder(p); } }
+      dessiner(); return; }
+    if (k === "Delete"){ e.preventDefault(); if (pos < t.length){ ligne.textContent = t.slice(0, pos) + t.slice(pos + 1); } dessiner(); return; }
+    if (k === "ArrowLeft"){ e.preventDefault(); if (pos > 0) pos--; else if (avantL(ligne)){ ligne = avantL(ligne); pos = cpTexte(ligne).length; } dessiner(); return; }
+    if (k === "ArrowRight"){ e.preventDefault(); if (pos < t.length) pos++; else if (apresL(ligne)){ ligne = apresL(ligne); pos = 0; } dessiner(); return; }
+    if (k === "ArrowUp"){ e.preventDefault(); if (avantL(ligne)) placer(avantL(ligne), pos); return; }
+    if (k === "ArrowDown"){ e.preventDefault(); placer(suivante(ligne), pos); return; }
+    if (k === "Home"){ e.preventDefault(); placer(ligne, 0); return; }
+    if (k === "End"){ e.preventDefault(); placer(ligne, t.length); return; }
   });
+  c.querySelectorAll("[data-cp-car]").forEach(b => { b.onmousedown = ev => ev.preventDefault(); b.onclick = () => { page.focus({preventScroll: true}); inserer(b.dataset.cpCar); }; });
+  page.addEventListener("paste", e => { e.preventDefault(); inserer((e.clipboardData.getData("text/plain") || "").replace(/\s+/g, " ")); });
+  // clic : on place le curseur à l'endroit cliqué (une ligne sautée renvoie à la ligne d'écriture suivante)
+  page.addEventListener("mousedown", e => {
+    let l = e.target.closest && e.target.closest(".cp-ligne, .cp-corr");
+    if (l && l.classList.contains("cp-corr")) l = apresL(l);
+    if (!l){ const ls = cpLignes(c); l = ls.find(x => x.getBoundingClientRect().bottom > e.clientY) || ls[ls.length - 1]; }
+    if (!l) return;
+    e.preventDefault(); page.focus({preventScroll: true});
+    let p = cpTexte(l).length;
+    const cp = document.caretPositionFromPoint ? document.caretPositionFromPoint(e.clientX, e.clientY) : null, cr = !cp && document.caretRangeFromPoint ? document.caretRangeFromPoint(e.clientX, e.clientY) : null;
+    const node = cp ? cp.offsetNode : cr ? cr.startContainer : null, off = cp ? cp.offset : cr ? cr.startOffset : 0;
+    if (node && l.contains(node) && node.nodeType === 3) p = off;
+    placer(l, p);
+  });
+  page.addEventListener("focus", dessiner); page.addEventListener("blur", () => curseur.hidden = true);
+  c.addEventListener("cp-vide", () => placer(cpLignes(c)[0], 0));
+  addEventListener("resize", dessiner);
+  curseur.hidden = true;
 }
 const lireCopie = racine => cpLignes(racine).map(cpTexte);
 
@@ -9866,6 +9953,67 @@ function parler(t, vitesse){
 }
 const lireDictee = (t, vitesse, apres) => { parler(t, vitesse).then(ok => ok && apres && apres()); return "speechSynthesis" in window; };
 const pauseDictee = ms => new Promise(r => setTimeout(r, ms));
+/* ----- Correction : alignement mot à mot entre la copie et le texte ----- */
+const dTokens = t => [...String(t).replace(/[’`]/g, "'").matchAll(/[A-Za-zÀ-ÖØ-öø-ÿœŒæÆ]+(?:['-][A-Za-zÀ-ÖØ-öø-ÿœŒæÆ]+)*'?|[.,;:!?«»]/g)].map(m => m[0]);
+const dSans = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+function dCout(a, b){ if (a === b) return 0; if (a.toLowerCase() === b.toLowerCase()) return .2; if (dSans(a) === dSans(b)) return .3;
+  const p = x => /^[.,;:!?«»]$/.test(x); if (p(a) !== p(b)) return 9; if (p(a)) return .8;
+  const d = cpLev(dSans(a), dSans(b)); return d <= Math.max(1, Math.floor(b.length / 3)) ? .5 + d * .1 : 1.4; }
+function alignerDictee(eleve, ref){
+  const n = eleve.length, m = ref.length, D = Array.from({length: n + 1}, () => new Float64Array(m + 1));
+  for (let i = 1; i <= n; i++) D[i][0] = i; for (let j = 1; j <= m; j++) D[0][j] = j;
+  // deux mots de l'élève pour un mot composé du texte (« matin la » pour « matin-là ») : une seule faute
+  const joint = (i, j) => i >= 2 && ref[j - 1].includes("-") ? dCout(eleve[i - 2].t + "-" + eleve[i - 1].t, ref[j - 1]) + .4 : 99;
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) D[i][j] = Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1, D[i - 1][j - 1] + dCout(eleve[i - 1].t, ref[j - 1]), i >= 2 ? D[i - 2][j - 1] + joint(i, j) : 99);
+  const paires = []; let i = n, j = m;
+  while (i > 0 || j > 0){
+    if (i > 0 && j > 0 && Math.abs(D[i][j] - (D[i - 1][j - 1] + dCout(eleve[i - 1].t, ref[j - 1]))) < 1e-9){ paires.unshift([i - 1, j - 1]); i--; j--; }
+    else if (i > 1 && j > 0 && Math.abs(D[i][j] - (D[i - 2][j - 1] + joint(i, j))) < 1e-9){ paires.unshift([[i - 2, i - 1], j - 1]); i -= 2; j--; }
+    else if (i > 0 && Math.abs(D[i][j] - (D[i - 1][j] + 1)) < 1e-9){ paires.unshift([i - 1, null]); i--; }
+    else { paires.unshift([null, j - 1]); j--; }
+  }
+  return paires;
+}
+const finSansAccord = w => dSans(w).replace(/(es|s|x|e|nt|ent)$/, "");
+function natureFaute(e, r, verbes){
+  const p = x => /^[.,;:!?«»]$/.test(x);
+  if (p(r) || p(e)) return "ponctuation";
+  if (e.toLowerCase() === r.toLowerCase()) return "majuscule";
+  if (dSans(e) === dSans(r)) return "accent";
+  if (verbes.has(r)) return "conjugaison";
+  if (finSansAccord(e) === finSansAccord(r)) return "accord";
+  return "orthographe";
+}
+const NOMS_FAUTES = {accent: "Accent", majuscule: "Majuscule", conjugaison: "Conjugaison", accord: "Accord", orthographe: "Orthographe", ponctuation: "Ponctuation", oubli: "Mot oublié", ajout: "Mot en trop"};
+function corrigerDictee(lignes, d){
+  const eleve = []; lignes.forEach((l, k) => dTokens(l).forEach(t => eleve.push({t, l: k})));
+  const ref = dTokens(d.texte), verbes = new Set(d.verbes), paires = alignerDictee(eleve, ref);
+  const fautes = [], parLigne = lignes.map(() => ({mots: [], corr: []}));
+  let derniereLigne = 0;
+  paires.forEach(([i0, j]) => {
+    let i = i0;
+    if (Array.isArray(i0)){ const [a, b] = i0; i = a; eleve[a] = {t: eleve[a].t + " " + eleve[b].t, l: eleve[a].l}; }
+    if (i !== null) derniereLigne = eleve[i].l;
+    const L = parLigne[derniereLigne];
+    if (i !== null && j !== null){
+      const e = eleve[i].t, r = ref[j], ok = e === r, nat = ok ? null : natureFaute(e, r, verbes);
+      if (nat) fautes.push({nat, e, r});
+      L.mots.push({t: e, nat, r}); L.corr.push({t: r, faute: !!nat});
+    } else if (i !== null){ fautes.push({nat: "ajout", e: eleve[i].t}); L.mots.push({t: eleve[i].t, nat: "ajout"}); }
+    else { const nat = /^[.,;:!?«»]$/.test(ref[j]) ? "ponctuation" : "oubli"; fautes.push({nat, r: ref[j]}); L.mots.push({t: "", nat: "oubli", r: ref[j], vrai: nat}); L.corr.push({t: ref[j], faute: true}); }
+  });
+  const points = fautes.reduce((s, f) => s + (["majuscule", "ponctuation"].includes(f.nat) ? .5 : 1), 0);
+  return {fautes, parLigne, points};
+}
+// mot de l'élève avec les lettres corrigées en couleur (accents ajoutés là où il faut)
+function motCorrige(e, r){
+  if (!r) return esc(e);
+  let i = 0; while (i < e.length && i < r.length && e[i] === r[i]) i++;
+  let k = 0; while (k < e.length - i && k < r.length - i && e[e.length - 1 - k] === r[r.length - 1 - k]) k++;
+  return esc(r.slice(0, i)) + `<b class="dt-lettre">${esc(r.slice(i, r.length - k))}</b>` + esc(r.slice(r.length - k));
+}
+const collerPonct = l => l.replace(/ ([.,;:!?»])/g, "$1").replace(/« /g, "« ").replace(/(<\/span>) (<span[^>]*>[.,;:!?»]<\/span>)/g, "$1$2");
+
 let choixDictee = {phrases: 5, temps: "passe", niveau: "facile"};
 function lancerDictee(opts = choixDictee, deja = null){
   rafraichir = null; arreterLecture();
