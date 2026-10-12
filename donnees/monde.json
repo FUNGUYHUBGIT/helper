@@ -1,343 +1,519 @@
 [
  {
   "ajoutePar": "auto",
+  "categorie": "environnement",
+  "date": "2026-10-10",
+  "id": "m-2026-10-10-pesticides",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#dcfce7\"/><stop offset=\"1\" stop-color=\"#86efac\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"140\" width=\"400\" height=\"60\" fill=\"#a16207\"/><line x1=\"40\" y1=\"140\" x2=\"40\" y2=\"105\" stroke=\"#15803d\" stroke-width=\"3\"/><ellipse cx=\"33\" cy=\"112\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><ellipse cx=\"47\" cy=\"120\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><line x1=\"70\" y1=\"140\" x2=\"70\" y2=\"105\" stroke=\"#15803d\" stroke-width=\"3\"/><ellipse cx=\"63\" cy=\"112\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><ellipse cx=\"77\" cy=\"120\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><line x1=\"100\" y1=\"140\" x2=\"100\" y2=\"105\" stroke=\"#15803d\" stroke-width=\"3\"/><ellipse cx=\"93\" cy=\"112\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><ellipse cx=\"107\" cy=\"120\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><line x1=\"130\" y1=\"140\" x2=\"130\" y2=\"105\" stroke=\"#15803d\" stroke-width=\"3\"/><ellipse cx=\"123\" cy=\"112\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><ellipse cx=\"137\" cy=\"120\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><line x1=\"160\" y1=\"140\" x2=\"160\" y2=\"105\" stroke=\"#15803d\" stroke-width=\"3\"/><ellipse cx=\"153\" cy=\"112\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><ellipse cx=\"167\" cy=\"120\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><line x1=\"190\" y1=\"140\" x2=\"190\" y2=\"105\" stroke=\"#15803d\" stroke-width=\"3\"/><ellipse cx=\"183\" cy=\"112\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><ellipse cx=\"197\" cy=\"120\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><line x1=\"220\" y1=\"140\" x2=\"220\" y2=\"105\" stroke=\"#15803d\" stroke-width=\"3\"/><ellipse cx=\"213\" cy=\"112\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><ellipse cx=\"227\" cy=\"120\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><line x1=\"250\" y1=\"140\" x2=\"250\" y2=\"105\" stroke=\"#15803d\" stroke-width=\"3\"/><ellipse cx=\"243\" cy=\"112\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><ellipse cx=\"257\" cy=\"120\" rx=\"8\" ry=\"4\" fill=\"#22c55e\"/><rect x=\"290\" y=\"80\" width=\"40\" height=\"60\" rx=\"6\" fill=\"#e5e7eb\" stroke=\"#374151\" stroke-width=\"2\"/><rect x=\"300\" y=\"68\" width=\"20\" height=\"14\" fill=\"#374151\"/><path d=\"M290 95 L260 80\" stroke=\"#374151\" stroke-width=\"4\"/><path d=\"M255 70 Q235 85 250 100\" stroke=\"#a3a3a3\" stroke-width=\"2\" fill=\"none\"/><circle cx=\"310\" cy=\"112\" r=\"12\" fill=\"none\" stroke=\"#dc2626\" stroke-width=\"3\"/><line x1=\"301\" y1=\"103\" x2=\"319\" y2=\"121\" stroke=\"#dc2626\" stroke-width=\"3\"/><circle cx=\"350\" cy=\"50\" r=\"18\" fill=\"#fde047\"/><ellipse cx=\"200\" cy=\"70\" rx=\"10\" ry=\"6\" fill=\"#f59e0b\"/><ellipse cx=\"196\" cy=\"66\" rx=\"5\" ry=\"4\" fill=\"#fff\" opacity=\"0.8\"/></svg>",
+  "resume": "Ce week-end, des rassemblements ont été organisés dans toute la France contre un projet de la Commission européenne. Ce projet prévoit d'assouplir fortement les règles sur les pesticides, ces produits chimiques utilisés pour protéger les cultures. Les opposants craignent des effets sur la santé et sur la nature.",
+  "source": "Le Monde",
+  "titre": "Des rassemblements partout en France contre un assouplissement européen des règles sur les pesticides",
+  "url": "https://www.lemonde.fr/planete/article/2026/10/10/pesticides-a-vie-non-merci-partout-en-france-des-mobilisations-contre-un-projet-europeen-de-deregulation-devastateur_6790949_3244.html"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "techno",
+  "date": "2026-10-10",
+  "id": "m-2026-10-10-ia-emploi",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ede9fe\"/><stop offset=\"1\" stop-color=\"#c4b5fd\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect x=\"180\" y=\"60\" width=\"180\" height=\"110\" rx=\"8\" fill=\"#1e1b4b\"/><rect x=\"192\" y=\"72\" width=\"156\" height=\"86\" fill=\"#312e81\"/><polyline points=\"200,90 240,100 270,120 300,128 340,150\" stroke=\"#f87171\" stroke-width=\"4\" fill=\"none\"/><polygon points=\"340,150 328,140 344,138\" fill=\"#f87171\"/><rect x=\"240\" y=\"170\" width=\"60\" height=\"10\" fill=\"#4c1d95\"/><circle cx=\"90\" cy=\"95\" r=\"18\" fill=\"#f1c27d\"/><path d=\"M60 160 Q90 115 120 160 Z\" fill=\"#2563eb\"/><polygon points=\"65,82 90,70 115,82 90,92\" fill=\"#111827\"/><line x1=\"112\" y1=\"83\" x2=\"114\" y2=\"98\" stroke=\"#facc15\" stroke-width=\"2\"/><rect x=\"130\" y=\"40\" width=\"34\" height=\"28\" rx=\"6\" fill=\"#a78bfa\"/><circle cx=\"141\" cy=\"54\" r=\"4\" fill=\"#fff\"/><circle cx=\"153\" cy=\"54\" r=\"4\" fill=\"#fff\"/><line x1=\"147\" y1=\"40\" x2=\"147\" y2=\"30\" stroke=\"#a78bfa\" stroke-width=\"2\"/><circle cx=\"147\" cy=\"28\" r=\"3\" fill=\"#a78bfa\"/></svg>",
+  "resume": "Dans les métiers où l'intelligence artificielle peut faire une partie du travail, les embauches en CDI (contrat à durée indéterminée) des 21-29 ans ont baissé de 28 % depuis fin 2022. Cela représente environ 75 000 CDI de moins sur un an. Les développeurs informatiques sont parmi les plus touchés.",
+  "source": "BFM Business",
+  "titre": "Emploi : les jeunes diplômés sont les premiers touchés par l'intelligence artificielle",
+  "url": "https://www.bfmtv.com/economie/emploi/video-les-jeunes-diplomes-premieres-victimes-de-l-intelligence-artificielle_VN-202610100069.html"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "international",
+  "date": "2026-10-09",
+  "id": "m-2026-10-09-nobel-paix",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#dbeafe\"/><stop offset=\"1\" stop-color=\"#93c5fd\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect x=\"190\" y=\"60\" width=\"20\" height=\"110\" fill=\"#78350f\"/><rect x=\"130\" y=\"166\" width=\"140\" height=\"14\" fill=\"#78350f\"/><rect x=\"100\" y=\"70\" width=\"200\" height=\"8\" fill=\"#92400e\"/><line x1=\"110\" y1=\"78\" x2=\"90\" y2=\"130\" stroke=\"#92400e\" stroke-width=\"2\"/><line x1=\"110\" y1=\"78\" x2=\"130\" y2=\"130\" stroke=\"#92400e\" stroke-width=\"2\"/><path d=\"M80 130 Q110 150 140 130 Z\" fill=\"#fbbf24\"/><line x1=\"290\" y1=\"78\" x2=\"270\" y2=\"130\" stroke=\"#92400e\" stroke-width=\"2\"/><line x1=\"290\" y1=\"78\" x2=\"310\" y2=\"130\" stroke=\"#92400e\" stroke-width=\"2\"/><path d=\"M260 130 Q290 150 320 130 Z\" fill=\"#fbbf24\"/><path d=\"M330 40 Q350 30 365 42 Q350 48 340 46 L330 56 Z\" fill=\"#fff\"/><path d=\"M345 42 Q330 60 352 64\" stroke=\"#16a34a\" stroke-width=\"3\" fill=\"none\"/><circle cx=\"200\" cy=\"58\" r=\"10\" fill=\"#fbbf24\"/></svg>",
+  "resume": "Le prix Nobel de la paix 2026 a été décerné à Navi Pillay, une juriste sud-africaine. Ancienne avocate de militants contre l'apartheid (le régime raciste de l'Afrique du Sud), elle a été juge internationale puis haute-commissaire de l'ONU aux droits de l'homme. Le comité Nobel salue son combat pour que les crimes de guerre et les génocides soient jugés.",
+  "source": "Euronews",
+  "titre": "Prix Nobel de la paix : la juriste sud-africaine Navi Pillay récompensée",
+  "url": "https://fr.euronews.com/2026/10/09/la-juriste-navi-pillay-recoit-le-prix-nobel-de-la-paix-2026"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "environnement",
+  "date": "2026-10-09",
+  "id": "m-2026-10-09-isaias",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#64748b\"/><stop offset=\"1\" stop-color=\"#1e293b\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"160\" width=\"400\" height=\"40\" fill=\"#0f766e\"/><path d=\"M0 165 Q40 155 80 165 T160 165 T240 165 T320 165 T400 165\" stroke=\"#99f6e4\" stroke-width=\"3\" fill=\"none\"/><circle cx=\"250\" cy=\"85\" r=\"18\" fill=\"#e2e8f0\"/><path d=\"M250 85 m-60 0 a60 50 0 0 1 60 -50 a40 40 0 0 0 -30 50 Z\" fill=\"#cbd5e1\"/><path d=\"M250 85 m60 0 a60 50 0 0 1 -60 50 a40 40 0 0 0 30 -50 Z\" fill=\"#cbd5e1\"/><circle cx=\"250\" cy=\"85\" r=\"8\" fill=\"#334155\"/><rect x=\"60\" y=\"110\" width=\"8\" height=\"55\" fill=\"#78350f\" transform=\"rotate(12 64 165)\"/><path d=\"M75 108 Q110 95 130 110 M75 108 Q100 120 118 135 M75 108 Q60 85 40 88\" stroke=\"#16a34a\" stroke-width=\"7\" fill=\"none\"/><line x1=\"20\" y1=\"60\" x2=\"10\" y2=\"90\" stroke=\"#bae6fd\" stroke-width=\"2\"/><line x1=\"360\" y1=\"140\" x2=\"350\" y2=\"165\" stroke=\"#bae6fd\" stroke-width=\"2\"/><line x1=\"160\" y1=\"120\" x2=\"150\" y2=\"150\" stroke=\"#bae6fd\" stroke-width=\"2\"/></svg>",
+  "resume": "L'ouragan Isaias a touché terre vendredi soir en Floride, près de Destin, avec des vents jusqu'à 169 km/h. Au moins quatre personnes sont mortes en Floride et en Alabama, et des centaines de milliers de foyers ont été privés d'électricité. Affaibli, il est ensuite devenu une simple dépression.",
+  "source": "Euronews",
+  "titre": "États-Unis : l'ouragan Isaias frappe la Floride et le sud-est du pays",
+  "url": "https://fr.euronews.com/2026/10/11/isaias-quatre-morts-dans-le-sud-est-des-etats-unis-balaye-par-des-vents-violents-et-de-for"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "international",
+  "date": "2026-10-09",
+  "id": "m-2026-10-09-panama",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fde68a\"/><stop offset=\"1\" stop-color=\"#f59e0b\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"150\" width=\"400\" height=\"50\" fill=\"#92400e\"/><path d=\"M170 150 L185 165 L175 178 L195 200\" stroke=\"#1c1917\" stroke-width=\"4\" fill=\"none\"/><rect x=\"60\" y=\"80\" width=\"50\" height=\"70\" fill=\"#e5e7eb\" transform=\"rotate(-5 85 150)\"/><rect x=\"250\" y=\"60\" width=\"60\" height=\"90\" fill=\"#f3f4f6\" transform=\"rotate(4 280 150)\"/><rect x=\"262\" y=\"72\" width=\"10\" height=\"10\" fill=\"#60a5fa\" transform=\"rotate(4 280 150)\"/><rect x=\"262\" y=\"96\" width=\"10\" height=\"10\" fill=\"#60a5fa\" transform=\"rotate(4 280 150)\"/><rect x=\"262\" y=\"120\" width=\"10\" height=\"10\" fill=\"#60a5fa\" transform=\"rotate(4 280 150)\"/><rect x=\"288\" y=\"72\" width=\"10\" height=\"10\" fill=\"#60a5fa\" transform=\"rotate(4 280 150)\"/><rect x=\"288\" y=\"96\" width=\"10\" height=\"10\" fill=\"#60a5fa\" transform=\"rotate(4 280 150)\"/><rect x=\"288\" y=\"120\" width=\"10\" height=\"10\" fill=\"#60a5fa\" transform=\"rotate(4 280 150)\"/><polyline points=\"20,45 140,45 155,25 170,65 185,15 200,70 215,35 230,45 380,45\" stroke=\"#b91c1c\" stroke-width=\"3\" fill=\"none\" transform=\"translate(0,15)\"/><path d=\"M330 150 Q350 115 380 125 Q360 130 370 150 Z\" fill=\"#0284c7\"/></svg>",
+  "resume": "Un fort tremblement de terre, de magnitude supérieure à 7,5, a frappé vendredi le sud du Panama, en Amérique centrale. Des bâtiments ont été endommagés et des dizaines de personnes blessées, mais aucun mort n'avait été signalé. Une alerte au tsunami (une vague géante provoquée par un séisme sous la mer) a été lancée dans le Pacifique, puis levée.",
+  "source": "France 24",
+  "titre": "Un puissant séisme secoue le Panama, une alerte au tsunami brièvement déclenchée",
+  "url": "https://www.france24.com/fr/am%C3%A9riques/20261009-panama-un-s%C3%A9isme-de-magnitude-8-provoque-la-panique-dans-la-capitale"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "international",
+  "date": "2026-10-09",
+  "id": "m-2026-10-09-diesel",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#e0e7ff\"/><stop offset=\"1\" stop-color=\"#a5b4fc\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"160\" width=\"400\" height=\"40\" fill=\"#475569\"/><rect x=\"150\" y=\"90\" width=\"120\" height=\"70\" rx=\"10\" fill=\"#f59e0b\"/><rect x=\"270\" y=\"110\" width=\"50\" height=\"50\" rx=\"4\" fill=\"#1e40af\"/><rect x=\"282\" y=\"118\" width=\"26\" height=\"16\" fill=\"#bfdbfe\"/><circle cx=\"180\" cy=\"165\" r=\"14\" fill=\"#111827\"/><circle cx=\"240\" cy=\"165\" r=\"14\" fill=\"#111827\"/><circle cx=\"300\" cy=\"165\" r=\"14\" fill=\"#111827\"/><text x=\"210\" y=\"132\" font-family=\"Arial\" font-size=\"18\" font-weight=\"bold\" fill=\"#fff\" text-anchor=\"middle\">DIESEL</text><path d=\"M60 70 Q90 50 120 70\" stroke=\"#1e3a8a\" stroke-width=\"4\" fill=\"none\"/><polygon points=\"120,70 108,62 112,76\" fill=\"#1e3a8a\"/><path d=\"M340 70 Q310 90 280 70\" stroke=\"#b91c1c\" stroke-width=\"4\" fill=\"none\"/><polygon points=\"280,70 292,62 290,78\" fill=\"#b91c1c\"/></svg>",
+  "resume": "Le président américain Donald Trump a annoncé un accord avec la Russie pour que les États-Unis puissent acheter du diesel russe, alors que les prix du carburant s'envolent. Le président ukrainien Zelensky y voit un « cadeau injustifié » fait à Vladimir Poutine. Au même moment, des représentants ukrainiens, américains et européens discutaient de la paix en Floride.",
+  "source": "Le Monde",
+  "titre": "Donald Trump annonce un accord avec Moscou sur le diesel russe, Kiev proteste",
+  "url": "https://www.lemonde.fr/international/live/2026/10/10/en-direct-guerre-en-ukraine-l-emissaire-americain-steve-witkoff-salue-des-discussions-constructives-avec-des-representants-ukrainiens-et-europeens_6787996_3210.html"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "economie",
+  "date": "2026-10-09",
+  "id": "m-2026-10-09-budget-commission",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#e0f2fe\"/><stop offset=\"1\" stop-color=\"#bae6fd\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><polygon points=\"200,45 330,85 70,85\" fill=\"#e2e8f0\" stroke=\"#475569\" stroke-width=\"2\"/><rect x=\"90\" y=\"88\" width=\"14\" height=\"60\" fill=\"#f8fafc\" stroke=\"#94a3b8\"/><rect x=\"130\" y=\"88\" width=\"14\" height=\"60\" fill=\"#f8fafc\" stroke=\"#94a3b8\"/><rect x=\"170\" y=\"88\" width=\"14\" height=\"60\" fill=\"#f8fafc\" stroke=\"#94a3b8\"/><rect x=\"216\" y=\"88\" width=\"14\" height=\"60\" fill=\"#f8fafc\" stroke=\"#94a3b8\"/><rect x=\"256\" y=\"88\" width=\"14\" height=\"60\" fill=\"#f8fafc\" stroke=\"#94a3b8\"/><rect x=\"296\" y=\"88\" width=\"14\" height=\"60\" fill=\"#f8fafc\" stroke=\"#94a3b8\"/><rect x=\"70\" y=\"148\" width=\"260\" height=\"12\" fill=\"#cbd5e1\"/><rect x=\"60\" y=\"160\" width=\"280\" height=\"10\" fill=\"#94a3b8\"/><rect x=\"0\" y=\"40\" width=\"10\" height=\"0\"/><rect x=\"330\" y=\"120\" width=\"50\" height=\"60\" fill=\"#fff\" stroke=\"#334155\" stroke-width=\"2\"/><line x1=\"338\" y1=\"135\" x2=\"372\" y2=\"135\" stroke=\"#334155\"/><line x1=\"338\" y1=\"147\" x2=\"372\" y2=\"147\" stroke=\"#334155\"/><text x=\"355\" y=\"170\" font-family=\"Arial\" font-size=\"14\" font-weight=\"bold\" fill=\"#15803d\" text-anchor=\"middle\">€</text><rect x=\"20\" y=\"175\" width=\"20\" height=\"25\" fill=\"#002395\"/><rect x=\"40\" y=\"175\" width=\"20\" height=\"25\" fill=\"#fff\"/><rect x=\"60\" y=\"175\" width=\"20\" height=\"25\" fill=\"#ed2939\"/></svg>",
+  "resume": "La commission des finances de l'Assemblée nationale, un petit groupe de députés spécialisés, a modifié le projet de budget 2027 : plus d'impôts pour certaines sociétés familiales (« holdings ») et un soutien aux agriculteurs et aux petites entreprises. Le texte sera débattu par tous les députés à partir du 13 octobre. Le gouvernement cherche environ 45 milliards d'euros d'économies.",
+  "source": "BFM Business",
+  "titre": "Budget 2027 : les députés modifient le projet en commission avant le débat dans l'hémicycle",
+  "url": "https://www.bfmtv.com/economie/economie-social/finances-publiques/holdings-familiales-davantage-taxees-agriculture-soutenue-ce-que-les-deputes-ont-modifie-en-commission-dans-le-budget-2027_AD-202610090117.html"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "culture",
+  "date": "2026-10-08",
+  "id": "m-2026-10-08-nobel-litterature",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fef3c7\"/><stop offset=\"1\" stop-color=\"#fde68a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect x=\"40\" y=\"150\" width=\"320\" height=\"14\" fill=\"#92400e\"/><path d=\"M120 145 Q160 120 200 140 Q240 120 280 145 L280 70 Q240 50 200 68 Q160 50 120 70 Z\" fill=\"#fff\" stroke=\"#78350f\" stroke-width=\"3\"/><line x1=\"200\" y1=\"68\" x2=\"200\" y2=\"140\" stroke=\"#78350f\" stroke-width=\"2\"/><line x1=\"135\" y1=\"88\" x2=\"188\" y2=\"84\" stroke=\"#a8a29e\" stroke-width=\"2\"/><line x1=\"212\" y1=\"84\" x2=\"265\" y2=\"88\" stroke=\"#a8a29e\" stroke-width=\"2\"/><line x1=\"135\" y1=\"100\" x2=\"188\" y2=\"96\" stroke=\"#a8a29e\" stroke-width=\"2\"/><line x1=\"212\" y1=\"96\" x2=\"265\" y2=\"100\" stroke=\"#a8a29e\" stroke-width=\"2\"/><line x1=\"135\" y1=\"112\" x2=\"188\" y2=\"108\" stroke=\"#a8a29e\" stroke-width=\"2\"/><line x1=\"212\" y1=\"108\" x2=\"265\" y2=\"112\" stroke=\"#a8a29e\" stroke-width=\"2\"/><line x1=\"135\" y1=\"124\" x2=\"188\" y2=\"120\" stroke=\"#a8a29e\" stroke-width=\"2\"/><line x1=\"212\" y1=\"120\" x2=\"265\" y2=\"124\" stroke=\"#a8a29e\" stroke-width=\"2\"/><polygon points=\"330,40 336,22 342,40 324,30 348,30\" fill=\"#d97706\" transform=\"translate(-10,40)\"/><path d=\"M60 130 L90 60 L95 62 L68 133 Z\" fill=\"#dc2626\"/><polygon points=\"60,130 68,133 58,142\" fill=\"#1f2937\"/></svg>",
+  "resume": "Le prix Nobel de littérature 2026 a été attribué jeudi à Anne Carson, une poétesse canadienne de 76 ans. Elle a écrit une vingtaine de livres et enseigne à l'université McGill, à Montréal. C'est l'une des plus hautes récompenses au monde pour un écrivain.",
+  "source": "franceinfo",
+  "titre": "Prix Nobel de littérature : la poétesse canadienne Anne Carson distinguée",
+  "url": "https://www.franceinfo.fr/monde/prix-nobel/le-prix-nobel-de-litterature-2026-est-attribue-a-l-autrice-canadienne-anne-carson_8228320.html"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "sciences",
+  "date": "2026-10-08",
+  "id": "m-2026-10-08-adenot-retour",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7dd3fc\"/><stop offset=\"1\" stop-color=\"#0369a1\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"150\" width=\"400\" height=\"50\" fill=\"#075985\"/><path d=\"M0 155 Q50 145 100 155 T200 155 T300 155 T400 155\" stroke=\"#bae6fd\" stroke-width=\"3\" fill=\"none\"/><g stroke=\"#f8fafc\" stroke-width=\"2\"><line x1=\"230\" y1=\"125\" x2=\"180\" y2=\"60\"/><line x1=\"230\" y1=\"125\" x2=\"230\" y2=\"55\"/><line x1=\"230\" y1=\"125\" x2=\"280\" y2=\"60\"/></g><path d=\"M150 62 Q180 20 210 58 Z\" fill=\"#f97316\"/><path d=\"M200 58 Q230 15 260 56 Z\" fill=\"#fff\"/><path d=\"M250 56 Q280 20 310 62 Z\" fill=\"#f97316\"/><path d=\"M205 150 L212 122 L248 122 L255 150 Z\" fill=\"#e2e8f0\" stroke=\"#475569\" stroke-width=\"2\"/><rect x=\"224\" y=\"130\" width=\"12\" height=\"8\" fill=\"#1e3a8a\"/><rect x=\"60\" y=\"138\" width=\"50\" height=\"14\" rx=\"5\" fill=\"#f8fafc\"/><rect x=\"75\" y=\"126\" width=\"22\" height=\"12\" fill=\"#cbd5e1\"/></svg>",
+  "resume": "Sophie Adenot a amerri jeudi dans l'océan Pacifique, au large de la Californie, après environ huit mois dans la Station spatiale internationale (ISS). C'est le plus long séjour dans l'espace jamais réalisé par un astronaute européen. Pendant sa mission, elle est aussi devenue la première Française à sortir dans l'espace.",
+  "source": "Euronews",
+  "titre": "L'astronaute française Sophie Adenot est revenue sur Terre après un séjour record",
+  "url": "https://fr.euronews.com/2026/10/08/lastronaute-sophie-adenot-de-retour-sur-terre-apres-un-sejour-spatial-record"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "international",
+  "date": "2026-10-08",
+  "id": "m-2026-10-08-ukraine-frappes",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1e293b\"/><stop offset=\"1\" stop-color=\"#475569\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"150\" width=\"400\" height=\"50\" fill=\"#334155\"/><rect x=\"40\" y=\"95\" width=\"60\" height=\"55\" fill=\"#64748b\"/><rect x=\"120\" y=\"70\" width=\"50\" height=\"80\" fill=\"#475569\"/><rect x=\"190\" y=\"105\" width=\"70\" height=\"45\" fill=\"#64748b\"/><rect x=\"280\" y=\"80\" width=\"45\" height=\"70\" fill=\"#475569\"/><rect x=\"330\" y=\"20\" width=\"50\" height=\"16\" fill=\"#0057b7\"/><rect x=\"330\" y=\"36\" width=\"50\" height=\"16\" fill=\"#ffd700\"/><line x1=\"330\" y1=\"20\" x2=\"330\" y2=\"80\" stroke=\"#cbd5e1\" stroke-width=\"3\"/><path d=\"M230 60 L250 50 L245 70 Z\" fill=\"#cbd5e1\"/><line x1=\"160\" y1=\"20\" x2=\"245\" y2=\"60\" stroke=\"#fca5a5\" stroke-width=\"2\" stroke-dasharray=\"5 4\"/><ellipse cx=\"145\" cy=\"72\" rx=\"16\" ry=\"10\" fill=\"#f97316\" opacity=\"0.8\"/><path d=\"M135 66 Q145 40 160 30\" stroke=\"#94a3b8\" stroke-width=\"8\" fill=\"none\" opacity=\"0.6\"/></svg>",
+  "resume": "Mercredi, des attaques russes de missiles et de drones ont fait au moins 28 morts en Ukraine, notamment à Prylouky, dans le nord du pays. Moscou dit avoir visé des usines d'armement. Selon le président ukrainien Volodymyr Zelensky, les frappes des derniers jours ont fait 78 morts.",
+  "source": "Le Monde",
+  "titre": "Guerre en Ukraine : une vague de frappes russes fait des dizaines de morts",
+  "url": "https://www.lemonde.fr/international/live/2026/10/08/en-direct-guerre-en-ukraine-le-point-sur-la-situation-au-lendemain-des-nombreuses-frappes-russes-qui-ont-fait-plusieurs-morts_6787996_3210.html"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "france",
+  "date": "2026-10-08",
+  "id": "m-2026-10-08-lyceens",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fef9c3\"/><stop offset=\"1\" stop-color=\"#fde047\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"160\" width=\"400\" height=\"40\" fill=\"#a3a3a3\"/><rect x=\"230\" y=\"60\" width=\"150\" height=\"100\" fill=\"#f5f5f4\"/><polygon points=\"220,62 305,25 390,62\" fill=\"#b91c1c\"/><rect x=\"245\" y=\"80\" width=\"22\" height=\"22\" fill=\"#93c5fd\"/><rect x=\"290\" y=\"80\" width=\"22\" height=\"22\" fill=\"#93c5fd\"/><rect x=\"335\" y=\"80\" width=\"22\" height=\"22\" fill=\"#93c5fd\"/><rect x=\"290\" y=\"120\" width=\"26\" height=\"40\" fill=\"#78350f\"/><circle cx=\"60\" cy=\"128\" r=\"9\" fill=\"#fcd34d\"/><rect x=\"52\" y=\"137\" width=\"16\" height=\"25\" rx=\"4\" fill=\"#2563eb\"/><circle cx=\"100\" cy=\"128\" r=\"9\" fill=\"#d6a77a\"/><rect x=\"92\" y=\"137\" width=\"16\" height=\"25\" rx=\"4\" fill=\"#16a34a\"/><circle cx=\"140\" cy=\"128\" r=\"9\" fill=\"#8d5524\"/><rect x=\"132\" y=\"137\" width=\"16\" height=\"25\" rx=\"4\" fill=\"#dc2626\"/><circle cx=\"180\" cy=\"128\" r=\"9\" fill=\"#f1c27d\"/><rect x=\"172\" y=\"137\" width=\"16\" height=\"25\" rx=\"4\" fill=\"#7c3aed\"/><line x1=\"80\" y1=\"100\" x2=\"80\" y2=\"140\" stroke=\"#78350f\" stroke-width=\"3\"/><rect x=\"40\" y=\"70\" width=\"90\" height=\"32\" fill=\"#fff\" stroke=\"#1f2937\" stroke-width=\"2\"/><text x=\"85\" y=\"92\" font-family=\"Arial\" font-size=\"14\" font-weight=\"bold\" fill=\"#1f2937\" text-anchor=\"middle\">MOYENS !</text></svg>",
+  "resume": "Jeudi, les lycéens, rejoints par des étudiants, ont manifesté pour la quatrième journée afin de réclamer plus de moyens pour l'éducation. Le Premier ministre Sébastien Lecornu a annoncé des premières décisions pour la fin octobre. Les ministres de l'Éducation et de l'Enseignement supérieur ont reçu des syndicats lycéens.",
+  "source": "Public Sénat",
+  "titre": "Lycéens mobilisés : nouvelle journée de manifestations, le gouvernement promet des décisions fin octobre",
+  "url": "https://www.publicsenat.fr/actualites/societe/mouvements-lyceens-le-point-sur-les-mobilisations-et-blocages"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "france",
+  "date": "2026-10-08",
+  "id": "m-2026-10-08-agriculteurs-mercosur",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#bae6fd\"/><stop offset=\"1\" stop-color=\"#e0f2fe\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"150\" width=\"400\" height=\"50\" fill=\"#65a30d\"/><polygon points=\"290,150 330,40 370,150\" fill=\"#a8a29e\"/><polygon points=\"305,150 330,60 355,150\" fill=\"#bae6fd\"/><rect x=\"300\" y=\"100\" width=\"60\" height=\"5\" fill=\"#78716c\"/><rect x=\"70\" y=\"100\" width=\"90\" height=\"40\" rx=\"6\" fill=\"#16a34a\"/><rect x=\"120\" y=\"70\" width=\"40\" height=\"40\" fill=\"#15803d\"/><rect x=\"128\" y=\"76\" width=\"24\" height=\"22\" fill=\"#e0f2fe\"/><rect x=\"80\" y=\"82\" width=\"8\" height=\"20\" fill=\"#374151\"/><circle cx=\"140\" cy=\"148\" r=\"26\" fill=\"#1f2937\"/><circle cx=\"140\" cy=\"148\" r=\"10\" fill=\"#facc15\"/><circle cx=\"85\" cy=\"152\" r=\"16\" fill=\"#1f2937\"/><circle cx=\"85\" cy=\"152\" r=\"6\" fill=\"#facc15\"/><line x1=\"200\" y1=\"150\" x2=\"200\" y2=\"70\" stroke=\"#78350f\" stroke-width=\"3\"/><rect x=\"180\" y=\"60\" width=\"90\" height=\"30\" fill=\"#fff\" stroke=\"#b91c1c\" stroke-width=\"3\"/><text x=\"225\" y=\"81\" font-family=\"Arial\" font-size=\"13\" font-weight=\"bold\" fill=\"#b91c1c\" text-anchor=\"middle\">NON</text></svg>",
+  "resume": "Des centaines d'agriculteurs sont venus à Paris, parfois en tracteur, et d'autres ont mené des actions dans 39 départements. Ils s'opposent à l'accord UE-Mercosur, un traité de libre-échange avec le Brésil, l'Argentine, le Paraguay et l'Uruguay, car ils craignent l'arrivée de viande et de sucre moins chers produits avec des règles moins strictes. Emmanuel Macron a annoncé que la France voterait contre.",
+  "source": "Africanews",
+  "titre": "Les agriculteurs manifestent contre l'accord commercial entre l'Union européenne et le Mercosur",
+  "url": "https://fr.africanews.com/2026/10/08/des-centaines-dagriculteurs-manifestent-a-paris-contre-laccord-ue-mercosur-et-les-importat/"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "sport",
+  "date": "2026-10-08",
+  "id": "m-2026-10-08-can-tas",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#bbf7d0\"/><stop offset=\"1\" stop-color=\"#16a34a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"150\" width=\"400\" height=\"50\" fill=\"#15803d\"/><line x1=\"0\" y1=\"165\" x2=\"400\" y2=\"165\" stroke=\"#fff\" stroke-width=\"2\"/><path d=\"M180 60 L220 60 L215 95 Q200 110 185 95 Z\" fill=\"#facc15\" stroke=\"#a16207\" stroke-width=\"3\"/><rect x=\"194\" y=\"105\" width=\"12\" height=\"20\" fill=\"#a16207\"/><rect x=\"180\" y=\"125\" width=\"40\" height=\"10\" fill=\"#713f12\"/><text x=\"200\" y=\"80\" font-family=\"Arial\" font-size=\"22\" font-weight=\"bold\" fill=\"#a16207\" text-anchor=\"middle\">?</text><rect x=\"60\" y=\"80\" width=\"60\" height=\"40\" fill=\"#c1272d\"/><polygon points=\"90,90 94,102 84,95 96,95 86,102\" fill=\"#006233\"/><rect x=\"280\" y=\"80\" width=\"20\" height=\"40\" fill=\"#00853f\"/><rect x=\"300\" y=\"80\" width=\"20\" height=\"40\" fill=\"#fdef42\"/><rect x=\"320\" y=\"80\" width=\"20\" height=\"40\" fill=\"#e31b23\"/><polygon points=\"310,94 313,103 305,98 315,98 307,103\" fill=\"#00853f\"/><circle cx=\"200\" cy=\"170\" r=\"12\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"2\"/><polygon points=\"200,164 205,168 203,174 197,174 195,168\" fill=\"#111\"/></svg>",
+  "resume": "Le Sénégal avait battu le Maroc 1-0 en finale de la Coupe d'Afrique des nations 2025, mais il a été déclaré perdant car ses joueurs avaient quitté le terrain pour protester contre un penalty. Les deux pays revendiquent le titre. Le Tribunal arbitral du sport (TAS), la plus haute juridiction du sport, a commencé à examiner l'affaire.",
+  "source": "Le Monde",
+  "titre": "Football : la justice sportive examine la finale contestée de la CAN entre le Maroc et le Sénégal",
+  "url": "https://www.lemonde.fr/afrique/article/2026/10/08/finale-de-la-can-2025-le-tribunal-arbitral-du-sport-appele-a-trancher-entre-le-maroc-et-le-senegal_6789931_3212.html"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "sciences",
+  "date": "2026-10-07",
+  "id": "m-2026-10-07-nobel-chimie",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ecfeff\"/><stop offset=\"1\" stop-color=\"#a5f3fc\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><line x1=\"200\" y1=\"45\" x2=\"200\" y2=\"185\" stroke=\"#0e7490\" stroke-width=\"3\" stroke-dasharray=\"8 6\"/><g stroke=\"#334155\" stroke-width=\"5\"><line x1=\"130\" y1=\"115\" x2=\"90\" y2=\"80\"/><line x1=\"130\" y1=\"115\" x2=\"80\" y2=\"140\"/><line x1=\"130\" y1=\"115\" x2=\"140\" y2=\"165\"/><line x1=\"130\" y1=\"115\" x2=\"165\" y2=\"85\"/><line x1=\"270\" y1=\"115\" x2=\"310\" y2=\"80\"/><line x1=\"270\" y1=\"115\" x2=\"320\" y2=\"140\"/><line x1=\"270\" y1=\"115\" x2=\"260\" y2=\"165\"/><line x1=\"270\" y1=\"115\" x2=\"235\" y2=\"85\"/></g><circle cx=\"130\" cy=\"115\" r=\"16\" fill=\"#334155\"/><circle cx=\"90\" cy=\"80\" r=\"12\" fill=\"#ef4444\"/><circle cx=\"80\" cy=\"140\" r=\"12\" fill=\"#3b82f6\"/><circle cx=\"140\" cy=\"165\" r=\"10\" fill=\"#f8fafc\" stroke=\"#334155\" stroke-width=\"2\"/><circle cx=\"165\" cy=\"85\" r=\"12\" fill=\"#22c55e\"/><circle cx=\"270\" cy=\"115\" r=\"16\" fill=\"#334155\"/><circle cx=\"310\" cy=\"80\" r=\"12\" fill=\"#ef4444\"/><circle cx=\"320\" cy=\"140\" r=\"12\" fill=\"#3b82f6\"/><circle cx=\"260\" cy=\"165\" r=\"10\" fill=\"#f8fafc\" stroke=\"#334155\" stroke-width=\"2\"/><circle cx=\"235\" cy=\"85\" r=\"12\" fill=\"#22c55e\"/></svg>",
+  "resume": "Le prix Nobel de chimie 2026 récompense le Français Henri Kagan (université Paris-Saclay) et le Japonais Kenso Soai. Ils ont travaillé sur les molécules « chirales », qui existent en deux versions symétriques comme nos mains gauche et droite. Leurs découvertes aident à fabriquer des médicaments et à comprendre pourquoi le vivant utilise surtout une seule des deux formes.",
+  "source": "Futura",
+  "titre": "Prix Nobel de chimie : le Français Henri Kagan et le Japonais Kenso Soai récompensés",
+  "url": "https://www.futura-sciences.com/sciences/actualites/chimie-prix-nobel-chimie-2026-francais-henri-kagan-recompense-decouverte-relie-medicaments-mystere-vivant-138324/"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "environnement",
+  "date": "2026-10-07",
+  "id": "m-2026-10-07-voiture-electrique",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ecfccb\"/><stop offset=\"1\" stop-color=\"#bef264\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"160\" width=\"400\" height=\"40\" fill=\"#525252\"/><line x1=\"0\" y1=\"180\" x2=\"400\" y2=\"180\" stroke=\"#fff\" stroke-width=\"3\" stroke-dasharray=\"20 14\"/><path d=\"M150 150 L165 115 L250 115 L275 135 L300 140 L300 155 L150 155 Z\" fill=\"#0ea5e9\"/><path d=\"M172 120 L205 120 L205 135 L166 135 Z\" fill=\"#e0f2fe\"/><path d=\"M212 120 L245 120 L265 135 L212 135 Z\" fill=\"#e0f2fe\"/><circle cx=\"180\" cy=\"157\" r=\"13\" fill=\"#111827\"/><circle cx=\"270\" cy=\"157\" r=\"13\" fill=\"#111827\"/><rect x=\"80\" y=\"90\" width=\"34\" height=\"68\" rx=\"4\" fill=\"#16a34a\"/><rect x=\"88\" y=\"100\" width=\"18\" height=\"14\" fill=\"#dcfce7\"/><path d=\"M114 130 Q135 135 150 145\" stroke=\"#111827\" stroke-width=\"3\" fill=\"none\"/><polygon points=\"100,120 94,134 100,134 96,146 108,128 102,128 106,120\" fill=\"#facc15\"/><text x=\"340\" y=\"80\" font-family=\"Arial\" font-size=\"26\" font-weight=\"bold\" fill=\"#166534\" text-anchor=\"middle\">÷3</text><text x=\"340\" y=\"105\" font-family=\"Arial\" font-size=\"20\" fill=\"#166534\" text-anchor=\"middle\">€</text></svg>",
+  "resume": "L'Ademe, l'agence publique chargée de la transition écologique, estime qu'un ménage qui remplace une voiture à essence ou diesel par une voiture électrique dépensera trois fois moins. Les prix des voitures électriques baissent, la recharge coûte moins cher que le carburant et l'entretien est moins coûteux. Cette étude arrive alors que les prix des carburants ont fortement augmenté.",
+  "source": "franceinfo",
+  "titre": "Selon l'Ademe, passer à la voiture électrique fait dépenser trois fois moins d'argent",
+  "url": "https://www.franceinfo.fr/economie/automobile/un-menage-passant-d-un-vehicule-thermique-a-un-electrique-depensera-trois-fois-moins-d-argent-selon-l-ademe_8226259.html"
+ },
+ {
+  "ajoutePar": "auto",
+  "categorie": "sciences",
+  "date": "2026-10-06",
+  "id": "m-2026-10-06-nobel-physique",
+  "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0b1d3a\"/><stop offset=\"1\" stop-color=\"#1e3a8a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"140\" width=\"400\" height=\"60\" fill=\"#e0f2fe\"/><rect x=\"150\" y=\"120\" width=\"70\" height=\"26\" fill=\"#94a3b8\"/><rect x=\"160\" y=\"108\" width=\"50\" height=\"14\" fill=\"#64748b\"/><line x1=\"110\" y1=\"146\" x2=\"110\" y2=\"196\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"110\" cy=\"186\" r=\"4\" fill=\"#0ea5e9\"/><line x1=\"135\" y1=\"146\" x2=\"135\" y2=\"196\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"135\" cy=\"170\" r=\"4\" fill=\"#0ea5e9\"/><line x1=\"160\" y1=\"146\" x2=\"160\" y2=\"196\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"160\" cy=\"178\" r=\"4\" fill=\"#0ea5e9\"/><line x1=\"185\" y1=\"146\" x2=\"185\" y2=\"196\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"185\" cy=\"186\" r=\"4\" fill=\"#0ea5e9\"/><line x1=\"210\" y1=\"146\" x2=\"210\" y2=\"196\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"210\" cy=\"170\" r=\"4\" fill=\"#0ea5e9\"/><line x1=\"235\" y1=\"146\" x2=\"235\" y2=\"196\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"235\" cy=\"178\" r=\"4\" fill=\"#0ea5e9\"/><line x1=\"260\" y1=\"146\" x2=\"260\" y2=\"196\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"260\" cy=\"186\" r=\"4\" fill=\"#0ea5e9\"/><line x1=\"285\" y1=\"146\" x2=\"285\" y2=\"196\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"285\" cy=\"170\" r=\"4\" fill=\"#0ea5e9\"/><line x1=\"340\" y1=\"20\" x2=\"250\" y2=\"170\" stroke=\"#facc15\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/><circle cx=\"340\" cy=\"20\" r=\"5\" fill=\"#fde047\"/><circle cx=\"60\" cy=\"70\" r=\"2\" fill=\"#fff\"/><circle cx=\"300\" cy=\"60\" r=\"2\" fill=\"#fff\"/><circle cx=\"200\" cy=\"40\" r=\"1.5\" fill=\"#fff\"/><circle cx=\"90\" cy=\"110\" r=\"1.5\" fill=\"#fff\"/></svg>",
+  "resume": "Le prix Nobel de physique 2026 a été attribué au Belge Francis Halzen pour ses contributions décisives à l'astrophysique. Il a étudié les neutrinos venus de l'espace, des particules minuscules surnommées « particules fantômes » car elles traversent presque tout sans laisser de trace. Pour les repérer, il a utilisé un immense détecteur enfoui dans la glace de l'Antarctique.",
+  "source": "France 24",
+  "titre": "Prix Nobel de physique : le Belge Francis Halzen récompensé pour ses travaux sur les neutrinos",
+  "url": "https://www.france24.com/fr/france/20261006-le-prix-nobel-de-physique-est-d%C3%A9cern%C3%A9-%C3%A0-francis-halzen"
+ },
+ {
+  "ajoutePar": "auto",
   "categorie": "international",
   "date": "2026-10-05",
+  "id": "m-2026-10-05-belgique",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#f6d365\"/><stop offset=\"1\" stop-color=\"#fda085\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><g transform=\"translate(60 0)\"><circle cx=\"0\" cy=\"118\" r=\"11\" fill=\"#3d5a8a\"/><path d=\"M-14 175v-30a14 14 0 0 1 28 0v30z\" fill=\"#3d5a8a\"/><path d=\"M10 140l12-40\" stroke=\"#5a3d2b\" stroke-width=\"3\"/><rect x=\"5\" y=\"72\" width=\"38\" height=\"28\" rx=\"3\" fill=\"#fff\" stroke=\"#5a3d2b\" stroke-width=\"2\"/><path d=\"M12 82h24M12 90h16\" stroke=\"#3d5a8a\" stroke-width=\"3\"/></g><g transform=\"translate(140 0)\"><circle cx=\"0\" cy=\"118\" r=\"11\" fill=\"#e5484d\"/><path d=\"M-14 175v-30a14 14 0 0 1 28 0v30z\" fill=\"#e5484d\"/><path d=\"M10 140l12-40\" stroke=\"#5a3d2b\" stroke-width=\"3\"/><rect x=\"5\" y=\"72\" width=\"38\" height=\"28\" rx=\"3\" fill=\"#fff\" stroke=\"#5a3d2b\" stroke-width=\"2\"/><path d=\"M12 82h24M12 90h16\" stroke=\"#e5484d\" stroke-width=\"3\"/></g><g transform=\"translate(220 0)\"><circle cx=\"0\" cy=\"118\" r=\"11\" fill=\"#2a9d8f\"/><path d=\"M-14 175v-30a14 14 0 0 1 28 0v30z\" fill=\"#2a9d8f\"/><path d=\"M10 140l12-40\" stroke=\"#5a3d2b\" stroke-width=\"3\"/><rect x=\"5\" y=\"72\" width=\"38\" height=\"28\" rx=\"3\" fill=\"#fff\" stroke=\"#5a3d2b\" stroke-width=\"2\"/><path d=\"M12 82h24M12 90h16\" stroke=\"#2a9d8f\" stroke-width=\"3\"/></g><g transform=\"translate(300 0)\"><circle cx=\"0\" cy=\"118\" r=\"11\" fill=\"#6c4ab6\"/><path d=\"M-14 175v-30a14 14 0 0 1 28 0v30z\" fill=\"#6c4ab6\"/><path d=\"M10 140l12-40\" stroke=\"#5a3d2b\" stroke-width=\"3\"/><rect x=\"5\" y=\"72\" width=\"38\" height=\"28\" rx=\"3\" fill=\"#fff\" stroke=\"#5a3d2b\" stroke-width=\"2\"/><path d=\"M12 82h24M12 90h16\" stroke=\"#6c4ab6\" stroke-width=\"3\"/></g><rect y=\"175\" width=\"400\" height=\"25\" fill=\"#9b6b4f\" opacity=\".5\"/><g transform=\"translate(350 40)\"><rect width=\"14\" height=\"30\" fill=\"#111\"/><rect x=\"14\" width=\"14\" height=\"30\" fill=\"#f2c500\"/><rect x=\"28\" width=\"14\" height=\"30\" fill=\"#e5484d\"/></g></svg>",
   "resume": "En Belgique francophone, des lycéens et des étudiants sont descendus dans la rue pour soutenir leurs enseignants et dénoncer la hausse des frais liés aux études.",
   "source": "franceinfo",
   "titre": "En Belgique aussi, lycéens et étudiants manifestent",
-  "url": "https://www.franceinfo.fr/monde/europe/belgique/des-lyceens-et-etudiants-manifestent-aussi-en-belgique-francophone-pour-soutenir-les-enseignants-et-denoncer-des-frais-en-hausse_8223364.html",
-  "id": "m-2026-10-05-belgique"
+  "url": "https://www.franceinfo.fr/monde/europe/belgique/des-lyceens-et-etudiants-manifestent-aussi-en-belgique-francophone-pour-soutenir-les-enseignants-et-denoncer-des-frais-en-hausse_8223364.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "international",
   "date": "2026-10-05",
+  "id": "m-2026-10-05-bosnie",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#22409a\"/><stop offset=\"1\" stop-color=\"#14275e\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M140 20 L300 20 L300 180z\" fill=\"#f7d117\"/><path d=\"M130 28 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M152 50 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M174 72 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M196 94 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M218 116 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M240 138 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><path d=\"M262 160 l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z\" fill=\"#fff\"/><g transform=\"translate(40 110)\"><rect width=\"70\" height=\"56\" rx=\"6\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"3\"/><rect x=\"18\" y=\"-12\" width=\"34\" height=\"22\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"2\"/><rect x=\"12\" y=\"20\" width=\"46\" height=\"5\" fill=\"#bbb\"/><rect x=\"12\" y=\"32\" width=\"30\" height=\"5\" fill=\"#bbb\"/></g></svg>",
   "resume": "Les Bosniens ont voté dimanche lors d'élections générales. Dans ce pays divisé entre trois communautés (bosniaques, serbes et croates), les partis nationalistes serbes et croates gagnent du terrain, et l'abstention (les gens qui ne votent pas) augmente.",
   "source": "Le Monde",
   "titre": "Élections en Bosnie-Herzégovine : les partis nationalistes progressent",
-  "url": "https://www.lemonde.fr/international/article/2026/10/05/elections-generales-en-bosnie-herzegovine-les-partis-nationalistes-serbes-et-croates-gagnent-du-terrain_6788479_3210.html",
-  "id": "m-2026-10-05-bosnie"
+  "url": "https://www.lemonde.fr/international/article/2026/10/05/elections-generales-en-bosnie-herzegovine-les-partis-nationalistes-serbes-et-croates-gagnent-du-terrain_6788479_3210.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "international",
   "date": "2026-10-05",
+  "id": "m-2026-10-05-bresil",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0f8a3d\"/><stop offset=\"1\" stop-color=\"#08602a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M200 30 L330 100 L200 170 L70 100z\" fill=\"#ffd400\"/><circle cx=\"200\" cy=\"100\" r=\"44\" fill=\"#1d3e8a\"/><path d=\"M158 92 q42-18 84 4\" stroke=\"#fff\" stroke-width=\"5\" fill=\"none\"/><g transform=\"translate(300 120)\"><rect width=\"70\" height=\"56\" rx=\"6\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"3\"/><rect x=\"18\" y=\"-12\" width=\"34\" height=\"22\" fill=\"#f4f4f4\" stroke=\"#333\" stroke-width=\"2\"/><path d=\"M22 28 l10 10 18-20\" stroke=\"#0f8a3d\" stroke-width=\"5\" fill=\"none\"/></g></svg>",
   "resume": "Au premier tour de l'élection présidentielle brésilienne, Flavio Bolsonaro, candidat d'extrême droite et fils de l'ancien président Jair Bolsonaro, obtient environ 47 % des voix, contre 45 % pour le président sortant Lula. Les deux candidats s'affronteront au second tour.",
   "source": "Le Monde",
   "titre": "Brésil : Flavio Bolsonaro devance Lula au premier tour de la présidentielle",
-  "url": "https://www.lemonde.fr/international/article/2026/10/05/lula-a-paye-le-prix-du-mecontentement-des-electeurs-au-bresil-flavio-bolsonaro-devance-lula-au-premier-tour-de-l-election-presidentielle_6788483_3210.html",
-  "id": "m-2026-10-05-bresil"
+  "url": "https://www.lemonde.fr/international/article/2026/10/05/lula-a-paye-le-prix-du-mecontentement-des-electeurs-au-bresil-flavio-bolsonaro-devance-lula-au-premier-tour-de-l-election-presidentielle_6788483_3210.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "environnement",
   "date": "2026-10-05",
+  "id": "m-2026-10-05-cop31",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7fc8f0\"/><stop offset=\"1\" stop-color=\"#d9f1ff\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"320\" cy=\"50\" r=\"24\" fill=\"#ffd166\"/><ellipse cx=\"190\" cy=\"150\" rx=\"90\" ry=\"22\" fill=\"#f1d9a0\"/><path d=\"M190 150c-4-40 0-70 10-90\" stroke=\"#8a5a2b\" stroke-width=\"7\" fill=\"none\"/><g fill=\"#3fa34d\"><path d=\"M200 60c-25-10-45 0-55 15 20-8 35-5 55-15z\"/><path d=\"M200 60c20-20 45-15 55 0-20-5-35-3-55 0z\"/><path d=\"M200 60c-5-25 10-40 25-40-12 12-15 25-25 40z\"/><path d=\"M200 60c10 10 15 30 5 45 0-18-3-30-5-45z\"/></g><path d=\"M0 160 Q25 150 50 160 T100 160 T150 160 T200 160 T250 160 T300 160 T350 160 T400 160 V200 H0z\" fill=\"#2f7fd1\"/><path d=\"M0 172 Q25 162 50 172 T100 172 T150 172 T200 172 T250 172 T300 172 T350 172 T400 172 V200 H0z\" fill=\"#1d5fa8\"/><path d=\"M340 150v-40\" stroke=\"#e5484d\" stroke-width=\"4\"/><path d=\"M332 118l8-12 8 12\" fill=\"#e5484d\"/></svg>",
   "resume": "Une réunion de préparation de la COP31, la grande conférence de l'ONU sur le climat, s'est ouverte à Nadi, aux Fidji. Les îles du Pacifique, menacées par la montée des eaux et les tempêtes, veulent alerter sur l'urgence climatique. La COP31 aura lieu le mois prochain en Turquie.",
   "source": "La Libre",
   "titre": "Climat : les pays du Pacifique se réunissent aux Fidji avant la COP31",
-  "url": "https://www.lalibre.be/planete/environnement/2026/10/05/cop31-aux-fidji-les-pays-du-pacifique-veulent-alerter-sur-lurgence-climatique-H4F2L3WDPFAVFDNCW2LS6KU2S4/",
-  "id": "m-2026-10-05-cop31"
+  "url": "https://www.lalibre.be/planete/environnement/2026/10/05/cop31-aux-fidji-les-pays-du-pacifique-veulent-alerter-sur-lurgence-climatique-H4F2L3WDPFAVFDNCW2LS6KU2S4/"
  },
  {
   "ajoutePar": "auto",
   "categorie": "techno",
   "date": "2026-10-05",
+  "id": "m-2026-10-05-nez",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ffe3ee\"/><stop offset=\"1\" stop-color=\"#ffd0e0\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><g transform=\"translate(70 40)\"><rect width=\"140\" height=\"110\" rx=\"14\" fill=\"#fff\" stroke=\"#c76b8f\" stroke-width=\"3\"/><circle cx=\"45\" cy=\"45\" r=\"12\" fill=\"#5fd3ff\"/><circle cx=\"95\" cy=\"45\" r=\"12\" fill=\"#5fd3ff\"/><path d=\"M60 80 q10 12 20 0\" stroke=\"#c76b8f\" stroke-width=\"4\" fill=\"none\"/><path d=\"M70 -20 v20\" stroke=\"#c76b8f\" stroke-width=\"3\"/><circle cx=\"70\" cy=\"-24\" r=\"6\" fill=\"#e5484d\"/></g><g fill=\"none\" stroke=\"#9b6cf2\" stroke-width=\"3\" opacity=\".8\"><path d=\"M220 80 q15 -10 30 0 t30 0 t30 0\"/><path d=\"M220 100 q15 -10 30 0 t30 0 t30 0\"/><path d=\"M220 120 q15 -10 30 0 t30 0 t30 0\"/></g><path d=\"M340 60 c-12 -12 -30 0 -18 14 l18 20 18 -20 c12 -14 -6 -26 -18 -14z\" fill=\"#f06292\" transform=\"translate(-10 10)\"/><path d=\"M330 120 c0 25 -25 25 -25 50 M330 120 c0 25 25 25 25 50\" stroke=\"#f06292\" stroke-width=\"10\" stroke-linecap=\"round\" fill=\"none\" opacity=\"0\"/><g transform=\"translate(320 120)\"><path d=\"M0 0 c-14 0 -14 22 0 22 l0 40\" stroke=\"#f06292\" stroke-width=\"8\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M0 0 c14 0 14 22 0 22\" stroke=\"#f06292\" stroke-width=\"8\" fill=\"none\"/></g></svg>",
   "resume": "Des chercheurs développent un « nez électronique » : un appareil qui analyse des odeurs, aidé par l'intelligence artificielle, pour repérer plus tôt les signes d'un cancer du sein. Dépister tôt permet de mieux soigner.",
   "source": "BFM Business",
   "titre": "Un « nez électronique » pour dépister le cancer du sein",
-  "url": "https://www.bfmtv.com/economie/replay-emissions/good-morning-business/culture-ia-un-nez-electronique-pour-depister-le-cancer-du-sein-05-10_EN-202610050079.html",
-  "id": "m-2026-10-05-nez"
+  "url": "https://www.bfmtv.com/economie/replay-emissions/good-morning-business/culture-ia-un-nez-electronique-pour-depister-le-cancer-du-sein-05-10_EN-202610050079.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "sante",
   "date": "2026-10-05",
+  "id": "m-2026-10-05-nobel",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#2a1d3d\"/><stop offset=\"1\" stop-color=\"#120e1f\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"250\" cy=\"100\" r=\"70\" fill=\"#7c5cff\" opacity=\".18\"/><path d=\"M150 100l100 0\" stroke=\"#5fd3ff\" stroke-width=\"4\" opacity=\".0\"/><path d=\"M60 100 L190 100\" stroke=\"#5fd3ff\" stroke-width=\"10\" stroke-linecap=\"round\" opacity=\".35\"/><path d=\"M60 100 L190 100\" stroke=\"#bff1ff\" stroke-width=\"3\" stroke-linecap=\"round\"/><g fill=\"#f2a6c0\" stroke=\"#c76b8f\" stroke-width=\"3\"><path d=\"M200 70c10-30 60-35 80-15 25-5 45 15 40 40 15 15 5 45-20 45-10 20-45 20-55 5-25 10-55-5-50-30-15-15-10-40 5-45z\"/></g><path d=\"M230 60c5 20-10 30 0 50M260 55c-5 25 15 30 5 60M290 80c-10 10-5 30 10 35\" fill=\"none\" stroke=\"#c76b8f\" stroke-width=\"3\"/><g fill=\"#bff1ff\"><circle cx=\"240\" cy=\"95\" r=\"5\"/><circle cx=\"275\" cy=\"110\" r=\"4\"/><circle cx=\"300\" cy=\"90\" r=\"3.5\"/></g><circle cx=\"80\" cy=\"150\" r=\"26\" fill=\"#f2ae02\" stroke=\"#b37f00\" stroke-width=\"4\"/><circle cx=\"80\" cy=\"150\" r=\"16\" fill=\"none\" stroke=\"#b37f00\" stroke-width=\"2.5\"/><path d=\"M68 120l12 14 12-14\" fill=\"#e5484d\"/></svg>",
   "resume": "Karl Deisseroth, Peter Hegemann et Georg Nagel reçoivent le Nobel de médecine. Leurs travaux permettent de contrôler des neurones avec de la lumière, une méthode qui a ouvert une nouvelle ère pour l'étude du cerveau.",
   "source": "franceinfo",
   "titre": "Le prix Nobel de médecine 2026 récompense l'optogénétique",
-  "url": "https://www.franceinfo.fr/monde/prix-nobel/le-nobel-de-medecine-2026-decerne-aux-chercheurs-karl-deisseroth-peter-hegemann-et-georg-nagel-pour-avoir-pose-les-fondements-d-une-nouvelle-ere-en-neurosciences_8223166.html",
-  "id": "m-2026-10-05-nobel"
+  "url": "https://www.franceinfo.fr/monde/prix-nobel/le-nobel-de-medecine-2026-decerne-aux-chercheurs-karl-deisseroth-peter-hegemann-et-georg-nagel-pour-avoir-pose-les-fondements-d-une-nouvelle-ere-en-neurosciences_8223166.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "economie",
   "date": "2026-10-05",
+  "id": "m-2026-10-05-petrole",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#f7c873\"/><stop offset=\"1\" stop-color=\"#f19a4a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"320\" cy=\"60\" r=\"28\" fill=\"#fff3c4\" opacity=\".9\"/><path d=\"M0 170 Q100 150 200 165 T400 160 V200 H0z\" fill=\"#d98a3a\"/><g transform=\"translate(60 60)\" fill=\"none\" stroke=\"#2b2f36\" stroke-width=\"5\" stroke-linejoin=\"round\"><path d=\"M10 110 L50 20 L90 110\"/><path d=\"M25 75 h50 M35 50 h30\"/><path d=\"M50 20 L110 0 L140 30\"/><path d=\"M140 30 v60\"/></g><g transform=\"translate(250 120)\"><rect width=\"34\" height=\"46\" rx=\"6\" fill=\"#2b2f36\"/><rect x=\"40\" width=\"34\" height=\"46\" rx=\"6\" fill=\"#2b2f36\"/><rect x=\"80\" width=\"34\" height=\"46\" rx=\"6\" fill=\"#2b2f36\"/><path d=\"M0 14h114M0 32h114\" stroke=\"#f2ae02\" stroke-width=\"3\"/></g><path d=\"M200 70 q-10 16 0 22 q10-6 0-22z\" fill=\"#111\"/></svg>",
   "resume": "Les grands pays producteurs du Moyen-Orient (hors Iran) exportent de nouveau 18 millions de barils de pétrole par jour, comme avant le conflit qui a éclaté en février. C'est important car ce pétrole influence le prix de l'essence dans le monde entier.",
   "source": "BFM Business",
   "titre": "Le pétrole du Moyen-Orient retrouve son niveau d'avant-guerre",
-  "url": "https://www.bfmtv.com/economie/entreprises/energie/18-millions-de-barils-par-jour-les-exportations-de-petrole-du-moyen-orient-retrouvent-leur-niveau-d-avant-guerre_AV-202610050088.html",
-  "id": "m-2026-10-05-petrole"
+  "url": "https://www.bfmtv.com/economie/entreprises/energie/18-millions-de-barils-par-jour-les-exportations-de-petrole-du-moyen-orient-retrouvent-leur-niveau-d-avant-guerre_AV-202610050088.html"
  },
  {
-  "id": "m-2026-10-05-espagne",
-  "titre": "Espagne : Pedro Sánchez convoque des élections législatives anticipées le 29 novembre",
-  "resume": "Le Premier ministre espagnol Pedro Sánchez a dissous le Parlement et convoqué des élections « anticipées », c'est-à-dire organisées avant la date prévue. Il a pris cette décision après le rejet par les députés de ses décrets sur le logement, alors que les loyers flambent en Espagne. Les Espagnols voteront le 29 novembre.",
+  "ajoutePar": "auto",
   "categorie": "international",
-  "source": "RTS",
-  "url": "https://www.rts.ch/info/monde/2026/article/espagne-pedro-sanchez-convoque-des-legislatives-anticipees-29376210.html",
   "date": "2026-10-05",
+  "id": "m-2026-10-05-espagne",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fff7e6\"/><stop offset=\"1\" stop-color=\"#ffe0b2\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><g transform=\"translate(240 40)\"><rect width=\"135\" height=\"24\" fill=\"#aa151b\"/><rect y=\"24\" width=\"135\" height=\"48\" fill=\"#f1bf00\"/><rect y=\"72\" width=\"135\" height=\"24\" fill=\"#aa151b\"/></g><rect x=\"236\" y=\"40\" width=\"4\" height=\"145\" fill=\"#6b4f2a\"/><g transform=\"translate(60 80)\"><rect width=\"110\" height=\"80\" rx=\"4\" fill=\"#475569\"/><rect x=\"35\" y=\"-4\" width=\"40\" height=\"8\" fill=\"#1e293b\"/><rect x=\"42\" y=\"-34\" width=\"26\" height=\"36\" fill=\"#fff\" stroke=\"#334155\" stroke-width=\"2\"/><text x=\"55\" y=\"45\" font-family=\"Arial\" font-size=\"18\" font-weight=\"bold\" fill=\"#fff\" text-anchor=\"middle\">29/11</text></g><g transform=\"translate(270 145)\"><rect width=\"40\" height=\"35\" fill=\"#fde68a\"/><polygon points=\"-5,0 20,-20 45,0\" fill=\"#c2410c\"/><rect x=\"15\" y=\"15\" width=\"10\" height=\"20\" fill=\"#7c2d12\"/><text x=\"62\" y=\"10\" font-family=\"Arial\" font-size=\"22\" font-weight=\"bold\" fill=\"#aa151b\">€↑</text></g><rect y=\"185\" width=\"400\" height=\"15\" fill=\"#d6a76c\"/></svg>",
-  "ajoutePar": "auto"
+  "resume": "Le Premier ministre espagnol Pedro Sánchez a dissous le Parlement et convoqué des élections « anticipées », c'est-à-dire organisées avant la date prévue. Il a pris cette décision après le rejet par les députés de ses décrets sur le logement, alors que les loyers flambent en Espagne. Les Espagnols voteront le 29 novembre.",
+  "source": "RTS",
+  "titre": "Espagne : Pedro Sánchez convoque des élections législatives anticipées le 29 novembre",
+  "url": "https://www.rts.ch/info/monde/2026/article/espagne-pedro-sanchez-convoque-des-legislatives-anticipees-29376210.html"
  },
  {
-  "id": "m-2026-10-05-france-belgique",
-  "titre": "Football : l'équipe de France renverse la Belgique (4-1) en Ligue des nations",
-  "resume": "Menés au score, les Bleus de Zinédine Zidane ont finalement battu la Belgique 4 à 1 en Ligue des nations, une compétition entre sélections européennes. Les joueurs entrés en cours de match (les remplaçants) ont changé le visage de la rencontre. C'est la première victoire en France de l'équipe depuis l'arrivée de Zidane comme sélectionneur.",
+  "ajoutePar": "auto",
   "categorie": "sport",
-  "source": "franceinfo",
-  "url": "https://www.franceinfo.fr/sports/foot/equipe-de-france/transfiguree-par-ses-remplacants-l-equipe-de-france-renverse-la-belgique-en-ligue-des-nations_8224009.html",
   "date": "2026-10-05",
+  "id": "m-2026-10-05-france-belgique",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#14532d\"/><stop offset=\"1\" stop-color=\"#22c55e\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M0 120h400\" stroke=\"#bbf7d0\" stroke-width=\"2\"/><circle cx=\"200\" cy=\"120\" r=\"35\" fill=\"none\" stroke=\"#bbf7d0\" stroke-width=\"2\"/><g transform=\"translate(150 50)\"><rect width=\"100\" height=\"40\" rx=\"6\" fill=\"#0f172a\"/><text x=\"50\" y=\"29\" font-family=\"Arial\" font-size=\"24\" font-weight=\"bold\" fill=\"#fff\" text-anchor=\"middle\">4 - 1</text></g><g transform=\"translate(30 60)\"><rect width=\"22\" height=\"40\" fill=\"#002395\"/><rect x=\"22\" width=\"22\" height=\"40\" fill=\"#fff\"/><rect x=\"44\" width=\"22\" height=\"40\" fill=\"#ed2939\"/></g><g transform=\"translate(300 60)\"><rect width=\"22\" height=\"40\" fill=\"#111\"/><rect x=\"22\" width=\"22\" height=\"40\" fill=\"#fdda24\"/><rect x=\"44\" width=\"22\" height=\"40\" fill=\"#ef3340\"/></g><g transform=\"translate(200 160)\"><circle r=\"16\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"2\"/><polygon points=\"0,-7 7,-2 4,6 -4,6 -7,-2\" fill=\"#111\"/></g></svg>",
-  "ajoutePar": "auto"
+  "resume": "Menés au score, les Bleus de Zinédine Zidane ont finalement battu la Belgique 4 à 1 en Ligue des nations, une compétition entre sélections européennes. Les joueurs entrés en cours de match (les remplaçants) ont changé le visage de la rencontre. C'est la première victoire en France de l'équipe depuis l'arrivée de Zidane comme sélectionneur.",
+  "source": "franceinfo",
+  "titre": "Football : l'équipe de France renverse la Belgique (4-1) en Ligue des nations",
+  "url": "https://www.franceinfo.fr/sports/foot/equipe-de-france/transfiguree-par-ses-remplacants-l-equipe-de-france-renverse-la-belgique-en-ligue-des-nations_8224009.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "sciences",
   "date": "2026-10-04",
+  "id": "m-2026-10-04-saturne",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0b1030\"/><stop offset=\"1\" stop-color=\"#1d1b4a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"30\" cy=\"30\" r=\"1.5\" fill=\"#fff\" opacity=\"0.8\"/><circle cx=\"90\" cy=\"160\" r=\"1\" fill=\"#fff\" opacity=\"0.6\"/><circle cx=\"140\" cy=\"40\" r=\"1.2\" fill=\"#fff\" opacity=\"0.7\"/><circle cx=\"360\" cy=\"30\" r=\"1.6\" fill=\"#fff\" opacity=\"0.9\"/><circle cx=\"330\" cy=\"170\" r=\"1\" fill=\"#fff\" opacity=\"0.6\"/><circle cx=\"60\" cy=\"90\" r=\"0.9\" fill=\"#fff\" opacity=\"0.5\"/><circle cx=\"380\" cy=\"120\" r=\"1.2\" fill=\"#fff\" opacity=\"0.7\"/><circle cx=\"250\" cy=\"20\" r=\"1\" fill=\"#fff\" opacity=\"0.6\"/><ellipse cx=\"200\" cy=\"100\" rx=\"120\" ry=\"26\" fill=\"none\" stroke=\"#d8c08a\" stroke-width=\"10\" transform=\"rotate(-15 200 100)\" opacity=\".9\"/><circle cx=\"200\" cy=\"100\" r=\"50\" fill=\"#e8c77a\"/><path d=\"M152 88q48 10 96 0M150 104q50 12 100 0M156 120q44 8 88 0\" stroke=\"#c99a4b\" stroke-width=\"5\" fill=\"none\" opacity=\".7\"/><path d=\"M80 100 A120 26 0 0 0 320 100\" fill=\"none\" stroke=\"#f0dca8\" stroke-width=\"10\" transform=\"rotate(-15 200 100)\"/><circle cx=\"335\" cy=\"60\" r=\"7\" fill=\"#e0a85a\"/></svg>",
   "resume": "Le 4 octobre, Saturne est arrivée à l'opposition : la Terre se trouve entre elle et le Soleil, elle est donc visible toute la nuit. Avec une petite lunette, on peut voir ses anneaux et sa plus grande lune, Titan.",
   "source": "Ciel & Espace",
   "titre": "Saturne au meilleur de sa forme dans le ciel d'octobre",
-  "url": "https://www.cieletespace.fr/article/en-octobre-2026-ne-laissez-pas-filer-saturne",
-  "id": "m-2026-10-04-saturne"
+  "url": "https://www.cieletespace.fr/article/en-octobre-2026-ne-laissez-pas-filer-saturne"
  },
  {
-  "id": "m-2026-10-04-adenot",
-  "titre": "Espace : la relève est arrivée sur l'ISS, Sophie Adenot va rentrer sur Terre",
-  "resume": "Quatre astronautes de la mission Crew-13 ont rejoint la Station spatiale internationale (ISS) en moins de 8 heures, un record pour un vaisseau américain. Ils remplacent l'équipage de la Française Sophie Adenot, qui a passé plus de sept mois dans l'espace, le plus long séjour pour un astronaute français. Son retour, d'abord prévu lundi, a été reporté par la NASA à cause de la météo.",
+  "ajoutePar": "auto",
   "categorie": "sciences",
-  "source": "France 24",
-  "url": "https://www.france24.com/fr/sciences/20261004-le-retour-sur-terre-de-sophie-adenot-report%C3%A9-par-la-nasa-en-raison-de-la-m%C3%A9t%C3%A9o",
   "date": "2026-10-04",
+  "id": "m-2026-10-04-adenot",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0b1d3a\"/><stop offset=\"1\" stop-color=\"#1e3a6e\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"180\" cy=\"20\" r=\"1.5\" fill=\"#fff\"/><circle cx=\"320\" cy=\"30\" r=\"2\" fill=\"#fff\"/><circle cx=\"380\" cy=\"90\" r=\"1.5\" fill=\"#fff\"/><circle cx=\"60\" cy=\"70\" r=\"1.5\" fill=\"#fff\"/><circle cx=\"250\" cy=\"60\" r=\"1\" fill=\"#fff\"/><ellipse cx=\"200\" cy=\"230\" rx=\"260\" ry=\"80\" fill=\"#2b7bd8\"/><path d=\"M60 180q40-20 80 0t70-5\" stroke=\"#4caf50\" stroke-width=\"10\" fill=\"none\"/><g transform=\"translate(210 70)\"><rect x=\"-70\" y=\"-6\" width=\"60\" height=\"18\" fill=\"#3b82f6\" stroke=\"#cbd5e1\"/><rect x=\"40\" y=\"-6\" width=\"60\" height=\"18\" fill=\"#3b82f6\" stroke=\"#cbd5e1\"/><rect x=\"-10\" y=\"-2\" width=\"50\" height=\"10\" fill=\"#e2e8f0\"/><rect x=\"5\" y=\"-14\" width=\"20\" height=\"34\" fill=\"#cbd5e1\"/></g><g transform=\"translate(90 110)\"><path d=\"M0 0q12-22 24 0v18h-24z\" fill=\"#f8fafc\"/><rect x=\"2\" y=\"18\" width=\"20\" height=\"5\" fill=\"#334155\"/></g><path d=\"M115 110q40-30 80-40\" stroke=\"#fbbf24\" stroke-width=\"2\" stroke-dasharray=\"5 5\" fill=\"none\"/></svg>",
-  "ajoutePar": "auto"
+  "resume": "Quatre astronautes de la mission Crew-13 ont rejoint la Station spatiale internationale (ISS) en moins de 8 heures, un record pour un vaisseau américain. Ils remplacent l'équipage de la Française Sophie Adenot, qui a passé plus de sept mois dans l'espace, le plus long séjour pour un astronaute français. Son retour, d'abord prévu lundi, a été reporté par la NASA à cause de la météo.",
+  "source": "France 24",
+  "titre": "Espace : la relève est arrivée sur l'ISS, Sophie Adenot va rentrer sur Terre",
+  "url": "https://www.france24.com/fr/sciences/20261004-le-retour-sur-terre-de-sophie-adenot-report%C3%A9-par-la-nasa-en-raison-de-la-m%C3%A9t%C3%A9o"
  },
  {
-  "id": "m-2026-10-04-ukraine-pourparlers",
-  "titre": "Guerre en Ukraine : Washington veut organiser des pourparlers avec Russes et Ukrainiens fin octobre",
-  "resume": "Le président ukrainien Volodymyr Zelensky a annoncé que les États-Unis proposent une réunion à trois, entre Américains, Russes et Ukrainiens, d'ici la fin du mois d'octobre. Il s'agirait de discussions « techniques », c'est-à-dire entre experts et non entre chefs d'État. Le but est de chercher une issue à la guerre commencée par la Russie en 2022.",
+  "ajoutePar": "auto",
   "categorie": "international",
-  "source": "franceinfo",
-  "url": "https://franceinfo.fr/monde/europe/manifestations-en-ukraine/washington-veut-organiser-des-pourparlers-trilateraux-avec-russes-et-ukrainiens-fin-octobre-annonce-volodymyr-zelensky_8222308.html",
   "date": "2026-10-04",
+  "id": "m-2026-10-04-ukraine-pourparlers",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#e0e7ff\"/><stop offset=\"1\" stop-color=\"#f8fafc\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><ellipse cx=\"220\" cy=\"140\" rx=\"140\" ry=\"40\" fill=\"#8b5e3c\"/><ellipse cx=\"220\" cy=\"132\" rx=\"140\" ry=\"40\" fill=\"#a47148\"/><g transform=\"translate(110 100)\"><rect width=\"40\" height=\"13\" fill=\"#0057b7\"/><rect y=\"13\" width=\"40\" height=\"13\" fill=\"#ffd700\"/></g><g transform=\"translate(200 90)\"><rect width=\"40\" height=\"26\" fill=\"#fff\"/><rect width=\"40\" height=\"2\" fill=\"#b22234\"/><rect y=\"4\" width=\"40\" height=\"2\" fill=\"#b22234\"/><rect y=\"8\" width=\"40\" height=\"2\" fill=\"#b22234\"/><rect y=\"12\" width=\"40\" height=\"2\" fill=\"#b22234\"/><rect y=\"16\" width=\"40\" height=\"2\" fill=\"#b22234\"/><rect y=\"20\" width=\"40\" height=\"2\" fill=\"#b22234\"/><rect y=\"24\" width=\"40\" height=\"2\" fill=\"#b22234\"/><rect width=\"16\" height=\"14\" fill=\"#3c3b6e\"/></g><g transform=\"translate(290 100)\"><rect width=\"40\" height=\"9\" fill=\"#fff\" stroke=\"#ccc\"/><rect y=\"9\" width=\"40\" height=\"9\" fill=\"#0039a6\"/><rect y=\"18\" width=\"40\" height=\"8\" fill=\"#d52b1e\"/></g><circle cx=\"320\" cy=\"50\" r=\"22\" fill=\"#fff\" stroke=\"#64748b\" stroke-width=\"3\"/><path d=\"M308 50q12-14 24 0q-12 14-24 0z\" fill=\"#86efac\"/><rect x=\"170\" y=\"150\" width=\"30\" height=\"20\" fill=\"#fff\"/><rect x=\"250\" y=\"150\" width=\"30\" height=\"20\" fill=\"#fff\"/></svg>",
-  "ajoutePar": "auto"
+  "resume": "Le président ukrainien Volodymyr Zelensky a annoncé que les États-Unis proposent une réunion à trois, entre Américains, Russes et Ukrainiens, d'ici la fin du mois d'octobre. Il s'agirait de discussions « techniques », c'est-à-dire entre experts et non entre chefs d'État. Le but est de chercher une issue à la guerre commencée par la Russie en 2022.",
+  "source": "franceinfo",
+  "titre": "Guerre en Ukraine : Washington veut organiser des pourparlers avec Russes et Ukrainiens fin octobre",
+  "url": "https://franceinfo.fr/monde/europe/manifestations-en-ukraine/washington-veut-organiser-des-pourparlers-trilateraux-avec-russes-et-ukrainiens-fin-octobre-annonce-volodymyr-zelensky_8222308.html"
  },
  {
-  "id": "m-2026-10-04-evenepoel",
-  "titre": "Cyclisme : le Belge Remco Evenepoel devient champion d'Europe sur route",
-  "resume": "Le coureur belge Remco Evenepoel a remporté la course en ligne des championnats d'Europe de cyclisme. Il a battu l'Italien Giulio Ciccone au sprint, avec une photo-finish (une photo prise sur la ligne d'arrivée pour départager les coureurs). Le meilleur Français, Léo Bisiaux, a terminé 9e.",
+  "ajoutePar": "auto",
   "categorie": "sport",
-  "source": "franceinfo",
-  "url": "https://www.franceinfo.fr/sports/cyclisme/remco-evenepoel-devient-champion-d-europe-en-battant-giulio-ciccone-a-la-photo-finish_8222251.html",
   "date": "2026-10-04",
+  "id": "m-2026-10-04-evenepoel",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#87ceeb\"/><stop offset=\"1\" stop-color=\"#e0f7fa\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"150\" width=\"400\" height=\"50\" fill=\"#555\"/><rect y=\"146\" width=\"400\" height=\"6\" fill=\"#7cb342\"/><rect x=\"300\" y=\"60\" width=\"6\" height=\"95\" fill=\"#333\"/><rect x=\"380\" y=\"60\" width=\"6\" height=\"95\" fill=\"#333\"/><rect x=\"300\" y=\"55\" width=\"86\" height=\"20\" fill=\"#003399\"/><text x=\"343\" y=\"70\" font-family=\"Arial\" font-size=\"12\" font-weight=\"bold\" fill=\"#ffcc00\" text-anchor=\"middle\">ARRIVÉE</text><g transform=\"translate(180 95)\"><circle cx=\"0\" cy=\"45\" r=\"20\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\"/><circle cx=\"70\" cy=\"45\" r=\"20\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\"/><path d=\"M0 45l25-30h35l10 30M25 15l15 30h-40\" stroke=\"#1d4ed8\" stroke-width=\"4\" fill=\"none\"/><path d=\"M35 -5l10 25\" stroke=\"#1d4ed8\" stroke-width=\"9\"/><circle cx=\"42\" cy=\"-12\" r=\"8\" fill=\"#fde68a\"/><path d=\"M36 -18h14\" stroke=\"#ef4444\" stroke-width=\"5\"/></g><g transform=\"translate(40 60)\"><circle r=\"18\" fill=\"#003399\"/><circle cx=\"0\" cy=\"-12\" r=\"2\" fill=\"#ffcc00\"/><circle cx=\"12\" cy=\"0\" r=\"2\" fill=\"#ffcc00\"/><circle cx=\"0\" cy=\"12\" r=\"2\" fill=\"#ffcc00\"/><circle cx=\"-12\" cy=\"0\" r=\"2\" fill=\"#ffcc00\"/><circle cx=\"8\" cy=\"-8\" r=\"2\" fill=\"#ffcc00\"/><circle cx=\"-8\" cy=\"8\" r=\"2\" fill=\"#ffcc00\"/><circle cx=\"8\" cy=\"8\" r=\"2\" fill=\"#ffcc00\"/><circle cx=\"-8\" cy=\"-8\" r=\"2\" fill=\"#ffcc00\"/></g></svg>",
-  "ajoutePar": "auto"
+  "resume": "Le coureur belge Remco Evenepoel a remporté la course en ligne des championnats d'Europe de cyclisme. Il a battu l'Italien Giulio Ciccone au sprint, avec une photo-finish (une photo prise sur la ligne d'arrivée pour départager les coureurs). Le meilleur Français, Léo Bisiaux, a terminé 9e.",
+  "source": "franceinfo",
+  "titre": "Cyclisme : le Belge Remco Evenepoel devient champion d'Europe sur route",
+  "url": "https://www.franceinfo.fr/sports/cyclisme/remco-evenepoel-devient-champion-d-europe-en-battant-giulio-ciccone-a-la-photo-finish_8222251.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "environnement",
   "date": "2026-10-03",
+  "id": "m-2026-10-03-electricite",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#bfe6ff\"/><stop offset=\"1\" stop-color=\"#eaf7ff\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"80\" cy=\"50\" r=\"26\" fill=\"#ffd166\"/><g transform=\"translate(140 40)\"><path d=\"M30 130 L40 0 L50 130z\" fill=\"#f4f4f4\" stroke=\"#aaa\" stroke-width=\"2\"/><g transform=\"translate(40 0)\"><path d=\"M0 0 L-6 -60 L6 -60z M0 0 L55 25 L50 35z M0 0 L-50 35 L-56 25z\" fill=\"#fff\" stroke=\"#aaa\" stroke-width=\"1.5\"/></g></g><g transform=\"translate(40 130)\"><rect width=\"90\" height=\"40\" fill=\"#2b4ca8\" transform=\"skewX(-15)\"/><path d=\"M0 13h90M0 26h90M30 0v40M60 0v40\" stroke=\"#9fc0ff\" stroke-width=\"1.5\" transform=\"skewX(-15)\"/></g><path d=\"M300 40 l-30 60 h24 l-18 60 46-78 h-26 l18-42z\" fill=\"#f2ae02\" stroke=\"#b37f00\" stroke-width=\"2\"/><text x=\"300\" y=\"190\" font-family=\"Arial,sans-serif\" font-size=\"22\" font-weight=\"900\" fill=\"#e5484d\">− €</text></svg>",
   "resume": "Depuis le début de l'année, l'électricité a été vendue à un prix négatif pendant 520 heures sur le marché de gros, un record. Cela arrive quand on produit plus d'électricité (soleil, vent, nucléaire) que ce que l'on consomme. Mais cela ne fait pas baisser les factures des ménages.",
   "source": "BFM Business",
   "titre": "Électricité : record de 520 heures à prix négatifs en France",
-  "url": "https://www.bfmtv.com/economie/video-electricite-la-france-bat-un-record-historique-avec-520-heures-a-prix-negatifs_VN-202610030077.html",
-  "id": "m-2026-10-03-electricite"
+  "url": "https://www.bfmtv.com/economie/video-electricite-la-france-bat-un-record-historique-avec-520-heures-a-prix-negatifs_VN-202610030077.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "sciences",
   "date": "2026-10-03",
+  "id": "m-2026-10-03-hyprspace",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0e1a3a\"/><stop offset=\"1\" stop-color=\"#2a3f7a\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"30\" cy=\"30\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"80\" cy=\"70\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"350\" cy=\"40\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"300\" cy=\"90\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"60\" cy=\"150\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"370\" cy=\"140\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"150\" cy=\"20\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><circle cx=\"250\" cy=\"30\" r=\"1.3\" fill=\"#fff\" opacity=\".8\"/><g transform=\"translate(200 100) rotate(35)\"><path d=\"M-12 -70 q12 -25 24 0 v90 h-24z\" fill=\"#e8ecf5\"/><path d=\"M-12 -40 h24\" stroke=\"#2b4ca8\" stroke-width=\"5\"/><path d=\"M-12 -30 h24\" stroke=\"#e5484d\" stroke-width=\"5\"/><path d=\"M-12 10 l-14 20 h14z M12 10 l14 20 h-14z\" fill=\"#e5484d\"/><path d=\"M-8 22 q8 50 16 0z\" fill=\"#f5a524\"/><path d=\"M-4 22 q4 30 8 0z\" fill=\"#ffe08a\"/></g><g transform=\"translate(40 130) rotate(-20)\"><path d=\"M0 20 q50 -40 100 0 q-50 30 -100 0z\" fill=\"#d9a35a\" stroke=\"#a8742d\" stroke-width=\"2\"/><path d=\"M25 10 l10 14 M50 6 l10 14 M75 10 l10 14\" stroke=\"#a8742d\" stroke-width=\"2.5\"/></g></svg>",
   "resume": "Près de Bordeaux, l'entreprise Hyprspace a inauguré son usine, surnommée « la Boulangerie », pour fabriquer en série ses micro-lanceurs « Baguette ». Ces petites fusées doivent envoyer de petits satellites dans l'espace.",
   "source": "L'Usine Nouvelle",
   "titre": "Espace : la start-up française Hyprspace ouvre son usine de mini-fusées",
-  "url": "https://www.usinenouvelle.com/industrie-technologie/deeptech/new-space/new-space-le-francais-hyprspace-inaugure-sa-boulangerie-pres-de-bordeaux-pour-produire-en-serie-ses-micro-lanceurs-baguette.NGNDRDTIKVBNXLHXA3PPWUYM4Q.html",
-  "id": "m-2026-10-03-hyprspace"
+  "url": "https://www.usinenouvelle.com/industrie-technologie/deeptech/new-space/new-space-le-francais-hyprspace-inaugure-sa-boulangerie-pres-de-bordeaux-pour-produire-en-serie-ses-micro-lanceurs-baguette.NGNDRDTIKVBNXLHXA3PPWUYM4Q.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "international",
   "date": "2026-10-03",
+  "id": "m-2026-10-03-kiev",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7d8aa6\"/><stop offset=\"1\" stop-color=\"#c9cfda\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M0 150 H400 V200 H0z\" fill=\"#3c6e9e\"/><path d=\"M0 160 Q50 155 100 160 T200 160 T300 160 T400 160\" stroke=\"#8fb4d6\" stroke-width=\"2\" fill=\"none\"/><path d=\"M20 120 H170 M230 120 H380\" stroke=\"#4a4f5a\" stroke-width=\"10\"/><path d=\"M170 120 l18 14 M230 120 l-14 18\" stroke=\"#4a4f5a\" stroke-width=\"8\"/><rect x=\"40\" y=\"120\" width=\"10\" height=\"40\" fill=\"#5c6270\"/><rect x=\"110\" y=\"120\" width=\"10\" height=\"40\" fill=\"#5c6270\"/><rect x=\"280\" y=\"120\" width=\"10\" height=\"40\" fill=\"#5c6270\"/><rect x=\"350\" y=\"120\" width=\"10\" height=\"40\" fill=\"#5c6270\"/><path d=\"M100 120 L100 60 L80 120 M100 60 L130 120 M300 120 L300 60 L270 120 M300 60 L330 120\" stroke=\"#5c6270\" stroke-width=\"3\" fill=\"none\"/><g fill=\"#f5a524\"><path d=\"M200 105 l8-22 6 16 12-14-4 22z\"/></g><circle cx=\"200\" cy=\"95\" r=\"30\" fill=\"#ccc\" opacity=\".35\"/><g transform=\"translate(330 20)\"><rect width=\"50\" height=\"17\" fill=\"#2f6fd1\"/><rect y=\"17\" width=\"50\" height=\"17\" fill=\"#ffd400\"/></g></svg>",
   "resume": "En deux jours, l'armée russe a frappé deux des principaux ponts qui traversent le fleuve Dniepr à Kiev, la capitale de l'Ukraine. Ces ponts sont essentiels pour circuler dans la ville. La guerre, commencée en 2022 avec l'invasion russe, se poursuit.",
   "source": "France 24",
   "titre": "Guerre en Ukraine : deux grands ponts de Kiev touchés par des frappes russes",
-  "url": "https://www.france24.com/fr/europe/20261003-en-direct-ukraine-un-nouveau-grand-pont-de-kiev-touch%C3%A9-par-des-frappes-russes",
-  "id": "m-2026-10-03-kiev"
+  "url": "https://www.france24.com/fr/europe/20261003-en-direct-ukraine-un-nouveau-grand-pont-de-kiev-touch%C3%A9-par-des-frappes-russes"
  },
  {
   "ajoutePar": "auto",
   "categorie": "economie",
   "date": "2026-10-03",
+  "id": "m-2026-10-03-taux",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1f2a3c\"/><stop offset=\"1\" stop-color=\"#121924\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M30 160 L90 150 L150 152 L210 130 L270 110 L340 70\" fill=\"none\" stroke=\"#5cc98a\" stroke-width=\"5\" stroke-linejoin=\"round\"/><path d=\"M30 160 L90 150 L150 152 L210 130 L270 110 L340 70 V180 H30z\" fill=\"#5cc98a\" opacity=\".15\"/><g transform=\"translate(300 25)\"><circle cx=\"30\" cy=\"30\" r=\"30\" fill=\"#f2ae02\"/><text x=\"30\" y=\"41\" text-anchor=\"middle\" font-family=\"Arial,sans-serif\" font-size=\"28\" font-weight=\"900\" fill=\"#1f2a3c\">5%</text></g><g transform=\"translate(40 30)\"><rect width=\"70\" height=\"44\" rx=\"5\" fill=\"#fff\"/><path d=\"M10 14h50M10 24h40M10 34h30\" stroke=\"#8aa2d1\" stroke-width=\"4\"/><circle cx=\"58\" cy=\"34\" r=\"6\" fill=\"#e5484d\"/></g></svg>",
   "resume": "Pour emprunter sur 10 ans, l'État français doit payer un taux d'intérêt d'environ 5 %, le plus haut depuis 2002. Les investisseurs ont moins confiance, à cause d'une dette élevée et d'une croissance faible, ce qui rend chaque emprunt plus coûteux.",
   "source": "BFM Business",
   "titre": "La France emprunte désormais à près de 5 %, un niveau jamais vu depuis 2002",
-  "url": "https://www.bfmtv.com/economie/economie-social/finances-publiques/la-france-emprunte-a-5-et-alors-quel-est-le-probleme-taux-a-10-ans-oat-spread-on-vous-explique-la-crise-de-la-dette-francaise-sans-jargon-financier_AV-202610030055.html",
-  "id": "m-2026-10-03-taux"
+  "url": "https://www.bfmtv.com/economie/economie-social/finances-publiques/la-france-emprunte-a-5-et-alors-quel-est-le-probleme-taux-a-10-ans-oat-spread-on-vous-explique-la-crise-de-la-dette-francaise-sans-jargon-financier_AV-202610030055.html"
  },
  {
-  "id": "m-2026-10-03-lettonie",
-  "titre": "Lettonie : le parti pro-européen du Premier ministre remporte les législatives",
-  "resume": "En Lettonie, petit pays balte voisin de la Russie et membre de l'Union européenne, la Liste unie du Premier ministre Andris Kulbergs est arrivée en tête des élections législatives avec environ 35 % des voix. Ce parti soutient l'Europe et l'Ukraine. Les partis populistes et un parti favorable à la Russie progressent aussi.",
+  "ajoutePar": "auto",
   "categorie": "international",
-  "source": "franceinfo",
-  "url": "https://www.franceinfo.fr/monde/europe/le-parti-pro-europeen-et-pro-ukrainien-liste-unie-arrive-en-tete-des-legislatives-en-lettonie-selon-des-resultats-partiels_8221912.html",
   "date": "2026-10-03",
+  "id": "m-2026-10-03-lettonie",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#f1f5f9\"/><stop offset=\"1\" stop-color=\"#cbd5e1\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><g transform=\"translate(230 30)\"><rect width=\"140\" height=\"36\" fill=\"#9e3039\"/><rect y=\"36\" width=\"140\" height=\"18\" fill=\"#fff\"/><rect y=\"54\" width=\"140\" height=\"36\" fill=\"#9e3039\"/></g><rect x=\"226\" y=\"30\" width=\"4\" height=\"150\" fill=\"#6b4f2a\"/><g transform=\"translate(70 90)\"><rect width=\"110\" height=\"80\" rx=\"4\" fill=\"#1e3a8a\"/><rect x=\"35\" y=\"-4\" width=\"40\" height=\"8\" fill=\"#0f172a\"/><rect x=\"42\" y=\"-30\" width=\"26\" height=\"34\" fill=\"#fff\" stroke=\"#334155\" stroke-width=\"2\"/><path d=\"M48 -18l6 6 10-12\" stroke=\"#16a34a\" stroke-width=\"3\" fill=\"none\"/><circle cx=\"55\" cy=\"45\" r=\"16\" fill=\"#fbbf24\"/><path d=\"M55 32l4 9h9l-7 6 3 9-9-6-9 6 3-9-7-6h9z\" fill=\"#1e3a8a\"/></g><rect y=\"180\" width=\"400\" height=\"20\" fill=\"#94a3b8\"/></svg>",
-  "ajoutePar": "auto"
+  "resume": "En Lettonie, petit pays balte voisin de la Russie et membre de l'Union européenne, la Liste unie du Premier ministre Andris Kulbergs est arrivée en tête des élections législatives avec environ 35 % des voix. Ce parti soutient l'Europe et l'Ukraine. Les partis populistes et un parti favorable à la Russie progressent aussi.",
+  "source": "franceinfo",
+  "titre": "Lettonie : le parti pro-européen du Premier ministre remporte les législatives",
+  "url": "https://www.franceinfo.fr/monde/europe/le-parti-pro-europeen-et-pro-ukrainien-liste-unie-arrive-en-tete-des-legislatives-en-lettonie-selon-des-resultats-partiels_8221912.html"
  },
  {
-  "id": "m-2026-10-03-permis",
-  "titre": "Téléphone au volant : la suspension du permis étendue à toute la France",
-  "resume": "Utiliser son téléphone en conduisant pourra désormais entraîner une suspension temporaire du permis de conduire partout en France, annonce le gouvernement. Cette mesure, décidée par les préfets, était déjà testée dans une vingtaine de départements. Elle s'ajoute à l'amende et au retrait de points.",
+  "ajoutePar": "auto",
   "categorie": "france",
-  "source": "franceinfo",
-  "url": "https://www.franceinfo.fr/societe/securite-routiere/la-suspension-temporaire-du-permis-de-conduire-en-cas-d-utilisation-du-telephone-portable-au-volant-est-generalisee-dans-toute-la-france-annonce-le-gouvernement_8221162.html",
   "date": "2026-10-03",
+  "id": "m-2026-10-03-permis",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#a1c4fd\"/><stop offset=\"1\" stop-color=\"#c2e9fb\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect y=\"140\" width=\"400\" height=\"60\" fill=\"#4b5563\"/><path d=\"M0 170h40M80 170h40M160 170h40M240 170h40M320 170h40\" stroke=\"#fff\" stroke-width=\"5\"/><g transform=\"translate(150 95)\"><rect width=\"130\" height=\"40\" rx=\"10\" fill=\"#e5484d\"/><path d=\"M20 0l20-28h50l20 28z\" fill=\"#e5484d\"/><path d=\"M45 -2l10-20h35l10 20z\" fill=\"#bfdbfe\"/><circle cx=\"30\" cy=\"42\" r=\"12\" fill=\"#111\"/><circle cx=\"100\" cy=\"42\" r=\"12\" fill=\"#111\"/></g><g transform=\"translate(320 40)\"><circle cx=\"30\" cy=\"30\" r=\"32\" fill=\"#fff\" stroke=\"#dc2626\" stroke-width=\"7\"/><rect x=\"18\" y=\"12\" width=\"24\" height=\"38\" rx=\"4\" fill=\"#334155\"/><rect x=\"21\" y=\"16\" width=\"18\" height=\"26\" fill=\"#93c5fd\"/><path d=\"M6 54l48-48\" stroke=\"#dc2626\" stroke-width=\"7\"/></g></svg>",
-  "ajoutePar": "auto"
+  "resume": "Utiliser son téléphone en conduisant pourra désormais entraîner une suspension temporaire du permis de conduire partout en France, annonce le gouvernement. Cette mesure, décidée par les préfets, était déjà testée dans une vingtaine de départements. Elle s'ajoute à l'amende et au retrait de points.",
+  "source": "franceinfo",
+  "titre": "Téléphone au volant : la suspension du permis étendue à toute la France",
+  "url": "https://www.franceinfo.fr/societe/securite-routiere/la-suspension-temporaire-du-permis-de-conduire-en-cas-d-utilisation-du-telephone-portable-au-volant-est-generalisee-dans-toute-la-france-annonce-le-gouvernement_8221162.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "economie",
   "date": "2026-10-02",
+  "id": "m-2026-10-02-fao",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fff4dc\"/><stop offset=\"1\" stop-color=\"#ffe0b0\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M40 170 h330\" stroke=\"#8a6a3a\" stroke-width=\"3\"/><path d=\"M40 170 V30\" stroke=\"#8a6a3a\" stroke-width=\"3\"/><path d=\"M50 150 L110 135 L160 140 L220 110 L270 95 L330 55\" fill=\"none\" stroke=\"#e5484d\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M318 50 l20 0 -5 18z\" fill=\"#e5484d\"/><g transform=\"translate(85 95)\"><path d=\"M0 40c0-30 10-40 20-40s20 10 20 40z\" fill=\"#e8b04a\"/><path d=\"M20 0v40M10 12l10 8 10-8M8 24l12 8 12-8\" stroke=\"#a5752a\" stroke-width=\"2\" fill=\"none\"/></g><g transform=\"translate(240 120)\"><ellipse cx=\"20\" cy=\"25\" rx=\"24\" ry=\"18\" fill=\"#f5f0e1\" stroke=\"#b9a77a\" stroke-width=\"2\"/><path d=\"M0 20h40\" stroke=\"#b9a77a\" stroke-width=\"2\"/></g><text x=\"345\" y=\"110\" font-family=\"Arial,sans-serif\" font-size=\"34\" font-weight=\"900\" fill=\"#e5484d\">€</text></svg>",
   "resume": "Selon la FAO, l'agence de l'ONU pour l'alimentation, les prix mondiaux des denrées alimentaires ont atteint leur plus haut niveau depuis novembre 2022. Cette hausse pèse sur le budget des ménages, surtout dans les pays pauvres.",
   "source": "L'Usine Nouvelle",
   "titre": "Les prix mondiaux de l'alimentation au plus haut depuis 2022",
-  "url": "https://www.usinenouvelle.com/agro/les-prix-mondiaux-des-denrees-alimentaires-sont-au-plus-haut-depuis-novembre-2022-selon-lonu.QPXEABZ5WVHVJA5J7CQ6FTTDEQ.html",
-  "id": "m-2026-10-02-fao"
+  "url": "https://www.usinenouvelle.com/agro/les-prix-mondiaux-des-denrees-alimentaires-sont-au-plus-haut-depuis-novembre-2022-selon-lonu.QPXEABZ5WVHVJA5J7CQ6FTTDEQ.html"
  },
  {
-  "id": "m-2026-10-02-milei",
-  "titre": "Le président argentin Javier Milei reçu à l'Élysée, TotalEnergies annonce 10 milliards d'investissements",
-  "resume": "Le président de l'Argentine, Javier Milei, a été reçu à Paris par Emmanuel Macron. Pendant sa visite, l'entreprise française TotalEnergies a annoncé vouloir investir près de 10 milliards de dollars en Argentine, surtout dans le gaz et le pétrole de Patagonie. Une centaine de personnes ont manifesté à Paris contre sa venue.",
+  "ajoutePar": "auto",
   "categorie": "international",
-  "source": "Euronews",
-  "url": "https://fr.euronews.com/2026/10/02/javier-milei-en-france-totalenergies-annonce-un-investissement-de-10-milliards-de-dollars-",
   "date": "2026-10-02",
+  "id": "m-2026-10-02-milei",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#dbeafe\"/><stop offset=\"1\" stop-color=\"#fef3c7\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><g transform=\"translate(60 55)\"><rect width=\"110\" height=\"25\" fill=\"#74acdf\"/><rect y=\"25\" width=\"110\" height=\"25\" fill=\"#fff\"/><rect y=\"50\" width=\"110\" height=\"25\" fill=\"#74acdf\"/><circle cx=\"55\" cy=\"37\" r=\"8\" fill=\"#f6b40e\"/><rect x=\"-4\" y=\"0\" width=\"4\" height=\"130\" fill=\"#6b4f2a\"/></g><g transform=\"translate(240 55)\"><rect width=\"37\" height=\"75\" fill=\"#002395\"/><rect x=\"37\" width=\"37\" height=\"75\" fill=\"#fff\"/><rect x=\"74\" width=\"37\" height=\"75\" fill=\"#ed2939\"/><rect x=\"111\" y=\"0\" width=\"4\" height=\"130\" fill=\"#6b4f2a\"/></g><path d=\"M150 160q50-30 100 0\" stroke=\"#334155\" stroke-width=\"4\" fill=\"none\" stroke-dasharray=\"8 6\"/><g transform=\"translate(185 140)\"><rect width=\"30\" height=\"40\" rx=\"4\" fill=\"#475569\"/><rect x=\"8\" y=\"-10\" width=\"14\" height=\"12\" fill=\"#475569\"/><path d=\"M15 12c-6 8-6 14 0 18 6-4 6-10 0-18z\" fill=\"#38bdf8\"/></g><rect y=\"185\" width=\"400\" height=\"15\" fill=\"#a3b18a\"/></svg>",
-  "ajoutePar": "auto"
+  "resume": "Le président de l'Argentine, Javier Milei, a été reçu à Paris par Emmanuel Macron. Pendant sa visite, l'entreprise française TotalEnergies a annoncé vouloir investir près de 10 milliards de dollars en Argentine, surtout dans le gaz et le pétrole de Patagonie. Une centaine de personnes ont manifesté à Paris contre sa venue.",
+  "source": "Euronews",
+  "titre": "Le président argentin Javier Milei reçu à l'Élysée, TotalEnergies annonce 10 milliards d'investissements",
+  "url": "https://fr.euronews.com/2026/10/02/javier-milei-en-france-totalenergies-annonce-un-investissement-de-10-milliards-de-dollars-"
  },
  {
-  "id": "m-2026-10-02-septembre",
-  "titre": "Septembre 2026, deuxième mois de septembre le plus chaud jamais mesuré en France",
-  "resume": "Selon Météo-France, septembre 2026 a été 3,1 °C plus chaud que la normale, ce qui en fait le deuxième septembre le plus chaud depuis le début des mesures en 1900. Il a aussi été très sec, avec environ 70 % de pluie en moins que d'habitude. Ces records s'inscrivent dans le réchauffement climatique.",
+  "ajoutePar": "auto",
   "categorie": "environnement",
-  "source": "franceinfo",
-  "url": "https://www.franceinfo.fr/environnement/meteo/la-france-a-connu-le-deuxieme-mois-de-septembre-le-plus-chaud-de-son-histoire-en-2026-annonce-meteo-france_8219509.html",
   "date": "2026-10-02",
+  "id": "m-2026-10-02-septembre",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ffb347\"/><stop offset=\"1\" stop-color=\"#ffe29f\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"300\" cy=\"70\" r=\"38\" fill=\"#ff7b00\"/><path d=\"M300 15v14M300 111v14M245 70h14M341 70h14M262 32l10 10M328 98l10 10M338 32l-10 10M272 98l-10 10\" stroke=\"#ff7b00\" stroke-width=\"5\"/><g transform=\"translate(70 50)\"><rect x=\"0\" y=\"0\" width=\"20\" height=\"100\" rx=\"10\" fill=\"#fff\" stroke=\"#7c2d12\" stroke-width=\"3\"/><rect x=\"5\" y=\"25\" width=\"10\" height=\"80\" fill=\"#dc2626\"/><circle cx=\"10\" cy=\"110\" r=\"18\" fill=\"#dc2626\" stroke=\"#7c2d12\" stroke-width=\"3\"/></g><rect y=\"165\" width=\"400\" height=\"35\" fill=\"#c99a5b\"/><path d=\"M150 175l20 10 15-12 25 15M240 172l15 12 20-8 20 14\" stroke=\"#7a5230\" stroke-width=\"3\" fill=\"none\"/><text x=\"115\" y=\"150\" font-family=\"Arial\" font-size=\"32\" font-weight=\"bold\" fill=\"#7c2d12\">+3,1°C</text></svg>",
-  "ajoutePar": "auto"
+  "resume": "Selon Météo-France, septembre 2026 a été 3,1 °C plus chaud que la normale, ce qui en fait le deuxième septembre le plus chaud depuis le début des mesures en 1900. Il a aussi été très sec, avec environ 70 % de pluie en moins que d'habitude. Ces records s'inscrivent dans le réchauffement climatique.",
+  "source": "franceinfo",
+  "titre": "Septembre 2026, deuxième mois de septembre le plus chaud jamais mesuré en France",
+  "url": "https://www.franceinfo.fr/environnement/meteo/la-france-a-connu-le-deuxieme-mois-de-septembre-le-plus-chaud-de-son-histoire-en-2026-annonce-meteo-france_8219509.html"
  },
  {
-  "id": "m-2026-10-02-ebola",
-  "titre": "RDC : l'épidémie d'Ebola dépasse les 4 000 morts",
-  "resume": "En République démocratique du Congo (RDC), en Afrique centrale, l'épidémie d'Ebola a dépassé les 4 000 morts pour plus de 8 000 cas confirmés, selon les autorités sanitaires. Ebola est une maladie due à un virus, très grave et contagieuse. Sept provinces de l'est et du nord du pays sont touchées, et les équipes médicales tentent de retrouver les personnes en contact avec les malades.",
+  "ajoutePar": "auto",
   "categorie": "sante",
-  "source": "franceinfo",
-  "url": "https://www.franceinfo.fr/sante/maladie/ebola/en-republique-du-congo-l-epidemie-d-ebola-franchit-le-cap-des-4-000-morts_8220169.html",
   "date": "2026-10-02",
+  "id": "m-2026-10-02-ebola",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#e0f2f1\"/><stop offset=\"1\" stop-color=\"#b2dfdb\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect x=\"160\" y=\"60\" width=\"160\" height=\"110\" rx=\"6\" fill=\"#fff\" stroke=\"#00796b\" stroke-width=\"3\"/><rect x=\"225\" y=\"75\" width=\"30\" height=\"80\" fill=\"#e53935\"/><rect x=\"200\" y=\"100\" width=\"80\" height=\"30\" fill=\"#e53935\"/><g transform=\"translate(60 80)\"><circle cx=\"30\" cy=\"30\" r=\"22\" fill=\"#7cb342\"/><path d=\"M30 2v-8M30 58v8M2 30h-8M58 30h8M10 10l-6-6M50 50l6 6M50 10l6-6M10 50l-6 6\" stroke=\"#558b2f\" stroke-width=\"4\"/><circle cx=\"24\" cy=\"24\" r=\"4\" fill=\"#33691e\"/><circle cx=\"36\" cy=\"36\" r=\"5\" fill=\"#33691e\"/></g><g transform=\"translate(340 60)\"><rect width=\"40\" height=\"10\" fill=\"#007fff\"/><polygon points=\"0,10 40,10 40,14 0,30\" fill=\"#ce1021\"/><polygon points=\"0,30 40,14 40,30\" fill=\"#007fff\"/><polygon points=\"0,30 40,14 40,17 3,30\" fill=\"#f7d618\"/></g><rect y=\"180\" width=\"400\" height=\"20\" fill=\"#80cbc4\"/></svg>",
-  "ajoutePar": "auto"
+  "resume": "En République démocratique du Congo (RDC), en Afrique centrale, l'épidémie d'Ebola a dépassé les 4 000 morts pour plus de 8 000 cas confirmés, selon les autorités sanitaires. Ebola est une maladie due à un virus, très grave et contagieuse. Sept provinces de l'est et du nord du pays sont touchées, et les équipes médicales tentent de retrouver les personnes en contact avec les malades.",
+  "source": "franceinfo",
+  "titre": "RDC : l'épidémie d'Ebola dépasse les 4 000 morts",
+  "url": "https://www.franceinfo.fr/sante/maladie/ebola/en-republique-du-congo-l-epidemie-d-ebola-franchit-le-cap-des-4-000-morts_8220169.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "france",
   "date": "2026-10-01",
+  "id": "m-2026-10-01-lycees",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#d7e3f4\"/><stop offset=\"1\" stop-color=\"#f1f5fb\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect x=\"70\" y=\"60\" width=\"260\" height=\"110\" fill=\"#e9dcc6\" stroke=\"#8b7a5c\" stroke-width=\"2\"/><path d=\"M60 60 L200 25 L340 60z\" fill=\"#b4573f\"/><rect x=\"90\" y=\"75\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"90\" y=\"120\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"140\" y=\"75\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"140\" y=\"120\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"234\" y=\"75\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"234\" y=\"120\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"284\" y=\"75\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"284\" y=\"120\" width=\"26\" height=\"24\" fill=\"#a8cbe8\" stroke=\"#8b7a5c\" stroke-width=\"1.5\"/><rect x=\"180\" y=\"110\" width=\"40\" height=\"60\" fill=\"#7a5c3c\"/><g transform=\"translate(150 140)\"><rect x=\"0\" y=\"0\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/><rect x=\"22\" y=\"6\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/><rect x=\"44\" y=\"0\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/><rect x=\"66\" y=\"6\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/><rect x=\"88\" y=\"0\" width=\"20\" height=\"24\" fill=\"#3d8fd1\" stroke=\"#1e5b94\" stroke-width=\"2\"/></g><g transform=\"translate(20 100)\"><rect width=\"56\" height=\"34\" rx=\"3\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"2\"/><path d=\"M8 12h40M8 22h28\" stroke=\"#e5484d\" stroke-width=\"4\"/><path d=\"M28 34v36\" stroke=\"#5a3d2b\" stroke-width=\"3\"/></g></svg>",
   "resume": "Dans de nombreux lycées, des élèves bloquent l'entrée pour protester contre le manque de professeurs, les classes surchargées et l'état des bâtiments. Des universités pourraient rejoindre le mouvement. Certains blocages ont donné lieu à des tensions avec la police.",
   "source": "franceinfo",
   "titre": "Les blocages de lycées se poursuivent partout en France",
-  "url": "https://www.franceinfo.fr/societe/education/le-blocage-des-lycees-se-poursuit-partout-en-france-des-universites-pourraient-rejoindre-le-mouvement_8216944.html",
-  "id": "m-2026-10-01-lycees"
+  "url": "https://www.franceinfo.fr/societe/education/le-blocage-des-lycees-se-poursuit-partout-en-france-des-universites-pourraient-rejoindre-le-mouvement_8216944.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "international",
   "date": "2026-10-01",
+  "id": "m-2026-10-01-otan",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#20262f\"/><stop offset=\"1\" stop-color=\"#0f1318\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"120\" cy=\"100\" r=\"55\" fill=\"#2b4ca8\"/><path d=\"M120 50 v100 M70 100 h100\" stroke=\"#fff\" stroke-width=\"3\"/><path d=\"M120 55 l10 45 -10 45 -10-45z\" fill=\"#fff\"/><circle cx=\"120\" cy=\"100\" r=\"10\" fill=\"#2b4ca8\" stroke=\"#fff\" stroke-width=\"3\"/><g transform=\"translate(240 50)\"><rect width=\"110\" height=\"34\" fill=\"#fff\"/><rect y=\"34\" width=\"110\" height=\"34\" fill=\"#1c57a5\"/><rect y=\"68\" width=\"110\" height=\"34\" fill=\"#d52b1e\"/></g><path d=\"M190 90 l12 0 -6 -10z M210 110 l-12 0 6 10z\" fill=\"#f2ae02\"/><path d=\"M185 100 h40\" stroke=\"#f2ae02\" stroke-width=\"3\" stroke-dasharray=\"6 5\"/><g transform=\"translate(200 170)\"><circle r=\"14\" fill=\"#f2ae02\"/><path d=\"M0 0 L-8 -12 A14 14 0 0 1 8 -12z M0 0 L14 2 A14 14 0 0 1 6 13z M0 0 L-6 13 A14 14 0 0 1 -14 2z\" fill=\"#20262f\"/><circle r=\"3\" fill=\"#20262f\"/></g></svg>",
   "resume": "Le président russe a averti que « toutes les armes » pourraient être utilisées si l'enclave russe de Kaliningrad, située entre la Pologne et la Lituanie, était isolée de la Russie. Le secrétaire général de l'OTAN, l'alliance militaire dont fait partie la France, a appelé Moscou à cesser ces menaces.",
   "source": "20 minutes",
   "titre": "Kaliningrad : Vladimir Poutine menace l'OTAN de l'arme nucléaire",
-  "url": "https://www.20min.ch/fr/story/guerre-en-ukraine-kaliningrad-poutine-brandit-encore-la-menace-nucleaire-405723338808",
-  "id": "m-2026-10-01-otan"
+  "url": "https://www.20min.ch/fr/story/guerre-en-ukraine-kaliningrad-poutine-brandit-encore-la-menace-nucleaire-405723338808"
  },
  {
+  "ajoutePar": "auto",
+  "categorie": "environnement",
+  "date": "2026-10-01",
   "id": "m-2026-10-01-glaciers",
-  "titre": "Les glaciers suisses ont perdu 5,5 % de leur volume en 2026",
-  "resume": "Selon le réseau suisse de surveillance des glaciers (GLAMOS), les glaciers suisses ont perdu 5,5 % de leur glace cette année, et près d'un cinquième en cinq ans. Les canicules, le manque de neige en hiver et des nuages de poussière du Sahara, qui assombrissent la glace et la font fondre plus vite, expliquent cette fonte. Les scientifiques l'attribuent au réchauffement climatique causé par les activités humaines.",
-  "categorie": "environnement",
-  "source": "RTS",
-  "url": "https://www.rts.ch/info/suisse/2026/article/glaciers-suisses-5-5-de-leur-volume-perdu-en-2026-29372547.html",
-  "date": "2026-10-01",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#8ec5fc\"/><stop offset=\"1\" stop-color=\"#e0f0ff\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><circle cx=\"340\" cy=\"45\" r=\"22\" fill=\"#ffcc4d\"/><polygon points=\"20,180 130,60 240,180\" fill=\"#8d99ae\"/><polygon points=\"160,180 270,50 380,180\" fill=\"#6c7a91\"/><polygon points=\"108,85 130,60 152,85 140,95 130,88 118,96\" fill=\"#fff\"/><polygon points=\"248,76 270,50 292,76 280,86 270,78 258,88\" fill=\"#fff\"/><path d=\"M240 150q30-10 60 0\" stroke=\"#bde0fe\" stroke-width=\"6\" fill=\"none\"/><path d=\"M282 120v30M292 128v22M272 130v18\" stroke=\"#4ea8de\" stroke-width=\"3\"/><rect y=\"180\" width=\"400\" height=\"20\" fill=\"#5e8c61\"/><g transform=\"translate(40 120)\"><rect width=\"40\" height=\"40\" fill=\"#d52b1e\"/><rect x=\"16\" y=\"8\" width=\"8\" height=\"24\" fill=\"#fff\"/><rect x=\"8\" y=\"16\" width=\"24\" height=\"8\" fill=\"#fff\"/></g></svg>",
-  "ajoutePar": "auto"
+  "resume": "Selon le réseau suisse de surveillance des glaciers (GLAMOS), les glaciers suisses ont perdu 5,5 % de leur glace cette année, et près d'un cinquième en cinq ans. Les canicules, le manque de neige en hiver et des nuages de poussière du Sahara, qui assombrissent la glace et la font fondre plus vite, expliquent cette fonte. Les scientifiques l'attribuent au réchauffement climatique causé par les activités humaines.",
+  "source": "RTS",
+  "titre": "Les glaciers suisses ont perdu 5,5 % de leur volume en 2026",
+  "url": "https://www.rts.ch/info/suisse/2026/article/glaciers-suisses-5-5-de-leur-volume-perdu-en-2026-29372547.html"
  },
  {
-  "id": "m-2026-10-01-budget",
-  "titre": "Budget 2027 : le gouvernement veut ramener le déficit à 5 % du PIB",
-  "resume": "Le gouvernement a présenté en Conseil des ministres son projet de budget pour 2027. Il prévoit un effort de 54 milliards d'euros pour réduire le déficit (l'argent que l'État dépense en plus de ce qu'il gagne) à 5 % du PIB, la richesse produite par le pays. Le texte, qui gèle de nombreuses dépenses mais augmente le budget de la Défense, doit maintenant être débattu et voté par le Parlement.",
+  "ajoutePar": "auto",
   "categorie": "economie",
-  "source": "franceinfo",
-  "url": "https://www.franceinfo.fr/economie/budget/direct-budget-2027-le-gouvernement-presente-ses-projets-de-loi-de-finances-et-de-financement-de-la-securite-sociale-en-conseil-des-ministres-a-partir-de-10h30_8216482.html",
   "date": "2026-10-01",
+  "id": "m-2026-10-01-budget",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fdfbfb\"/><stop offset=\"1\" stop-color=\"#e2e8f0\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect x=\"150\" y=\"45\" width=\"130\" height=\"140\" rx=\"6\" fill=\"#fff\" stroke=\"#334155\" stroke-width=\"3\"/><text x=\"215\" y=\"75\" font-family=\"Arial\" font-size=\"20\" font-weight=\"bold\" fill=\"#1e3a8a\" text-anchor=\"middle\">2027</text><path d=\"M168 95h94M168 112h94M168 129h70M168 146h80\" stroke=\"#94a3b8\" stroke-width=\"5\"/><rect x=\"150\" y=\"45\" width=\"10\" height=\"140\" fill=\"#002395\"/><g transform=\"translate(300 90)\"><rect width=\"24\" height=\"70\" fill=\"#64748b\"/><rect x=\"30\" y=\"20\" width=\"24\" height=\"50\" fill=\"#94a3b8\"/><rect x=\"60\" y=\"40\" width=\"24\" height=\"30\" fill=\"#cbd5e1\"/><path d=\"M0 -10l40 25 40 20\" stroke=\"#e5484d\" stroke-width=\"4\" fill=\"none\"/></g><g transform=\"translate(40 110)\"><ellipse cx=\"40\" cy=\"60\" rx=\"34\" ry=\"10\" fill=\"#d4a017\"/><ellipse cx=\"40\" cy=\"48\" rx=\"34\" ry=\"10\" fill=\"#f2c94c\"/><ellipse cx=\"40\" cy=\"36\" rx=\"34\" ry=\"10\" fill=\"#d4a017\"/><ellipse cx=\"40\" cy=\"24\" rx=\"34\" ry=\"10\" fill=\"#f2c94c\"/><text x=\"40\" y=\"29\" font-family=\"Arial\" font-size=\"14\" font-weight=\"bold\" fill=\"#7a5c00\" text-anchor=\"middle\">€</text></g></svg>",
-  "ajoutePar": "auto"
+  "resume": "Le gouvernement a présenté en Conseil des ministres son projet de budget pour 2027. Il prévoit un effort de 54 milliards d'euros pour réduire le déficit (l'argent que l'État dépense en plus de ce qu'il gagne) à 5 % du PIB, la richesse produite par le pays. Le texte, qui gèle de nombreuses dépenses mais augmente le budget de la Défense, doit maintenant être débattu et voté par le Parlement.",
+  "source": "franceinfo",
+  "titre": "Budget 2027 : le gouvernement veut ramener le déficit à 5 % du PIB",
+  "url": "https://www.franceinfo.fr/economie/budget/direct-budget-2027-le-gouvernement-presente-ses-projets-de-loi-de-finances-et-de-financement-de-la-securite-sociale-en-conseil-des-ministres-a-partir-de-10h30_8216482.html"
  },
  {
-  "id": "m-2026-09-30-gard-herault",
-  "titre": "Pluies intenses : le Gard et l'Hérault placés en vigilance rouge",
-  "resume": "Un « épisode méditerranéen », c'est-à-dire des orages très violents venus de la mer, a frappé le sud de la France. Le Gard et l'Hérault ont été placés en vigilance rouge, le niveau d'alerte le plus élevé, pour risque de pluies et d'inondations. Des écoles ont été fermées et des transports interrompus avant la levée de l'alerte.",
+  "ajoutePar": "auto",
   "categorie": "environnement",
-  "source": "franceinfo",
-  "url": "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/l-herault-et-le-gard-places-en-vigilance-rouge-pour-risque-de-pluies-et-d-inondations_8215865.html",
   "date": "2026-09-30",
+  "id": "m-2026-09-30-gard-herault",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#5b6b7f\"/><stop offset=\"1\" stop-color=\"#9fb3c8\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><ellipse cx=\"200\" cy=\"60\" rx=\"90\" ry=\"28\" fill=\"#3e4a59\"/><ellipse cx=\"280\" cy=\"50\" rx=\"70\" ry=\"24\" fill=\"#4a5868\"/><ellipse cx=\"330\" cy=\"70\" rx=\"60\" ry=\"22\" fill=\"#3e4a59\"/><path d=\"M180 80l-16 40M220 85l-16 40M260 80l-16 40M300 85l-16 40M340 85l-16 40\" stroke=\"#cfe4ff\" stroke-width=\"3\"/><polygon points=\"290,60 275,95 290,95 280,125 310,85 295,85 305,60\" fill=\"#ffd23f\"/><rect y=\"150\" width=\"400\" height=\"50\" fill=\"#3a7ca5\"/><path d=\"M0 160q25-8 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0\" stroke=\"#bfe3ff\" stroke-width=\"3\" fill=\"none\"/><rect x=\"40\" y=\"110\" width=\"50\" height=\"45\" fill=\"#f2e2c4\"/><polygon points=\"35,112 65,85 95,112\" fill=\"#c0504d\"/><rect x=\"58\" y=\"128\" width=\"14\" height=\"22\" fill=\"#7a5230\"/><rect x=\"352\" y=\"20\" width=\"36\" height=\"36\" rx=\"6\" fill=\"#e5484d\"/><text x=\"370\" y=\"46\" font-family=\"Arial\" font-size=\"24\" font-weight=\"bold\" fill=\"#fff\" text-anchor=\"middle\">!</text></svg>",
-  "ajoutePar": "auto"
+  "resume": "Un « épisode méditerranéen », c'est-à-dire des orages très violents venus de la mer, a frappé le sud de la France. Le Gard et l'Hérault ont été placés en vigilance rouge, le niveau d'alerte le plus élevé, pour risque de pluies et d'inondations. Des écoles ont été fermées et des transports interrompus avant la levée de l'alerte.",
+  "source": "franceinfo",
+  "titre": "Pluies intenses : le Gard et l'Hérault placés en vigilance rouge",
+  "url": "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/l-herault-et-le-gard-places-en-vigilance-rouge-pour-risque-de-pluies-et-d-inondations_8215865.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "economie",
   "date": "2026-09-29",
+  "id": "m-2026-09-29-dette",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#e9eef7\"/><stop offset=\"1\" stop-color=\"#cfd9ec\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><rect x=\"60\" y=\"130\" width=\"30\" height=\"40\" rx=\"3\" fill=\"#9fb3d9\"/><rect x=\"102\" y=\"115\" width=\"30\" height=\"55\" rx=\"3\" fill=\"#8aa2d1\"/><rect x=\"144\" y=\"95\" width=\"30\" height=\"75\" rx=\"3\" fill=\"#7590c8\"/><rect x=\"186\" y=\"75\" width=\"30\" height=\"95\" rx=\"3\" fill=\"#5f7ebf\"/><rect x=\"228\" y=\"52\" width=\"30\" height=\"118\" rx=\"3\" fill=\"#4a6cb5\"/><rect x=\"270\" y=\"30\" width=\"30\" height=\"140\" rx=\"3\" fill=\"#e5484d\"/><path d=\"M40 172 h300\" stroke=\"#2b3a55\" stroke-width=\"3\"/><g transform=\"translate(330 40)\"><circle cx=\"25\" cy=\"25\" r=\"25\" fill=\"#f2ae02\"/><text x=\"25\" y=\"35\" text-anchor=\"middle\" font-family=\"Arial,sans-serif\" font-size=\"28\" font-weight=\"900\" fill=\"#fff\">€</text></g><text x=\"58\" y=\"88\" font-family=\"Arial,sans-serif\" font-size=\"34\" font-weight=\"900\" fill=\"#e5484d\">119 %</text></svg>",
   "resume": "Selon l'Insee, la dette de l'État, des collectivités et de la Sécurité sociale atteint 3 595,5 milliards d'euros, soit 119 % du PIB (la richesse produite en un an par le pays). C'est un record, qui inquiète car rembourser coûte de plus en plus cher.",
   "source": "franceinfo",
   "titre": "La dette publique de la France atteint un record : 119 % du PIB",
-  "url": "https://www.franceinfo.fr/economie/crise/crise-de-la-dette/la-dette-publique-de-la-france-a-atteint-3-595-5-milliards-d-euros-au-deuxieme-trimestre-soit-119-du-pib-un-record_8214491.html",
-  "id": "m-2026-09-29-dette"
+  "url": "https://www.franceinfo.fr/economie/crise/crise-de-la-dette/la-dette-publique-de-la-france-a-atteint-3-595-5-milliards-d-euros-au-deuxieme-trimestre-soit-119-du-pib-un-record_8214491.html"
  },
  {
   "ajoutePar": "auto",
   "categorie": "france",
   "date": "2026-09-28",
+  "id": "m-2026-09-28-senat",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#c9d6f2\"/><stop offset=\"1\" stop-color=\"#eef2fb\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M90 80 L200 35 L310 80z\" fill=\"#e9e3d3\" stroke=\"#8b8270\" stroke-width=\"2\"/><rect x=\"95\" y=\"80\" width=\"210\" height=\"10\" fill=\"#d8d0bb\"/><rect x=\"105\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"129\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"153\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"177\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"201\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"225\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"249\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"273\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"297\" y=\"90\" width=\"12\" height=\"62\" fill=\"#f4efe2\" stroke=\"#8b8270\" stroke-width=\"1.5\"/><rect x=\"85\" y=\"152\" width=\"230\" height=\"12\" fill=\"#d8d0bb\"/><rect x=\"75\" y=\"164\" width=\"250\" height=\"10\" fill=\"#c9c0a8\"/><path d=\"M200 35 v-20\" stroke=\"#555\" stroke-width=\"2\"/><g transform=\"translate(200 15)\"><rect width=\"10\" height=\"12\" fill=\"#2b4ca8\"/><rect x=\"10\" width=\"10\" height=\"12\" fill=\"#fff\"/><rect x=\"20\" width=\"10\" height=\"12\" fill=\"#e5484d\"/></g><g transform=\"translate(330 120)\"><rect width=\"40\" height=\"50\" rx=\"4\" fill=\"#fff\" stroke=\"#2b4ca8\" stroke-width=\"3\"/><rect x=\"10\" y=\"-8\" width=\"20\" height=\"16\" fill=\"#f2ae02\"/></g></svg>",
   "resume": "Le 27 septembre, la moitié des sénateurs a été renouvelée par les « grands électeurs » (surtout des élus locaux). La majorité de droite et du centre est conservée, le Rassemblement national forme pour la première fois un groupe au Sénat et La France insoumise y fait son entrée.",
   "source": "Public Sénat",
   "titre": "Sénatoriales : la majorité de droite et du centre reste en place",
-  "url": "https://www.publicsenat.fr/actualites/politique/en-direct-elections-senatoriales-2026-suivez-tous-les-resultats-les-enjeux-les-reactions-politiques",
-  "id": "m-2026-09-28-senat"
+  "url": "https://www.publicsenat.fr/actualites/politique/en-direct-elections-senatoriales-2026-suivez-tous-les-resultats-les-enjeux-les-reactions-politiques"
  },
  {
   "ajoutePar": "auto",
   "categorie": "environnement",
   "date": "2026-09-26",
+  "id": "m-2026-09-26-bangkok",
   "illu": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#5a6b7d\"/><stop offset=\"1\" stop-color=\"#8fa0b2\"/></linearGradient></defs><rect width=\"400\" height=\"200\" fill=\"url(#g)\"/><path d=\"M40 20 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M90 40 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M150 15 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M210 35 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M270 20 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M330 40 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M370 15 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M120 60 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M250 55 l-6 14\" stroke=\"#cfe3f5\" stroke-width=\"2\"/><path d=\"M150 150 V70 l10-25 10 25 V150z M175 150 V90 l8-18 8 18 V150z\" fill=\"#d4a017\"/><path d=\"M155 70 h10 M180 90 h6\" stroke=\"#8a6500\" stroke-width=\"2\"/><rect x=\"230\" y=\"80\" width=\"60\" height=\"80\" fill=\"#c9c3b8\"/><rect x=\"240\" y=\"92\" width=\"12\" height=\"12\" fill=\"#7d8ea0\"/><rect x=\"240\" y=\"116\" width=\"12\" height=\"12\" fill=\"#7d8ea0\"/><rect x=\"268\" y=\"92\" width=\"12\" height=\"12\" fill=\"#7d8ea0\"/><rect x=\"268\" y=\"116\" width=\"12\" height=\"12\" fill=\"#7d8ea0\"/><rect x=\"40\" y=\"100\" width=\"70\" height=\"60\" fill=\"#d8cfc0\"/><path d=\"M35 100 L75 75 L115 100z\" fill=\"#b4573f\"/><path d=\"M0 140 Q30 132 60 140 T120 140 T180 140 T240 140 T300 140 T360 140 T420 140 V200 H0z\" fill=\"#7a6a4f\" opacity=\".92\"/><path d=\"M0 155 Q30 148 60 155 T120 155 T180 155 T240 155 T300 155 T360 155 T420 155\" stroke=\"#a89474\" stroke-width=\"3\" fill=\"none\"/><g transform=\"translate(300 128)\"><path d=\"M0 10 h60 l-10 14 h-40z\" fill=\"#e5484d\"/><circle cx=\"30\" cy=\"0\" r=\"7\" fill=\"#f4c7a1\"/></g></svg>",
   "resume": "Des pluies torrentielles, près de 300 mm d'eau, ont inondé la capitale thaïlandaise. L'état de catastrophe naturelle a été déclaré dans ses 50 districts, des milliers d'habitants ont été évacués et des usines ont dû s'arrêter.",
   "source": "France 24",
   "titre": "Thaïlande : Bangkok en état de catastrophe naturelle après des inondations",
-  "url": "https://www.france24.com/fr/asie-pacifique/20260926-inondations-%C3%A0-bangkok-les-autorit%C3%A9s-d%C3%A9clarent-l-%C3%A9tat-de-catastrophe-naturelle",
-  "id": "m-2026-09-26-bangkok"
+  "url": "https://www.france24.com/fr/asie-pacifique/20260926-inondations-%C3%A0-bangkok-les-autorit%C3%A9s-d%C3%A9clarent-l-%C3%A9tat-de-catastrophe-naturelle"
  }
 ]
