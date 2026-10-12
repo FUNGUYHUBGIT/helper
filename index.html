@@ -476,6 +476,7 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .cadre-edition .titre-fixe-lecon{cursor:not-allowed;padding-bottom:8px;border-bottom:1px dashed color-mix(in srgb,#ff5c5c 40%,transparent)}
 .cadre-edition .doc-lecon.edition{border:0;padding:6px 0;background:none;border-radius:0}
 .doc-lecon .partie-lecon{color:#ff5c5c;text-decoration:underline;font-size:1.08rem;font-weight:700;margin:1.1em 0 .5em;scroll-margin-top:24px;border-radius:4px;transition:background .6s}
+.rallonge-sommaire{display:none!important}
 .doc-lecon .partie-lecon.partie-flash{animation:partie-flash 1.6s ease-out}
 @keyframes partie-flash{0%,30%{background:color-mix(in srgb,#b06bff 30%,transparent)}100%{background:transparent}}
 .sommaire-lecon{margin:.4em 0 1em;user-select:none}
@@ -4291,7 +4292,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.02";
+const VERSION_SITE = "1.03";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4930,12 +4931,9 @@ function allerAPartie(h, doc){
   const ruban = doc.classList.contains("edition") ? document.querySelector(".barre-outils") : null;
   const marge = 20 + (ruban ? ruban.getBoundingClientRect().height + 8 : 0);
   const cible = sc.scrollTop + h.getBoundingClientRect().top - haut - marge;
-  const manque = cible - (sc.scrollHeight - visible);
-  if (manque > 0){ const boite = doc.classList.contains("edition") ? doc.parentElement : doc;   // en édition : hors du texte enregistré
-    const r = boite.querySelector(":scope > .rallonge-sommaire") || boite.appendChild(Object.assign(document.createElement("div"), {className: "rallonge-sommaire", contentEditable: "false"}));
-    r.style.height = (r.offsetHeight + manque + 2) + "px";
-    if (boite !== doc) doc.addEventListener("input", () => r.remove(), {once: true}); }
-  (fenetre ? window : zone).scrollTo({top: Math.max(0, cible), behavior: "smooth"});
+  // pas d'espace vide ajouté : pour les dernières parties on descend simplement au maximum (la partie clignote)
+  document.querySelectorAll(".rallonge-sommaire").forEach(r => r.remove());
+  (fenetre ? window : zone).scrollTo({top: Math.max(0, Math.min(cible, sc.scrollHeight - visible)), behavior: "smooth"});
 }
 /* ----- Couleurs du texte : application fiable sur la sélection ----- */
 // a-t-on une couleur posée sur cet élément ? (style ou ancienne balise <font color>)
