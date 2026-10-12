@@ -1498,7 +1498,7 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .geo-apercu.glisse .geo-poignee{cursor:grabbing}.geo-apercu.glisse{cursor:grabbing}
 .geo-edition .geo-arete{stroke:transparent;stroke-width:12;cursor:copy}
 .geo-edition .geo-arete:hover{stroke:color-mix(in srgb,var(--accent) 25%,transparent)}
-.geo-edition{touch-action:none;user-select:none}
+.geo-apercu .geo-edition{touch-action:none;user-select:none;overflow:hidden}
 .geo-pied{margin-top:14px}
 @media (max-width:760px){.geo-ed{grid-template-columns:1fr}.geo-droite{position:static;order:-1}.geo-choix{grid-template-columns:repeat(3,1fr)}.geo-reglages{max-height:none}}
 
@@ -4404,7 +4404,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.11";
+const VERSION_SITE = "1.12";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5848,6 +5848,16 @@ function pointsModele(m, n = 5){
     "losange": [[7.5, 1.5], [12, 5.5], [7.5, 9.5], [3, 5.5]], "carre": [[4, 9], [11, 9], [11, 2], [4, 2]], "cerf-volant": [[7.5, 1.5], [11, 4.5], [7.5, 9.5], [4, 4.5]]})[m] || reg(n);
 }
 const lettresPoly = n => "ABCDEFGHIJKL".slice(0, n);
+// tourne les points autour de leur centre puis les garde dans la feuille (15 × 11 carreaux)
+function tournerPoints(pts, degres){
+  const t = degres * Math.PI / 180, n = pts.length, cx = pts.reduce((a, p) => a + p[0], 0) / n, cy = pts.reduce((a, p) => a + p[1], 0) / n;
+  let Q = pts.map(([x, y]) => [cx + (x - cx) * Math.cos(t) - (y - cy) * Math.sin(t), cy + (x - cx) * Math.sin(t) + (y - cy) * Math.cos(t)]);
+  const xs = Q.map(p => p[0]), ys = Q.map(p => p[1]), w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys), k = Math.min(1, 13 / (w || 1), 9 / (h || 1));
+  Q = Q.map(([x, y]) => [cx + (x - cx) * k, cy + (y - cy) * k]);
+  const x0 = Math.min(...Q.map(p => p[0])), x1 = Math.max(...Q.map(p => p[0])), y0 = Math.min(...Q.map(p => p[1])), y1 = Math.max(...Q.map(p => p[1]));
+  const dx = x0 < 1 ? 1 - x0 : x1 > 14 ? 14 - x1 : 0, dy = y0 < 1 ? 1 - y0 : y1 > 10 ? 10 - y1 : 0;
+  return Q.map(([x, y]) => [+(x + dx).toFixed(2), +(y + dy).toFixed(2)]);
+}
 const geoVide = (figure = "triangle") => figure === "manuel" ? {kind: "geo", figure, modele: "trapeze", n: 4, points: pointsModele("trapeze"), sommets: "ABCD", cotes: ["", "", "", ""], mesures: false, angleDroit: true, codage: true, diagonales: false, quadrillage: false, aimant: true, couleur: "#f2ae02", rotation: 0, largeur: 360}
   : ({kind: "geo", figure, sommets: figure === "triangle" ? "ABC" : "ABCD",
   a: figure === "triangle" ? "3 cm" : figure === "losange" ? "6 cm" : figure === "carre" ? "4 cm" : "6 cm",
@@ -5890,7 +5900,7 @@ function svgGeo(o, ed = false){
   const t = (+o.rotation || 0) * Math.PI / 180, rot = ([x, y]) => [x * Math.cos(t) - y * Math.sin(t), x * Math.sin(t) + y * Math.cos(t)];
   let Q;
   if (manuel){ // échelle fixe : 1 carreau = 20 px, rotation autour du centre de la feuille
-    Q = P.map(([x, y]) => { const [rx, ry] = rot([x - 7.5, y - 5.5]); return [(rx + 7.5) * 20, (ry + 5.5) * 20]; });
+    Q = P.map(([x, y]) => [x * 20, y * 20]);   // la rotation est appliquée directement aux points (voir tournerPoints)
     if (!Q.length) return `<svg viewBox="0 0 300 220" class="geo-svg"></svg>`;
   } else {
   Q = P.map(rot);
@@ -5927,7 +5937,9 @@ function svgGeo(o, ed = false){
     Q.forEach((p, i) => { const q = Q[(i + 1) % Q.length]; svg += `<line x1="${f(p[0])}" y1="${f(p[1])}" x2="${f(q[0])}" y2="${f(q[1])}" class="geo-arete" data-arete="${i}"/>`; });
     Q.forEach((p, i) => { svg += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="7" class="geo-poignee" data-pt="${i}"/>`; });
   }
-  return `<svg viewBox="0 0 300 220" class="geo-svg${ed ? " geo-edition" : ""}" style="width:${Math.max(160, Math.min(520, +o.largeur || 320))}px" role="img" aria-label="${esc(manuel ? (NOMS_POLY[P.length] || "Polygone") : FIGURES_GEO.find(x => x[0] === o.figure)?.[1] || "Figure")} ${esc(S.join(""))}">${svg}</svg>`;
+  let vb = "0 0 300 220";
+  if (manuel && !ed && !o.quadrillage){ const xs = Q.map(p => p[0]), ys = Q.map(p => p[1]), m = 40; vb = `${f(Math.min(...xs) - m)} ${f(Math.min(...ys) - m)} ${f(Math.max(...xs) - Math.min(...xs) + 2 * m)} ${f(Math.max(...ys) - Math.min(...ys) + 2 * m)}`; }
+  return `<svg viewBox="${vb}" class="geo-svg${ed ? " geo-edition" : ""}" style="width:${Math.max(160, Math.min(520, +o.largeur || 320))}px" role="img" aria-label="${esc(manuel ? (NOMS_POLY[P.length] || "Polygone") : FIGURES_GEO.find(x => x[0] === o.figure)?.[1] || "Figure")} ${esc(S.join(""))}">${svg}</svg>`;
 }
 function fenetreGeo(depart, valider){
   let o = structuredClone(depart || geoVide());
@@ -5978,11 +5990,11 @@ function fenetreGeo(depart, valider){
     coche("geo-ad", "angleDroit"); coche("geo-cod", "codage"); coche("geo-dg", "diagonales"); coche("geo-q", "quadrillage"); coche("geo-aim", "aimant");
     if (q("#geo-mes")) q("#geo-mes").onchange = ev => { o.mesures = ev.target.checked; form(); };
     q("#geo-coul").oninput = ev => { o.couleur = ev.target.value; apercu(); choix(); };
-    q("#geo-rot").oninput = ev => { o.rotation = +ev.target.value; q("#geo-rv").textContent = o.rotation + "°"; apercu(); };
+    q("#geo-rot").oninput = ev => { const v = +ev.target.value; if (man){ o.points = tournerPoints(o.points, v - (+o.rotation || 0)); if (o.modele !== "libre") o.modele = "libre"; } o.rotation = v; q("#geo-rv").textContent = o.rotation + "°"; apercu(); };
     q("#geo-l").oninput = ev => { o.largeur = +ev.target.value; q("#geo-lv").textContent = o.largeur + " px"; apercu(); };
     if (man){
-      q("#geo-mod").onchange = ev => { o.modele = ev.target.value; o.points = pointsModele(o.modele, o.points.length); o.cotes = []; form(); };
-      const changerN = n => { n = Math.max(3, Math.min(12, n | 0)); if (n === o.points.length) return; o.points = pointsModele(o.modele === "libre" ? "libre" : "regulier", n); if (o.modele !== "libre") o.modele = "regulier"; o.cotes = []; form(); };
+      q("#geo-mod").onchange = ev => { o.modele = ev.target.value; o.points = pointsModele(o.modele, o.points.length); o.cotes = []; o.rotation = 0; form(); };
+      const changerN = n => { n = Math.max(3, Math.min(12, n | 0)); if (n === o.points.length) return; o.points = pointsModele(o.modele === "libre" ? "libre" : "regulier", n); if (o.modele !== "libre") o.modele = "regulier"; o.cotes = []; o.rotation = 0; form(); };
       q("#geo-n").onchange = ev => changerN(+ev.target.value);
       z.querySelectorAll("[data-pas]").forEach(b => b.onclick = () => changerN(o.points.length + +b.dataset.pas));
       z.querySelectorAll("[data-cote]").forEach(x => x.oninput = () => { o.cotes[+x.dataset.cote] = x.value; apercu(); });
@@ -5992,10 +6004,9 @@ function fenetreGeo(depart, valider){
   // ----- Manipulation directe des points (forme Manuel) -----
   const zoneA = el.querySelector("#geo-apercu");
   const versCarreaux = (svg, ev) => { const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const p = pt.matrixTransform(svg.getScreenCTM().inverse());
-    const t = -(+o.rotation || 0) * Math.PI / 180, x = p.x / 20 - 7.5, y = p.y / 20 - 5.5;
-    let X = x * Math.cos(t) - y * Math.sin(t) + 7.5, Y = x * Math.sin(t) + y * Math.cos(t) + 5.5;
+    let X = p.x / 20, Y = p.y / 20;
     if (o.aimant){ X = Math.round(X * 2) / 2; Y = Math.round(Y * 2) / 2; }
-    return [+Math.max(.5, Math.min(14.5, X)).toFixed(2), +Math.max(.5, Math.min(10.5, Y)).toFixed(2)]; };
+    return [+Math.max(1, Math.min(14, X)).toFixed(2), +Math.max(1, Math.min(10, Y)).toFixed(2)]; };
   zoneA.addEventListener("pointerdown", ev => {
     const h = ev.target.closest("[data-pt]"); if (!h || o.figure !== "manuel" || ev.button !== 0) return;
     ev.preventDefault(); const i = +h.dataset.pt, svg = zoneA.querySelector("svg"); zoneA.classList.add("glisse");
