@@ -4359,7 +4359,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.09";
+const VERSION_SITE = "1.10";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6300,20 +6300,54 @@ const FR_IRR = {
   "partir": {present: "pars pars part partons partez partent", futur: "partir", ps: "partis partis partit partîmes partîtes partirent", pp: "parti", subj: "parte partes parte partions partiez partent", etre: true},
   "sortir": {present: "sors sors sort sortons sortez sortent", futur: "sortir", ps: "sortis sortis sortit sortîmes sortîtes sortirent", pp: "sorti", subj: "sorte sortes sorte sortions sortiez sortent", etre: true},
   "lire": {present: "lis lis lit lisons lisez lisent", futur: "lir", ps: "lus lus lut lûmes lûtes lurent", pp: "lu", subj: "lise lises lise lisions lisiez lisent"},
+  "tenir": {present: "tiens tiens tient tenons tenez tiennent", futur: "tiendr", ps: "tins tins tint tînmes tîntes tinrent", pp: "tenu", subj: "tienne tiennes tienne tenions teniez tiennent"},
+  "dormir": {present: "dors dors dort dormons dormez dorment", futur: "dormir", ps: "dormis dormis dormit dormîmes dormîtes dormirent", pp: "dormi", subj: "dorme dormes dorme dormions dormiez dorment"},
+  "sentir": {present: "sens sens sent sentons sentez sentent", futur: "sentir", ps: "sentis sentis sentit sentîmes sentîtes sentirent", pp: "senti", subj: "sente sentes sente sentions sentiez sentent"},
+  "servir": {present: "sers sers sert servons servez servent", futur: "servir", ps: "servis servis servit servîmes servîtes servirent", pp: "servi", subj: "serve serves serve servions serviez servent"},
+  "asseoir": {present: "assieds assieds assied asseyons asseyez asseyent", imparfait: "asseyais asseyais asseyait asseyions asseyiez asseyaient", futur: "assiér", ps: "assis assis assit assîmes assîtes assirent", pp: "assis", subj: "asseye asseyes asseye asseyions asseyiez asseyent"},
+  "taire": {present: "tais tais tait taisons taisez taisent", futur: "tair", ps: "tus tus tut tûmes tûtes turent", pp: "tu", subj: "taise taises taise taisions taisiez taisent"},
+  "connaître": {present: "connais connais connaît connaissons connaissez connaissent", futur: "connaîtr", ps: "connus connus connut connûmes connûtes connurent", pp: "connu", subj: "connaisse connaisses connaisse connaissions connaissiez connaissent"},
+  "croire": {present: "crois crois croit croyons croyez croient", futur: "croir", ps: "crus crus crut crûmes crûtes crurent", pp: "cru", subj: "croie croies croie croyions croyiez croient"},
+  "rendre": {present: "rends rends rend rendons rendez rendent", futur: "rendr", ps: "rendis rendis rendit rendîmes rendîtes rendirent", pp: "rendu", subj: "rende rendes rende rendions rendiez rendent"},
+  "battre": {present: "bats bats bat battons battez battent", futur: "battr", ps: "battis battis battit battîmes battîtes battirent", pp: "battu", subj: "batte battes batte battions battiez battent"},
   "écrire": {present: "écris écris écrit écrivons écrivez écrivent", futur: "écrir", ps: "écrivis écrivis écrivit écrivîmes écrivîtes écrivirent", pp: "écrit", subj: "écrive écrives écrive écrivions écriviez écrivent"}
 };
+// verbes dérivés (se souvenir → venir, apprendre → prendre, s'endormir → dormir…)
+const FR_PREFIXES = ["re","ré","r","res","dé","de","sou","sur","par","pré","com","ap","ad","per","pro","en","ob","con","entre","main","s"];
+function irrFr(v){
+  if (FR_IRR[v]) return FR_IRR[v];
+  const base = Object.keys(FR_IRR).filter(b => !["être","avoir","aller"].includes(b) && v.endsWith(b) && FR_PREFIXES.includes(v.slice(0, -b.length))).sort((a, b) => b.length - a.length)[0];
+  if (!base) return null;
+  const pre = v.slice(0, -base.length), b = FR_IRR[base], pref = t => t.split(" ").map(w => pre + w).join(" ");
+  return Object.fromEntries(Object.entries(b).map(([k, x]) => [k, typeof x === "string" ? pref(x) : x]));
+}
+// 1er groupe : appeler → appelle, lever → lève, espérer → espère, ennuyer → ennuie
+const FR_DOUBLE = /(app|rapp|ép|renouv|ét|ruiss|ensorc|chanc)eler$|(j|proj|rej|feuill|cach|cliqu|empaqu|épouss|ét|fe|tiqu)eter$/;
+function radicalMuet(v){
+  const rad = v.slice(0, -2);
+  if (FR_DOUBLE.test(v)) return {muet: rad + rad.slice(-1), futur: true};
+  if (/e[^aeiouyéèêç]er$/.test(v)) { const i = rad.lastIndexOf("e"); return {muet: rad.slice(0, i) + "è" + rad.slice(i + 1), futur: true}; }
+  if (/é[^aeiouyéèê]{1,2}er$/.test(v)) { const i = rad.lastIndexOf("é"); return {muet: rad.slice(0, i) + "è" + rad.slice(i + 1), futur: false}; }
+  if (/[ou]yer$/.test(v)) return {muet: rad.slice(0, -1) + "i", futur: true};
+  return null;
+}
 const FR_ETRE = ["arriver","entrer","rester","tomber","naître","mourir","devenir","retourner","monter","descendre","revenir","rentrer"];
 const voyelle = s => /^[aeiouyhâàéèêîïôûœ]/i.test(s);
+// verbes pronominaux : « se laver », « s'appeler » (pronom réfléchi me, te, se, nous, vous, se ; auxiliaire être)
+const FR_REFL = ["me","te","se","nous","vous","se"];
 function conjuguerFr(v, temps){
-  v = v.trim().toLowerCase(); const irr = FR_IRR[v] || {};
+  v = v.trim().toLowerCase().replace(/’/g, "'"); const pr = /^(se\s+|s'\s*)/.exec(v), pronominal = !!pr && v.length > pr[0].length + 2; if (pronominal) v = v.slice(pr[0].length);
+  const irr = irrFr(v) || {};
   const g1 = /er$/.test(v) && v !== "aller", g2 = /ir$/.test(v) && !irr.present, g3re = /re$/.test(v);
   const rad = v.slice(0, -2);
   let present = irr.present ? irr.present.split(" ")
     : g1 ? ["e","es","e", /ger$/.test(v) ? "eons" : "ons","ez","ent"].map(t => (/cer$/.test(v) && t === "ons" ? rad.slice(0, -1) + "ç" : rad) + t)
     : g2 ? ["is","is","it","issons","issez","issent"].map(t => rad + t)
     : g3re ? ["s","s","","ons","ez","ent"].map(t => rad + t) : Array(6).fill("");
+  const mu = g1 && !irr.present ? radicalMuet(v) : null;
+  if (mu) present = present.map((x, k) => [0, 1, 2, 5].includes(k) ? mu.muet + x.slice(v.length - 2) : x);
   const radNous = present[3].replace(/ons$/, "");
-  const futurRad = irr.futur || (g3re ? v.slice(0, -1) : v);
+  const futurRad = irr.futur || (mu && mu.futur ? mu.muet + "er" : g3re ? v.slice(0, -1) : v);
   const pp = irr.pp || (g1 ? rad + "é" : g2 ? rad + "i" : g3re ? rad + "u" : "");
   let f;
   switch (temps){
@@ -6322,13 +6356,14 @@ function conjuguerFr(v, temps){
     case "futur": f = ["ai","as","a","ons","ez","ont"].map(t => futurRad + t); break;
     case "conditionnel": f = ["ais","ais","ait","ions","iez","aient"].map(t => futurRad + t); break;
     case "passe-simple": f = irr.ps ? irr.ps.split(" ") : g1 ? ["ai","as","a","âmes","âtes","èrent"].map(t => (/ger$/.test(v) && /^[aâ]/.test(t) ? rad + "e" : /cer$/.test(v) && /^[aâ]/.test(t) ? rad.slice(0, -1) + "ç" : rad) + t) : ["is","is","it","îmes","îtes","irent"].map(t => rad + t); break;
-    case "subjonctif": f = irr.subj ? irr.subj.split(" ") : ["e","es","e","ions","iez","ent"].map(t => present[5].replace(/ent$/, "") + t); break;
+    case "subjonctif": f = irr.subj ? irr.subj.split(" ") : ["e","es","e","ions","iez","ent"].map((t, k) => (k === 3 || k === 4 ? radNous.replace(/ge$/, "g").replace(/ç$/, "c") : present[5].replace(/ent$/, "")) + t); break;
     case "passe-compose": {
-      const etre = irr.etre || FR_ETRE.includes(v), aux = etre ? "suis es est sommes êtes sont".split(" ") : "ai as a avons avez ont".split(" ");
+      const etre = pronominal || irr.etre || FR_ETRE.includes(v) || FR_ETRE.some(b => v.endsWith(b) && FR_PREFIXES.includes(v.slice(0, -b.length))), aux = etre ? "suis es est sommes êtes sont".split(" ") : "ai as a avons avez ont".split(" ");
       f = aux.map((a, k) => a + " " + pp + (etre ? (k < 3 ? "(e)" : "(e)s") : "")); break;
     }
     default: f = Array(6).fill("");
   }
+  if (pronominal) return f.map((x, k) => [PRONOMS.fr[k], x ? ["je ","tu ","il ","nous ","vous ","ils "][k] + (k !== 3 && k !== 4 && voyelle(x) ? FR_REFL[k][0] + "'" : FR_REFL[k] + " ") + x : ""]);
   return f.map((x, k) => [PRONOMS.fr[k], x ? (k === 0 && voyelle(x) ? "j'" : ["je ","tu ","il ","nous ","vous ","ils "][k]) + x : ""]);
 }
 
@@ -6372,8 +6407,10 @@ const ES_IRR = {
   salir: {presente: "salgo sales sale salimos salís salen", futuro: "saldr"},
   poner: {presente: "pongo pones pone ponemos ponéis ponen", indefinido: "puse pusiste puso pusimos pusisteis pusieron", futuro: "pondr"}
 };
+// verbos pronominales : « lavarse », « llamarse » (me, te, se, nos, os, se)
 function conjuguerEs(v, temps){
-  v = v.trim().toLowerCase(); const irr = ES_IRR[v] || {}, fin = v.slice(-2), rad = v.slice(0, -2);
+  v = v.trim().toLowerCase(); const pronominal = /(ar|er|ir)se$/.test(v);
+  if (pronominal) return conjuguerEs(v.slice(0, -2), temps).map(([p, x], k) => [p, x ? ["me","te","se","nos","os","se"][k] + " " + x : ""]); const irr = ES_IRR[v] || {}, fin = v.slice(-2), rad = v.slice(0, -2);
   let f;
   if (irr[temps] && temps !== "futuro") f = irr[temps].split(" ");
   else switch (temps){
@@ -6934,7 +6971,7 @@ const MODULES = [
       CHAMP("evenements", "Événements", "liste", {sous: [CHAMP("date", "Date", "nombre"), CHAMP("texte", "Événement"), CHAMP("couleur", "Couleur", "couleur")], max: 16, neuf: () => ({date: "", texte: "", couleur: "#f2ae02"})})], rendu: svgFrise},
   {id: "carte", nom: "Carte du monde", cat: "Histoire-Géo", icone: "🗺", defaut: () => carteVide(), champs: [], rendu: o => htmlCarte(o), async: true, editeur: (o, v) => fenetreCarte(o, v)},
   {id: "conjugaison", nom: "Tableau de conjugaison", cat: "Langues", icone: "Aa", defaut: () => ({langue: "fr", verbe: "chanter", temps: ["present", "imparfait", "futur"], modele: "1", radical: "am", radicalParfait: "amav"}),
-    champs: [CHAMP("langue", "Langue", "choix", {options: LANGUES_CONJ}), CHAMP("verbe", "Verbe (infinitif)"), CHAMP("modele", "Modèle (latin)", "choix", {options: LA_MODELES, si: o => o.langue === "la"}),
+    champs: [CHAMP("langue", "Langue", "choix", {options: LANGUES_CONJ}), CHAMP("verbe", "Verbe (infinitif)", "texte", {aide: "Verbe pronominal : écris « se laver », « s'appeler » (ou « lavarse » en espagnol)."}), CHAMP("modele", "Modèle (latin)", "choix", {options: LA_MODELES, si: o => o.langue === "la"}),
       CHAMP("radical", "Radical du présent (latin)", "texte", {si: o => o.langue === "la"}), CHAMP("radicalParfait", "Radical du parfait (latin)", "texte", {si: o => o.langue === "la"}), CHAMP("temps", "Temps (4 au maximum)", "temps"), CHAMP("grille", "", "grille", {generer: conjuguer})],
     rendu: o => htmlGrille(o, o.langue === "la" ? "" : (o.verbe || ""))},
   {id: "declinaison", nom: "Déclinaison latine", cat: "Langues", icone: "Lt", defaut: () => ({modele: "1", nominatif: "rosa", genitif: "rosae"}),
