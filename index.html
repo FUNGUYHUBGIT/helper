@@ -4303,7 +4303,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.05";
+const VERSION_SITE = "1.06";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5397,7 +5397,10 @@ function dessinerEditeur(){
     mini.style.left = Math.max(8, Math.min(innerWidth - L - 8, r.left + r.width / 2 - L / 2)) + "px"; mini.style.top = Math.max(8, Math.min(innerHeight - H - 8, y)) + "px";
     if (neuf){ mini.classList.remove("visible"); mini.getBoundingClientRect(); mini.classList.add("visible"); }
   };
-  doc.addEventListener("mouseup", () => setTimeout(placerMini, 0));
+  // le relâchement de la souris peut se faire hors du texte (sélection tirée jusque dans la marge) : on écoute toute la page
+  const finSouris = ev => { if (!doc.isConnected) return document.removeEventListener("mouseup", finSouris, true); if (mini.contains(ev.target) || ev.target.closest?.(".pop-couleurs")) return;
+    setTimeout(() => { const sel = getSelection(); if (sel.rangeCount && !sel.isCollapsed && doc.contains(sel.anchorNode) && doc.contains(sel.focusNode)) placerMini(); }, 0); };
+  document.addEventListener("mouseup", finSouris, true);
   doc.addEventListener("dblclick", () => setTimeout(placerMini, 0));
   doc.addEventListener("keyup", ev => { if (ev.shiftKey || ev.key === "Shift") placerMini(); });
   doc.addEventListener("keydown", ev => { if (!ev.shiftKey && !ev.ctrlKey && !ev.metaKey) cacherMini(); });
@@ -5405,7 +5408,7 @@ function dessinerEditeur(){
   const suivreMini = () => { if (!doc.isConnected){ mini.remove(); removeEventListener("scroll", suivreMini, true); return; } if (!mini.hidden && !document.getElementById("pop-couleurs")) placerMini(); };
   addEventListener("scroll", suivreMini, true);
   document.addEventListener("selectionchange", () => { if (!doc.isConnected) return mini.remove(); const sel = getSelection(); if (!mini.hidden && (!sel.rangeCount || sel.isCollapsed) && !mini.contains(document.activeElement)) cacherMini(); });
-  document.addEventListener("mousedown", ev => { if (!doc.isConnected) return; if (!mini.contains(ev.target) && !doc.contains(ev.target) && !ev.target.closest?.(".pop-couleurs")) cacherMini(); }, true);
+  document.addEventListener("mousedown", ev => { if (!doc.isConnected) return; if (!mini.contains(ev.target) && !ev.target.closest?.(".pop-couleurs")) cacherMini(); }, true);
   mini.querySelectorAll("button").forEach(b => b.addEventListener("mousedown", ev => ev.preventDefault()));
   mini.querySelectorAll("[data-cmd]").forEach(b => b.onclick = () => { cmd(b.dataset.cmd); majMini(); });
   mini.querySelectorAll(".o-pal").forEach(b => { b.addEventListener("mousedown", () => garder());
