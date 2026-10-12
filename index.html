@@ -3472,7 +3472,7 @@ const NIVEAUX = {1:"Facile", 2:"Moyen", 3:"Difficile"};
 const JOURS = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi"];
 /* Cours de l'emploi du temps et couleur par défaut */
 const COURS = [
-  ["Histoire-Géo-EMC","#e07a5f"],["Français","#5fa8d3"],["Maths","#f5a524"],["SVT","#6fbf73"],["Physique-Chimie","#9b7fd1"],
+  ["Histoire-Géo-EMC","#e07a5f"],["Français","#5fa8d3"],["Maths","#f5a524"],["SVT","#6fbf73"],["Physique-Chimie","#9b7fd1"],["Technologie","#8fb339"],
   ["Anglais","#e5c15d"],["Espagnol","#e86f9a"],["Latin","#b08968"],["Éducation musicale","#4fc1b6"],["Arts plastiques","#d48ae0"],
   ["EPS","#7fb3ff"],["Vie de classe","#a3a3a3"],["Étude","#7d7d7d"],["Devoir surveillé","#ff6b5a"],["Catéchisme","#c9b18a"]];
 const COULEUR_DEFAUT = Object.fromEntries(COURS);
@@ -4291,7 +4291,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.01";
+const VERSION_SITE = "1.02";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
