@@ -422,6 +422,9 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .barre-outils.mini-barre{position:fixed;z-index:60;flex-direction:column;align-items:stretch;flex-wrap:nowrap;gap:4px;padding:6px;border-radius:8px;background:var(--surface-2);box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent);opacity:0;transform:translateY(4px) scale(.98);transition:opacity .14s ease,transform .14s ease;pointer-events:auto}
 .barre-outils.mini-barre.visible{opacity:1;transform:none}
 .barre-outils.mini-barre[hidden]{display:none}
+.barre-outils [data-cmd].mixte{border-style:dashed;border-color:color-mix(in srgb,var(--accent) 70%,transparent);background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 24%,var(--surface)) 0 50%,var(--surface) 50% 100%);color:var(--texte)}
+.barre-outils .o-pal-barre.mixte{box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+.barre-outils select:has(option[data-mixte]:checked){border-style:dashed;border-color:color-mix(in srgb,var(--accent) 70%,transparent);color:var(--accent);font-style:italic}
 .mini-barre .mb-ligne{display:flex;gap:4px;align-items:center}
 .mini-barre select{max-width:130px;padding:3px 4px;font-size:.8rem}.mini-barre select[data-m=taille]{max-width:78px}
 .mini-barre button{min-width:28px;padding:3px 6px;font-size:.82rem}.mini-barre button sup{font-size:.6em}
@@ -4300,7 +4303,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.04";
+const VERSION_SITE = "1.05";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5281,6 +5284,37 @@ function dessinerEditeur(){
   // la sélection est retenue dès qu'elle change, et le ruban affiche la mise en forme du texte sélectionné
   const versHex = c => { const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(c || ""); return m ? "#" + [m[1], m[2], m[3]].map(v => (+v).toString(16).padStart(2, "0")).join("") : "#f4f2ed"; };
   const PX_TAILLES = [["2", 13], ["3", 16], ["4", 18], ["5", 24], ["6", 32], ["7", 48]];
+  // ----- Sélection mixte : plusieurs polices, tailles, gras… dans le texte sélectionné -----
+  const fondDe = el => { for (let x = el; x && x !== doc && doc.contains(x); x = x.parentElement){ const b = getComputedStyle(x).backgroundColor; if (b && !/rgba\(0, 0, 0, 0\)|transparent/.test(b)) return b; } return "transparent"; };
+  const soulignE = el => { for (let x = el; x && x !== doc && doc.contains(x); x = x.parentElement){ if (/underline/.test(getComputedStyle(x).textDecorationLine)) return true; } return false; };
+  function analyserSelection(){
+    const sel = getSelection(); if (!sel.rangeCount || sel.isCollapsed) return null;
+    const rg = sel.getRangeAt(0), racine = rg.commonAncestorContainer.nodeType === 3 ? rg.commonAncestorContainer.parentNode : rg.commonAncestorContainer;
+    const e = {police: new Set(), taille: new Set(), bold: new Set(), italic: new Set(), underline: new Set(), color: new Set(), backgroundColor: new Set()};
+    const marcheur = document.createTreeWalker(racine, NodeFilter.SHOW_TEXT, {acceptNode: n => rg.intersectsNode(n) && n.nodeValue.trim() && doc.contains(n) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT});
+    let n, k = 0;
+    while ((n = marcheur.nextNode()) && k++ < 600){
+      if (n === rg.startContainer && rg.startOffset >= n.nodeValue.length) continue;
+      if (n === rg.endContainer && rg.endOffset === 0) continue;
+      const el = n.parentElement, cs = getComputedStyle(el);
+      e.police.add(cs.fontFamily.split(",")[0].replace(/['"]/g, "").trim().toLowerCase()); e.taille.add(Math.round(parseFloat(cs.fontSize)));
+      e.bold.add((parseInt(cs.fontWeight) || 400) >= 600); e.italic.add(/italic|oblique/.test(cs.fontStyle)); e.underline.add(soulignE(el));
+      e.color.add(cs.color); e.backgroundColor.add(fondDe(el));
+    }
+    return k ? e : null;
+  }
+  const optionMixte = (select, texte) => { let o = select.querySelector("option[data-mixte]"); if (!o){ o = document.createElement("option"); o.dataset.mixte = "1"; o.value = ""; o.disabled = true; select.prepend(o); } o.textContent = texte; select.value = ""; o.selected = true; };
+  function marquerMixte(){
+    zone().querySelectorAll("option[data-mixte]").forEach(o => o.remove());
+    zone().querySelectorAll(".mixte").forEach(x => { x.classList.remove("mixte"); });
+    const e = analyserSelection(); if (!e) return;
+    if (e.police.size > 1){ $("#o-police").querySelector("option[data-autre]")?.remove(); optionMixte($("#o-police"), `Plusieurs polices (${e.police.size})`); }
+    if (e.taille.size > 1) optionMixte($("#o-taille"), `Plusieurs tailles (${e.taille.size})`);
+    [["bold"], ["italic"], ["underline"]].forEach(([c]) => { if (e[c].size > 1){ const b = zone().querySelector(`.barre-outils:not(.mini-barre) [data-cmd="${c}"]`); if (b){ b.classList.remove("actif"); b.classList.add("mixte"); b.setAttribute("aria-pressed", "mixed"); } } });
+    const degrade = set => { const c = [...set].slice(0, 4).map(x => x === "transparent" ? "rgba(255,255,255,.12)" : x); return `linear-gradient(90deg, ${c.map((x, i) => `${x} ${i * 100 / c.length}% ${(i + 1) * 100 / c.length}%`).join(", ")})`; };
+    if (e.color.size > 1){ const b = $("#o-couleur-barre"); b.style.background = degrade(e.color); b.classList.add("mixte"); }
+    if (e.backgroundColor.size > 1){ const b = $("#o-surligne-barre"); b.style.background = degrade(e.backgroundColor); b.classList.remove("o-sans"); b.classList.add("mixte"); }
+  }
   const majRuban = () => {
     const sel = getSelection(); if (!sel.rangeCount || !doc.contains(sel.anchorNode)) return;
     const el = sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement; if (!el) return;
@@ -5295,6 +5329,7 @@ function dessinerEditeur(){
     $("#o-surligne-barre").style.background = fond; $("#o-surligne-barre").classList.toggle("o-sans", fond === "transparent");
     const ul = el.closest("ul"); $("#o-puce").value = ul && doc.contains(ul) ? ((ul.className.match(/puce-(\w+)/) || [, "disque"])[1]) : "";
     if (ul && doc.contains(ul)) $("#o-puce-couleur").value = versHex(ul.style.getPropertyValue("--puce") || cs.color);
+    marquerMixte();
   };
   const surSelection = () => { if (!doc.isConnected) return document.removeEventListener("selectionchange", surSelection); const sel = getSelection(); if (sel.rangeCount && doc.contains(sel.anchorNode)){ selection = sel.getRangeAt(0).cloneRange(); majRuban(); } };
   document.addEventListener("selectionchange", surSelection);
@@ -5345,9 +5380,11 @@ function dessinerEditeur(){
   document.body.appendChild(mini);
   const miniSel = m => mini.querySelector(`[data-m="${m}"]`);
   const majMini = () => {
-    miniSel("police").innerHTML = $("#o-police").innerHTML; miniSel("police").value = $("#o-police").value; miniSel("taille").value = $("#o-taille").value;
-    mini.querySelectorAll("[data-cmd]").forEach(b => { let on = false; try { on = document.queryCommandState(b.dataset.cmd); } catch {} b.classList.toggle("actif", !!on); });
-    mini.querySelector('[data-barre="color"]').style.background = $("#o-couleur-barre").style.background;
+    majRuban();
+    const copierSelect = (m, id) => { const a = miniSel(m), r = $(id); a.innerHTML = r.innerHTML; a.selectedIndex = r.selectedIndex; };
+    copierSelect("police", "#o-police"); copierSelect("taille", "#o-taille");
+    mini.querySelectorAll("[data-cmd]").forEach(b => { const r = $(`.barre-outils:not(.mini-barre) [data-cmd="${b.dataset.cmd}"]`); b.classList.toggle("actif", !!r && r.classList.contains("actif")); b.classList.toggle("mixte", !!r && r.classList.contains("mixte")); });
+    mini.querySelector('[data-barre="color"]').style.background = $("#o-couleur-barre").style.background; mini.querySelector('[data-barre="color"]').classList.toggle("mixte", $("#o-couleur-barre").classList.contains("mixte"));
     const sb = mini.querySelector('[data-barre="backgroundColor"]'); sb.style.background = $("#o-surligne-barre").style.background; sb.classList.toggle("o-sans", $("#o-surligne-barre").classList.contains("o-sans"));
   };
   const cacherMini = () => { if (mini.hidden) return; fermerPalette(); mini.classList.remove("visible"); mini.hidden = true; };
