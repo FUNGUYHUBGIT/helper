@@ -418,6 +418,14 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .barre-outils .o-couleur{border-bottom:3px solid var(--c,#f4f2ed)}
 .doc-lecon span[style*="background"]{-webkit-box-decoration-break:clone;box-decoration-break:clone;border-radius:.18em;padding:.02em .08em}
 .barre-outils{position:sticky}
+::selection{background:color-mix(in srgb,var(--accent) 42%,transparent)}
+.barre-outils.mini-barre{position:fixed;z-index:60;flex-direction:column;align-items:stretch;flex-wrap:nowrap;gap:4px;padding:6px;border-radius:8px;background:var(--surface-2);box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent);opacity:0;transform:translateY(4px) scale(.98);transition:opacity .14s ease,transform .14s ease;pointer-events:auto}
+.barre-outils.mini-barre.visible{opacity:1;transform:none}
+.barre-outils.mini-barre[hidden]{display:none}
+.mini-barre .mb-ligne{display:flex;gap:4px;align-items:center}
+.mini-barre select{max-width:130px;padding:3px 4px;font-size:.8rem}.mini-barre select[data-m=taille]{max-width:78px}
+.mini-barre button{min-width:28px;padding:3px 6px;font-size:.82rem}.mini-barre button sup{font-size:.6em}
+.mini-barre .o-pal{height:28px}
 .barre-outils .o-pal{display:inline-flex;align-items:center;gap:2px;height:34px;padding:0 4px 0 7px;border-radius:6px;color:var(--texte)}
 .barre-outils .o-pal:hover,.barre-outils .o-pal[aria-expanded=true]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
 .o-pal-ic{position:relative;display:flex;flex-direction:column;align-items:center;width:20px}
@@ -4292,7 +4300,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.03";
+const VERSION_SITE = "1.04";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5020,6 +5028,7 @@ function ouvrirPalette(btn, prop, choisir){
       <label class="mini-btn pc-autre">🎨 Autre couleur…<input type="color" id="pc-autre" value="${texte ? "#f2ae02" : "#f5c518"}"></label></div>`;
   btn.after(p); btn.setAttribute("aria-expanded", "true");
   const r = btn.getBoundingClientRect(), barre = btn.closest(".barre-outils").getBoundingClientRect();
+  if (btn.closest(".mini-barre")) p.classList.add("pc-mini");
   p.style.left = Math.max(0, Math.min(r.left - barre.left, barre.width - 290)) + "px"; p.style.top = (r.bottom - barre.top + 4) + "px";
   const actuel = getComputedStyle(btn.querySelector(".o-pal-barre")).backgroundColor;
   if (texte) p.querySelectorAll(".pc-c").forEach(x => x.classList.toggle("actif", getComputedStyle(x).backgroundColor === actuel));
@@ -5312,6 +5321,64 @@ function dessinerEditeur(){
   $("#o-puce-couleur").onchange = () => { rendre(); let ul = listeCourante(); if (!ul){ document.execCommand("insertUnorderedList"); ul = listeCourante(); }
     if (ul){ ul.style.setProperty("--puce", $("#o-puce-couleur").value); if (!/puce-/.test(ul.className)) ul.classList.add("puce-disque"); } garder(); majRuban(); };
   doc.addEventListener("paste", ev => { ev.preventDefault(); document.execCommand("insertText", false, ev.clipboardData.getData("text/plain")); });
+
+  // ----- Mini-barre façon Word : apparaît au-dessus du texte sélectionné -----
+  document.querySelectorAll(".mini-barre").forEach(x => x.remove());
+  const mini = document.createElement("div"); mini.className = "barre-outils mini-barre"; mini.setAttribute("role", "toolbar"); mini.setAttribute("aria-label", "Mise en forme rapide"); mini.hidden = true;
+  const flecheMini = `<span class="o-pal-fl" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+  mini.innerHTML = `<div class="mb-ligne">
+      <select data-m="police" aria-label="Police" title="Police">${$("#o-police").innerHTML}</select>
+      <select data-m="taille" aria-label="Taille" title="Taille">${$("#o-taille").innerHTML}</select>
+      <button type="button" data-m="plus" title="Agrandir la police" aria-label="Agrandir la police">A<sup>+</sup></button>
+      <button type="button" data-m="moins" title="Réduire la police" aria-label="Réduire la police">A<sup>−</sup></button>
+      <button type="button" data-m="partie" title="Titre de partie (sommaire)" aria-label="Titre de partie">§</button>
+    </div><div class="mb-ligne">
+      <button type="button" data-cmd="bold" title="Gras" aria-label="Gras"><b>G</b></button>
+      <button type="button" data-cmd="italic" title="Italique" aria-label="Italique"><i>I</i></button>
+      <button type="button" data-cmd="underline" title="Souligné" aria-label="Souligné"><u>S</u></button>
+      <button type="button" class="o-pal" data-pal="backgroundColor" title="Surlignage" aria-label="Surlignage" aria-haspopup="true" aria-expanded="false"><span class="o-pal-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.6 3.3 20.7 9.4 12.1 18H6v-6.1zM8 12.7V16h3.3l6.6-6.6-3.3-3.3z" fill="currentColor"/><path d="M4 21h4l1.2-1.4H5.4z" fill="currentColor" opacity=".6"/></svg><i class="o-pal-barre" data-barre="backgroundColor"></i></span>${flecheMini}</button>
+      <button type="button" class="o-pal" data-pal="color" title="Couleur du texte" aria-label="Couleur du texte" aria-haspopup="true" aria-expanded="false"><span class="o-pal-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 17 11 3.8h2L18.5 17h-2.4l-1.4-3.6H9.3L7.9 17zm4.6-5.7h3.8L12 6.4z" fill="currentColor"/></svg><i class="o-pal-barre" data-barre="color"></i></span>${flecheMini}</button>
+      <button type="button" data-cmd="insertUnorderedList" title="Liste à puces" aria-label="Liste à puces">•≡</button>
+      <button type="button" data-cmd="insertOrderedList" title="Liste numérotée" aria-label="Liste numérotée">1.≡</button>
+      <button type="button" data-cmd="removeFormat" title="Effacer la mise en forme" aria-label="Effacer la mise en forme">Tx</button>
+    </div>`;
+  document.body.appendChild(mini);
+  const miniSel = m => mini.querySelector(`[data-m="${m}"]`);
+  const majMini = () => {
+    miniSel("police").innerHTML = $("#o-police").innerHTML; miniSel("police").value = $("#o-police").value; miniSel("taille").value = $("#o-taille").value;
+    mini.querySelectorAll("[data-cmd]").forEach(b => { let on = false; try { on = document.queryCommandState(b.dataset.cmd); } catch {} b.classList.toggle("actif", !!on); });
+    mini.querySelector('[data-barre="color"]').style.background = $("#o-couleur-barre").style.background;
+    const sb = mini.querySelector('[data-barre="backgroundColor"]'); sb.style.background = $("#o-surligne-barre").style.background; sb.classList.toggle("o-sans", $("#o-surligne-barre").classList.contains("o-sans"));
+  };
+  const cacherMini = () => { if (mini.hidden) return; fermerPalette(); mini.classList.remove("visible"); mini.hidden = true; };
+  const placerMini = () => {
+    const sel = getSelection(); if (!sel.rangeCount || sel.isCollapsed || !doc.contains(sel.anchorNode) || !doc.contains(sel.focusNode)) return cacherMini();
+    const r = sel.getRangeAt(0).getBoundingClientRect(); if (!r.width && !r.height) return cacherMini();
+    majMini(); const neuf = mini.hidden; mini.hidden = false;
+    const L = mini.offsetWidth, H = mini.offsetHeight, ruban = $(".barre-outils:not(.mini-barre)"), bas = ruban ? Math.max(0, ruban.getBoundingClientRect().bottom) : 0;
+    let y = r.top - H - 10; if (y < bas + 6) y = r.bottom + 10;
+    mini.style.left = Math.max(8, Math.min(innerWidth - L - 8, r.left + r.width / 2 - L / 2)) + "px"; mini.style.top = Math.max(8, Math.min(innerHeight - H - 8, y)) + "px";
+    if (neuf){ mini.classList.remove("visible"); mini.getBoundingClientRect(); mini.classList.add("visible"); }
+  };
+  doc.addEventListener("mouseup", () => setTimeout(placerMini, 0));
+  doc.addEventListener("dblclick", () => setTimeout(placerMini, 0));
+  doc.addEventListener("keyup", ev => { if (ev.shiftKey || ev.key === "Shift") placerMini(); });
+  doc.addEventListener("keydown", ev => { if (!ev.shiftKey && !ev.ctrlKey && !ev.metaKey) cacherMini(); });
+  doc.addEventListener("mousedown", cacherMini);
+  const suivreMini = () => { if (!doc.isConnected){ mini.remove(); removeEventListener("scroll", suivreMini, true); return; } if (!mini.hidden && !document.getElementById("pop-couleurs")) placerMini(); };
+  addEventListener("scroll", suivreMini, true);
+  document.addEventListener("selectionchange", () => { if (!doc.isConnected) return mini.remove(); const sel = getSelection(); if (!mini.hidden && (!sel.rangeCount || sel.isCollapsed) && !mini.contains(document.activeElement)) cacherMini(); });
+  document.addEventListener("mousedown", ev => { if (!doc.isConnected) return; if (!mini.contains(ev.target) && !doc.contains(ev.target) && !ev.target.closest?.(".pop-couleurs")) cacherMini(); }, true);
+  mini.querySelectorAll("button").forEach(b => b.addEventListener("mousedown", ev => ev.preventDefault()));
+  mini.querySelectorAll("[data-cmd]").forEach(b => b.onclick = () => { cmd(b.dataset.cmd); majMini(); });
+  mini.querySelectorAll(".o-pal").forEach(b => { b.addEventListener("mousedown", () => garder());
+    b.onclick = () => ouvrirPalette(b, b.dataset.pal, v => { appliquerCouleur(b.dataset.pal, v); placerMini(); }); });
+  miniSel("police").onmousedown = miniSel("taille").onmousedown = () => garder();
+  miniSel("police").onchange = () => { cmd("fontName", miniSel("police").value); placerMini(); };
+  miniSel("taille").onchange = () => { cmd("fontSize", miniSel("taille").value); placerMini(); };
+  const pas = d => { const t = $("#o-taille"), opts = [...t.options].map(o => o.value), i = opts.indexOf(t.value), j = Math.max(0, Math.min(opts.length - 1, i + d)); if (j !== i){ cmd("fontSize", opts[j]); } placerMini(); };
+  miniSel("plus").onclick = () => pas(1); miniSel("moins").onclick = () => pas(-1);
+  miniSel("partie").onclick = () => { $("#o-partie").click(); placerMini(); };
 
   // ----- Symboles -----
   $("#o-symb").onmousedown = ev => { ev.preventDefault(); garder(); };
