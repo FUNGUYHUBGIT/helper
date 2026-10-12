@@ -730,6 +730,7 @@ a.lien{color:var(--accent)}
 .mod-frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 2px;line-height:1.15}
 .mod-frac>span:first-child{border-bottom:1.3px solid currentColor;padding:0 3px}.mod-frac>span:last-child{padding:0 3px}
 .mod-redaction b{color:var(--accent)}
+.etiq-angle{paint-order:stroke;stroke:var(--surface-2);stroke-width:4px;stroke-linejoin:round}
 .chap{position:relative;display:inline-block;padding:0 .05em}.chap::before{content:"^";position:absolute;left:50%;top:-.28em;transform:translateX(-50%);font-size:.78em;line-height:1}
 .mod-txt-a{fill:var(--texte);font:600 13px var(--f-texte)}
 .mod-txt-b{fill:var(--texte);font:600 11.5px var(--f-texte)}
@@ -4415,7 +4416,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.17";
+const VERSION_SITE = "1.18";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6777,11 +6778,15 @@ function svgThales(o){
 }
 
 /* ---------- Angles particuliers : opposés par le sommet, adjacents, complémentaires, supplémentaires ---------- */
+// position d'une étiquette d'angle : plus loin pour les petits angles, alignée vers l'extérieur
+function placeEtiq(cx, cy, d1, d2, r){ const m = (d1 + d2) / 2 * Math.PI / 180, ouv = Math.min(90, Math.abs(d2 - d1)), dist = r + 12 + (90 - ouv) * .32, c = Math.cos(m);
+  return {x: cx + dist * c, y: cy - dist * Math.sin(m), ancre: c < -.35 ? "end" : c > .35 ? "start" : "middle"}; }
 // noms courts des angles : chiffre ou lettre surmontés d'un chapeau
 const chapH = t => `<span class="chap">${esc(t)}</span>`;
-function svgEtiqAngle(x, y, court, mesure, cls, extra = ""){
-  if (!court) return mesure ? svgTexte(x, y, mesure, cls, "middle", extra) : "";
-  return `<text x="${f1(x)}" y="${f1(y)}" text-anchor="middle" class="${cls}" ${extra}><tspan>${esc(court)}</tspan><tspan dx="-0.52em" dy="-0.62em" font-size="0.78em">^</tspan><tspan dy="0.62em" dx="0.1em">${mesure ? esc(" = " + mesure) : ""}</tspan></text>`;
+function svgEtiqAngle(x, y, court, mesure, cls, extra = "", ancre = "middle"){
+  cls += " etiq-angle";
+  if (!court) return mesure ? svgTexte(x, y, mesure, cls, ancre, extra) : "";
+  return `<text x="${f1(x)}" y="${f1(y)}" text-anchor="${ancre}" class="${cls}" ${extra}><tspan>${esc(court)}</tspan><tspan dx="-0.52em" dy="-0.62em" font-size="0.78em">^</tspan><tspan dy="0.62em" dx="0.1em">${mesure ? esc(" = " + mesure) : ""}</tspan></text>`;
 }
 const courtAngle = (style, i, lettres) => style === "numeros" ? String(i) : style === "lettres" ? (lettres[i - 1] || "") : "";
 function svgAnglesPart(o){
@@ -6798,10 +6803,10 @@ function svgAnglesPart(o){
   const pt = (deg, r = R) => [cx + r * Math.cos(deg * Math.PI / 180), cy - r * Math.sin(deg * Math.PI / 180)];
   const rayon = (deg, L, ligne = false) => { const [x, y] = pt(deg), [x0, y0] = ligne ? pt(deg + 180) : [cx, cy], [lx, ly] = pt(deg, R + 16);
     return `<line x1="${f1(x0)}" y1="${f1(y0)}" x2="${f1(x)}" y2="${f1(y)}" stroke="var(--texte)" stroke-width="2.2" stroke-linecap="round"/>${svgTexte(lx, ly + 5, L, "geo-sommet")}`; };
-  const secteur = (d1, d2, r, col, txt, idx = 0) => { const [x1, y1] = pt(d1, r), [x2, y2] = pt(d2, r), [tx, ty] = pt((d1 + d2) / 2, r + 17), grand = d2 - d1 > 180 ? 1 : 0;
+  const secteur = (d1, d2, r, col, txt, idx = 0) => { const [x1, y1] = pt(d1, r), [x2, y2] = pt(d2, r), E_ = placeEtiq(cx, cy, d1, d2, r), tx = E_.x, ty = E_.y, grand = d2 - d1 > 180 ? 1 : 0;
     if (Math.abs(d2 - d1 - 90) < .01 && o.droit !== false){ const s = 15, p1 = pt(d1, s), p3 = pt(d2, s), p2 = [p1[0] + p3[0] - cx, p1[1] + p3[1] - cy];
-      return `<path d="M${f1(cx)} ${f1(cy)} L${f1(p1[0])} ${f1(p1[1])} L${f1(p2[0])} ${f1(p2[1])} L${f1(p3[0])} ${f1(p3[1])}Z" fill="color-mix(in srgb, ${col} 28%, transparent)" stroke="${col}" stroke-width="1.8"/>${svgEtiqAngle(tx, ty + 5, court(idx), txt, "mod-txt-a", `style="fill:${col}"`)}`; }
-    return `<path d="M${f1(cx)} ${f1(cy)} L${f1(x1)} ${f1(y1)} A${r} ${r} 0 ${grand} 0 ${f1(x2)} ${f1(y2)}Z" fill="color-mix(in srgb, ${col} 22%, transparent)" stroke="none"/><path d="M${f1(x1)} ${f1(y1)} A${r} ${r} 0 ${grand} 0 ${f1(x2)} ${f1(y2)}" fill="none" stroke="${col}" stroke-width="2.2"/>${svgEtiqAngle(tx, ty + 5, court(idx), txt, "mod-txt-a", `style="fill:${col}"`)}`; };
+      return `<path d="M${f1(cx)} ${f1(cy)} L${f1(p1[0])} ${f1(p1[1])} L${f1(p2[0])} ${f1(p2[1])} L${f1(p3[0])} ${f1(p3[1])}Z" fill="color-mix(in srgb, ${col} 28%, transparent)" stroke="${col}" stroke-width="1.8"/>${svgEtiqAngle(tx, ty + 5, court(idx), txt, "mod-txt-a", `style="fill:${col}"`, E_.ancre)}`; }
+    return `<path d="M${f1(cx)} ${f1(cy)} L${f1(x1)} ${f1(y1)} A${r} ${r} 0 ${grand} 0 ${f1(x2)} ${f1(y2)}Z" fill="color-mix(in srgb, ${col} 22%, transparent)" stroke="none"/><path d="M${f1(x1)} ${f1(y1)} A${r} ${r} 0 ${grand} 0 ${f1(x2)} ${f1(y2)}" fill="none" stroke="${col}" stroke-width="2.2"/>${svgEtiqAngle(tx, ty + 5, court(idx), txt, "mod-txt-a", `style="fill:${col}"`, E_.ancre)}`; };
   const mes = o.mesures !== false;
   let svg = "", red = [], titre = "";
   if (mode === "opposes"){
@@ -6847,7 +6852,8 @@ function svgSecante(o){
   const rad = d => d * Math.PI / 180, dir = d => [Math.cos(rad(d)), -Math.sin(rad(d))];
   const inter = (p, u, q, v) => { const det = u[0] * -v[1] - u[1] * -v[0], t = ((q[0] - p[0]) * -v[1] - (q[1] - p[1]) * -v[0]) / det; return [p[0] + u[0] * t, p[1] + u[1] * t]; };
   const S0 = [180, 135], us = dir(th), P1 = [180, 82], u1 = dir(0), P2 = [180, 190], u2 = dir(dl);
-  const PE = inter(S0, us, P1, u1), PF = inter(S0, us, P2, u2);
+  let PE = inter(S0, us, P1, u1), PF = inter(S0, us, P2, u2);
+  { const dx = 180 - (PE[0] + PF[0]) / 2; P2[0] += 0; S0[0] += dx; PE = inter(S0, us, P1, u1); PF = inter(S0, us, P2, u2); }   // sécante centrée
   const plus = (p, u, k) => [p[0] + u[0] * k, p[1] + u[1] * k];
   const ln = (p, q, w = 2.2, col = "var(--texte)") => `<line x1="${f1(p[0])}" y1="${f1(p[1])}" x2="${f1(q[0])}" y2="${f1(q[1])}" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>`;
   // secteurs (degrés, sens direct) à chaque intersection
@@ -6856,18 +6862,19 @@ function svgSecante(o){
   const mesS = (P, k) => Math.round(sect[P][k][1] - sect[P][k][0]);
   const choix = {"alternes-internes": [["E", "bg"], ["F", "hd"]], "correspondants": [["E", "hd"], ["F", "hd"]], "alternes-externes": [["E", "hd"], ["F", "bg"]], "correspondants2": [["E", "bg"], ["F", "bg"]]}[paire] || [["E", "bg"], ["F", "hd"]];
   const centre = {E: PE, F: PF};
-  const arc = (P, k, r, col, txt, op = .24) => { const [d1, d2] = sect[P][k], [cx, cy] = centre[P], p = d => [cx + r * Math.cos(rad(d)), cy - r * Math.sin(rad(d))], [x1, y1] = p(d1), [x2, y2] = p(d2), m = (d1 + d2) / 2, tp = [cx + (r + 15) * Math.cos(rad(m)), cy - (r + 15) * Math.sin(rad(m))];
-    return `<path d="M${f1(cx)} ${f1(cy)} L${f1(x1)} ${f1(y1)} A${r} ${r} 0 ${d2 - d1 > 180 ? 1 : 0} 0 ${f1(x2)} ${f1(y2)}Z" fill="color-mix(in srgb, ${col} ${op * 100}%, transparent)" stroke="${col}" stroke-width="${op > .2 ? 2 : 1}"/>${svgEtiqAngle(tp[0], tp[1] + 4, court(P, k), txt, op > .2 ? "mod-txt-a" : "gr-txt", op > .2 ? `style="fill:${col}"` : "")}`; };
+  const arc = (P, k, r, col, txt, op = .24) => { const [d1, d2] = sect[P][k], [cx, cy] = centre[P], p = d => [cx + r * Math.cos(rad(d)), cy - r * Math.sin(rad(d))], [x1, y1] = p(d1), [x2, y2] = p(d2), E_ = placeEtiq(cx, cy, d1, d2, op > .2 ? r : r + 14), tp = [E_.x, E_.y];
+    return `<path d="M${f1(cx)} ${f1(cy)} L${f1(x1)} ${f1(y1)} A${r} ${r} 0 ${d2 - d1 > 180 ? 1 : 0} 0 ${f1(x2)} ${f1(y2)}Z" fill="color-mix(in srgb, ${col} ${op * 100}%, transparent)" stroke="${col}" stroke-width="${op > .2 ? 2 : 1}"/>${svgEtiqAngle(tp[0], tp[1] + 4, court(P, k), txt, op > .2 ? "mod-txt-a" : "gr-txt", op > .2 ? `style="fill:${col}"` : "", E_.ancre)}`; };
   const mes = o.mesures !== false, [p1, p2] = choix, v1 = mesS(...p1), v2 = mesS(...p2), cachee = o.inconnue !== false && par;
-  let svg = `<path d="M${f1(P1[0] - 165)} ${f1(P1[1])} L${f1(P1[0] + 165)} ${f1(P1[1])} L${f1(plus(P2, u2, 165)[0])} ${f1(plus(P2, u2, 165)[1])} L${f1(plus(P2, u2, -165)[0])} ${f1(plus(P2, u2, -165)[1])}Z" fill="color-mix(in srgb, #6fbf73 7%, transparent)"/>`;
+  let svg = `<path d="M${f1(P1[0] - 205)} ${f1(P1[1])} L${f1(P1[0] + 205)} ${f1(P1[1])} L${f1(plus(P2, u2, 205)[0])} ${f1(plus(P2, u2, 205)[1])} L${f1(plus(P2, u2, -205)[0])} ${f1(plus(P2, u2, -205)[1])}Z" fill="color-mix(in srgb, #6fbf73 7%, transparent)"/>`;
   if (o.autres) ["E", "F"].forEach(P => Object.keys(sect[P]).forEach(k => { if (!choix.some(([q, l]) => q === P && l === k)) svg += arc(P, k, 18, "#9b978e", mes ? mesS(P, k) + "°" : "", .1); }));
-  svg += ln(plus(P1, u1, -165), plus(P1, u1, 165)) + ln(plus(P2, u2, -165), plus(P2, u2, 165)) + ln(plus(PE, us, 62), plus(PF, us, -62), 2, "#e86f9a");
+  svg += ln(plus(P1, u1, -205), plus(P1, u1, 205)) + ln(plus(P2, u2, -205), plus(P2, u2, 205)) + ln(plus(PE, us, 62), plus(PF, us, -62), 2, "#e86f9a");
   svg += arc(...p1, 26, c1, mes ? v1 + "°" : "") + arc(...p2, 26, par ? c1 : c2, mes ? (cachee ? "?" : v2 + "°") : "");
-  if (par){ const fl = (P, u) => { const m = plus(P, u, 110), n = [-u[1], u[0]]; return `<path d="M${f1(m[0] - u[0] * 6 + n[0] * 5)} ${f1(m[1] - u[1] * 6 + n[1] * 5)} L${f1(m[0])} ${f1(m[1])} L${f1(m[0] - u[0] * 6 - n[0] * 5)} ${f1(m[1] - u[1] * 6 - n[1] * 5)}" fill="none" stroke="var(--texte)" stroke-width="1.6"/>`; }; svg += fl(P1, u1) + fl(P2, u2); }
+  if (par){ const fl = (P, u) => { const m = plus(P, u, 150), n = [-u[1], u[0]]; return `<path d="M${f1(m[0] - u[0] * 6 + n[0] * 5)} ${f1(m[1] - u[1] * 6 + n[1] * 5)} L${f1(m[0])} ${f1(m[1])} L${f1(m[0] - u[0] * 6 - n[0] * 5)} ${f1(m[1] - u[1] * 6 - n[1] * 5)}" fill="none" stroke="var(--texte)" stroke-width="1.6"/>`; }; svg += fl(P1, u1) + fl(P2, u2); }
   const pt = (p, L, dx, dy) => `<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="2.6" fill="var(--texte)"/>${svgTexte(p[0] + dx, p[1] + dy, L, "geo-sommet")}`;
-  svg += pt(plus(P1, u1, -150), A, 0, -9) + pt(plus(P1, u1, 150), B, 0, -9) + pt(plus(P2, u2, -150), C, 0, 20) + pt(plus(P2, u2, 150), D, 0, 20)
-    + pt(PE, E, th < 90 ? -14 : 14, -8) + pt(PF, F, th < 90 ? 14 : -14, 18) + pt(plus(PE, us, 52), G, 14, 0) + pt(plus(PF, us, -52), H, -14, 10);
-  if (o.droites !== false) svg += svgTexte(P1[0] + 172, P1[1] + 4, "(d₁)", "gr-txt", "start") + svgTexte(plus(P2, u2, 172)[0], plus(P2, u2, 172)[1] + 4, "(d₂)", "gr-txt", "start") + svgTexte(plus(PE, us, 66)[0] + (th < 90 ? -16 : 16), plus(PE, us, 66)[1] + 2, "(d)", "gr-txt", "middle", `style="fill:#e86f9a"`);
+  const bis = (P, k, d) => { const [a, b] = sect[P][k], m = rad((a + b) / 2); return [Math.cos(m) * d, -Math.sin(m) * d + 5]; };
+  svg += pt(plus(P1, u1, -190), A, 0, -9) + pt(plus(P1, u1, 190), B, 0, -9) + pt(plus(P2, u2, -190), C, 0, 20) + pt(plus(P2, u2, 190), D, 0, 20)
+    + pt(PE, E, ...bis("E", th < 90 ? "hg" : "hd", 15)) + pt(PF, F, ...bis("F", th < 90 ? "bd" : "bg", 15)) + pt(plus(PE, us, 52), G, 14, 0) + pt(plus(PF, us, -52), H, -14, 10);
+  if (o.droites !== false) svg += svgTexte(P1[0] + 212, P1[1] + 4, "(d₁)", "gr-txt", "start") + svgTexte(plus(P2, u2, 212)[0], plus(P2, u2, 212)[1] + 4, "(d₂)", "gr-txt", "start") + svgTexte(plus(PE, us, 62)[0] + (th < 90 ? -26 : 26), plus(PE, us, 62)[1] + 2, "(d)", "gr-txt", "middle", `style="fill:#e86f9a"`);
   const nomP = {"alternes-internes": "alternes-internes", "correspondants": "correspondants", "correspondants2": "correspondants", "alternes-externes": "alternes-externes"}[paire];
   const nomA = (P, k) => st === "trois" ? nomS[P][k] : chapH(court(P, k)), n1 = nomA(...p1), n2 = nomA(...p2);
   const titre = `Angles ${nomP}`;
@@ -6875,7 +6882,7 @@ function svgSecante(o){
   if (par) red.push(`Les droites (${A}${B}) et (${C}${D}) sont parallèles.`, `<b>Propriété :</b> si deux droites parallèles sont coupées par une sécante, alors les angles ${nomP} ont la même mesure.`, cachee ? `Donc ${m_(`${n2} = ${n1} = ${v1}°`)}.` : m_(`${n1} = ${n2} = ${v1}°`),
     `<i>Réciproque : si deux droites coupées par une sécante forment des angles ${nomP} de même mesure, alors ces droites sont parallèles.</i>`);
   else red.push(`${m_(`${n1} = ${v1}°`)} et ${m_(`${n2} = ${v2}°`)} : ces angles n'ont pas la même mesure, donc <b>les droites (${A}${B}) et (${C}${D}) ne sont pas parallèles</b>.`);
-  const fig = `<svg viewBox="-10 5 395 265" class="mod-svg" style="max-width:420px" role="img" aria-label="${esc(titre)}">${svg}</svg>`;
+  const fig = `<svg viewBox="-50 5 475 265" class="mod-svg" style="max-width:500px" role="img" aria-label="${esc(titre)}">${svg}</svg>`;
   return `<div class="mod-theoreme">${fig}${o.explication !== false ? htmlRedaction(red, titre) : ""}</div>`;
 }
 
