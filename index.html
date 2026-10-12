@@ -1456,7 +1456,52 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .ail-t-decro{fill:#f07a7e}.ail-t-alerte{fill:#f2ae02;font-weight:500}
 @media (prefers-reduced-motion:reduce){.ail-flux,.ail-vent{animation:none}}
 .o-module:not(.o-ins){border-color:var(--accent)!important;color:var(--accent)!important}
-.geo-svg{max-width:100%;height:auto;display:block;margin:auto}
+.geo-svg{max-width:100%;height:auto;display:block;margin:auto;overflow:visible}
+/* Fenêtre « Figure géométrique » */
+.geo-tete{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.geo-tete h3{margin:0}
+.geo-choix{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.geo-choix button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px 8px;border:1px solid var(--ligne);border-radius:10px;background:var(--surface);color:var(--doux);cursor:pointer;font:inherit;font-size:.8rem;transition:border-color .15s,background .15s}
+.geo-choix button:hover{border-color:var(--doux);color:var(--texte)}
+.geo-choix button[aria-pressed=true]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface));color:var(--texte);box-shadow:0 0 0 1px var(--accent) inset}
+.geo-choix .geo-svg{width:64px!important;height:46px}
+.geo-ed{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px;align-items:start}
+.geo-reglages{display:flex;flex-direction:column;gap:14px;max-height:min(60vh,560px);overflow:auto;padding-right:4px}
+.geo-reglages section{display:flex;flex-direction:column;gap:8px}
+.geo-reglages h4{margin:0;font-family:"IBM Plex Mono",monospace;font-size:.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--doux);display:flex;align-items:center;gap:8px}
+.geo-reglages h4::after{content:"";flex:1;height:1px;background:var(--ligne)}
+.geo-reglages .grille-form{grid-template-columns:1fr 1fr;gap:10px}
+.geo-nature{margin:0;font-size:.82rem;color:var(--accent)}
+.geo-pas{display:flex;align-items:stretch;border:1px solid var(--ligne);border-radius:8px;overflow:hidden;background:var(--surface)}
+.geo-pas button{width:34px;border:0;background:var(--surface-2);color:var(--texte);font-size:1.1rem;cursor:pointer}.geo-pas button:hover{background:color-mix(in srgb,var(--accent) 18%,var(--surface-2))}
+.geo-pas input{flex:1;min-width:0;border:0;border-radius:0;text-align:center;background:none;-moz-appearance:textfield}.geo-pas input::-webkit-inner-spin-button{display:none}
+.geo-cotes{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}
+.geo-cotes label{display:flex;align-items:center;gap:0;border:1px solid var(--ligne);border-radius:8px;overflow:hidden;background:var(--surface)}
+.geo-cotes label span{padding:0 8px;align-self:stretch;display:grid;place-items:center;background:var(--surface-2);font-weight:700;font-size:.8rem;min-width:38px}
+.geo-cotes input{border:0;border-radius:0;background:none;min-width:0;flex:1;padding:7px 8px;font-size:.85rem}
+.geo-inters{display:flex;flex-direction:column;gap:7px}
+.geo-inter{display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer}
+.geo-inter input{position:absolute;opacity:0;pointer-events:none}
+.geo-inter-b{width:32px;height:18px;border-radius:10px;background:var(--surface-2);border:1px solid var(--ligne);position:relative;flex:none;transition:background .15s}
+.geo-inter-b::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--doux);transition:transform .15s,background .15s}
+.geo-inter input:checked+.geo-inter-b{background:color-mix(in srgb,var(--accent) 35%,var(--surface-2));border-color:var(--accent)}
+.geo-inter input:checked+.geo-inter-b::after{transform:translateX(14px);background:var(--accent)}
+.geo-inter input:focus-visible+.geo-inter-b{outline:2px solid var(--accent);outline-offset:2px}
+.geo-style{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;align-items:end}.geo-style .geo-coul{grid-column:span 2}
+.geo-coul{display:flex;align-items:center;gap:8px;font-size:.88rem;height:38px}.geo-coul input{width:34px;height:28px;padding:0;border:1px solid var(--ligne);border-radius:6px;background:none}
+.geo-style .champ label{display:flex;justify-content:space-between}.geo-style .champ b{color:var(--accent);font-weight:600}
+.geo-droite{position:sticky;top:0;display:flex;flex-direction:column;gap:8px}
+.geo-apercu{display:grid;place-items:center;min-height:300px;padding:14px;border:1px solid var(--ligne);border-radius:12px;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--surface-2) 70%,transparent),var(--surface))}
+.geo-apercu .geo-svg{width:100%!important;max-width:460px}
+.geo-astuce{margin:0;font-size:.78rem;color:var(--doux);line-height:1.4}
+.geo-edition .geo-poignee{fill:var(--surface);stroke:var(--accent);stroke-width:2.2;cursor:grab;transition:r .1s}
+.geo-edition .geo-poignee:hover{r:9;fill:var(--accent)}
+.geo-apercu.glisse .geo-poignee{cursor:grabbing}.geo-apercu.glisse{cursor:grabbing}
+.geo-edition .geo-arete{stroke:transparent;stroke-width:12;cursor:copy}
+.geo-edition .geo-arete:hover{stroke:color-mix(in srgb,var(--accent) 25%,transparent)}
+.geo-edition{touch-action:none;user-select:none}
+.geo-pied{margin-top:14px}
+@media (max-width:760px){.geo-ed{grid-template-columns:1fr}.geo-droite{position:static;order:-1}.geo-choix{grid-template-columns:repeat(3,1fr)}.geo-reglages{max-height:none}}
+
 .geo-sommet{fill:var(--texte);font:700 15px var(--f-texte)}
 .geo-cote{fill:var(--doux);font:600 12.5px var(--f-texte)}
 .obj-doc:has(.geo-svg){width:fit-content}
@@ -4359,7 +4404,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.10";
+const VERSION_SITE = "1.11";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5790,16 +5835,39 @@ function svgForme(o){
 }
 
 /* ---------- Figures géométriques : triangle rectangle, rectangle, carré, losange ---------- */
-const FIGURES_GEO = [["triangle","Triangle rectangle"],["rectangle","Rectangle"],["carre","Carré"],["losange","Losange"]];
-const geoVide = (figure = "triangle") => ({kind: "geo", figure, sommets: figure === "triangle" ? "ABC" : "ABCD",
+const FIGURES_GEO = [["triangle","Triangle rectangle"],["rectangle","Rectangle"],["carre","Carré"],["losange","Losange"],["manuel","Manuel"]];
+/* Forme « Manuel » : polygone libre, en carreaux (15 × 11), y vers le bas ; modèles prêts à déformer */
+const MODELES_POLY = [["libre","À la main"],["regulier","Polygone régulier"],["tri-quelconque","Triangle quelconque"],["tri-isocele","Triangle isocèle"],["tri-equilateral","Triangle équilatéral"],["tri-rectangle","Triangle rectangle"],
+  ["quad-quelconque","Quadrilatère quelconque"],["trapeze","Trapèze"],["trapeze-rect","Trapèze rectangle"],["trapeze-iso","Trapèze isocèle"],["parallelogramme","Parallélogramme"],["rectangle","Rectangle"],["losange","Losange"],["carre","Carré"],["cerf-volant","Cerf-volant"]];
+const NOMS_POLY = {3: "Triangle", 4: "Quadrilatère", 5: "Pentagone", 6: "Hexagone", 7: "Heptagone", 8: "Octogone", 9: "Ennéagone", 10: "Décagone", 11: "Hendécagone", 12: "Dodécagone"};
+function pointsModele(m, n = 5){
+  const reg = (k, R = 4.2, cy = 5.5) => Array.from({length: k}, (_, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / k + (k % 2 ? 0 : Math.PI / k); return [+(7.5 + R * Math.cos(a)).toFixed(2), +(cy + R * Math.sin(a)).toFixed(2)]; });
+  return ({"regulier": reg(n), "libre": reg(n), "tri-quelconque": [[3, 8.5], [12, 8.5], [5.5, 2.5]], "tri-isocele": [[3.5, 8.5], [11.5, 8.5], [7.5, 2]], "tri-equilateral": reg(3, 4.6, 6.2),
+    "tri-rectangle": [[3, 8.5], [12, 8.5], [3, 2.5]], "quad-quelconque": [[2.5, 8], [12, 9], [11, 3], [4, 2]], "trapeze": [[2, 8.5], [13, 8.5], [10, 3], [4.5, 3]], "trapeze-rect": [[3, 8.5], [12.5, 8.5], [8.5, 3], [3, 3]],
+    "trapeze-iso": [[2, 8.5], [13, 8.5], [10.5, 3], [4.5, 3]], "parallelogramme": [[2, 8.5], [10.5, 8.5], [13, 3], [4.5, 3]], "rectangle": [[2.5, 8.5], [12.5, 8.5], [12.5, 2.5], [2.5, 2.5]],
+    "losange": [[7.5, 1.5], [12, 5.5], [7.5, 9.5], [3, 5.5]], "carre": [[4, 9], [11, 9], [11, 2], [4, 2]], "cerf-volant": [[7.5, 1.5], [11, 4.5], [7.5, 9.5], [4, 4.5]]})[m] || reg(n);
+}
+const lettresPoly = n => "ABCDEFGHIJKL".slice(0, n);
+const geoVide = (figure = "triangle") => figure === "manuel" ? {kind: "geo", figure, modele: "trapeze", n: 4, points: pointsModele("trapeze"), sommets: "ABCD", cotes: ["", "", "", ""], mesures: false, angleDroit: true, codage: true, diagonales: false, quadrillage: false, aimant: true, couleur: "#f2ae02", rotation: 0, largeur: 360}
+  : ({kind: "geo", figure, sommets: figure === "triangle" ? "ABC" : "ABCD",
   a: figure === "triangle" ? "3 cm" : figure === "losange" ? "6 cm" : figure === "carre" ? "4 cm" : "6 cm",
   b: figure === "triangle" ? "4 cm" : figure === "losange" ? "4 cm" : "3,5 cm", c: figure === "triangle" ? "?" : "",
   angleDroit: true, codage: true, diagonales: figure === "losange", couleur: "#f2ae02", rotation: 0, largeur: 320});
-function svgGeo(o){
+function svgGeo(o, ed = false){
   const val = (v, d) => { const n = parseFloat(String(v || "").replace(",", ".")); return n > 0 ? n : d; };
   const S = String(o.sommets || "").replace(/\s/g, "").toUpperCase().split(""), nom = k => S[k] || "ABCD"[k];
   let P, cotes = [], codes = [], angles = [], diag = [];
-  if (o.figure === "triangle"){
+  const manuel = o.figure === "manuel";
+  if (manuel){
+    P = (o.points || []).map(([x, y]) => [+x, +y]); const n = P.length, lg = (i, j) => Math.hypot(P[j][0] - P[i][0], P[j][1] - P[i][1]);
+    const fmt = v => (Math.round(v * 10) / 10).toString().replace(".", ",");
+    cotes = P.map((_, i) => [i, (i + 1) % n, (o.cotes || [])[i] || (o.mesures ? fmt(lg(i, (i + 1) % n)) + " cm" : "")]);
+    if (o.codage){ const L = P.map((_, i) => lg(i, (i + 1) % n)), groupes = []; L.forEach((l, i) => { const g = groupes.find(g => Math.abs(g.l - l) < .06); g ? g.c.push(i) : groupes.push({l, c: [i]}); });
+      let m = 0; groupes.filter(g => g.c.length > 1).forEach(g => { m++; g.c.forEach(i => codes.push([i, (i + 1) % n, Math.min(m, 3)])); }); }
+    if (o.angleDroit) P.forEach((p, i) => { const a = P[(i + n - 1) % n], b = P[(i + 1) % n], u = [a[0] - p[0], a[1] - p[1]], v = [b[0] - p[0], b[1] - p[1]];
+      const c = (u[0] * v[0] + u[1] * v[1]) / ((Math.hypot(...u) * Math.hypot(...v)) || 1); if (Math.abs(c) < .012) angles.push([i, (i + n - 1) % n, (i + 1) % n]); });
+    if (o.diagonales && n === 4) diag = [[0, 2, ""], [1, 3, ""]];
+  } else if (o.figure === "triangle"){
     const a = val(o.a, 3), b = val(o.b, 4); // A angle droit ; AB vertical (a), AC horizontal (b)
     P = [[0, 0], [0, -a], [b, 0]];
     cotes = [[0, 1, o.a], [0, 2, o.b], [1, 2, o.c]];
@@ -5820,15 +5888,23 @@ function svgGeo(o){
   }
   // rotation puis mise à l'échelle dans une boîte de 300 × 220
   const t = (+o.rotation || 0) * Math.PI / 180, rot = ([x, y]) => [x * Math.cos(t) - y * Math.sin(t), x * Math.sin(t) + y * Math.cos(t)];
-  let Q = P.map(rot);
+  let Q;
+  if (manuel){ // échelle fixe : 1 carreau = 20 px, rotation autour du centre de la feuille
+    Q = P.map(([x, y]) => { const [rx, ry] = rot([x - 7.5, y - 5.5]); return [(rx + 7.5) * 20, (ry + 5.5) * 20]; });
+    if (!Q.length) return `<svg viewBox="0 0 300 220" class="geo-svg"></svg>`;
+  } else {
+  Q = P.map(rot);
   const xs = Q.map(p => p[0]), ys = Q.map(p => p[1]), w = Math.max(...xs) - Math.min(...xs) || 1, h = Math.max(...ys) - Math.min(...ys) || 1;
   const k = Math.min(240 / w, 160 / h), ox = 150 - (Math.min(...xs) + w / 2) * k, oy = 110 - (Math.min(...ys) + h / 2) * k;
   Q = Q.map(([x, y]) => [x * k + ox, y * k + oy]);
+  }
   const cx = Q.reduce((s, p) => s + p[0], 0) / Q.length, cy = Q.reduce((s, p) => s + p[1], 0) / Q.length;
   const f = v => v.toFixed(1), coul = esc(o.couleur || "#f2ae02");
   const milieu = (i, j) => [(Q[i][0] + Q[j][0]) / 2, (Q[i][1] + Q[j][1]) / 2];
   const dehors = (x, y, d) => { const dx = x - cx, dy = y - cy, n = Math.hypot(dx, dy) || 1; return [x + dx / n * d, y + dy / n * d]; };
-  let svg = `<path d="M${Q.map(p => f(p[0]) + " " + f(p[1])).join(" L")}Z" fill="color-mix(in srgb, ${coul} 16%, transparent)" stroke="${coul}" stroke-width="2.2" stroke-linejoin="round"/>`;
+  let svg = "";
+  if (manuel && (o.quadrillage || ed)){ let g = ""; for (let x = 0; x <= 300; x += 20) g += `M${x} 0V220`; for (let y = 0; y <= 220; y += 20) g += `M0 ${y}H300`; svg += `<path d="${g}" stroke="var(--texte)" stroke-opacity="${ed && !o.quadrillage ? .07 : .14}" stroke-width="1" fill="none"/>`; }
+  svg += `<path d="M${Q.map(p => f(p[0]) + " " + f(p[1])).join(" L")}Z" fill="color-mix(in srgb, ${coul} 16%, transparent)" stroke="${coul}" stroke-width="2.2" stroke-linejoin="round"/>`;
   diag.forEach(([i, j, txt]) => { svg += `<line x1="${f(Q[i][0])}" y1="${f(Q[i][1])}" x2="${f(Q[j][0])}" y2="${f(Q[j][1])}" stroke="${coul}" stroke-width="1.4" stroke-dasharray="5 4"/>`;
     if (txt && o.figure === "losange"){ const [mx, my] = milieu(i, j), [ux, uy] = [Q[j][0] - Q[i][0], Q[j][1] - Q[i][1]], n = Math.hypot(ux, uy); const px = mx + (-uy / n) * 12 + (ux / n) * n * .22, py = my + (ux / n) * 12 + (uy / n) * n * .22;
       svg += `<text x="${f(px)}" y="${f(py + 4)}" text-anchor="middle" class="geo-cote">${esc(txt)}</text>`; } });
@@ -5846,46 +5922,93 @@ function svgGeo(o){
     let nx = -uy / l, ny = ux / l; if ((mx - cx) * nx + (my - cy) * ny < 0){ nx = -nx; ny = -ny; }
     const ec = o.codage ? 22 : 16, px = mx + nx * (ec + Math.abs(nx) * 10), py = my + ny * ec;
     svg += `<text x="${f(px)}" y="${f(py + 4)}" text-anchor="middle" class="geo-cote">${esc(txt)}</text>`; });
-  Q.forEach((p, i) => { const [x, y] = dehors(p[0], p[1], 14); svg += `<text x="${f(x)}" y="${f(y + 5)}" text-anchor="middle" class="geo-sommet">${esc(nom(i))}</text>`; });
-  return `<svg viewBox="0 0 300 220" class="geo-svg" style="width:${Math.max(160, Math.min(520, +o.largeur || 320))}px" role="img" aria-label="${esc(FIGURES_GEO.find(x => x[0] === o.figure)?.[1] || "Figure")} ${esc(S.join(""))}">${svg}</svg>`;
+  Q.forEach((p, i) => { const [x, y] = dehors(p[0], p[1], 14); svg += `<text x="${f(x)}" y="${f(y + 5)}" text-anchor="middle" class="geo-sommet">${esc(manuel ? (S[i] || lettresPoly(12)[i] || "") : nom(i))}</text>`; });
+  if (manuel && ed){ // poignées de déplacement et zones d'ajout de sommet
+    Q.forEach((p, i) => { const q = Q[(i + 1) % Q.length]; svg += `<line x1="${f(p[0])}" y1="${f(p[1])}" x2="${f(q[0])}" y2="${f(q[1])}" class="geo-arete" data-arete="${i}"/>`; });
+    Q.forEach((p, i) => { svg += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="7" class="geo-poignee" data-pt="${i}"/>`; });
+  }
+  return `<svg viewBox="0 0 300 220" class="geo-svg${ed ? " geo-edition" : ""}" style="width:${Math.max(160, Math.min(520, +o.largeur || 320))}px" role="img" aria-label="${esc(manuel ? (NOMS_POLY[P.length] || "Polygone") : FIGURES_GEO.find(x => x[0] === o.figure)?.[1] || "Figure")} ${esc(S.join(""))}">${svg}</svg>`;
 }
 function fenetreGeo(depart, valider){
   let o = structuredClone(depart || geoVide());
-  const el = ouvrirVoile(`<h3>Figure géométrique</h3><div id="geo-form"></div>
-    <div class="apercu-graphe" id="geo-apercu" style="display:grid;place-items:center"></div>
-    <div class="rangee"><button class="btn" type="button" id="geo-ok">Valider</button><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div>`, 760);
-  const apercu = () => { el.querySelector("#geo-apercu").innerHTML = svgGeo(o); };
+  const el = ouvrirVoile(`<div class="geo-tete"><h3>Figure géométrique</h3><button type="button" class="mc-fermer" id="geo-x" aria-label="Fermer">✕</button></div>
+    <div class="geo-choix" id="geo-choix"></div>
+    <div class="geo-ed"><div class="geo-reglages" id="geo-form"></div>
+      <div class="geo-droite"><div class="geo-apercu" id="geo-apercu"></div><p class="geo-astuce" id="geo-astuce"></p></div></div>
+    <div class="rangee geo-pied"><button class="btn" type="button" id="geo-ok">Valider</button><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div>`, 1000);
+  const miniature = v => v === "manuel"
+    ? `<svg viewBox="0 0 300 220" class="geo-svg"><path d="M60 180 L250 180 L200 60 L110 40 Z" fill="color-mix(in srgb, #f2ae02 16%, transparent)" stroke="#f2ae02" stroke-width="10" stroke-linejoin="round"/>${[[60,180],[250,180],[200,60],[110,40]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="16" fill="var(--texte)"/>`).join("")}</svg>`
+    : svgGeo({...geoVide(v), a: "", b: "", c: "", sommets: "", largeur: 50, angleDroit: false, codage: false});
+  const choix = () => { el.querySelector("#geo-choix").innerHTML = FIGURES_GEO.map(([v, t]) => `<button type="button" data-gf="${v}" aria-pressed="${v === o.figure}">${miniature(v)}<span>${t}</span></button>`).join("");
+    el.querySelectorAll("[data-gf]").forEach(b => b.onclick = () => { if (b.dataset.gf === o.figure) return; const anc = o; o = {...geoVide(b.dataset.gf), couleur: anc.couleur}; choix(); form(); }); };
+  const astuce = () => { el.querySelector("#geo-astuce").textContent = o.figure === "manuel" ? "Fais glisser les points pour déformer la figure · double-clic sur un côté pour ajouter un sommet · clic droit sur un point pour le retirer." : "Les longueurs numériques (« 3 cm », « 4,5 ») donnent les proportions. Écris « ? » ou une lettre pour une longueur à trouver."; };
+  const apercu = () => { el.querySelector("#geo-apercu").innerHTML = svgGeo(o, o.figure === "manuel"); };
   const champs = () => o.figure === "triangle" ? [["a", `Côté ${(o.sommets[0] || "A") + (o.sommets[1] || "B")}`], ["b", `Côté ${(o.sommets[0] || "A") + (o.sommets[2] || "C")}`], ["c", `Hypoténuse ${(o.sommets[1] || "B") + (o.sommets[2] || "C")}`]]
     : o.figure === "losange" ? [["a", "Diagonale horizontale"], ["b", "Diagonale verticale"], ["c", "Côté (facultatif)"]]
     : o.figure === "carre" ? [["a", "Côté"]] : [["a", "Longueur"], ["b", "Largeur"]];
+  const interr = (id, txt, on) => `<label class="geo-inter"><input type="checkbox" id="${id}" ${on ? "checked" : ""}><span class="geo-inter-b" aria-hidden="true"></span>${txt}</label>`;
+  const nomS = i => (o.sommets || "")[i] || lettresPoly(12)[i];
+  const regler = () => { // nombre de sommets, lettres et côtés suivent les points
+    const n = o.points.length; o.n = n; let S = String(o.sommets || "").toUpperCase().replace(/[^A-Z]/g, ""); if (S.length < n) S += lettresPoly(12).split("").filter(c => !S.includes(c)).join(""); o.sommets = S.slice(0, n);
+    o.cotes = Array.from({length: n}, (_, i) => (o.cotes || [])[i] || ""); };
   const form = () => {
-    el.querySelector("#geo-form").innerHTML = `<div class="formes-choix">${FIGURES_GEO.map(([v, t]) => `<button type="button" data-gf="${v}" title="${t}" aria-pressed="${v === o.figure}">${svgGeo({...geoVide(v), a: "", b: "", c: "", sommets: "", largeur: 50, angleDroit: false, codage: false})}<span>${t}</span></button>`).join("")}</div>
-      <div class="grille-form">
+    const z = el.querySelector("#geo-form"), man = o.figure === "manuel";
+    if (man) regler();
+    z.innerHTML = man ? `
+      <section><h4>Forme</h4>
+        <div class="grille-form"><div class="champ" style="grid-column:span 2"><label for="geo-mod">Type</label><select id="geo-mod">${MODELES_POLY.map(([v, t]) => `<option value="${v}" ${v === o.modele ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+          <div class="champ"><label for="geo-n">Nombre de côtés</label><div class="geo-pas"><button type="button" data-pas="-1" aria-label="Un côté de moins">−</button><input id="geo-n" type="number" min="3" max="12" value="${o.points.length}"><button type="button" data-pas="1" aria-label="Un côté de plus">+</button></div></div>
+          <div class="champ"><label for="geo-s">Sommets</label><input id="geo-s" type="text" maxlength="12" value="${esc(o.sommets)}"></div></div>
+        <p class="geo-nature">${esc(NOMS_POLY[o.points.length] || "Polygone")} ${esc(o.sommets)}${o.modele && !/^(libre|regulier|quad-quelconque|tri-quelconque)$/.test(o.modele) ? ` · modèle ${esc((MODELES_POLY.find(m => m[0] === o.modele) || [])[1] || "").toLowerCase()}` : ""}</p></section>
+      <section><h4>Côtés</h4><div class="geo-cotes">${o.points.map((_, i) => `<label><span>${esc(nomS(i) + nomS((i + 1) % o.points.length))}</span><input data-cote="${i}" type="text" maxlength="16" value="${esc(o.cotes[i] || "")}" placeholder="${o.mesures ? "mesure auto" : "ex. 5 cm, x, ?"}"></label>`).join("")}</div></section>
+      <section><h4>Affichage</h4><div class="geo-inters">
+        ${interr("geo-mes", "Longueurs mesurées (1 carreau = 1 cm)", o.mesures)}${interr("geo-ad", "Angles droits", o.angleDroit)}${interr("geo-cod", "Codage des côtés égaux", o.codage)}
+        ${o.points.length === 4 ? interr("geo-dg", "Diagonales", o.diagonales) : ""}${interr("geo-q", "Quadrillage visible", o.quadrillage)}${interr("geo-aim", "Points aimantés au quadrillage", o.aimant)}</div></section>`
+    : `<section><h4>Dimensions</h4><div class="grille-form">
         <div class="champ"><label for="geo-s">Nom des sommets</label><input id="geo-s" type="text" maxlength="${o.figure === "triangle" ? 3 : 4}" value="${esc(o.sommets)}"></div>
-        ${champs().map(([k, t]) => `<div class="champ"><label for="geo-${k}">${t}</label><input id="geo-${k}" data-gk="${k}" type="text" maxlength="20" value="${esc(o[k] || "")}" placeholder="ex. 5 cm, x, ?"></div>`).join("")}
-      </div>
-      <div class="rangee" style="gap:16px">
-        <label class="rangee" style="gap:6px"><input type="checkbox" id="geo-ad" ${o.angleDroit ? "checked" : ""}> Angle${o.figure === "triangle" ? "" : "s"} droit${o.figure === "triangle" ? "" : "s"}</label>
-        ${o.figure !== "triangle" ? `<label class="rangee" style="gap:6px"><input type="checkbox" id="geo-cod" ${o.codage ? "checked" : ""}> Codage des côtés égaux</label>
-        <label class="rangee" style="gap:6px"><input type="checkbox" id="geo-dg" ${o.diagonales ? "checked" : ""}> Diagonales</label>` : ""}
-        <label class="rangee" style="gap:6px">Couleur <input type="color" id="geo-coul" value="${esc(o.couleur)}"></label>
-      </div>
-      <div class="grille-form"><div class="champ"><label for="geo-rot">Rotation : <span id="geo-rv">${o.rotation}</span>°</label><input type="range" id="geo-rot" min="-90" max="90" step="5" value="${o.rotation}"></div>
-        <div class="champ"><label for="geo-l">Taille : <span id="geo-lv">${o.largeur}</span> px</label><input type="range" id="geo-l" min="160" max="520" step="10" value="${o.largeur}"></div></div>
-      <p class="doux" style="font-size:.8rem;margin:0">Les longueurs numériques (« 3 cm », « 4,5 ») donnent les proportions de la figure. Écris « ? » ou une lettre pour une longueur à trouver.</p>`;
-    el.querySelectorAll("[data-gf]").forEach(b => b.onclick = () => { const anc = o; o = {...geoVide(b.dataset.gf), couleur: anc.couleur, largeur: anc.largeur}; form(); });
-    el.querySelector("#geo-s").oninput = ev => { o.sommets = ev.target.value.toUpperCase(); apercu(); };
-    el.querySelectorAll("[data-gk]").forEach(x => x.oninput = () => { o[x.dataset.gk] = x.value; apercu(); });
-    el.querySelector("#geo-ad").onchange = ev => { o.angleDroit = ev.target.checked; apercu(); };
-    if (el.querySelector("#geo-cod")) el.querySelector("#geo-cod").onchange = ev => { o.codage = ev.target.checked; apercu(); };
-    if (el.querySelector("#geo-dg")) el.querySelector("#geo-dg").onchange = ev => { o.diagonales = ev.target.checked; apercu(); };
-    el.querySelector("#geo-coul").oninput = ev => { o.couleur = ev.target.value; apercu(); };
-    el.querySelector("#geo-rot").oninput = ev => { o.rotation = +ev.target.value; el.querySelector("#geo-rv").textContent = o.rotation; apercu(); };
-    el.querySelector("#geo-l").oninput = ev => { o.largeur = +ev.target.value; el.querySelector("#geo-lv").textContent = o.largeur; apercu(); };
-    apercu();
+        ${champs().map(([k, t]) => `<div class="champ"><label for="geo-${k}">${t}</label><input id="geo-${k}" data-gk="${k}" type="text" maxlength="20" value="${esc(o[k] || "")}" placeholder="ex. 5 cm, x, ?"></div>`).join("")}</div></section>
+      <section><h4>Affichage</h4><div class="geo-inters">${interr("geo-ad", o.figure === "triangle" ? "Angle droit" : "Angles droits", o.angleDroit)}
+        ${o.figure !== "triangle" ? interr("geo-cod", "Codage des côtés égaux", o.codage) + interr("geo-dg", "Diagonales", o.diagonales) : ""}</div></section>`;
+    z.innerHTML += `<section><h4>Style</h4><div class="geo-style"><label class="geo-coul">Couleur <input type="color" id="geo-coul" value="${esc(o.couleur)}"></label>
+        <div class="champ"><label for="geo-rot">Rotation <b id="geo-rv">${o.rotation}°</b></label><input type="range" id="geo-rot" min="-90" max="90" step="5" value="${o.rotation}"></div>
+        <div class="champ"><label for="geo-l">Taille <b id="geo-lv">${o.largeur} px</b></label><input type="range" id="geo-l" min="160" max="520" step="10" value="${o.largeur}"></div></div></section>`;
+    const q = s => z.querySelector(s), coche = (id, k) => { const x = q("#" + id); if (x) x.onchange = () => { o[k] = x.checked; apercu(); }; };
+    q("#geo-s").oninput = ev => { o.sommets = ev.target.value.toUpperCase(); apercu(); if (man) z.querySelectorAll(".geo-cotes span").forEach((sp, i) => sp.textContent = nomS(i) + nomS((i + 1) % o.points.length)); };
+    z.querySelectorAll("[data-gk]").forEach(x => x.oninput = () => { o[x.dataset.gk] = x.value; apercu(); });
+    coche("geo-ad", "angleDroit"); coche("geo-cod", "codage"); coche("geo-dg", "diagonales"); coche("geo-q", "quadrillage"); coche("geo-aim", "aimant");
+    if (q("#geo-mes")) q("#geo-mes").onchange = ev => { o.mesures = ev.target.checked; form(); };
+    q("#geo-coul").oninput = ev => { o.couleur = ev.target.value; apercu(); choix(); };
+    q("#geo-rot").oninput = ev => { o.rotation = +ev.target.value; q("#geo-rv").textContent = o.rotation + "°"; apercu(); };
+    q("#geo-l").oninput = ev => { o.largeur = +ev.target.value; q("#geo-lv").textContent = o.largeur + " px"; apercu(); };
+    if (man){
+      q("#geo-mod").onchange = ev => { o.modele = ev.target.value; o.points = pointsModele(o.modele, o.points.length); o.cotes = []; form(); };
+      const changerN = n => { n = Math.max(3, Math.min(12, n | 0)); if (n === o.points.length) return; o.points = pointsModele(o.modele === "libre" ? "libre" : "regulier", n); if (o.modele !== "libre") o.modele = "regulier"; o.cotes = []; form(); };
+      q("#geo-n").onchange = ev => changerN(+ev.target.value);
+      z.querySelectorAll("[data-pas]").forEach(b => b.onclick = () => changerN(o.points.length + +b.dataset.pas));
+      z.querySelectorAll("[data-cote]").forEach(x => x.oninput = () => { o.cotes[+x.dataset.cote] = x.value; apercu(); });
+    }
+    astuce(); apercu();
   };
-  form();
-  el.querySelector("#fen-annuler").onclick = fermerFenetre;
+  // ----- Manipulation directe des points (forme Manuel) -----
+  const zoneA = el.querySelector("#geo-apercu");
+  const versCarreaux = (svg, ev) => { const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const t = -(+o.rotation || 0) * Math.PI / 180, x = p.x / 20 - 7.5, y = p.y / 20 - 5.5;
+    let X = x * Math.cos(t) - y * Math.sin(t) + 7.5, Y = x * Math.sin(t) + y * Math.cos(t) + 5.5;
+    if (o.aimant){ X = Math.round(X * 2) / 2; Y = Math.round(Y * 2) / 2; }
+    return [+Math.max(.5, Math.min(14.5, X)).toFixed(2), +Math.max(.5, Math.min(10.5, Y)).toFixed(2)]; };
+  zoneA.addEventListener("pointerdown", ev => {
+    const h = ev.target.closest("[data-pt]"); if (!h || o.figure !== "manuel" || ev.button !== 0) return;
+    ev.preventDefault(); const i = +h.dataset.pt, svg = zoneA.querySelector("svg"); zoneA.classList.add("glisse");
+    const bouge = e => { o.points[i] = versCarreaux(svg, e); if (o.modele !== "libre") o.modele = "libre"; apercu(); };
+    const fin = () => { removeEventListener("pointermove", bouge); removeEventListener("pointerup", fin); zoneA.classList.remove("glisse"); form(); };
+    addEventListener("pointermove", bouge); addEventListener("pointerup", fin);
+  });
+  zoneA.addEventListener("dblclick", ev => { const a = ev.target.closest("[data-arete]"); if (!a || o.figure !== "manuel" || o.points.length >= 12) return;
+    const i = +a.dataset.arete, p = versCarreaux(zoneA.querySelector("svg"), ev); o.points.splice(i + 1, 0, p); o.cotes.splice(i + 1, 0, ""); o.sommets = ""; o.modele = "libre"; form(); });
+  zoneA.addEventListener("contextmenu", ev => { const h = ev.target.closest("[data-pt]"); if (!h || o.figure !== "manuel") return; ev.preventDefault(); if (o.points.length <= 3) return;
+    const i = +h.dataset.pt; o.points.splice(i, 1); o.cotes.splice(i, 1); o.sommets = ""; o.modele = "libre"; form(); });
+  choix(); form();
+  el.querySelector("#fen-annuler").onclick = el.querySelector("#geo-x").onclick = fermerFenetre;
   el.querySelector("#geo-ok").onclick = () => { fermerFenetre(); valider(o); };
 }
 
