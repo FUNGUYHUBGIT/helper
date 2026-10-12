@@ -418,36 +418,32 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .barre-outils .o-couleur{border-bottom:3px solid var(--c,#f4f2ed)}
 .doc-lecon span[style*="background"]{-webkit-box-decoration-break:clone;box-decoration-break:clone;border-radius:.18em;padding:.02em .08em}
 .barre-outils{position:sticky}
-/* Ruban de l'éditeur de leçon, en groupes façon Word */
-.barre-outils.ruban{flex-wrap:wrap;align-items:stretch;gap:0;padding:6px 4px 4px;background:linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 92%,#fff 8%),var(--surface-2));box-shadow:0 6px 18px -12px rgba(0,0,0,.7)}
-.ruban .r-groupe{flex:1 1 auto;display:flex;flex-direction:column;justify-content:space-between;gap:4px;padding:0 10px;border-right:1px solid var(--ligne)}
-.ruban .r-groupe:last-child{border-right:0}
-.ruban .r-corps{display:flex;flex-direction:column;gap:5px}
-.ruban .r-corps.r-gros{flex-direction:row;flex-wrap:wrap;gap:2px;align-items:stretch;justify-content:center;flex:1}
-.ruban .r-ligne{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.ruban .r-lot{display:inline-flex;align-items:center;gap:0;border:1px solid var(--ligne);border-radius:7px;background:var(--surface);overflow:visible}
-.ruban .r-lot>button{border:0;border-radius:0;background:none;height:30px;min-width:30px;padding:0 7px;display:inline-flex;align-items:center;justify-content:center}
-.ruban .r-lot>button+button{border-left:1px solid color-mix(in srgb,var(--ligne) 70%,transparent)}
-.ruban .r-lot>button:first-child{border-radius:6px 0 0 6px}.ruban .r-lot>button:last-child{border-radius:0 6px 6px 0}
-.ruban .r-lot>button:hover{background:color-mix(in srgb,var(--texte) 8%,transparent)}
+/* Ruban de l'éditeur de leçon : deux lignes compactes, contrôles de même hauteur */
+.barre-outils.ruban{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:6px;padding:8px}
+.ruban .r-ligne{display:flex;align-items:center;flex-wrap:wrap;gap:5px}
+.ruban .r-bas{padding-top:6px;border-top:1px solid var(--ligne);gap:2px}
+.ruban .sep{height:22px;align-self:center;margin-inline:1px}
+.ruban select{height:32px;border-radius:6px}
+.ruban #o-police{width:130px}.ruban #o-taille{width:86px}.ruban #o-puce{width:72px}
+.ruban .r-lot{display:inline-flex;align-items:center;border:1px solid var(--ligne);border-radius:6px;background:var(--surface)}
+.ruban .r-lot>button{border:0;border-radius:0;background:none;height:30px;min-width:30px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center}
+.ruban .r-lot>button+button{border-left:1px solid var(--ligne)}
+.ruban .r-lot>button:first-child{border-radius:5px 0 0 5px}.ruban .r-lot>button:last-child{border-radius:0 5px 5px 0}
+.ruban .r-lot>button:hover{background:var(--surface-2)}
 .ruban .r-lot>.o-pal{height:30px;border:0;display:inline-flex;padding:0 5px 0 8px}
-.ruban button[data-cmd]{height:30px;display:inline-flex;align-items:center;justify-content:center;padding:0 7px}
+.ruban button[data-cmd]{height:32px;min-width:32px;display:inline-flex;align-items:center;justify-content:center;padding:0 8px}
+.ruban .r-lot>button[data-cmd]{height:30px}
 .ruban button[data-cmd] sup,.ruban button[data-cmd] sub{font-size:.62em;line-height:0}
-.ruban .ic{width:18px;height:18px;display:block}
-.ruban .ic-serif{font-family:Georgia,"Times New Roman",serif;font-size:1.02rem}
-.ruban .ic-txt{display:grid;place-items:center;font-family:Georgia,"Times New Roman",serif;font-size:1.25rem;line-height:1}
-.ruban select{height:30px;border-radius:7px}
-.ruban #o-police{width:178px}.ruban #o-taille{width:104px}.ruban #o-puce{height:30px;width:112px}
-.ruban .o-couleur-puce{height:30px;display:inline-flex;align-items:center;gap:6px;padding:0 6px 0 9px;border:1px solid var(--ligne);border-radius:7px;background:var(--surface);border-bottom-width:1px}
+.ruban .ic{width:17px;height:17px;display:block;flex:none}
+.ruban .ic-serif{font-family:Georgia,"Times New Roman",serif;font-size:1rem}
+.ruban .ic-txt{display:grid;place-items:center;width:17px;font-family:Georgia,"Times New Roman",serif;font-size:1.05rem;line-height:1}
+.ruban .o-couleur-puce{height:32px;display:inline-flex;align-items:center;gap:4px;padding:0 4px 0 7px;border:1px solid var(--ligne);border-radius:6px;background:var(--surface);border-bottom-width:1px}
 .ruban .o-couleur-puce input{width:22px;height:18px;padding:0;border:0;background:none}
-.ruban .o-gros{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:60px;height:auto;padding:6px 6px 5px;border:1px solid transparent;border-radius:8px;background:none;font-size:.76rem;color:var(--texte);transition:background .12s,border-color .12s,transform .12s}
-.ruban .o-gros .ic{width:24px;height:24px;color:var(--accent)}
-.ruban .o-gros:hover{background:color-mix(in srgb,var(--accent) 10%,var(--surface));border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
-.ruban .o-gros:active{transform:translateY(1px)}
-.ruban .o-gros.o-sommaire .ic{color:#b06bff}.ruban .o-gros.o-sommaire:hover{background:color-mix(in srgb,#b06bff 12%,var(--surface));border-color:color-mix(in srgb,#b06bff 45%,transparent)}
-.ruban .o-gros.o-module .ic{color:var(--accent)}
-.ruban .r-nom{align-self:center;font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--doux);opacity:.75;padding-top:2px}
-@media (max-width:820px){.ruban .r-groupe{border-right:0;border-bottom:1px solid var(--ligne);padding:6px 4px;width:100%}.ruban .r-nom{align-self:flex-start}}
+.ruban .o-ins{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 6px;border:1px solid transparent;border-radius:6px;background:none;color:var(--texte);font-size:.8rem}
+.ruban .o-ins:hover{background:var(--surface);border-color:var(--ligne)}
+.ruban .o-ins .ic{color:var(--doux)}.ruban .o-ins:hover .ic{color:var(--accent)}
+.ruban .o-ins.o-sommaire{color:#c9a2ff}.ruban .o-ins.o-sommaire .ic{color:#b06bff}
+.ruban .o-ins.o-module{color:var(--accent)}.ruban .o-ins.o-module .ic{color:var(--accent)}
 
 ::selection{background:color-mix(in srgb,var(--accent) 42%,transparent)}
 .barre-outils.mini-barre{position:fixed;z-index:60;flex-direction:column;align-items:stretch;flex-wrap:nowrap;gap:4px;padding:6px;border-radius:8px;background:var(--surface-2);box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent);opacity:0;transform:translateY(4px) scale(.98);transition:opacity .14s ease,transform .14s ease;pointer-events:auto}
@@ -1430,7 +1426,7 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .ail-pointilles{fill:none;stroke:var(--doux);stroke-width:1;stroke-dasharray:3 3}
 .ail-t-decro{fill:#f07a7e}.ail-t-alerte{fill:#f2ae02;font-weight:500}
 @media (prefers-reduced-motion:reduce){.ail-flux,.ail-vent{animation:none}}
-.o-module:not(.o-gros){border-color:var(--accent)!important;color:var(--accent)!important}
+.o-module:not(.o-ins){border-color:var(--accent)!important;color:var(--accent)!important}
 .geo-svg{max-width:100%;height:auto;display:block;margin:auto}
 .geo-sommet{fill:var(--texte);font:700 15px var(--f-texte)}
 .geo-cote{fill:var(--doux);font:600 12.5px var(--f-texte)}
@@ -4334,7 +4330,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.07";
+const VERSION_SITE = "1.08";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5235,69 +5231,42 @@ function dessinerEditeur(){
     </div>
     <div class="editeur">
       <div class="barre-outils ruban" role="toolbar" aria-label="Mise en forme">
-        <div class="r-groupe">
-          <div class="r-corps">
-            <div class="r-ligne">
-        <select id="o-police" aria-label="Police" title="Police">${POLICES.map(([v, t]) => `<option value="${esc(v)}">${t}</option>`).join("")}</select>
+        <div class="r-ligne">
+          <select id="o-police" aria-label="Police" title="Police">${POLICES.map(([v, t]) => `<option value="${esc(v)}">${t}</option>`).join("")}</select>
         <select id="o-taille" aria-label="Taille du texte" title="Taille">${TAILLES.map(([v, t]) => `<option value="${v}" ${v === "3" ? "selected" : ""}>${t}</option>`).join("")}</select>
-            </div>
-            <div class="r-ligne">
-              <span class="r-lot">
+          <span class="sep"></span>
+          <span class="r-lot">
                 <button type="button" data-cmd="bold" title="Gras (Ctrl+B)" aria-label="Gras"><b>G</b></button>
                 <button type="button" data-cmd="italic" title="Italique (Ctrl+I)" aria-label="Italique"><i class="ic-serif">I</i></button>
                 <button type="button" data-cmd="underline" title="Souligné (Ctrl+U)" aria-label="Souligné"><u>S</u></button>
                 <button type="button" data-cmd="superscript" title="Exposant" aria-label="Exposant"><span>x<sup>2</sup></span></button>
                 <button type="button" data-cmd="subscript" title="Indice" aria-label="Indice"><span>x<sub>2</sub></span></button>
               </span>
-              <span class="r-lot">
+          <span class="r-lot">
         <button type="button" class="o-pal" id="o-couleur" data-pal="color" title="Couleur du texte" aria-label="Couleur du texte" aria-haspopup="true" aria-expanded="false">
           <span class="o-pal-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 17 11 3.8h2L18.5 17h-2.4l-1.4-3.6H9.3L7.9 17zm4.6-5.7h3.8L12 6.4z" fill="currentColor"/></svg><i class="o-pal-barre" id="o-couleur-barre"></i></span><span class="o-pal-fl" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
         <button type="button" class="o-pal" id="o-surligne" data-pal="backgroundColor" title="Surlignage" aria-label="Surlignage" aria-haspopup="true" aria-expanded="false">
           <span class="o-pal-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.6 3.3 20.7 9.4 12.1 18H6v-6.1zM8 12.7V16h3.3l6.6-6.6-3.3-3.3z" fill="currentColor"/><path d="M4 21h4l1.2-1.4H5.4z" fill="currentColor" opacity=".6"/></svg><i class="o-pal-barre o-sans" id="o-surligne-barre"></i></span><span class="o-pal-fl" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
               </span>
-              <button type="button" data-cmd="removeFormat" title="Effacer la mise en forme" aria-label="Effacer la mise en forme"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h11M10.5 6 8 18"/><path d="m14.5 13.5 5 5m0-5-5 5"/></svg></button>
-            </div>
-          </div>
-          <span class="r-nom">Texte</span>
-        </div>
-        <div class="r-groupe">
-          <div class="r-corps">
-            <div class="r-ligne">
-              <span class="r-lot">
+          <button type="button" data-cmd="removeFormat" title="Effacer la mise en forme" aria-label="Effacer la mise en forme"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h11M10.5 6 8 18"/><path d="m14.5 13.5 5 5m0-5-5 5"/></svg></button>
+          <span class="sep"></span>
+          <span class="r-lot">
                 <button type="button" data-cmd="insertUnorderedList" title="Liste à puces" aria-label="Liste à puces"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="7" r="1.2" fill="currentColor"/><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="5" cy="17" r="1.2" fill="currentColor"/><path d="M9.5 7H20M9.5 12H20M9.5 17H20"/></svg></button>
                 <button type="button" data-cmd="insertOrderedList" title="Liste numérotée" aria-label="Liste numérotée"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5 5.5 4.5V9.5M4 9.5h3M4 14.2c.3-.8 2.6-1 2.6.4 0 1-2.6 2-2.6 3.4h2.8"/><path d="M10 7H20M10 12H20M10 17H20"/></svg></button>
               </span>
           <select id="o-puce" aria-label="Forme des puces" title="Forme des puces (liste à puces)"><option value="">Puce…</option><option value="disque">● Disque</option><option value="cercle">○ Cercle</option><option value="carre">■ Carré</option><option value="losange">◆ Losange</option><option value="fleche">➤ Flèche</option><option value="coche">✓ Coche</option><option value="etoile">★ Étoile</option><option value="tiret">– Tiret</option></select>
-              <label class="o-couleur o-couleur-puce" title="Couleur des puces"><span aria-hidden="true">●</span><input type="color" id="o-puce-couleur" value="#f2ae02" aria-label="Couleur des puces"></label>
-            </div>
-            <div class="r-ligne">
-              <span class="r-lot">
+          <label class="o-couleur o-couleur-puce" title="Couleur des puces"><span aria-hidden="true">●</span><input type="color" id="o-puce-couleur" value="#f2ae02" aria-label="Couleur des puces"></label>
+          <span class="sep"></span>
+          <span class="r-lot">
                 <button type="button" data-cmd="justifyLeft" title="Aligner à gauche" aria-label="Aligner à gauche"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h10M4 14h16M4 18h10"/></svg></button>
                 <button type="button" data-cmd="justifyCenter" title="Centrer" aria-label="Centrer"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 10h10M4 14h16M7 18h10"/></svg></button>
                 <button type="button" data-cmd="justifyRight" title="Aligner à droite" aria-label="Aligner à droite"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M10 10h10M4 14h16M10 18h10"/></svg></button>
               </span>
-            </div>
-          </div>
-          <span class="r-nom">Paragraphe</span>
         </div>
-        <div class="r-groupe">
-          <div class="r-corps r-gros">
-            <button type="button" id="o-partie" class="o-gros" title="Faire de la ligne un titre de partie (il apparaîtra dans le sommaire)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5v14M13 5v14M5 12h8"/><path d="M17 9.5 19 8v8"/></svg><span>Partie</span></button>
-            <button type="button" id="o-sommaire" class="o-gros o-sommaire" title="Insérer un sommaire cliquable des parties"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01" stroke-width="2.6"/></svg><span>Sommaire</span></button>
-          </div>
-          <span class="r-nom">Structure</span>
-        </div>
-        <div class="r-groupe">
-          <div class="r-corps r-gros">
-            <button type="button" id="o-tableau" class="o-gros" title="Insérer un tableau"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10M15 9.5v10"/></svg><span>Tableau</span></button>
-            <button type="button" id="o-graphe" class="o-gros" title="Insérer un graphique"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><rect x="6" y="11" width="3" height="7" rx=".6"/><rect x="11" y="6" width="3" height="12" rx=".6"/><rect x="16" y="13" width="3" height="5" rx=".6"/></svg><span>Graphique</span></button>
-            <button type="button" id="o-forme" class="o-gros" title="Insérer une figure géométrique"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19 12 5l8 14z"/><path d="M12 5v14M8.5 19a3.5 3.5 0 0 1 1.3-2.7"/></svg><span>Géométrie</span></button>
-            <button type="button" id="o-symb" class="o-gros" title="Insérer un symbole"><span class="ic ic-txt" aria-hidden="true">Ω</span><span>Symboles</span></button>
-            <button type="button" id="o-module" class="o-gros o-module" title="Ajouter un module : fonction, carte, atome, conjugaison, circuit…"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4.5a2 2 0 0 1 4 0V6h3.5a1 1 0 0 1 1 1v3.5H17a2 2 0 0 0 0 4h1.5V18a1 1 0 0 1-1 1H14v-1.5a2 2 0 0 0-4 0V19H6.5a1 1 0 0 1-1-1v-3.5H7a2 2 0 0 0 0-4H5.5V7a1 1 0 0 1 1-1H10z"/></svg><span>Module</span></button>
-            <button type="button" id="o-image" class="o-gros" title="Insérer une image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/></svg><span>Image</span></button>
-            <button type="button" id="o-pj" class="o-gros" title="Joindre un fichier"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11.5 12.2 18.3a4.5 4.5 0 0 1-6.4-6.4l7.3-7.3a3 3 0 0 1 4.2 4.2l-7.2 7.2a1.5 1.5 0 0 1-2.1-2.1l6.6-6.6"/></svg><span>Pièce jointe</span></button>
-          </div>
-          <span class="r-nom">Insérer</span>
+        <div class="r-ligne r-bas">
+          <button type="button" id="o-partie" class="o-ins" title="Faire de la ligne un titre de partie (il apparaîtra dans le sommaire)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5v14M13 5v14M5 12h8"/><path d="M17 9.5 19 8v8"/></svg><span>Partie</span></button><button type="button" id="o-sommaire" class="o-ins o-sommaire" title="Insérer un sommaire cliquable des parties"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01" stroke-width="2.6"/></svg><span>Sommaire</span></button>
+          <span class="sep"></span>
+          <button type="button" id="o-tableau" class="o-ins" title="Insérer un tableau"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10M15 9.5v10"/></svg><span>Tableau</span></button><button type="button" id="o-graphe" class="o-ins" title="Insérer un graphique"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><rect x="6" y="11" width="3" height="7" rx=".6"/><rect x="11" y="6" width="3" height="12" rx=".6"/><rect x="16" y="13" width="3" height="5" rx=".6"/></svg><span>Graphique</span></button><button type="button" id="o-forme" class="o-ins" title="Insérer une figure géométrique"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19 12 5l8 14z"/><path d="M12 5v14M8.5 19a3.5 3.5 0 0 1 1.3-2.7"/></svg><span>Géométrie</span></button><button type="button" id="o-symb" class="o-ins" title="Insérer un symbole"><span class="ic ic-txt" aria-hidden="true">Ω</span><span>Symboles</span></button><button type="button" id="o-module" class="o-ins o-module" title="Ajouter un module : fonction, carte, atome, conjugaison, circuit…"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4.5a2 2 0 0 1 4 0V6h3.5a1 1 0 0 1 1 1v3.5H17a2 2 0 0 0 0 4h1.5V18a1 1 0 0 1-1 1H14v-1.5a2 2 0 0 0-4 0V19H6.5a1 1 0 0 1-1-1v-3.5H7a2 2 0 0 0 0-4H5.5V7a1 1 0 0 1 1-1H10z"/></svg><span>Module</span></button><button type="button" id="o-image" class="o-ins" title="Insérer une image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/></svg><span>Image</span></button><button type="button" id="o-pj" class="o-ins" title="Joindre un fichier"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11.5 12.2 18.3a4.5 4.5 0 0 1-6.4-6.4l7.3-7.3a3 3 0 0 1 4.2 4.2l-7.2 7.2a1.5 1.5 0 0 1-2.1-2.1l6.6-6.6"/></svg><span>Pièce jointe</span></button>
         </div>
         <input type="file" id="f-image" accept="image/*" hidden><input type="file" id="f-pj" multiple hidden>
       </div>
