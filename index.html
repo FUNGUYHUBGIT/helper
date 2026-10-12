@@ -4416,7 +4416,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.18";
+const VERSION_SITE = "1.19";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6786,7 +6786,10 @@ const chapH = t => `<span class="chap">${esc(t)}</span>`;
 function svgEtiqAngle(x, y, court, mesure, cls, extra = "", ancre = "middle"){
   cls += " etiq-angle";
   if (!court) return mesure ? svgTexte(x, y, mesure, cls, ancre, extra) : "";
-  return `<text x="${f1(x)}" y="${f1(y)}" text-anchor="${ancre}" class="${cls}" ${extra}><tspan>${esc(court)}</tspan><tspan dx="-0.52em" dy="-0.62em" font-size="0.78em">^</tspan><tspan dy="0.62em" dx="0.1em">${mesure ? esc(" = " + mesure) : ""}</tspan></text>`;
+  // le chapeau est un texte à part, posé au-dessus du 1er caractère (pas de tspan : le halo du chapeau masquerait le chiffre)
+  const petit = /gr-txt/.test(cls), fs = petit ? 11 : 13, cw = fs * (petit ? .6 : .62), lab = court + (mesure ? " = " + mesure : ""), w = lab.length * cw;
+  const xs = ancre === "start" ? x : ancre === "end" ? x - w : x - w / 2, cc = extra.replace(/class="[^"]*"/, "");
+  return `<text x="${f1(xs)}" y="${f1(y)}" text-anchor="start" class="${cls}" ${extra}>${esc(lab)}</text><text x="${f1(xs + cw * .46)}" y="${f1(y - fs * .44)}" text-anchor="middle" class="${petit ? "gr-txt" : "mod-txt-a"}" font-size="${(fs * .82).toFixed(1)}" ${cc}>^</text>`;
 }
 const courtAngle = (style, i, lettres) => style === "numeros" ? String(i) : style === "lettres" ? (lettres[i - 1] || "") : "";
 function svgAnglesPart(o){
