@@ -4404,7 +4404,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.12";
+const VERSION_SITE = "1.13";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6009,8 +6009,9 @@ function fenetreGeo(depart, valider){
     return [+Math.max(1, Math.min(14, X)).toFixed(2), +Math.max(1, Math.min(10, Y)).toFixed(2)]; };
   zoneA.addEventListener("pointerdown", ev => {
     const h = ev.target.closest("[data-pt]"); if (!h || o.figure !== "manuel" || ev.button !== 0) return;
-    ev.preventDefault(); const i = +h.dataset.pt, svg = zoneA.querySelector("svg"); zoneA.classList.add("glisse");
-    const bouge = e => { o.points[i] = versCarreaux(svg, e); if (o.modele !== "libre") o.modele = "libre"; apercu(); };
+    ev.preventDefault(); const i = +h.dataset.pt; zoneA.classList.add("glisse");
+    // l'aperçu est redessiné à chaque mouvement : on reprend toujours le SVG affiché (l'ancien n'a plus de position à l'écran)
+    const bouge = e => { const svg = zoneA.querySelector("svg"); if (!svg || !svg.getScreenCTM()) return; o.points[i] = versCarreaux(svg, e); if (o.modele !== "libre") o.modele = "libre"; apercu(); };
     const fin = () => { removeEventListener("pointermove", bouge); removeEventListener("pointerup", fin); zoneA.classList.remove("glisse"); form(); };
     addEventListener("pointermove", bouge); addEventListener("pointerup", fin);
   });
