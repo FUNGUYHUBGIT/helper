@@ -309,6 +309,7 @@ input[type="color"]{width:34px;height:28px;padding:0;border:1px solid var(--lign
 .choix-ed input[type="text"]{flex:1;min-width:0;background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:8px 10px}
 .choix-ed input[type="radio"]{accent-color:var(--accent);width:18px;height:18px}
 .role{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+*,*::before,*::after{-webkit-tap-highlight-color:transparent}
 /* ---------- Version 3 : profil, préférences, groupes de navigation ---------- */
 .nav-groupe{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--doux);padding:12px 10px 4px}
 .nav-groupe:first-child{padding-top:0}
@@ -4599,7 +4600,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.34";
+const VERSION_SITE = "1.35";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
