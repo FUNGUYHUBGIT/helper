@@ -401,7 +401,7 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .img-doc.mode-libre{position:absolute;z-index:2;margin:0;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
 .editeur{display:flex;flex-direction:column;gap:10px}
 .barre-outils,.barre-image{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--surface-2);border:1px solid var(--ligne);border-radius:var(--r);padding:8px;position:sticky;top:0;z-index:5}
-.barre-image{position:static}
+.barre-image{position:sticky;top:calc(var(--h-ruban, 0px) + 6px);z-index:4;box-shadow:0 8px 20px -10px rgba(0,0,0,.7)}
 .barre-outils select{background:var(--surface);border:1px solid var(--ligne);border-radius:4px;padding:5px 6px;font-size:.85rem}
 .barre-outils button{background:var(--surface);border:1px solid var(--ligne);border-radius:4px;padding:5px 9px;cursor:pointer;font-size:.85rem;min-width:32px}
 .barre-outils button:hover{border-color:var(--doux)}
@@ -4417,7 +4417,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.19";
+const VERSION_SITE = "1.20";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5607,6 +5607,9 @@ function dessinerEditeur(){
   }; });
   $("#tab-fond").oninput = () => { if (caseActive && doc.contains(caseActive)) caseActive.style.backgroundColor = $("#tab-fond").value; };
   // ----- Graphiques et formes (objets) -----
+  // les barres « image / tableau / module » restent collées sous le ruban quand on fait défiler la leçon
+  { const ruban = zone().querySelector(".barre-outils.ruban"), parent = ruban && ruban.parentElement;
+    if (ruban && parent && window.ResizeObserver){ const maj = () => parent.style.setProperty("--h-ruban", ruban.offsetHeight + "px"); maj(); new ResizeObserver(maj).observe(ruban); } }
   const barreObj = $("#barre-objet");
   const majObjet = () => {
     const f = ed.obj; barreObj.hidden = !f || !doc.contains(f);
