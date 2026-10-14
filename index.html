@@ -785,7 +785,7 @@ a.lien{color:var(--accent)}
 .sans-contour circle{stroke:none}
 .carte-alti{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--doux,inherit);max-width:420px;flex-wrap:wrap}
 .carte-alti i{flex:1 1 140px;height:10px;border-radius:5px;background:linear-gradient(90deg,#5f8f4e 0%,#8fae5f 10%,#c9c27a 22%,#d9ad6c 38%,#b98252 55%,#8f5e3b 72%,#6f4a33 86%,#a89b8e 94%,#eeeae4 100%)}
-.carte-voile{pointer-events:none;mix-blend-mode:multiply}
+.carte-voile{pointer-events:none;stroke-linejoin:round}
 .ce-fleuves{max-height:150px;overflow:auto;margin-top:6px}
 .ce-fleuves button{font-family:Georgia,"Times New Roman",serif;font-style:italic}
 .carte-fleuve-txt{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:600;fill:var(--carte-eau-txt);letter-spacing:.03em}
@@ -4473,7 +4473,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.23";
+const VERSION_SITE = "1.24";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7655,7 +7655,10 @@ function coucheCarte(o, epoque, terres, etats, g, uid, edition, geo){
   if (geo && o.altitude){
     svg += `<image href="${RELIEF_URL}" x="0" y="0" width="2000" height="1000" preserveAspectRatio="none" class="carte-altitude"/>`;
     // pays colorés : voile coloré par-dessus le relief (le relief reste visible)
-    etats.forEach(e => { const c = couleurDe(o, e); if (c) svg += `<path d="${e[1]}" fill="${esc(c.couleur)}" fill-opacity=".55" class="carte-voile"/>`; });
+    // les autres pays sont légèrement assombris pour que les pays colorés ressortent
+    if ((o.couleurs || []).length) etats.forEach(e => { const c = couleurDe(o, e);
+      svg += c ? `<path d="${e[1]}" fill="${esc(c.couleur)}" fill-opacity=".62" stroke="${esc(c.couleur)}" stroke-width="3" vector-effect="non-scaling-stroke" class="carte-voile"/>`
+        : `<path d="${e[1]}" fill="#0e0e10" fill-opacity=".42" class="carte-voile"/>`; });
   }
   const angle = (dx, dy) => { let a = Math.atan2(dy, dx * k) * 180 / Math.PI; if (a > 90) a -= 180; if (a <= -90) a += 180; return a; };
   if (geo && o.monts && !o.altitude){
