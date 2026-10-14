@@ -2,10 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.INTERNET"/>
   <application android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:allowBackup="true" android:theme="@style/Theme.Helper" android:supportsRtl="true" android:hardwareAccelerated="true">
-    <activity android:name=".MainActivity" android:exported="true" android:label="@string/app_name" android:launchMode="singleTask"
+    <activity android:name=".AppActivity" android:exported="false" android:label="@string/app_name" android:launchMode="singleTask"
       android:screenOrientation="portrait" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize|keyboardHidden|uiMode|smallestScreenSize|screenLayout">
-      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
     </activity>
+    <activity-alias android:name=".MainActivity" android:targetActivity=".AppActivity" android:exported="true" android:enabled="true" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeOrange" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_orange" android:roundIcon="@mipmap/ic_launcher_orange">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeCorail" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_corail" android:roundIcon="@mipmap/ic_launcher_corail">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeBleu" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_bleu" android:roundIcon="@mipmap/ic_launcher_bleu">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeVert" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_vert" android:roundIcon="@mipmap/ic_launcher_vert">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeRose" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_rose" android:roundIcon="@mipmap/ic_launcher_rose">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeViolet" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_violet" android:roundIcon="@mipmap/ic_launcher_violet">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
   </application>
   <queries><intent><action android:name="android.intent.action.TTS_SERVICE"/></intent></queries>
 </manifest>

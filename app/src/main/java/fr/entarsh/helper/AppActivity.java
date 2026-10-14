@@ -3,7 +3,9 @@ package fr.entarsh.helper;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -29,7 +31,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class MainActivity extends Activity {
+public class AppActivity extends Activity {
   static final String ACCUEIL = "https://funguyhubgit.github.io/helper/?app=android";
   static final int CHOIX_FICHIER = 7;
   WebView web;
@@ -51,7 +53,7 @@ public class MainActivity extends Activity {
     s.setDatabaseEnabled(true);
     s.setMediaPlaybackRequiresUserGesture(false);
     s.setTextZoom(100);
-    s.setUserAgentString(s.getUserAgentString() + " HelperApp/1.1");
+    s.setUserAgentString(s.getUserAgentString() + " HelperApp/1.2");
 
     // Aucune inversion / assombrissement automatique : on garde les vraies couleurs de Helper
     if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
@@ -63,6 +65,7 @@ public class MainActivity extends Activity {
     // Voix de lecture (dictée) : on branche la synthèse vocale d'Android
     try { InputStream in = getAssets().open("voix.js"); byte[] b = new byte[in.available()]; in.read(b); in.close(); scriptVoix = new String(b, "UTF-8"); } catch (Exception e) {}
     web.addJavascriptInterface(new PontVoix(), "HelperTTS");
+    web.addJavascriptInterface(new PontAppli(), "HelperApp");
     if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT))
       WebViewCompat.addDocumentStartJavaScript(web, scriptVoix, Collections.singleton("https://funguyhubgit.github.io"));
     tts = new TextToSpeech(this, st -> {
@@ -120,6 +123,41 @@ public class MainActivity extends Activity {
   void ouvrir(Uri u) { try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception e) {} }
   void js(String code) { runOnUiThread(() -> { if (web != null) web.evaluateJavascript(code, null); }); }
 
+  // ----- icône aux couleurs choisies dans les préférences -----
+  static final String[] ICONES = {"MainActivity", "IconeOrange", "IconeCorail", "IconeBleu", "IconeVert", "IconeRose", "IconeViolet"};
+  static final int[] TEINTES = {0xf2ae02, 0xf5a524, 0xff6b3d, 0x4fa3f7, 0x5cc98a, 0xef6fa6, 0xa585f2};
+  volatile String iconeVoulue = null;
+  class PontAppli {
+    @JavascriptInterface public void icone(String hex) {
+      try {
+        int c = Integer.parseInt(hex.replace("#", ""), 16), meilleur = 0; long dmin = Long.MAX_VALUE;
+        for (int i = 0; i < TEINTES.length; i++) {
+          long dr = ((c >> 16) & 255) - ((TEINTES[i] >> 16) & 255), dg = ((c >> 8) & 255) - ((TEINTES[i] >> 8) & 255), db = (c & 255) - (TEINTES[i] & 255);
+          long d = dr * dr * 3 + dg * dg * 4 + db * db * 2;
+          if (d < dmin) { dmin = d; meilleur = i; }
+        }
+        iconeVoulue = ICONES[meilleur];
+      } catch (Exception e) {}
+    }
+  }
+  // appliqué quand on quitte l'appli, pour ne pas la fermer en pleine utilisation
+  void appliquerIcone() {
+    String v = iconeVoulue; if (v == null) return;
+    PackageManager pm = getPackageManager();
+    try {
+      ComponentName voulu = new ComponentName(this, "fr.entarsh.helper." + v);
+      if (pm.getComponentEnabledSetting(voulu) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+          || (v.equals("MainActivity") && pm.getComponentEnabledSetting(voulu) == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT && toutesParDefaut(pm))) return;
+      pm.setComponentEnabledSetting(voulu, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+      for (String n : ICONES) if (!n.equals(v))
+        pm.setComponentEnabledSetting(new ComponentName(this, "fr.entarsh.helper." + n), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+    } catch (Exception e) {}
+  }
+  boolean toutesParDefaut(PackageManager pm) {
+    for (String n : ICONES) if (pm.getComponentEnabledSetting(new ComponentName(this, "fr.entarsh.helper." + n)) != PackageManager.COMPONENT_ENABLED_STATE_DEFAULT) return false;
+    return true;
+  }
+
   class PontVoix {
     @JavascriptInterface public String voix() {
       JSONArray a = new JSONArray();
@@ -162,5 +200,6 @@ public class MainActivity extends Activity {
   @SuppressWarnings("deprecation")
   @Override public void onBackPressed() { if (web.canGoBack()) web.goBack(); else super.onBackPressed(); }
   @Override protected void onPause() { super.onPause(); if (ttsPret) tts.stop(); }
+  @Override protected void onStop() { super.onStop(); appliquerIcone(); }
   @Override protected void onDestroy() { if (tts != null) tts.shutdown(); if (web != null) web.destroy(); super.onDestroy(); }
 }
