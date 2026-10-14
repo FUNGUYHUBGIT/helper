@@ -451,11 +451,15 @@ button.bloc-sem:hover{filter:brightness(1.15)}
   .choix-matiere-tel span{font:500 .68rem "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--doux)}
   .choix-matiere-tel select{flex:1;min-width:0;height:44px;border:0;background:var(--surface-2);border-radius:9px;padding:0 12px;font-size:1rem;font-weight:600;color:var(--texte)}
   /* emploi du temps : un seul jour à la fois */
-  .edt-jours-tel{display:flex;gap:6px}
-  .edt-jours-tel button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;border:1px solid var(--ligne);border-radius:10px;background:var(--surface);color:var(--doux);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
-  .edt-jours-tel button small{font:500 .68rem "IBM Plex Mono",monospace;opacity:.8}
-  .edt-jours-tel button.auj{color:var(--accent)}
-  .edt-jours-tel button[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 16%,var(--surface));border-color:var(--accent);color:var(--texte)}
+  .edt-jours-tel{display:flex;gap:2px;padding:4px;border:1px solid var(--ligne);border-radius:16px;background:var(--surface)}
+  .edt-jours-tel button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0 9px;border:0;border-radius:12px;background:none;color:var(--doux);font:inherit;cursor:pointer;position:relative;transition:background .15s,color .15s}
+  .edt-jours-tel button small{font:600 .66rem "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+  .edt-jours-tel button b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font:600 1.05rem var(--f-titre);color:var(--texte);transition:background .15s,color .15s}
+  .edt-jours-tel button.auj small{color:var(--accent)}
+  .edt-jours-tel button.auj::after{content:"";position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+  .edt-jours-tel button[aria-pressed=true]{background:var(--surface-2)}
+  .edt-jours-tel button[aria-pressed=true] b{background:var(--accent);color:#141416}
+  .edt-jours-tel button[aria-pressed=true] small{color:var(--texte)}
   .edt-grille.eleve.un-jour{grid-template-columns:48px minmax(0,1fr);min-width:0}
   .edt-grille.eleve.un-jour > .edt-jour:not(.vu),.edt-grille.eleve.un-jour > .edt-col:not(.vu){display:none}
 }
@@ -4557,7 +4561,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.29";
+const VERSION_SITE = "1.30";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4836,7 +4840,7 @@ VUES.edt = function vueEdt(){
         ${lundiEleve !== lundiParDefaut() ? `<button type="button" class="mini-btn" id="sem-auj">Revenir à ${lundiParDefaut() === lundiDeLaSemaine() ? "cette semaine" : "la semaine prochaine"}</button>` : ""}</div>`
       + (edt.creneaux.length ? (() => { const jAuj = lundiEleve === lundiDeLaSemaine() ? (new Date().getDay() + 6) % 7 : -1;
           if (jourEleve === null || jourEleve > 4) jourEleve = jAuj >= 0 && jAuj <= 4 ? jAuj : 0;
-          return `<div class="edt-jours-tel">${JOURS.map((j, d) => `<button type="button" data-jt="${d}" aria-pressed="${d === jourEleve}" class="${d === jAuj ? "auj" : ""}">${j.slice(0, 3)}<small>${courtDate(decalerJour(lundiEleve, d)).slice(0, 2)}</small></button>`).join("")}</div>`
+          return `<div class="edt-jours-tel">${JOURS.map((j, d) => `<button type="button" data-jt="${d}" aria-pressed="${d === jourEleve}" class="${d === jAuj ? "auj" : ""}" aria-label="${j} ${courtDate(decalerJour(lundiEleve, d))}"><small>${j.slice(0, 3)}</small><b>${+courtDate(decalerJour(lundiEleve, d)).slice(0, 2)}</b></button>`).join("")}</div>`
             + grilleEdt(false, p, {lundi: lundiEleve, jourVu: jourEleve}) + agendaJour(p, lundiEleve, jourEleve, jAuj); })() : `<div class="vide">L'emploi du temps n'a pas encore été rempli par le gérant.</div>`)
       + (chAV.length ? `<div class="bloc"><span class="mono">Changements de cours à venir</span><div class="liste">${chAV.map(c => ligneChg(c, false)).join("")}</div></div>` : "");
   } else {
