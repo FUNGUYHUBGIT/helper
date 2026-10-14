@@ -477,7 +477,9 @@ button.bloc-sem:hover{filter:brightness(1.15)}
   .ag-chg{align-self:flex-start;margin-top:2px;padding:2px 8px;border-radius:6px;background:color-mix(in srgb,#e5484d 22%,transparent);color:#ff8a8d;font-size:.74rem;font-weight:600}
   .ag-chg.mod{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent)}
   .ag-maint{align-self:flex-start;margin-top:2px;padding:2px 8px;border-radius:6px;background:var(--accent);color:#141416;font-size:.72rem;font-weight:700}
-  .ag-ligne.en-cours .ag-cours{box-shadow:0 0 0 2px var(--accent)}.ag-ligne.en-cours .ag-h b{color:var(--accent)}
+  .ag-groupe{display:grid;grid-template-columns:1fr;gap:6px;min-width:0}.ag-groupe.multi{grid-template-columns:repeat(auto-fit,minmax(0,1fr))}
+  .ag-groupe.multi .ag-cours{padding:9px 10px}.ag-groupe.multi .ag-m{font-size:.92rem;overflow-wrap:anywhere}.ag-groupe.multi .ag-d{font-size:.78rem}
+  .ag-cours.en-cours{box-shadow:0 0 0 2px var(--accent)}.ag-ligne.en-cours .ag-h b{color:var(--accent)}
   .ag-ligne.passe{opacity:.5}
   .ag-pause{display:flex;align-items:center;gap:10px;margin-left:62px;padding:4px 2px;font-size:.74rem;color:var(--doux);letter-spacing:.06em;text-transform:uppercase}
   .ag-pause::before,.ag-pause::after{content:"";flex:1;height:1px;background:var(--ligne)}.ag-pause small{font-family:"IBM Plex Mono",monospace;text-transform:none;letter-spacing:0}
@@ -4555,7 +4557,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.28";
+const VERSION_SITE = "1.29";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4803,19 +4805,22 @@ function agendaJour(parite, lundi, j, jAuj){
   const date = decalerJour(lundi, j), cs = edt.creneaux.filter(c => c.jour === j && valeCetteSemaine(c, parite)).sort((a, b) => enMin(a.debut) - enMin(b.debut));
   const maintenant = new Date(), mn = maintenant.getHours() * 60 + maintenant.getMinutes(), estAuj = j === jAuj;
   if (!cs.length) return `<div class="edt-agenda"><div class="ag-titre">${JOURS[j]} ${courtDate(date)}</div><div class="vide">Pas de cours ce jour-là.</div></div>`;
+  // cours en même temps (AP / Latin, groupes…) : réunis sur la même ligne, côte à côte
+  const groupes = []; cs.forEach(c => { const g = groupes[groupes.length - 1]; if (g && enMin(c.debut) < g.fin){ g.cs.push(c); g.fin = Math.max(g.fin, enMin(c.fin)); } else groupes.push({cs: [c], debut: enMin(c.debut), fin: enMin(c.fin)}); });
+  const carte = c => { const chg = changements.find(k => k.creneauId === c.id && k.date === date), annule = chg && (chg.type === "annule" || chg.type === "absent"), enCours = estAuj && mn >= enMin(c.debut) && mn < enMin(c.fin);
+    return `<div class="ag-cours ${annule ? "annule" : ""} ${enCours ? "en-cours" : ""}" style="--c:${esc(couleurCours(c.matiere))}"><span class="ag-m">${esc(c.matiere)}</span>
+      <span class="ag-d">${[c.prof, c.salle].filter(Boolean).map(esc).join(" · ")}</span>
+      ${chg ? `<span class="ag-chg ${annule ? "" : "mod"}">${esc(libChg(chg.type))}${chg.note ? " · " + esc(chg.note) : ""}</span>` : ""}${enCours ? `<span class="ag-maint">En ce moment</span>` : ""}</div>`; };
   let html = "", fin = null;
-  cs.forEach(c => {
-    if (fin !== null){ const p = PAUSES.find(([d, f]) => enMin(d) >= fin && enMin(f) <= enMin(c.debut)); const trou = enMin(c.debut) - fin;
-      if (p) html += `<div class="ag-pause"><span>${p[2]}</span><small>${p[0]} – ${p[1]}</small></div>`; else if (trou >= 30) html += `<div class="ag-pause"><span>Pas de cours</span><small>${minHeure(fin)} – ${c.debut}</small></div>`; }
-    const chg = changements.find(k => k.creneauId === c.id && k.date === date), annule = chg && (chg.type === "annule" || chg.type === "absent");
-    const enCours = estAuj && mn >= enMin(c.debut) && mn < enMin(c.fin), passe = estAuj && mn >= enMin(c.fin);
-    html += `<div class="ag-ligne ${enCours ? "en-cours" : ""} ${passe ? "passe" : ""}"><div class="ag-h"><b>${esc(c.debut)}</b><small>${esc(c.fin)}</small></div>
-      <div class="ag-cours ${annule ? "annule" : ""}" style="--c:${esc(couleurCours(c.matiere))}"><span class="ag-m">${esc(c.matiere)}</span>
-        <span class="ag-d">${[c.prof, c.salle].filter(Boolean).map(esc).join(" · ")}</span>
-        ${chg ? `<span class="ag-chg ${annule ? "" : "mod"}">${esc(libChg(chg.type))}${chg.note ? " · " + esc(chg.note) : ""}</span>` : ""}${enCours ? `<span class="ag-maint">En ce moment</span>` : ""}</div></div>`;
-    fin = Math.max(fin ?? 0, enMin(c.fin));
+  groupes.forEach(g => {
+    if (fin !== null){ const p = PAUSES.find(([d, f]) => enMin(d) >= fin && enMin(f) <= g.debut), trou = g.debut - fin;
+      if (p) html += `<div class="ag-pause"><span>${p[2]}</span><small>${p[0]} – ${p[1]}</small></div>`; else if (trou >= 30) html += `<div class="ag-pause"><span>Pas de cours</span><small>${minHeure(fin)} – ${minHeure(g.debut)}</small></div>`; }
+    const enCours = estAuj && mn >= g.debut && mn < g.fin, passe = estAuj && mn >= g.fin;
+    html += `<div class="ag-ligne ${enCours ? "en-cours" : ""} ${passe ? "passe" : ""}"><div class="ag-h"><b>${minHeure(g.debut)}</b><small>${minHeure(g.fin)}</small></div>
+      <div class="ag-groupe ${g.cs.length > 1 ? "multi" : ""}">${g.cs.map(carte).join("")}</div></div>`;
+    fin = g.fin;
   });
-  return `<div class="edt-agenda"><div class="ag-titre">${JOURS[j]} ${courtDate(date)}${estAuj ? `<span class="badge accent">Aujourd'hui</span>` : ""}<span class="ag-nb">${cs.length} cours · ${cs[0].debut} – ${cs[cs.length - 1].fin}</span></div>${html}</div>`;
+  return `<div class="edt-agenda"><div class="ag-titre">${JOURS[j]} ${courtDate(date)}${estAuj ? `<span class="badge accent">Aujourd'hui</span>` : ""}<span class="ag-nb">${groupes.length} créneau${groupes.length > 1 ? "x" : ""} · ${minHeure(groupes[0].debut)} – ${minHeure(groupes[groupes.length - 1].fin)}</span></div>${html}</div>`;
 }
 const minHeure = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
 VUES.edt = function vueEdt(){
