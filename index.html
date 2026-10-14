@@ -460,6 +460,29 @@ button.bloc-sem:hover{filter:brightness(1.15)}
   .edt-grille.eleve.un-jour > .edt-jour:not(.vu),.edt-grille.eleve.un-jour > .edt-col:not(.vu){display:none}
 }
 .edt-jours-tel{display:none}
+/* Emploi du temps en liste sur téléphone */
+.edt-agenda{display:none}
+@media (max-width:820px){
+  .edt-zone:has(.un-jour){display:none}
+  .edt-agenda{display:flex;flex-direction:column;gap:8px}
+  .ag-titre{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--f-titre);font-size:1.15rem;margin:2px 0 4px}
+  .ag-nb{margin-left:auto;font:500 .72rem "IBM Plex Mono",monospace;color:var(--doux)}
+  .ag-ligne{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:stretch}
+  .ag-h{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;padding:6px 0;font-family:"IBM Plex Mono",monospace}
+  .ag-h b{font-size:.86rem;font-weight:600}.ag-h small{font-size:.7rem;color:var(--doux)}
+  .ag-cours{--c:#9b978e;display:flex;flex-direction:column;gap:3px;min-height:64px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--c) 18%,var(--surface));border:1px solid color-mix(in srgb,var(--c) 40%,transparent);border-left:5px solid var(--c)}
+  .ag-m{font-weight:700;font-size:1rem}.ag-d{font-size:.84rem;color:var(--doux)}
+  .ag-cours.annule{opacity:.7;background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0 10px,var(--surface) 10px 20px)}
+  .ag-cours.annule .ag-m{text-decoration:line-through;text-decoration-thickness:2px}
+  .ag-chg{align-self:flex-start;margin-top:2px;padding:2px 8px;border-radius:6px;background:color-mix(in srgb,#e5484d 22%,transparent);color:#ff8a8d;font-size:.74rem;font-weight:600}
+  .ag-chg.mod{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent)}
+  .ag-maint{align-self:flex-start;margin-top:2px;padding:2px 8px;border-radius:6px;background:var(--accent);color:#141416;font-size:.72rem;font-weight:700}
+  .ag-ligne.en-cours .ag-cours{box-shadow:0 0 0 2px var(--accent)}.ag-ligne.en-cours .ag-h b{color:var(--accent)}
+  .ag-ligne.passe{opacity:.5}
+  .ag-pause{display:flex;align-items:center;gap:10px;margin-left:62px;padding:4px 2px;font-size:.74rem;color:var(--doux);letter-spacing:.06em;text-transform:uppercase}
+  .ag-pause::before,.ag-pause::after{content:"";flex:1;height:1px;background:var(--ligne)}.ag-pause small{font-family:"IBM Plex Mono",monospace;text-transform:none;letter-spacing:0}
+}
+
 @media (max-width:820px){.edt-jours-tel{display:flex}}
 
 /* Téléphone : barre du haut et menu en tiroir */
@@ -4532,7 +4555,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.27";
+const VERSION_SITE = "1.28";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4775,6 +4798,26 @@ function blocsAnnee(gerant){
     + groupes.map(g => `<section class="mois"><h3>${g.titre}</h3><div class="grille-sem">${g.semaines.map(bloc).join("")}</div></section>`).join("");
 }
 
+/* Téléphone : la journée en liste (heure à gauche, cours en cartes, pauses en séparateurs) */
+function agendaJour(parite, lundi, j, jAuj){
+  const date = decalerJour(lundi, j), cs = edt.creneaux.filter(c => c.jour === j && valeCetteSemaine(c, parite)).sort((a, b) => enMin(a.debut) - enMin(b.debut));
+  const maintenant = new Date(), mn = maintenant.getHours() * 60 + maintenant.getMinutes(), estAuj = j === jAuj;
+  if (!cs.length) return `<div class="edt-agenda"><div class="ag-titre">${JOURS[j]} ${courtDate(date)}</div><div class="vide">Pas de cours ce jour-là.</div></div>`;
+  let html = "", fin = null;
+  cs.forEach(c => {
+    if (fin !== null){ const p = PAUSES.find(([d, f]) => enMin(d) >= fin && enMin(f) <= enMin(c.debut)); const trou = enMin(c.debut) - fin;
+      if (p) html += `<div class="ag-pause"><span>${p[2]}</span><small>${p[0]} – ${p[1]}</small></div>`; else if (trou >= 30) html += `<div class="ag-pause"><span>Pas de cours</span><small>${minHeure(fin)} – ${c.debut}</small></div>`; }
+    const chg = changements.find(k => k.creneauId === c.id && k.date === date), annule = chg && (chg.type === "annule" || chg.type === "absent");
+    const enCours = estAuj && mn >= enMin(c.debut) && mn < enMin(c.fin), passe = estAuj && mn >= enMin(c.fin);
+    html += `<div class="ag-ligne ${enCours ? "en-cours" : ""} ${passe ? "passe" : ""}"><div class="ag-h"><b>${esc(c.debut)}</b><small>${esc(c.fin)}</small></div>
+      <div class="ag-cours ${annule ? "annule" : ""}" style="--c:${esc(couleurCours(c.matiere))}"><span class="ag-m">${esc(c.matiere)}</span>
+        <span class="ag-d">${[c.prof, c.salle].filter(Boolean).map(esc).join(" · ")}</span>
+        ${chg ? `<span class="ag-chg ${annule ? "" : "mod"}">${esc(libChg(chg.type))}${chg.note ? " · " + esc(chg.note) : ""}</span>` : ""}${enCours ? `<span class="ag-maint">En ce moment</span>` : ""}</div></div>`;
+    fin = Math.max(fin ?? 0, enMin(c.fin));
+  });
+  return `<div class="edt-agenda"><div class="ag-titre">${JOURS[j]} ${courtDate(date)}${estAuj ? `<span class="badge accent">Aujourd'hui</span>` : ""}<span class="ag-nb">${cs.length} cours · ${cs[0].debut} – ${cs[cs.length - 1].fin}</span></div>${html}</div>`;
+}
+const minHeure = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
 VUES.edt = function vueEdt(){
   rafraichir = vueEdt;
   if (!est3C()){ zone().innerHTML = entete("Emploi du temps", "Ma semaine") + verrou("L'emploi du temps"); return; }
@@ -4789,7 +4832,7 @@ VUES.edt = function vueEdt(){
       + (edt.creneaux.length ? (() => { const jAuj = lundiEleve === lundiDeLaSemaine() ? (new Date().getDay() + 6) % 7 : -1;
           if (jourEleve === null || jourEleve > 4) jourEleve = jAuj >= 0 && jAuj <= 4 ? jAuj : 0;
           return `<div class="edt-jours-tel">${JOURS.map((j, d) => `<button type="button" data-jt="${d}" aria-pressed="${d === jourEleve}" class="${d === jAuj ? "auj" : ""}">${j.slice(0, 3)}<small>${courtDate(decalerJour(lundiEleve, d)).slice(0, 2)}</small></button>`).join("")}</div>`
-            + grilleEdt(false, p, {lundi: lundiEleve, jourVu: jourEleve}); })() : `<div class="vide">L'emploi du temps n'a pas encore été rempli par le gérant.</div>`)
+            + grilleEdt(false, p, {lundi: lundiEleve, jourVu: jourEleve}) + agendaJour(p, lundiEleve, jourEleve, jAuj); })() : `<div class="vide">L'emploi du temps n'a pas encore été rempli par le gérant.</div>`)
       + (chAV.length ? `<div class="bloc"><span class="mono">Changements de cours à venir</span><div class="liste">${chAV.map(c => ligneChg(c, false)).join("")}</div></div>` : "");
   } else {
     corps = `<div class="annee-blocs">${blocsAnnee(false)}</div>`;
@@ -4800,6 +4843,10 @@ VUES.edt = function vueEdt(){
   const sp = $("#sem-prec"); if (sp){ sp.onclick = () => { lundiEleve = decalerJour(lundiEleve, -7); jourEleve = null; vueEdt(); }; $("#sem-suiv").onclick = () => { lundiEleve = decalerJour(lundiEleve, 7); jourEleve = null; vueEdt(); }; }
   const sa = $("#sem-auj"); if (sa) sa.onclick = () => { lundiEleve = lundiParDefaut(); jourEleve = null; vueEdt(); };
   zone().querySelectorAll("[data-jt]").forEach(b => b.onclick = () => { jourEleve = +b.dataset.jt; vueEdt(); });
+  // glisser à gauche / à droite pour changer de jour
+  const ag = zone().querySelector(".edt-agenda"); if (ag){ let x0 = null, y0 = 0; ag.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive: true});
+    ag.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5){ const n = jourEleve + (dx < 0 ? 1 : -1); if (n >= 0 && n <= 4){ jourEleve = n; vueEdt(); } } }); }
   zone().querySelectorAll("#sous-edt button").forEach(b => b.onclick = () => { sousEdt = b.dataset.v; vueEdt(); if (sousEdt === "annee") allerSemaineActuelle(); });
 };
 function allerSemaineActuelle(){ const el = document.querySelector(".bloc-sem.actuelle"); if (el) el.scrollIntoView({block: "center"}); }
