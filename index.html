@@ -401,6 +401,29 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .img-doc.mode-libre{position:absolute;z-index:2;margin:0;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
 .editeur{display:flex;flex-direction:column;gap:10px}
 .barre-outils,.barre-image{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--surface-2);border:1px solid var(--ligne);border-radius:var(--r);padding:8px;position:sticky;top:0;z-index:5}
+/**/
+/* Barres contextuelles (image, tableau, module) : même style que le ruban */
+.barre-image.ob-barre{gap:6px;padding:6px 8px;flex-wrap:wrap;align-items:center}
+.ob-barre .ic{width:17px;height:17px;flex:none}
+.ob-nom{display:inline-flex;align-items:center;gap:8px;padding-right:2px;font-size:.85rem;font-weight:600;color:var(--texte);white-space:nowrap}
+.ob-nom>.ic{color:var(--accent)}
+.ob-nom small{display:block;font:500 .62rem "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--doux);line-height:1.1}
+.ob-ico{display:grid;place-items:center;width:28px;height:28px;border-radius:7px;color:var(--mc);background:color-mix(in srgb,var(--mc) 16%,transparent);border:1px solid color-mix(in srgb,var(--mc) 32%,transparent)}
+.ob-ico svg{width:17px;height:17px}.ob-ico .mc-txt{font-size:.78rem}
+.ob-sep{width:1px;height:22px;background:var(--ligne);margin:0 2px}
+.ob-zone{display:inline-flex;align-items:center;gap:6px}.ob-zone[hidden]{display:none}
+.ob-lab{font-size:.75rem;color:var(--doux)}
+.ob-barre .segment.ob-seg,.ob-lot{display:inline-flex;align-items:center;gap:0;padding:0;border:1px solid var(--ligne);border-radius:6px;background:var(--surface);overflow:hidden}
+.ob-barre .ob-seg button,.ob-lot button{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:30px;min-width:32px;padding:0 9px;border:0;border-radius:0;background:none;color:var(--doux);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
+.ob-barre .ob-seg button+button,.ob-lot button+button{border-left:1px solid var(--ligne)}
+.ob-barre .ob-seg button:hover,.ob-lot button:hover{background:var(--surface-2);color:var(--texte)}
+.ob-barre .ob-seg button[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 22%,var(--surface-2));color:var(--accent);box-shadow:inset 0 -2px 0 var(--accent)}
+.ob-modif{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 11px;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--ligne));border-radius:6px;background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--texte);font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+.ob-modif .ic{color:var(--accent)}.ob-modif:hover{background:color-mix(in srgb,var(--accent) 18%,var(--surface))}
+.ob-fond{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 6px 0 8px;border:1px solid var(--ligne);border-radius:6px;background:var(--surface);color:var(--doux);cursor:pointer}
+.ob-fond input{width:22px;height:18px;padding:0;border:0;background:none}
+.ob-suppr{margin-left:auto;display:grid;place-items:center;width:34px;height:32px;border:1px solid color-mix(in srgb,#ff5c5c 45%,var(--ligne));border-radius:6px;background:none;color:#ff7a7a;cursor:pointer}
+.ob-suppr:hover{background:color-mix(in srgb,#ff5c5c 14%,transparent);border-color:#ff5c5c}
 .barre-image{position:sticky;top:calc(var(--h-ruban, 0px) + 6px);z-index:4;box-shadow:0 8px 20px -10px rgba(0,0,0,.7)}
 .barre-outils select{background:var(--surface);border:1px solid var(--ligne);border-radius:4px;padding:5px 6px;font-size:.85rem}
 .barre-outils button{background:var(--surface);border:1px solid var(--ligne);border-radius:4px;padding:5px 9px;cursor:pointer;font-size:.85rem;min-width:32px}
@@ -4417,7 +4440,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.20";
+const VERSION_SITE = "1.21";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5357,27 +5380,26 @@ function dessinerEditeur(){
         </div>
         <input type="file" id="f-image" accept="image/*" hidden><input type="file" id="f-pj" multiple hidden>
       </div>
-      <div class="barre-image" id="barre-image" hidden>
-        <span class="mono">Image</span>
-        ${segment("img-mode", [["flux","Avec le texte"],["libre","Par-dessus le texte"]], "flux")}
-        <span id="img-pos-zone">${segment("img-pos", [["gauche","Gauche"],["centre","Centre"],["droite","Droite"]], "gauche")}</span>
-        ${segment("img-taille", [["petite","Petite"],["moyenne","Moyenne"],["grande","Grande"]], "moyenne")}
-        <button type="button" class="mini-btn danger" id="img-suppr">Retirer l'image</button>
+      <div class="barre-image ob-barre" id="barre-image" hidden>
+        <span class="ob-nom"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/></svg><span>Image</span></span><span class="ob-sep"></span>
+        <div class="segment ob-seg" id="img-mode"><button type="button" data-v="flux" aria-pressed="true" title="Avec le texte : le texte s'écarte autour" aria-label="Avec le texte : le texte s'écarte autour"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="8" height="8" rx="1.5"/><path d="M14 6h7M14 10h7M14 14h7M3 18h18"/></svg><span>Dans le texte</span></button><button type="button" data-v="libre" aria-pressed="false" title="Par-dessus le texte : à faire glisser" aria-label="Par-dessus le texte : à faire glisser"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 10h18M3 14h18M3 18h12"/><rect x="11" y="8" width="9" height="8" rx="1.5" fill="var(--surface-2)"/></svg><span>Libre</span></button></div>
+        <span id="img-pos-zone" class="ob-zone"><span class="ob-sep"></span><div class="segment ob-seg" id="img-pos"><button type="button" data-v="gauche" aria-pressed="true" title="À gauche" aria-label="À gauche"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="8" height="8" rx="1.5"/><path d="M14 7h7M14 11h7M3 18h18"/></svg></button><button type="button" data-v="centre" aria-pressed="false" title="Au centre" aria-label="Au centre"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="5" width="8" height="8" rx="1.5"/><path d="M3 17h18M6 20.5h12"/></svg></button><button type="button" data-v="droite" aria-pressed="false" title="À droite" aria-label="À droite"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="6" width="8" height="8" rx="1.5"/><path d="M3 7h7M3 11h7M3 18h18"/></svg></button></div></span><span class="ob-sep"></span>
+        <span class="ob-lab">Taille</span><div class="segment ob-seg" id="img-taille"><button type="button" data-v="petite" aria-pressed="false" title="Petite" aria-label="Petite">S</button><button type="button" data-v="moyenne" aria-pressed="true" title="Moyenne" aria-label="Moyenne">M</button><button type="button" data-v="grande" aria-pressed="false" title="Grande" aria-label="Grande">L</button></div>
+        <button type="button" class="ob-suppr" id="img-suppr" title="Retirer l'image" aria-label="Retirer l'image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></svg></button>
       </div>
-      <div class="barre-image" id="barre-tableau" hidden>
-        <span class="mono">Tableau</span>
-        <button type="button" class="mini-btn" data-tab="ligne">+ Ligne</button><button type="button" class="mini-btn" data-tab="colonne">+ Colonne</button>
-        <button type="button" class="mini-btn" data-tab="-ligne">− Ligne</button><button type="button" class="mini-btn" data-tab="-colonne">− Colonne</button>
-        <button type="button" class="mini-btn" data-tab="entete">En-tête oui/non</button>
-        <label class="mini-btn" title="Couleur de fond de la case">Fond <input type="color" id="tab-fond" value="#2a2a2e"></label>
-        <button type="button" class="mini-btn danger" data-tab="suppr">Retirer le tableau</button>
+      <div class="barre-image ob-barre" id="barre-tableau" hidden>
+        <span class="ob-nom"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10M15 9.5v10"/></svg><span>Tableau</span></span><span class="ob-sep"></span>
+        <div class="ob-lot"><button type="button" data-tab="ligne" title="Ajouter une ligne"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="10" rx="1.5"/><path d="M3 9h18M12 17v5M9.5 19.5h5"/></svg></button><button type="button" data-tab="colonne" title="Ajouter une colonne"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="10" height="18" rx="1.5"/><path d="M8 3v18M19.5 9.5v5M17 12h5"/></svg></button><button type="button" data-tab="-ligne" title="Retirer une ligne"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="10" rx="1.5"/><path d="M3 9h18M9.5 19.5h5"/></svg></button><button type="button" data-tab="-colonne" title="Retirer une colonne"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="10" height="18" rx="1.5"/><path d="M8 3v18M17 12h5"/></svg></button></div><span class="ob-sep"></span>
+        <div class="ob-lot"><button type="button" data-tab="entete" title="Ligne d'en-tête oui / non"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 9h18" stroke-width="3"/><path d="M9 9v11M15 9v11"/></svg><span>En-tête</span></button></div>
+        <label class="ob-fond" title="Couleur de fond de la case"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13 12 6l6 6-7 7z"/><path d="M19 15.5c0 1.5 1 2.5 1 3.5a1 1 0 0 1-2 0c0-1 1-2 1-3.5z" fill="currentColor"/></svg><input type="color" id="tab-fond" value="#2a2a2e" aria-label="Couleur de fond de la case"></label>
+        <button type="button" class="ob-suppr" data-tab="suppr" title="Retirer le tableau" aria-label="Retirer le tableau"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></svg></button>
       </div>
-      <div class="barre-image" id="barre-objet" hidden>
-        <span class="mono" id="obj-nom">Objet</span>
-        <button type="button" class="mini-btn" id="obj-modif">Modifier</button>
-        ${segment("obj-pos", [["gauche","Gauche"],["centre","Centre"],["droite","Droite"]], "centre")}
-        ${segment("obj-taille", [["petite","Petite"],["moyenne","Moyenne"],["grande","Grande"]], "moyenne")}
-        <button type="button" class="mini-btn danger" id="obj-suppr">Retirer</button>
+      <div class="barre-image ob-barre" id="barre-objet" hidden>
+        <span class="ob-nom" id="obj-nom">Objet</span><span class="ob-sep"></span>
+        <button type="button" class="ob-modif" id="obj-modif" title="Modifier (ou double-clic sur l'objet)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span>Modifier</span></button><span class="ob-sep"></span>
+        <div class="segment ob-seg" id="obj-pos"><button type="button" data-v="gauche" aria-pressed="false" title="À gauche" aria-label="À gauche"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="8" height="8" rx="1.5"/><path d="M14 7h7M14 11h7M3 18h18"/></svg></button><button type="button" data-v="centre" aria-pressed="true" title="Au centre" aria-label="Au centre"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="5" width="8" height="8" rx="1.5"/><path d="M3 17h18M6 20.5h12"/></svg></button><button type="button" data-v="droite" aria-pressed="false" title="À droite" aria-label="À droite"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="6" width="8" height="8" rx="1.5"/><path d="M3 7h7M3 11h7M3 18h18"/></svg></button></div><span class="ob-sep"></span>
+        <span class="ob-lab">Taille</span><div class="segment ob-seg" id="obj-taille"><button type="button" data-v="petite" aria-pressed="false" title="Petite" aria-label="Petite">S</button><button type="button" data-v="moyenne" aria-pressed="true" title="Moyenne" aria-label="Moyenne">M</button><button type="button" data-v="grande" aria-pressed="false" title="Grande" aria-label="Grande">L</button></div>
+        <button type="button" class="ob-suppr" id="obj-suppr" title="Retirer" aria-label="Retirer"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></svg></button>
       </div>
       <div class="cadre-edition"><p class="titre-fixe-lecon" id="ed-titre-fixe" title="Titre automatique : matière, groupe et titre de la leçon (il ne peut pas être supprimé)">${esc(titreFixe(ed))}</p>
       <div class="doc-lecon edition" id="doc" contenteditable="true" spellcheck="true" lang="fr">${nettoyerHtml(ed.html)}</div>
@@ -5616,7 +5638,9 @@ function dessinerEditeur(){
     doc.querySelectorAll("figure.obj-doc").forEach(x => x.classList.toggle("choisie", x === f));
     if (barreObj.hidden) return;
     const o = lireObjet(f.dataset.obj) || {};
-    $("#obj-nom").textContent = o.kind === "module" ? "Module · " + ((moduleDe(o.type) || {}).nom || "") : o.kind === "geo" ? "Figure" : o.kind === "forme" ? "Forme" : "Graphique";
+    { const m = o.kind === "module" ? moduleDe(o.type) : null, nom = m ? m.nom : o.kind === "geo" ? "Figure géométrique" : o.kind === "forme" ? "Forme" : "Graphique";
+      const ico = m && typeof ICONES_MODULES !== "undefined" && ICONES_MODULES[m.id] || "";
+      $("#obj-nom").innerHTML = `<span class="ob-ico" style="--mc:${m && typeof COUL_CAT_MODULES !== "undefined" ? COUL_CAT_MODULES[m.cat] || "var(--accent)" : "var(--accent)"}">${ico || "◆"}</span><span><small>${m ? "Module" : "Objet"}</small>${esc(nom)}</span>`; }
     const pos = ["gauche","centre","droite"].find(p => f.classList.contains("pos-" + p)) || "centre", t = ["petite","moyenne","grande"].find(p => f.classList.contains("t-" + p)) || "moyenne";
     barreObj.querySelectorAll("#obj-pos button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === pos));
     barreObj.querySelectorAll("#obj-taille button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === t));
