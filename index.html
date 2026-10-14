@@ -784,7 +784,8 @@ a.lien{color:var(--accent)}
 .sans-contour .carte-txt{stroke:none!important}
 .sans-contour circle{stroke:none}
 .carte-alti{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--doux,inherit);max-width:420px;flex-wrap:wrap}
-.carte-alti i{flex:1 1 140px;height:10px;border-radius:5px;background:linear-gradient(90deg,#7cc36b,#b5d56a,#f1e27a,#f2b85b,#e8803f,#d14b2f,#9e2a2b,#6e1f2e)}
+.carte-alti i{flex:1 1 140px;height:10px;border-radius:5px;background:linear-gradient(90deg,#5f8f4e 0%,#8fae5f 10%,#c9c27a 22%,#d9ad6c 38%,#b98252 55%,#8f5e3b 72%,#6f4a33 86%,#a89b8e 94%,#eeeae4 100%)}
+.carte-voile{pointer-events:none;mix-blend-mode:multiply}
 .ce-fleuves{max-height:150px;overflow:auto;margin-top:6px}
 .ce-fleuves button{font-family:Georgia,"Times New Roman",serif;font-style:italic}
 .carte-fleuve-txt{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:600;fill:var(--carte-eau-txt);letter-spacing:.03em}
@@ -4472,7 +4473,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.22";
+const VERSION_SITE = "1.23";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7601,7 +7602,7 @@ const COULEURS_CARTE = ["#f2ae02","#e5484d","#5fa8d3","#6fbf73","#a585f2","#e86f
 const VILLES = "Paris 48.86 2.35|Lyon 45.76 4.84|Marseille 43.30 5.37|Bordeaux 44.84 -0.58|Toulouse 43.60 1.44|Lille 50.63 3.06|Nantes 47.22 -1.55|Strasbourg 48.57 7.75|Nice 43.70 7.27|Rennes 48.11 -1.68|Brest 48.39 -4.49|Le Havre 49.49 0.11|Verdun 49.16 5.38|Reims 49.26 4.03|Vichy 46.13 3.43|Londres 51.51 -0.13|Berlin 52.52 13.40|Madrid 40.42 -3.70|Rome 41.90 12.50|Lisbonne 38.72 -9.14|Bruxelles 50.85 4.35|Amsterdam 52.37 4.90|Berne 46.95 7.45|Vienne 48.21 16.37|Prague 50.08 14.44|Varsovie 52.23 21.01|Budapest 47.50 19.04|Bucarest 44.43 26.10|Sofia 42.70 23.32|Athènes 37.98 23.73|Belgrade 44.79 20.45|Sarajevo 43.86 18.41|Zagreb 45.81 15.98|Copenhague 55.68 12.57|Oslo 59.91 10.75|Stockholm 59.33 18.07|Helsinki 60.17 24.94|Dublin 53.35 -6.26|Moscou 55.76 37.62|Saint-Pétersbourg 59.94 30.31|Kiev 50.45 30.52|Minsk 53.90 27.57|Istanbul 41.01 28.98|Ankara 39.93 32.86|Stalingrad (Volgograd) 48.71 44.51|Munich 48.14 11.58|Hambourg 53.55 9.99|Genève 46.20 6.14|Barcelone 41.39 2.17|Milan 45.46 9.19|Venise 45.44 12.33|Gdańsk (Dantzig) 54.35 18.65|Auschwitz 50.03 19.20|Yalta 44.50 34.17|Versailles 48.80 2.13|Le Caire 30.04 31.24|Alger 36.75 3.06|Tunis 36.81 10.18|Rabat 34.02 -6.84|Dakar 14.72 -17.47|Abidjan 5.36 -4.01|Lagos 6.52 3.38|Kinshasa -4.32 15.31|Nairobi -1.29 36.82|Addis-Abeba 9.03 38.74|Johannesburg -26.20 28.05|Le Cap -33.92 18.42|Antananarivo -18.88 47.51|Jérusalem 31.77 35.21|Beyrouth 33.89 35.50|Damas 33.51 36.29|Bagdad 33.31 44.37|Téhéran 35.69 51.39|Riyad 24.71 46.68|La Mecque 21.39 39.86|Dubaï 25.20 55.27|New Delhi 28.61 77.21|Bombay 19.08 72.88|Pékin 39.90 116.40|Shanghai 31.23 121.47|Hong Kong 22.32 114.17|Tokyo 35.68 139.69|Hiroshima 34.39 132.45|Séoul 37.57 126.98|Hanoï 21.03 105.85|Bangkok 13.76 100.50|Singapour 1.35 103.82|Jakarta -6.21 106.85|Sydney -33.87 151.21|Canberra -35.28 149.13|Washington 38.91 -77.04|New York 40.71 -74.01|Chicago 41.88 -87.63|Los Angeles 34.05 -118.24|San Francisco 37.77 -122.42|Houston 29.76 -95.37|Ottawa 45.42 -75.70|Montréal 45.50 -73.57|Mexico 19.43 -99.13|La Havane 23.11 -82.37|Brasília -15.79 -47.88|Rio de Janeiro -22.91 -43.17|São Paulo -23.55 -46.63|Buenos Aires -34.60 -58.38|Lima -12.05 -77.04|Bogota 4.71 -74.07|Santiago -33.45 -70.67|Caracas 10.48 -66.90|Fort-de-France 14.60 -61.07|Cayenne 4.92 -52.31|Saint-Denis (Réunion) -20.88 55.45|Nouméa -22.28 166.46"
   .split("|").map(l => { const t = l.split(" "), lon = +t.pop(), lat = +t.pop(); return {nom: t.join(" "), lat, lon}; });
 const carteVide = () => ({zone: "europe", epoque: "actuelle", transition: false, epoque2: "", noms: true, fleuves: false, fleuvesChoix: null, mers: false, monts: false, couleurMonts: "#a86f35", texteMonts: "", texteFleuves: "", altitude: false, contour: true, couleurs: [], points: []});
-const RELIEF_URL = "cartes/relief2.webp";
+const RELIEF_URL = "cartes/relief3.webp";   // teintes hypsométriques + ombrage (vert = plaines, brun = montagnes, blanc = neiges)
 const COULEURS_MONTS = ["#a86f35", "#7a4a1c", "#8a8a8a", "#5b7f3a", "#c0392b", "#6d5ba8"];
 // mélange une couleur hexadécimale avec du noir (t = part de noir)
 const assombrir = (c, t) => { const m = /^#?([0-9a-f]{6})$/i.exec(c || ""); if (!m) return c; const n = parseInt(m[1], 16); return "#" + [n >> 16, n >> 8 & 255, n & 255].map(v => Math.round(v * (1 - t)).toString(16).padStart(2, "0")).join(""); };
@@ -7646,12 +7647,16 @@ function coucheCarte(o, epoque, terres, etats, g, uid, edition, geo){
   // altitude : seulement dans les zones montagneuses, bords adoucis
   const masqueMontagnes = () => { const rg = `x="${f1(vx / k)}" y="${f1(vy)}" width="${f1(vw / k)}" height="${f1(vh)}"`;
     return `<filter id="flou-${uid}" filterUnits="userSpaceOnUse" ${rg}><feGaussianBlur stdDeviation="${f1(ref / 260)}"/></filter><mask id="masque-${uid}" maskUnits="userSpaceOnUse" ${rg}><g filter="url(#flou-${uid})" fill="#fff">${montsZone.map(m => `<path d="${m[1]}"/>`).join("")}</g></mask>`; };
-  let svg = `<defs><clipPath id="terres-${uid}"><path d="${terres}"/></clipPath>${geo && o.altitude ? masqueMontagnes() : ""}${geo && o.monts && !o.altitude ? `<pattern id="relief-${uid}" patternUnits="userSpaceOnUse" width="${f1(ref / k / 48)}" height="${f1(ref / 60)}"><rect width="100%" height="100%" fill="${esc(o.couleurMonts || "#a86f35")}" fill-opacity=".46"/><path d="M${f1(ref / k / 200)} ${f1(ref / 85)}l${f1(ref / k / 160)} ${f1(-ref / 150)}l${f1(ref / k / 160)} ${f1(ref / 150)}" class="carte-relief-trait" stroke="${esc(assombrir(o.couleurMonts || "#a86f35", .5))}" vector-effect="non-scaling-stroke"/></pattern>` : ""}</defs><rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" class="carte-mer"/>
+  let svg = `<defs><clipPath id="terres-${uid}"><path d="${terres}"/></clipPath>${geo && o.monts && !o.altitude ? `<pattern id="relief-${uid}" patternUnits="userSpaceOnUse" width="${f1(ref / k / 48)}" height="${f1(ref / 60)}"><rect width="100%" height="100%" fill="${esc(o.couleurMonts || "#a86f35")}" fill-opacity=".46"/><path d="M${f1(ref / k / 200)} ${f1(ref / 85)}l${f1(ref / k / 160)} ${f1(-ref / 150)}l${f1(ref / k / 160)} ${f1(ref / 150)}" class="carte-relief-trait" stroke="${esc(assombrir(o.couleurMonts || "#a86f35", .5))}" vector-effect="non-scaling-stroke"/></pattern>` : ""}</defs><rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" class="carte-mer"/>
     <g transform="scale(${k} 1)"><path d="${terres}" class="carte-terre"/><g clip-path="url(#terres-${uid})">`;
   // 1er passage : bord épais de la même couleur (comble les petits écarts le long des côtes) ; 2e passage : États et frontières nettes
   etats.forEach(e => { svg += `<path d="${e[1]}" fill="${fond(e)}" stroke="${fond(e)}" stroke-width="7" vector-effect="non-scaling-stroke"/>`; });
   etats.forEach(e => { svg += `<path d="${e[1]}" fill="${fond(e)}" class="carte-etat${edition ? " cliquable" : ""}" data-nom="${esc(e[0])}" ${e[4] ? `data-id="${e[4]}"` : ""} vector-effect="non-scaling-stroke"><title>${esc(nomEtat(e, epoque))}</title></path>`; });
-  if (geo && o.altitude) svg += `<image href="${RELIEF_URL}" x="0" y="0" width="2000" height="1000" preserveAspectRatio="none" class="carte-altitude" mask="url(#masque-${uid})"/>`;
+  if (geo && o.altitude){
+    svg += `<image href="${RELIEF_URL}" x="0" y="0" width="2000" height="1000" preserveAspectRatio="none" class="carte-altitude"/>`;
+    // pays colorés : voile coloré par-dessus le relief (le relief reste visible)
+    etats.forEach(e => { const c = couleurDe(o, e); if (c) svg += `<path d="${e[1]}" fill="${esc(c.couleur)}" fill-opacity=".55" class="carte-voile"/>`; });
+  }
   const angle = (dx, dy) => { let a = Math.atan2(dy, dx * k) * 180 / Math.PI; if (a > 90) a -= 180; if (a <= -90) a += 180; return a; };
   if (geo && o.monts && !o.altitude){
     svg += `<g class="carte-monts">`;
@@ -7739,7 +7744,7 @@ async function htmlCarte(o0, edition = false){
   if (o.fleuves || o.mers || o.monts || o.altitude) geo = await chargerCarte("geo").catch(() => null);
   const uid = Math.random().toString(36).slice(2, 8), nomEp = a => a === "actuelle" ? "Aujourd'hui" : a;
   const legende = (o.couleurs || []).filter(c => c.legende);
-  const legAlt = o.altitude ? `<div class="carte-alti"><b>Altitude</b><span>250 m</span><i></i><span>4 500 m et +</span></div>` : "";
+  const legAlt = o.altitude ? `<div class="carte-alti"><b>Altitude</b><span>0 m</span><i></i><span>4 500 m et +</span></div>` : "";
   const leg = legAlt + (legende.length ? `<div class="carte-legende">${legende.map(c => `<span><i style="background:${esc(c.couleur)}"></i>${esc(c.legende)}</span>`).join("")}</div>` : "");
   const source = `<span class="carte-source">${a1 === "actuelle" && !a2 ? "Fond : Natural Earth" : "Frontières : historical-basemaps (GPL-3.0) · côtes : Natural Earth"}${o.altitude ? " · altitudes : NASA" : ""}</span>`;
   const c1 = coucheCarte(o, a1, terres, e1, g, uid + "a", edition, geo);
@@ -7820,9 +7825,9 @@ function fenetreCarte(depart, valider){
         <label><input type="checkbox" data-aff="fleuves" ${o.fleuves ? "checked" : ""}> 〰 Fleuves</label>
         <label><input type="checkbox" data-aff="mers" ${o.mers ? "checked" : ""}> 🌊 Mers et océans</label>
         <label><input type="checkbox" data-aff="monts" ${o.monts ? "checked" : ""}> ⛰ Montagnes</label>
-        <label><input type="checkbox" data-aff="altitude" ${o.altitude ? "checked" : ""}> 🏔 Altitude (vert = bas, rouge = haut)</label>
+        <label><input type="checkbox" data-aff="altitude" ${o.altitude ? "checked" : ""}> 🏔 Relief en couleurs (vert = plaines, brun = montagnes)</label>
         <label><input type="checkbox" data-aff="contour" ${o.contour !== false ? "checked" : ""}> Contour des textes et des points</label></div></div>
-      ${o.monts || o.altitude ? `<div class="ce-ligne"><span class="mono">Montagnes</span><div class="rangee" style="gap:6px">${o.altitude ? `<span class="doux" style="font-size:.8rem">Zones colorées selon l'altitude</span>` : `${COULEURS_MONTS.map(c => `<button type="button" class="ce-pastille" data-cm="${c}" style="background:${c}" aria-pressed="${c === o.couleurMonts}" aria-label="Couleur ${c}"></button>`).join("")}<label class="ce-ville-style" style="margin-left:6px">Autre <input type="color" id="ce-cm" value="${esc(o.couleurMonts || "#a86f35")}"></label>`}
+      ${o.monts || o.altitude ? `<div class="ce-ligne"><span class="mono">Montagnes</span><div class="rangee" style="gap:6px">${o.altitude ? `<span class="doux" style="font-size:.8rem">Couleurs d'atlas selon l'altitude, avec ombrage du relief</span>` : `${COULEURS_MONTS.map(c => `<button type="button" class="ce-pastille" data-cm="${c}" style="background:${c}" aria-pressed="${c === o.couleurMonts}" aria-label="Couleur ${c}"></button>`).join("")}<label class="ce-ville-style" style="margin-left:6px">Autre <input type="color" id="ce-cm" value="${esc(o.couleurMonts || "#a86f35")}"></label>`}
         ${o.monts ? `<label class="ce-ville-style" style="margin-left:14px">Couleur des noms <input type="color" data-tc="texteMonts" value="${esc(o.texteMonts || assombrir(o.couleurMonts || "#a86f35", -0))}"></label>${o.texteMonts ? `<button type="button" class="mini-btn" data-tcr="texteMonts">Par défaut</button>` : ""}` : ""}</div></div>` : ""}
       ${o.fleuves ? listeFleuves() : ""}
       `,
