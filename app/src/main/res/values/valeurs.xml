@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="fond">#0E0E0F</color>
+  <string name="asset_statements" translatable="false">[{ \"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": { \"namespace\": \"web\", \"site\": \"https://funguyhubgit.github.io\" } }]</string>
+  <style name="Theme.Helper" parent="android:Theme.Material.NoActionBar">
+    <item name="android:windowBackground">@color/fond</item>
+    <item name="android:statusBarColor">@color/fond</item>
+    <item name="android:navigationBarColor">@color/fond</item>
+  </style>
+</resources>
