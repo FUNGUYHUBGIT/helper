@@ -798,6 +798,38 @@ a.lien{color:var(--accent)}
 .ce-ville-style select{padding:3px 6px;font-size:.8rem}
 .mod-carte text,.mod-carte circle{pointer-events:none}
 .carte-svg{border-radius:8px}
+/**/
+/* Fenêtre « Carte du monde » : carte à gauche avec le pinceau, réglages en onglets à droite */
+.ce-tete{display:flex;align-items:center;gap:12px;margin-bottom:12px}.ce-tete h3{margin:0}.ce-tete p{margin:2px 0 0;font-size:.82rem}.ce-tete .mc-fermer{margin-left:auto}
+.ce-tete .ob-ico{width:38px;height:38px;border-radius:10px}.ce-tete .ob-ico svg{width:22px;height:22px}
+.ce-grille{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);gap:16px;align-items:start}
+.ce-gauche{display:flex;flex-direction:column;gap:8px;position:sticky;top:0}
+.ce-pinceau{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 10px;border:1px solid var(--ligne);border-radius:10px;background:var(--surface)}
+.ce-p-lab{font:500 .66rem "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--doux);margin-right:4px}
+.ce-pinceau .ce-pastille{width:24px;height:24px;transition:transform .12s}.ce-pinceau .ce-pastille:hover{transform:scale(1.12)}
+.ce-p-autre{position:relative;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1.5px dashed var(--doux);color:var(--doux);cursor:pointer;font-weight:700;overflow:hidden}
+.ce-p-autre input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.ce-gomme{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border:1px solid var(--ligne);border-radius:7px;background:var(--surface-2);color:var(--doux);font:inherit;font-size:.8rem;cursor:pointer}
+.ce-gomme svg{width:16px;height:16px}.ce-gomme[aria-pressed=true]{border-color:#ff7a7a;color:#ff7a7a;background:color-mix(in srgb,#ff5c5c 12%,var(--surface-2))}
+.carte-ed-apercu.gomme .carte-etat.cliquable{cursor:crosshair}
+.ce-gauche .carte-ed-apercu{min-height:360px}
+.ce-droite{display:flex;flex-direction:column;gap:10px;min-width:0}
+.ce-onglets{display:flex;gap:2px;padding:3px;border:1px solid var(--ligne);border-radius:10px;background:var(--surface)}
+.ce-onglets button{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;border:0;border-radius:7px;background:none;color:var(--doux);font:inherit;font-size:.84rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.ce-onglets button:hover{color:var(--texte)}.ce-onglets button[aria-selected=true]{background:var(--surface-2);color:var(--texte);box-shadow:inset 0 -2px 0 var(--accent)}
+.ce-onglets button span{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:#141416;font:600 .68rem/18px "IBM Plex Mono",monospace}
+.ce-droite .carte-ed-reglages{max-height:min(58vh,560px);gap:14px}
+.ce-droite .ce-ligne{grid-template-columns:1fr;gap:6px}.ce-droite .ce-ligne > .mono{padding-top:0;font-size:.68rem;letter-spacing:.12em;color:var(--doux)}
+.ce-droite .filtres{gap:5px}.ce-droite .filtres button{padding:5px 10px;font-size:.8rem}
+.ce-droite .ce-afficher{flex-direction:column;gap:8px}
+.ce-droite .ce-afficher label{gap:10px;cursor:pointer;font-size:.88rem}
+.ce-droite .ce-afficher input[type=checkbox]{appearance:none;-webkit-appearance:none;width:32px;height:18px;margin:0;border-radius:10px;background:var(--surface-2);border:1px solid var(--ligne);position:relative;flex:none;cursor:pointer;transition:background .15s}
+.ce-droite .ce-afficher input[type=checkbox]::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--doux);transition:transform .15s,background .15s}
+.ce-droite .ce-afficher input[type=checkbox]:checked{background:color-mix(in srgb,var(--accent) 35%,var(--surface-2));border-color:var(--accent)}
+.ce-droite .ce-afficher input[type=checkbox]:checked::after{transform:translateX(14px);background:var(--accent)}
+.ce-vide{padding:18px 4px;font-size:.88rem;line-height:1.5}
+.ce-pied{margin-top:14px}
+@media (max-width:900px){.ce-grille{grid-template-columns:1fr}.ce-gauche{position:static}}
 .carte-ed-apercu{min-height:260px;flex-shrink:0;display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--ligne);border-radius:10px;padding:10px;transition:opacity .2s}
 .carte-ed-apercu.charge{opacity:.55}
 .carte-ed-apercu .mod-carte{width:100%;margin:0 auto}
@@ -4440,7 +4472,7 @@ const brancherFiltres = r => zone().querySelectorAll(".filtres button").forEach(
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.21";
+const VERSION_SITE = "1.22";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7726,23 +7758,41 @@ async function htmlCarte(o0, edition = false){
 function fenetreCarte(depart, valider){
   const o = normaliserCarte(depart || carteVide()); o.kind = "module"; o.type = "carte";
   let couleur = COULEURS_CARTE[0], rendu = 0;
-  const el = ouvrirVoile(`<div class="rangee" style="justify-content:space-between"><h3>🗺 Carte du monde</h3><span class="doux" style="font-size:.84rem">Clique sur un pays de la carte pour le colorer</span></div>
-    <div class="carte-ed-apercu" id="ce-apercu"><p class="doux">Chargement de la carte…</p></div>
-    <div class="carte-ed-reglages" id="ce-reglages"></div>
-    <div class="rangee"><button class="btn" type="button" id="ce-ok">Valider</button><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div>`, 1100);
+  let onglet = "carte";
+  const icoCarte = typeof ICONES_MODULES !== "undefined" ? ICONES_MODULES.carte : "";
+  const el = ouvrirVoile(`<div class="ce-tete"><span class="ob-ico" style="--mc:#e07a5f">${icoCarte}</span><div><h3>Carte du monde</h3><p class="doux">Choisis une couleur puis clique sur les pays de la carte.</p></div><button type="button" class="mc-fermer" id="ce-x" aria-label="Fermer">✕</button></div>
+    <div class="ce-grille">
+      <div class="ce-gauche">
+        <div class="ce-pinceau" id="ce-pinceau"></div>
+        <div class="carte-ed-apercu" id="ce-apercu"><p class="doux">Chargement de la carte…</p></div>
+      </div>
+      <div class="ce-droite">
+        <div class="ce-onglets" id="ce-onglets" role="tablist"></div>
+        <div class="carte-ed-reglages" id="ce-reglages"></div>
+      </div>
+    </div>
+    <div class="rangee ce-pied"><button class="btn" type="button" id="ce-ok">Valider</button><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div>`, 1180);
+  // pinceau : couleurs pour colorer les pays + gomme
+  const pinceau = () => { el.querySelector("#ce-pinceau").innerHTML = `<span class="ce-p-lab">Pinceau</span>${COULEURS_CARTE.map(c => `<button type="button" class="ce-pastille" data-coul="${c}" style="background:${c}" aria-pressed="${c === couleur}" aria-label="Couleur ${c}"></button>`).join("")}
+      <label class="ce-p-autre" title="Autre couleur"><input type="color" id="ce-p-autre" value="${esc(COULEURS_CARTE.includes(couleur) || !couleur ? "#f2ae02" : couleur)}"><span>+</span></label><span class="ob-sep"></span>
+      <button type="button" class="ce-gomme" data-coul="" aria-pressed="${couleur === null}" title="Gomme : clique sur un pays pour enlever sa couleur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4-4 11-11 7 7-7 8z"/><path d="M10 10l7 7M7 21h14"/></svg>Gomme</button>`;
+    el.querySelectorAll("#ce-pinceau [data-coul]").forEach(b => b.onclick = () => { couleur = b.dataset.coul || null; pinceau(); });
+    el.querySelector("#ce-p-autre").oninput = ev => { couleur = ev.target.value; el.querySelectorAll("#ce-pinceau [data-coul]").forEach(x => x.setAttribute("aria-pressed", "false")); };
+    el.querySelector("#ce-apercu").classList.toggle("gomme", couleur === null); };
   const apercu = async () => {
     const n = ++rendu, z = el.querySelector("#ce-apercu"); z.classList.add("charge");
     const h = await htmlCarte(o, true); if (n !== rendu || !z.isConnected) return;
     z.innerHTML = h; z.classList.remove("charge"); brancherTransitions(z);
     if (o.fleuves && cacheCartes.geo && !el.querySelector("[data-fl]")) reglages();
     const sv = z.querySelector(".carte-svg"), mc = z.querySelector(".mod-carte");
-    if (sv && mc && sv.viewBox.baseVal && sv.viewBox.baseVal.height) mc.style.maxWidth = `min(100%, calc(42vh * ${(sv.viewBox.baseVal.width / sv.viewBox.baseVal.height).toFixed(3)}))`;
+    if (sv && mc && sv.viewBox.baseVal && sv.viewBox.baseVal.height) mc.style.maxWidth = `min(100%, calc(60vh * ${(sv.viewBox.baseVal.width / sv.viewBox.baseVal.height).toFixed(3)}))`;
     // clic sur un pays : colorer / changer de couleur / enlever
     z.querySelectorAll(".carte-etat.cliquable").forEach(p => p.onclick = () => {
       const nom = p.dataset.nom, id = p.dataset.id, i = o.couleurs.findIndex(c => c.nom === nom || (id && c.id === id));
-      if (i >= 0 && o.couleurs[i].couleur === couleur) o.couleurs.splice(i, 1);
+      if (couleur === null){ if (i >= 0) o.couleurs.splice(i, 1); }
+      else if (i >= 0 && o.couleurs[i].couleur === couleur) o.couleurs.splice(i, 1);
       else if (i >= 0) o.couleurs[i].couleur = couleur;
-      else o.couleurs.push({nom, ...(id ? {id} : {}), couleur, legende: ""});
+      else if (couleur) o.couleurs.push({nom, ...(id ? {id} : {}), couleur, legende: ""});
       reglages(); apercu();
     });
   };
@@ -7758,13 +7808,14 @@ function fenetreCarte(depart, valider){
   const nomCouleur = c => { if (c.nom) return nomHisto(c.nom); const e = (cacheCartes.actuelle || []).find(x => x[4] === c.id); return e ? nomEtat(e, "actuelle") : "Pays"; };
   const reglages = () => {
     const suivantes = EPOQUES.filter(([k]) => k !== o.epoque && (o.epoque === "actuelle" || k === "actuelle" || +k > +o.epoque));
-    el.querySelector("#ce-reglages").innerHTML = `
-      <div class="ce-ligne"><span class="mono">Zone</span><div class="filtres">${ZONES_CARTE.map(([k, n]) => `<button type="button" data-zone="${k}" aria-pressed="${k === o.zone}">${n}</button>`).join("")}</div></div>
+    const sections = {
+      carte: `<div class="ce-ligne"><span class="mono">Zone</span><div class="filtres">${ZONES_CARTE.map(([k, n]) => `<button type="button" data-zone="${k}" aria-pressed="${k === o.zone}">${n}</button>`).join("")}</div></div>
       <div class="ce-ligne"><span class="mono">Époque</span><div class="filtres">${EPOQUES.map(([k, n]) => `<button type="button" data-ep="${k}" aria-pressed="${k === o.epoque}">${n}</button>`).join("")}</div></div>
       <div class="ce-ligne"><span class="mono">Évolution</span><div class="filtres"><button type="button" data-ep2="" aria-pressed="${!o.transition}">Aucune</button>${suivantes.map(([k, n]) => `<button type="button" data-ep2="${k}" aria-pressed="${o.transition && o.epoque2 === k}">→ ${n}</button>`).join("")}</div></div>
-      <div class="ce-ligne"><span class="mono">Couleur</span><div class="rangee" style="gap:6px">${COULEURS_CARTE.map(c => `<button type="button" class="ce-pastille" data-coul="${c}" style="background:${c}" aria-pressed="${c === couleur}" aria-label="Couleur ${c}"></button>`).join("")}
-</div></div>
-      <div class="ce-ligne"><span class="mono">Afficher</span><div class="ce-afficher">
+      `,
+      pays: `${o.couleurs.length ? `<div class="ce-ligne"><span class="mono">Pays colorés</span><div class="ce-liste">${o.couleurs.map((c, i) => `<div class="ce-item"><i style="background:${esc(c.couleur)}"></i><span>${esc(nomCouleur(c))}</span><input type="text" data-leg="${i}" value="${esc(c.legende || "")}" placeholder="Légende (ex. Triple-Entente)"><button type="button" class="mini-btn" data-cx="${i}" aria-label="Enlever">×</button></div>`).join("")}</div></div>` : ""}
+      ` || `<p class="doux ce-vide">Aucun pays coloré. Choisis une couleur dans le pinceau, au-dessus de la carte, puis clique sur un pays.</p>`,
+      relief: `<div class="ce-ligne"><span class="mono">Afficher</span><div class="ce-afficher">
         <label><input type="checkbox" data-aff="noms" ${o.noms !== false ? "checked" : ""}> Noms des pays</label>
         <label><input type="checkbox" data-aff="fleuves" ${o.fleuves ? "checked" : ""}> 〰 Fleuves</label>
         <label><input type="checkbox" data-aff="mers" ${o.mers ? "checked" : ""}> 🌊 Mers et océans</label>
@@ -7774,15 +7825,19 @@ function fenetreCarte(depart, valider){
       ${o.monts || o.altitude ? `<div class="ce-ligne"><span class="mono">Montagnes</span><div class="rangee" style="gap:6px">${o.altitude ? `<span class="doux" style="font-size:.8rem">Zones colorées selon l'altitude</span>` : `${COULEURS_MONTS.map(c => `<button type="button" class="ce-pastille" data-cm="${c}" style="background:${c}" aria-pressed="${c === o.couleurMonts}" aria-label="Couleur ${c}"></button>`).join("")}<label class="ce-ville-style" style="margin-left:6px">Autre <input type="color" id="ce-cm" value="${esc(o.couleurMonts || "#a86f35")}"></label>`}
         ${o.monts ? `<label class="ce-ville-style" style="margin-left:14px">Couleur des noms <input type="color" data-tc="texteMonts" value="${esc(o.texteMonts || assombrir(o.couleurMonts || "#a86f35", -0))}"></label>${o.texteMonts ? `<button type="button" class="mini-btn" data-tcr="texteMonts">Par défaut</button>` : ""}` : ""}</div></div>` : ""}
       ${o.fleuves ? listeFleuves() : ""}
-      ${o.couleurs.length ? `<div class="ce-ligne"><span class="mono">Pays colorés</span><div class="ce-liste">${o.couleurs.map((c, i) => `<div class="ce-item"><i style="background:${esc(c.couleur)}"></i><span>${esc(nomCouleur(c))}</span><input type="text" data-leg="${i}" value="${esc(c.legende || "")}" placeholder="Légende (ex. Triple-Entente)"><button type="button" class="mini-btn" data-cx="${i}" aria-label="Enlever">×</button></div>`).join("")}</div></div>` : ""}
-      <div class="ce-ligne"><span class="mono">Villes</span><div class="ce-liste">
+      `,
+      villes: `<div class="ce-ligne"><span class="mono">Villes</span><div class="ce-liste">
         <div class="rangee" style="gap:6px;flex-wrap:nowrap"><input type="text" id="ce-ville" list="ce-villes" placeholder="Tape une ville : Paris, Verdun, Berlin…" style="flex:1"><datalist id="ce-villes">${VILLES.map(v => `<option value="${esc(v.nom)}">`).join("")}</datalist><button type="button" class="mini-btn" id="ce-ville-ok">+ Ajouter</button></div>
         ${o.points.map((p, i) => `<div class="ce-item"><i style="background:${esc(p.couleur || "#e5484d")};border-radius:50%"></i><span>${esc(p.nom || "Lieu")}</span><span class="ce-ville-style">
           <label title="Couleur du point">Point <input type="color" data-vs="${i}:couleur" value="${esc(p.couleur || "#e5484d")}"></label>
           <label title="Couleur du nom">Texte <input type="color" data-vs="${i}:texte" value="${esc(p.texte || hexCss(getComputedStyle(document.body).getPropertyValue("--texte")))}"></label>
           <select data-vs="${i}:taille" aria-label="Taille du nom">${TAILLES_VILLE.map(([k, n]) => `<option value="${k}" ${(p.taille || "m") === k ? "selected" : ""}>${n}</option>`).join("")}</select></span><button type="button" class="mini-btn" data-px="${i}" aria-label="Enlever">×</button></div>`).join("")}
         <details class="ce-autre"><summary>Autre lieu (latitude, longitude)</summary><div class="rangee" style="gap:6px"><input type="text" id="ce-lnom" placeholder="Nom"><input type="number" step="any" id="ce-lat" placeholder="Latitude" style="width:110px"><input type="number" step="any" id="ce-lon" placeholder="Longitude" style="width:110px"><button type="button" class="mini-btn" id="ce-lieu-ok">+ Ajouter</button></div></details>
-      </div></div>`;
+      </div></div>`};
+    const ONGLETS_CE = [["carte", "Carte", ""], ["pays", "Pays", o.couleurs.length || ""], ["relief", "Relief et eau", ""], ["villes", "Villes", o.points.length || ""]];
+    el.querySelector("#ce-onglets").innerHTML = ONGLETS_CE.map(([k, t, n]) => `<button type="button" role="tab" data-ong="${k}" aria-selected="${k === onglet}">${t}${n ? `<span>${n}</span>` : ""}</button>`).join("");
+    el.querySelectorAll("[data-ong]").forEach(b => b.onclick = () => { onglet = b.dataset.ong; reglages(); });
+    el.querySelector("#ce-reglages").innerHTML = sections[onglet];
     const r = el.querySelector("#ce-reglages");
     r.querySelectorAll("[data-zone]").forEach(b => b.onclick = () => { o.zone = b.dataset.zone; reglages(); apercu(); });
     r.querySelectorAll("[data-ep]").forEach(b => b.onclick = () => { o.epoque = b.dataset.ep; if (o.epoque2 === o.epoque) o.transition = false; o.couleurs = o.couleurs.filter(c => o.epoque === "actuelle" ? !!c.id || true : true); reglages(); apercu(); });
@@ -7804,13 +7859,14 @@ function fenetreCarte(depart, valider){
     r.querySelectorAll("[data-px]").forEach(b => b.onclick = () => { o.points.splice(+b.dataset.px, 1); reglages(); apercu(); });
     const ajouterVille = () => { const t = normaliser(r.querySelector("#ce-ville").value.trim()); const v = VILLES.find(x => normaliser(x.nom) === t) || VILLES.find(x => normaliser(x.nom).startsWith(t) && t);
       if (!v){ r.querySelector("#ce-ville").classList.add("invalide"); return; } o.points.push({nom: v.nom, lat: v.lat, lon: v.lon, ...styleVille()}); reglages(); apercu(); el.querySelector("#ce-ville")?.focus(); };
+    if (!r.querySelector("#ce-ville")) return;
     r.querySelector("#ce-ville-ok").onclick = ajouterVille;
     r.querySelector("#ce-ville").onkeydown = ev => { if (ev.key === "Enter"){ ev.preventDefault(); ajouterVille(); } };
     r.querySelector("#ce-lieu-ok").onclick = () => { const lat = parseFloat(r.querySelector("#ce-lat").value), lon = parseFloat(r.querySelector("#ce-lon").value);
       if (!isFinite(lat) || !isFinite(lon)) return; o.points.push({nom: r.querySelector("#ce-lnom").value.trim(), lat, lon, ...styleVille()}); reglages(); apercu(); };
   };
-  reglages(); apercu();
-  el.querySelector("#fen-annuler").onclick = fermerFenetre;
+  pinceau(); reglages(); apercu();
+  el.querySelector("#fen-annuler").onclick = el.querySelector("#ce-x").onclick = fermerFenetre;
   el.querySelector("#ce-ok").onclick = () => { fermerFenetre(); valider(o); };
 }
 /* ===================== MODULE CIRCUIT ÉLECTRIQUE ===================== */
