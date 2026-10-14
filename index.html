@@ -16,6 +16,7 @@
 <link rel="icon" type="image/png" sizes="512x512" href="icone-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
+<meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Helper">
@@ -489,7 +490,7 @@ body.mode-app .barre-mobile{padding-top:calc(12px + env(safe-area-inset-top))}
   .ag-ligne{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:stretch}
   .ag-h{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;padding:6px 0;font-family:"IBM Plex Mono",monospace}
   .ag-h b{font-size:.86rem;font-weight:600}.ag-h small{font-size:.7rem;color:var(--doux)}
-  .ag-cours{--c:#9b978e;display:flex;flex-direction:column;gap:3px;min-height:64px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--c) 18%,var(--surface));border:1px solid color-mix(in srgb,var(--c) 40%,transparent);border-left:5px solid var(--c)}
+  .ag-cours{--c:#9b978e;display:flex;flex-direction:column;gap:3px;min-height:64px;padding:10px 12px;border-radius:12px;background:#1d1d20;background:color-mix(in srgb,var(--c) 18%,var(--surface));border:1px solid color-mix(in srgb,var(--c) 40%,transparent);border-left:5px solid var(--c)}
   .ag-m{font-weight:700;font-size:1rem}.ag-d{font-size:.84rem;color:var(--doux)}
   .ag-cours.annule{opacity:.7;background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0 10px,var(--surface) 10px 20px)}
   .ag-cours.annule .ag-m{text-decoration:line-through;text-decoration-thickness:2px}
@@ -515,6 +516,8 @@ body.mode-app .barre-mobile{padding-top:calc(12px + env(safe-area-inset-top))}
   .bm-menu span{display:block;width:18px;height:2px;border-radius:2px;background:var(--texte);transition:transform .25s,opacity .2s}
   body.menu-ouvert .bm-menu span:nth-child(1){transform:translateY(7px) rotate(45deg)}body.menu-ouvert .bm-menu span:nth-child(2){opacity:0}body.menu-ouvert .bm-menu span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   .bm-logo{display:flex;align-items:center;gap:8px;font-family:var(--f-titre);font-size:1.05rem;white-space:nowrap}.bm-logo svg{width:24px;height:24px}
+  body:has(.avert-pastille) .bm-titre{visibility:hidden}
+  .avert-pastille{top:calc(14px + env(safe-area-inset-top))}
   .bm-titre{margin-left:auto;font-size:.82rem;color:var(--doux);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;max-width:45vw}
   .voile-menu{display:block;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s}
   body.menu-ouvert .voile-menu{opacity:1;pointer-events:auto}
@@ -4591,7 +4594,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.32";
+const VERSION_SITE = "1.33";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE);
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
