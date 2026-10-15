@@ -24,7 +24,14 @@ import android.webkit.WebViewClient;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewCompat;
 import androidx.webkit.WebViewFeature;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Set;
@@ -53,7 +60,7 @@ public class AppActivity extends Activity {
     s.setDatabaseEnabled(true);
     s.setMediaPlaybackRequiresUserGesture(false);
     s.setTextZoom(100);
-    s.setUserAgentString(s.getUserAgentString() + " HelperApp/1.2");
+    s.setUserAgentString(s.getUserAgentString() + " HelperApp/1.3");
 
     // Aucune inversion / assombrissement automatique : on garde les vraies couleurs de Helper
     if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
@@ -127,7 +134,38 @@ public class AppActivity extends Activity {
   static final String[] ICONES = {"MainActivity", "IconeOrange", "IconeCorail", "IconeBleu", "IconeVert", "IconeRose", "IconeViolet"};
   static final int[] TEINTES = {0xf2ae02, 0xf5a524, 0xff6b3d, 0x4fa3f7, 0x5cc98a, 0xef6fa6, 0xa585f2};
   volatile String iconeVoulue = null;
+  static String lireTout(InputStream in) throws Exception {
+    ByteArrayOutputStream o = new ByteArrayOutputStream(); byte[] b = new byte[8192]; int n;
+    while ((n = in.read(b)) > 0) o.write(b, 0, n); in.close(); return o.toString("UTF-8");
+  }
   class PontAppli {
+    // Requête vers EcoleDirecte faite par le téléphone lui-même (même adresse IP que l'appli EcoleDirecte) ; seulement api.ecoledirecte.com
+    @JavascriptInterface public void requeteED(String id, String methode, String url, String entetes, String corps) {
+      final String rid = id == null ? "" : id.replaceAll("[^A-Za-z0-9_-]", "");
+      new Thread(() -> {
+        JSONObject r = new JSONObject();
+        try {
+          Uri u = Uri.parse(url);
+          if (!"https".equals(u.getScheme()) || !"api.ecoledirecte.com".equals(u.getHost())) throw new Exception("Adresse refusée");
+          HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+          c.setInstanceFollowRedirects(false); c.setConnectTimeout(15000); c.setReadTimeout(30000); c.setUseCaches(false);
+          String m = "GET".equals(methode) ? "GET" : "POST"; c.setRequestMethod(m);
+          JSONObject h = new JSONObject(entetes == null || entetes.isEmpty() ? "{}" : entetes);
+          Iterator<String> k = h.keys(); while (k.hasNext()) { String n = k.next(); c.setRequestProperty(n, h.getString(n)); }
+          if ("POST".equals(m)) { byte[] b = (corps == null ? "" : corps).getBytes("UTF-8"); c.setDoOutput(true); c.setFixedLengthStreamingMode(b.length); OutputStream o = c.getOutputStream(); o.write(b); o.close(); }
+          int st = c.getResponseCode(); InputStream in = st >= 400 ? c.getErrorStream() : c.getInputStream();
+          String txt = in == null ? "" : lireTout(in);
+          JSONObject hs = new JSONObject(); JSONArray ck = new JSONArray();
+          for (Map.Entry<String, List<String>> e : c.getHeaderFields().entrySet()) {
+            if (e.getKey() == null) continue; String n = e.getKey().toLowerCase(Locale.ROOT);
+            if (n.equals("set-cookie")) { for (String v : e.getValue()) ck.put(v); } else hs.put(n, android.text.TextUtils.join(", ", e.getValue()));
+          }
+          r.put("status", st); r.put("headers", hs); r.put("cookies", ck); r.put("body", txt);
+          c.disconnect();
+        } catch (Exception e) { try { r = new JSONObject(); r.put("erreur", e.getClass().getSimpleName() + (e.getMessage() != null ? " : " + e.getMessage() : "")); } catch (Exception x) {} }
+        js("window.__edRep&&__edRep('" + rid + "'," + r.toString() + ")");
+      }).start();
+    }
     @JavascriptInterface public void icone(String hex) {
       try {
         int c = Integer.parseInt(hex.replace("#", ""), 16), meilleur = 0; long dmin = Long.MAX_VALUE;
