@@ -1827,7 +1827,9 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .dv-ctrl-txt b{display:flex;align-items:center;gap:7px}.dv-ctrl-txt b::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
 .dv-ctrl-txt span{font-size:.84rem;color:var(--doux);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .dv-page-tete{position:relative;overflow:hidden}
-.dv-page-tete > *:not(.dv-formes){position:relative;z-index:1}
+.dv-page-tete > *:not(.dv-canvas){position:relative;z-index:1}
+.dv-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.dv-page-tete{min-height:190px}
 .dv-formes{position:absolute;inset:0;pointer-events:none;color:var(--c)}
 .dv-forme{position:absolute;opacity:.2;animation:dv-flotte var(--d) ease-in-out infinite alternate}
 .dv-forme svg{width:100%;height:100%;display:block}
@@ -4737,7 +4739,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.43";
+const VERSION_SITE = "1.44";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5377,14 +5379,56 @@ const FLECHE_DV_G = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 // premier jour de cours après aujourd'hui (le vendredi → lundi), sans les congés
 function prochainJourCours(){ let d = auj(); for (let i = 0; i < 20; i++){ d = decalerJour(d, 1); const w = new Date(d + "T12:00:00").getDay(); if (w !== 0 && w !== 6 && !congeDu(d)) return d; } return decalerJour(auj(), 1); }
 const ICO_CTRL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4.5M12 17.5v.01"/></svg>`;
-// formes qui flottent derrière l'en-tête d'un devoir (« énervées » pour un contrôle)
-function formesFond(enerve, graine = ""){
-  let g = [...String(graine)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 233280, 7) || 7; for (let k = 0; k < 3; k++) g = (g * 9301 + 49297) % 233280; const alea = () => { g = (g * 9301 + 49297) % 233280; return g / 233280; };
-  const FORMES = ['<circle cx="12" cy="12" r="9"/>', '<rect x="3" y="3" width="18" height="18" rx="3"/>', '<path d="M12 3l9.5 17h-19z"/>', '<circle cx="12" cy="12" r="4" fill="currentColor"/>', '<path d="M3 12h18M12 3v18"/>'];
-  return `<div class="dv-formes ${enerve ? "enerve" : ""}" aria-hidden="true">${Array.from({length: enerve ? 11 : 8}, (_, i) => {
-    const nb = enerve ? 11 : 8, t = Math.round(26 + alea() * 56), x = Math.round((i + alea() * .8) / nb * 100 - 4), y = Math.round(alea() * 85);
-    return `<span class="dv-forme" style="left:${x}%;top:${y}%;width:${t}px;height:${t}px;--dx:${Math.round(alea() * 60 - 30)}px;--dy:${Math.round(alea() * 40 - 20)}px;--r:${Math.round(alea() * 120 - 60)}deg;--d:${(enerve ? 2.2 : 7) + alea() * (enerve ? 2 : 6)}s;animation-delay:-${(alea() * 6).toFixed(1)}s">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="animation-delay:-${(alea()).toFixed(2)}s">${FORMES[i % FORMES.length]}</svg></span>`; }).join("")}</div>`;
+// fond animé de l'en-tête d'un devoir : formes reliées entre elles (comme le fond du site), « énervées » pour un contrôle
+function animerEntete(cv, couleur, enerve){
+  const ctx = cv.getContext("2d"); if (!ctx) return;
+  const hex = /^#[0-9a-f]{6}$/i.test(couleur) ? couleur : "#9b978e";
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), l0 = (mx + mn) / 2;
+  let h0 = 0, s0 = 0; if (mx !== mn){ const d = mx - mn; s0 = l0 > .5 ? d / (2 - mx - mn) : d / (mx + mn); h0 = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h0 *= 60; }
+  const hsl = (dh, ds, dl, a) => `hsla(${(h0 + dh + 360) % 360},${Math.max(20, Math.min(100, s0 * 100 + ds))}%,${Math.max(35, Math.min(85, l0 * 100 + dl))}%,${a})`;
+  const PAL = enerve ? [[0, 10, 5], [-12, 5, 15], [12, 0, -5], [-25, 10, 20], [8, -10, 28]] : [[0, 0, 12], [28, 0, 8], [-28, 0, 10], [55, -10, 18], [-50, 0, 22], [0, -15, 30]];
+  const TYPES = ["rond", "carre", "triangle", "croix", "point", "losange"];
+  let W = 0, H = 0, dpr = 1, items = [], t = 0;
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches, V = enerve ? 1.9 : .55;
+  const creer = () => {
+    const n = Math.round(Math.max(enerve ? 22 : 16, Math.min(enerve ? 60 : 44, W * H / (enerve ? 4200 : 6000))));
+    items = Array.from({length: n}, () => { const ang = Math.random() * Math.PI * 2, v = V * (.4 + Math.random());
+      return {x: Math.random() * W, y: Math.random() * H, vx: Math.cos(ang) * v, vy: Math.sin(ang) * v, t: 5 + Math.random() * 13, a: Math.random() * 6.28, va: (Math.random() - .5) * (enerve ? .12 : .02),
+        type: TYPES[Math.floor(Math.random() * TYPES.length)], c: PAL[Math.floor(Math.random() * PAL.length)], al: .35 + Math.random() * .35}; });
+  };
+  const taille = () => { const r = cv.getBoundingClientRect(); dpr = Math.min(2, devicePixelRatio || 1);
+    if (Math.round(r.width) === W && Math.round(r.height) === H) return; W = Math.round(r.width); H = Math.round(r.height); cv.width = W * dpr; cv.height = H * dpr; creer(); };
+  const forme = it => {
+    const k = it.t; ctx.save(); ctx.translate(it.x, it.y); ctx.rotate(it.a); ctx.strokeStyle = ctx.fillStyle = hsl(...it.c, it.al); ctx.lineWidth = 1.6; ctx.beginPath();
+    if (it.type === "rond") ctx.arc(0, 0, k, 0, 7);
+    else if (it.type === "carre") ctx.rect(-k, -k, 2 * k, 2 * k);
+    else if (it.type === "triangle"){ ctx.moveTo(0, -k * 1.15); ctx.lineTo(k, k * .7); ctx.lineTo(-k, k * .7); ctx.closePath(); }
+    else if (it.type === "losange"){ ctx.moveTo(0, -k); ctx.lineTo(k * .7, 0); ctx.lineTo(0, k); ctx.lineTo(-k * .7, 0); ctx.closePath(); }
+    else if (it.type === "croix"){ ctx.moveTo(-k, 0); ctx.lineTo(k, 0); ctx.moveTo(0, -k); ctx.lineTo(0, k); }
+    if (it.type === "point"){ ctx.arc(0, 0, Math.max(2.5, k * .35), 0, 7); ctx.fill(); } else ctx.stroke();
+    ctx.restore();
+  };
+  const image = () => {
+    if (!cv.isConnected) return;
+    taille(); t++;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    for (const it of items){
+      if (enerve){ // à-coups, tremblements et brusques changements de direction
+        if (Math.random() < .035){ const ang = Math.random() * 6.28, v = V * (1 + Math.random() * 1.6); it.vx = Math.cos(ang) * v; it.vy = Math.sin(ang) * v; it.va = (Math.random() - .5) * .3; }
+        it.x += it.vx + (Math.random() - .5) * 2.4; it.y += it.vy + (Math.random() - .5) * 2.4;
+      } else { it.x += it.vx + Math.sin((t + it.t * 40) / 90) * .15; it.y += it.vy + Math.cos((t + it.t * 30) / 110) * .15; }
+      it.a += it.va;
+      if (it.x < -20) it.x = W + 20; if (it.x > W + 20) it.x = -20; if (it.y < -20) it.y = H + 20; if (it.y > H + 20) it.y = -20;
+    }
+    const D = enerve ? 120 : 135;
+    for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++){
+      const p = items[i], q = items[j], dx = p.x - q.x, dy = p.y - q.y, d = Math.hypot(dx, dy);
+      if (d < D){ ctx.strokeStyle = hsl(...p.c, (1 - d / D) * (enerve ? .45 : .32)); ctx.lineWidth = enerve ? 1.2 : 1; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+    }
+    items.forEach(forme);
+    if (!reduit) requestAnimationFrame(image);
+  };
+  requestAnimationFrame(image);
 }
 function ligneDevoir(d){
   const m = matiereDevoir(d.matiere), nbDocs = (d.documents || []).length;
@@ -5417,7 +5461,7 @@ function pageDevoir(d, l){
   const duJour = l.filter(x => x.date === d.date), i = duJour.findIndex(x => x.id === d.id), prec = duJour[i - 1], suiv = duJour[i + 1];
   return `<button type="button" class="dv-retour" id="dv-retour">${FLECHE_DV_G}${dvDepuisJour ? esc(dateLongueDv(d.date)) : "Devoirs"}</button>
     <article class="dv-page ${d.interrogation ? "controle" : ""}" style="--c:${esc(couleurCours(m))}">
-      <header class="dv-page-tete">${formesFond(d.interrogation, d.id)}<span class="dv-page-mat">${esc(m)}</span>
+      <header class="dv-page-tete"><canvas class="dv-canvas" aria-hidden="true"></canvas><span class="dv-page-mat">${esc(m)}</span>
         <h2>${j.n === 0 ? "Pour aujourd'hui" : j.n === 1 ? "Pour demain" : j.n < 0 ? "C'était pour le" : "Pour le"} ${j.n === 0 || j.n === 1 ? nomJourDv(d.date) + " " + courtDate(d.date) : esc(dateLongueDv(d.date).toLowerCase())}</h2>
         ${d.interrogation ? `<div class="dv-banniere-ctrl">${ICO_CTRL}<span><b>Contrôle</b><small>${j.n === 0 ? "aujourd'hui" : j.n === 1 ? "demain — révise ce soir" : j.n > 1 ? `dans ${j.n} jours` : "passé"}</small></span></div>` : ""}<div class="rangee" style="gap:6px">${d.manuel ? `<span class="dv-badge grand">Ajouté à la main</span>` : ""}${j.n > 1 || j.n < 0 ? `<span class="dv-badge grand">${relJour(j.n)}</span>` : ""}</div></header>
       <div class="dv-page-corps">
@@ -5440,6 +5484,7 @@ VUES.devoirs = function vueDevoirs(){
   const dv = dvDevoirVu && l.find(x => x.id === dvDevoirVu);
   if (dv){
     zone().innerHTML = pageDevoir(dv, l);
+    const cv = zone().querySelector(".dv-canvas"); if (cv) animerEntete(cv, dv.interrogation ? "#e5484d" : couleurCours(matiereDevoir(dv.matiere)), !!dv.interrogation);
     $("#dv-retour").onclick = () => { dvDevoirVu = null; if (!dvDepuisJour) dvJourVu = null; vueDevoirs(); };
     zone().querySelectorAll("[data-aller]").forEach(b => b.onclick = () => ouvrir(b.dataset.aller));
     if (edit && dv.manuel){ $("#dv-modif").onclick = () => fenetreDevoir(devoirsMan.find(x => x.id === dv.id));
