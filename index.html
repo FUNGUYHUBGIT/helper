@@ -1775,6 +1775,24 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .dv-doc{font-size:.9rem}
 .dv-pied{font-size:.82rem;color:var(--doux)}
 @media (max-width:820px){.dv-stat{padding:10px}.dv-stat b{font-size:1.35rem}.dv-stat span{font-size:.72rem}}
+.dv-section{display:flex;flex-direction:column;gap:12px;max-width:1000px}
+.dv-titre-sec{margin:6px 0 0;font-family:var(--f-mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--doux);font-weight:500}
+.dv-grille-jours{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.dv-carte-jour{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,transform .15s,background .15s}
+.dv-carte-jour:hover{border-color:color-mix(in srgb,var(--accent) 55%,var(--ligne));background:var(--surface-2)}.dv-carte-jour:active{transform:scale(.99)}
+.dv-carte-jour.proche{border-color:color-mix(in srgb,var(--accent) 60%,var(--ligne))}
+.dv-carte-jour.passe{opacity:.62}
+.dv-cj-tete{display:flex;align-items:center;gap:12px}
+.dv-carte-jour .dv-nb{margin-left:auto;display:grid;place-items:center;min-width:28px;height:28px;padding:0 8px;border-radius:999px;background:var(--surface-2);font-family:var(--f-mono);font-size:.8rem;color:var(--texte)}
+.dv-carte-jour.proche .dv-date{background:var(--accent);border-color:var(--accent);color:#141416}.dv-carte-jour.proche .dv-date small{color:#141416}
+.dv-carte-jour.proche .dv-jt{color:var(--accent)}
+.dv-pastilles{display:flex;flex-wrap:wrap;gap:6px}
+.dv-pastille{--c:#9b978e;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:.8rem;font-weight:600;background:color-mix(in srgb,var(--c) 16%,transparent);border:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.dv-pastille i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.dv-pastille.controle{box-shadow:inset 0 0 0 1px #e5484d}
+.dv-retour{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:6px 12px 6px 8px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:inherit;font-size:.88rem;cursor:pointer}
+.dv-retour svg{width:18px;height:18px}.dv-retour:hover{border-color:var(--accent)}
+@media (max-width:820px){.dv-grille-jours{grid-template-columns:minmax(0,1fr)}}
 .sync-ed{gap:10px}.sync-ed.erreur{border-color:color-mix(in srgb,#e5484d 55%,var(--ligne))}.sync-ed.ok{border-color:color-mix(in srgb,#5cc98a 45%,var(--ligne))}
 .qcm-ed{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 button.lien{background:none;border:0;padding:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
@@ -4653,6 +4671,7 @@ function ambianceDictee(on){
   else if (document.documentElement.style.getPropertyValue("--accent") === "#b06bff" || Formes){ appliquerPrefs(profil && profil.prefs ? profil.prefs : PREFS_DEFAUT); Formes.ambiance(null); }
 }
 function changerVue(v){
+  if (v !== vueActive) try { dvJourVu = null; } catch {}
   marquerNav(v); rafraichir = null; fermerMenuMobile();
   { const b = document.querySelector(`#nav [data-vue="${v}"]`), t = document.getElementById("bm-titre"); if (t) t.textContent = b ? b.textContent.replace(/en travaux/i, "").trim() : ""; } fermerFenetre(); if (typeof arreterLecture === "function") arreterLecture(); if (document.body.classList.contains("ambiance-dictee")) ambianceDictee(false);
   vueActive = v;
@@ -4669,7 +4688,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.40";
+const VERSION_SITE = "1.41";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5287,7 +5306,7 @@ const texteDevoir = t => esc(t).replace(/(https?:\/\/[^\s<()]+)/g, '<a href="$1"
 function listeDevoirs(){
   const a = auj();
   return [...devoirsED.devoirs.map(d => ({...d, auto: true})), ...devoirsMan.map(d => ({...d, manuel: true}))]
-    .filter(d => d && /^\d{4}-\d{2}-\d{2}$/.test(d.date || "") && d.date >= a)
+    .filter(d => d && /^\d{4}-\d{2}-\d{2}$/.test(d.date || ""))
     .sort((x, y) => x.date.localeCompare(y.date) || matiereDevoir(x.matiere).localeCompare(matiereDevoir(y.matiere)));
 }
 function libJourDevoir(d){
@@ -5331,43 +5350,65 @@ function fenetreDetailDevoir(d){
     deuxClics($("#dv-suppr"), () => { fermerFenetre(); return ecrireDevoirsMan(devoirsMan.filter(x => x.id !== d.id), "Devoir supprimé."); }); }
   $("#fen-annuler").focus();
 }
+let dvJourVu = null;   // jour ouvert dans l'onglet Devoirs (null = liste des jours)
+const NOMS_JOURS = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"], MOIS_COURTS = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+const relJour = n => n === 0 ? "Aujourd'hui" : n === 1 ? "Demain" : n === -1 ? "Hier" : n > 1 ? `Dans ${n} jours` : `Il y a ${-n} jours`;
+function carteJour(g){
+  const j = libJourDevoir(g.date), mats = [];
+  g.l.forEach(d => { const m = matiereDevoir(d.matiere), x = mats.find(y => y.m === m); if (x){ x.n++; x.c = x.c || d.interrogation; } else mats.push({m, n: 1, c: !!d.interrogation}); });
+  return `<button type="button" class="dv-carte-jour ${j.n < 0 ? "passe" : ""} ${j.n === 0 || j.n === 1 ? "proche" : ""}" data-jour="${g.date}" aria-label="${esc(NOMS_JOURS[new Date(g.date + "T12:00:00").getDay()])} ${courtDate(g.date)} : ${g.l.length} devoir(s)">
+    <span class="dv-cj-tete"><span class="dv-date"><b>${+g.date.slice(8, 10)}</b><small>${MOIS_COURTS[+g.date.slice(5, 7) - 1]}</small></span>
+      <span class="dv-jt">${NOMS_JOURS[new Date(g.date + "T12:00:00").getDay()].replace(/^./, c => c.toUpperCase())}<small>${relJour(j.n)}</small></span>
+      <span class="dv-nb">${g.l.length}</span></span>
+    <span class="dv-pastilles">${mats.map(x => `<span class="dv-pastille ${x.c ? "controle" : ""}" style="--c:${esc(couleurCours(x.m))}"><i></i>${esc(x.m)}${x.n > 1 ? ` ×${x.n}` : ""}${x.c ? " · contrôle" : ""}</span>`).join("")}</span>
+  </button>`;
+}
 VUES.devoirs = function vueDevoirs(){
   rafraichir = vueDevoirs;
-  if (!est3C()){ zone().innerHTML = entete("Devoirs", "À faire") + verrou("Le cahier de texte"); return; }
-  const edit = peutEditerDevoirs(), l = listeDevoirs(), groupes = [];
-  l.forEach(d => { const g = groupes[groupes.length - 1]; if (g && g.date === d.date) g.l.push(d); else groupes.push({date: d.date, l: [d]}); });
-  const demain = l.filter(d => libJourDevoir(d.date).n <= 1).length, semaine = l.filter(d => libJourDevoir(d.date).n <= 7).length, ctrl = l.filter(d => d.interrogation);
-  const prochainC = ctrl[0];
-  zone().innerHTML = entete("Devoirs", "À faire", edit ? `<button type="button" class="btn" id="ajout-devoir">Ajouter un devoir</button>` : "")
+  if (!est3C()){ zone().innerHTML = entete("Devoirs", "Cahier de texte") + verrou("Le cahier de texte"); return; }
+  const edit = peutEditerDevoirs(), l = listeDevoirs(), a = auj(), groupes = [];
+  l.forEach(d => { const g = groupes.find(x => x.date === d.date); if (g) g.l.push(d); else groupes.push({date: d.date, l: [d]}); });
+  const futurs = l.filter(d => d.date >= a), ctrl = futurs.filter(d => d.interrogation);
+  // 2e niveau : les devoirs d'un jour
+  if (dvJourVu){
+    const g = groupes.find(x => x.date === dvJourVu) || {date: dvJourVu, l: []}, j = libJourDevoir(g.date), dt = new Date(g.date + "T12:00:00");
+    zone().innerHTML = `<button type="button" class="dv-retour" id="dv-retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Tous les jours</button>`
+      + entete(relJour(j.n), `${NOMS_JOURS[dt.getDay()].replace(/^./, c => c.toUpperCase())} ${dt.getDate()} ${MOIS_LONGS[dt.getMonth()]}`, edit ? `<button type="button" class="btn" id="ajout-devoir">Ajouter un devoir</button>` : "")
+      + (g.l.length ? `<div class="dv-liste">${g.l.map(ligneDevoir).join("")}</div>` : `<div class="vide">Aucun devoir ce jour-là.</div>`);
+    $("#dv-retour").onclick = () => { dvJourVu = null; vueDevoirs(); };
+    const aj = $("#ajout-devoir"); if (aj) aj.onclick = () => fenetreDevoir(null, g.date);
+    zone().querySelectorAll("[data-dv]").forEach(b => b.onclick = () => { const d = l.find(x => x.id === b.dataset.dv); if (d) fenetreDetailDevoir(d); });
+    return;
+  }
+  // 1er niveau : les jours, avec les matières en pastilles
+  const avenir = groupes.filter(g => g.date >= a), passes = groupes.filter(g => g.date < a).reverse();
+  zone().innerHTML = entete("Devoirs", "Cahier de texte", edit ? `<button type="button" class="btn" id="ajout-devoir">Ajouter un devoir</button>` : "")
     + `<div class="dv-resume">
-        <div class="dv-stat"><b>${demain}</b><span>pour demain</span></div>
-        <div class="dv-stat"><b>${semaine}</b><span>sur 7 jours</span></div>
-        <div class="dv-stat ${ctrl.length ? "alerte" : ""}"><b>${ctrl.length}</b><span>contrôle${ctrl.length > 1 ? "s" : ""}${prochainC ? ` · ${esc(matiereDevoir(prochainC.matiere))} ${libJourDevoir(prochainC.date).titre.toLowerCase()}` : ""}</span></div>
+        <div class="dv-stat"><b>${futurs.filter(d => libJourDevoir(d.date).n <= 1).length}</b><span>pour demain</span></div>
+        <div class="dv-stat"><b>${futurs.filter(d => libJourDevoir(d.date).n <= 7).length}</b><span>sur 7 jours</span></div>
+        <div class="dv-stat ${ctrl.length ? "alerte" : ""}"><b>${ctrl.length}</b><span>contrôle${ctrl.length > 1 ? "s" : ""}${ctrl[0] ? ` · ${esc(matiereDevoir(ctrl[0].matiere))} ${relJour(libJourDevoir(ctrl[0].date).n).toLowerCase()}` : ""}</span></div>
       </div>
       <p class="doux dv-source">${devoirsED.majLe ? `Cahier de texte EcoleDirecte · mis à jour le ${quandMaj(devoirsED.majLe)}` : "Les devoirs d'EcoleDirecte ne sont pas encore récupérés."}</p>`
     + (edit ? `<div id="sync-devoirs"></div>` : "")
-    + (groupes.length ? `<div class="dv-jours">${groupes.map(g => { const j = libJourDevoir(g.date);
-        return `<section class="dv-jour ${j.n <= 1 ? "proche" : ""}"><h3><span class="dv-date"><b>${+g.date.slice(8, 10)}</b><small>${["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."][+g.date.slice(5, 7) - 1]}</small></span>
-            <span class="dv-jt">${j.titre}<small>${j.n > 1 ? "dans " + j.n + " jours" : j.sous}</small></span><span class="dv-nb">${g.l.length} devoir${g.l.length > 1 ? "s" : ""}</span></h3>
-          <div class="dv-liste">${g.l.map(ligneDevoir).join("")}</div></section>`; }).join("")}</div>`
-      : `<div class="vide">Aucun devoir à faire pour le moment.</div>`);
+    + `<section class="dv-section"><h3 class="dv-titre-sec">À venir</h3>${avenir.length ? `<div class="dv-grille-jours">${avenir.map(carteJour).join("")}</div>` : `<div class="vide">Aucun devoir à faire pour le moment.</div>`}</section>`
+    + (passes.length ? `<section class="dv-section"><h3 class="dv-titre-sec">Déjà passés</h3><div class="dv-grille-jours">${passes.map(carteJour).join("")}</div></section>` : "");
   const aj = $("#ajout-devoir"); if (aj) aj.onclick = () => fenetreDevoir(null);
-  zone().querySelectorAll("[data-dv]").forEach(b => b.onclick = () => { const d = l.find(x => x.id === b.dataset.dv); if (d) fenetreDetailDevoir(d); });
+  zone().querySelectorAll("[data-jour]").forEach(b => b.onclick = () => { dvJourVu = b.dataset.jour; vueDevoirs(); window.scrollTo({top: 0}); });
   if (edit) panneauSync();
 };
 async function ecrireDevoirsMan(liste, ok){
   try { await db.doc("edt/devoirs-manuels").set({devoirs: liste}); devoirsMan = liste; toast(ok); if (vueActive === "devoirs") VUES.devoirs(); }
   catch (err){ toast(erreurEcriture(err)); }
 }
-function fenetreDevoir(d){
+function fenetreDevoir(d, dateDefaut){
   fermerFenetre();
-  const v = d || {date: decalerJour(auj(), 1), matiere: COURS[0][0], contenu: "", interrogation: false};
+  const v = d || {date: dateDefaut || decalerJour(auj(), 1), matiere: COURS[0][0], contenu: "", interrogation: false};
   const connu = COURS.some(([n]) => n === v.matiere);
   const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
   el.innerHTML = `<form class="fenetre" role="dialog" aria-modal="true" aria-labelledby="titre-fen" novalidate>
     <h3 id="titre-fen">${d ? "Modifier le devoir" : "Ajouter un devoir"}</h3>
     <div class="grille-form">
-      <div class="champ"><label for="dv-date">Pour le</label><input id="dv-date" type="date" min="${auj()}" value="${esc(v.date)}"></div>
+      <div class="champ"><label for="dv-date">Pour le</label><input id="dv-date" type="date" value="${esc(v.date)}"></div>
       <div class="champ"><label for="dv-mat">Matière</label><select id="dv-mat">${COURS.filter(([n]) => !/devoir surv|vie de classe|étude/i.test(n)).map(([n]) => `<option ${n === v.matiere ? "selected" : ""}>${n}</option>`).join("")}<option value="__autre" ${connu ? "" : "selected"}>Autre…</option></select></div>
       <div class="champ" id="bloc-dv-autre" ${connu ? "hidden" : ""}><label for="dv-autre">Nom de la matière</label><input id="dv-autre" type="text" maxlength="40" value="${connu ? "" : esc(v.matiere)}"></div>
     </div>
@@ -5457,7 +5498,11 @@ async function syncED(ident, mdp, demanderQcm, etape){
   etape("Lecture du cahier de texte…");
   const liste = await appel(`/Eleves/${eleve}/cahierdetexte.awp?verbe=get`, {});
   if (liste.code !== 200) throw new Error(`Lecture du cahier de texte impossible (code ${liste.code}).`);
-  const dates = Object.keys(liste.data || {}).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort().slice(0, 30), devoirs = [];
+  // jours à venir (liste d'EcoleDirecte) + jours passés (les 4 dernières semaines la première fois, puis la dernière semaine)
+  const passes = [], dejaPasse = devoirsED.devoirs.some(d => d.date < auj());
+  for (let k = 1; k <= (dejaPasse ? 7 : 28); k++){ const d = decalerJour(auj(), -k), wd = new Date(d + "T12:00:00").getDay(); if (wd !== 0 && wd !== 6) passes.push(d); }
+  const avenir = Object.keys(liste.data || {}).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort().slice(0, 30);
+  const dates = [...new Set([...passes.reverse(), auj(), ...avenir])], devoirs = [];
   for (const [i, date] of dates.entries()){
     etape(`Lecture des devoirs… ${i + 1}/${dates.length}`);
     const j = await appel(`/Eleves/${eleve}/cahierdetexte/${date}.awp?verbe=get`, {});
@@ -5466,7 +5511,7 @@ async function syncED(ident, mdp, demanderQcm, etape){
       devoirs.push({id: "ed-" + (af.idDevoir || m.id), date, matiere: m.matiere || "", prof: String(m.nomProf || "").trim(), groupe: m.entityType === "G" ? m.entityLibelle || "" : "",
         interrogation: !!m.interrogation, donneLe: af.donneLe || "", contenu: htmlEnTexte(b64Txt(af.contenu)).slice(0, 4000), documents: (af.documents || []).map(d => d.libelle).filter(Boolean).slice(0, 10)}); }
   }
-  return devoirs;
+  return {devoirs, dates};
 }
 function demanderQcmFenetre(question, propositions){
   return new Promise(fin => {
@@ -5487,9 +5532,12 @@ async function lancerSyncED(auto){
   if (!id || !mdp) return;
   syncEnCours = true; syncEtat = {texte: "Connexion à EcoleDirecte…"}; majSync();
   try {
-    const devoirs = await syncED(id, mdp, auto ? async () => null : demanderQcmFenetre, t => { syncEtat = {texte: t}; majSync(); });
+    const {devoirs: nouveaux, dates} = await syncED(id, mdp, auto ? async () => null : demanderQcmFenetre, t => { syncEtat = {texte: t}; majSync(); });
+    // on garde les jours déjà récupérés qui n'ont pas été relus (jusqu'à 4 mois en arrière)
+    const vus = new Set(dates), limite = decalerJour(auj(), -120);
+    const devoirs = [...devoirsED.devoirs.filter(d => !vus.has(d.date) && d.date >= limite), ...nouveaux].sort((a, b) => a.date.localeCompare(b.date)).slice(-600);
     await db.doc("edt/devoirs").set({source: "ecoledirecte", majLe: new Date().toISOString(), par: moi || "gerant", devoirs});
-    syncEtat = {ok: true, texte: `${devoirs.length} devoir${devoirs.length > 1 ? "s" : ""} récupéré${devoirs.length > 1 ? "s" : ""}.`};
+    syncEtat = {ok: true, texte: `${nouveaux.length} devoir${nouveaux.length > 1 ? "s" : ""} lu${nouveaux.length > 1 ? "s" : ""} sur ${dates.length} jours.`};
     lsSet("helper.ed.dernier", new Date().toISOString());
   } catch (err){
     syncEtat = {ok: false, texte: auto && /annulée/.test(err.message) ? "EcoleDirecte pose une question de sécurité : appuie sur « Synchroniser » pour y répondre." : err.message};
