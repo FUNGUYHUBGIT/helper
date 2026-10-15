@@ -9,6 +9,7 @@ const ED = "https://api.ecoledirecte.com/v3";
 const VERSIONS = [process.env.ED_VERSION, "4.97.2", "4.98.0", "4.75.0"].filter(Boolean);
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
 const env = k => { const v = (process.env[k] || "").trim(); if (!v) throw new Error(`Secret manquant : ${k}`); return v; };
+const detail = e => { const c = e && e.cause; return c ? ` (${[c.code, c.message].filter(Boolean).join(" : ")})` : ""; };
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const b64 = s => Buffer.from(String(s || ""), "base64").toString("utf8");
 const versB64 = s => Buffer.from(String(s), "utf8").toString("base64");
@@ -115,8 +116,9 @@ async function principal(){
     await sauverEtat(true, `${devoirs.length} devoir(s) récupéré(s)`, {nb: devoirs.length});
     console.log(`OK : ${devoirs.length} devoir(s) sur ${dates.length} jour(s).`);
   } catch (e){
-    await sauverEtat(false, e.message).catch(() => {});
-    console.log(`::${e.qcm ? "warning" : "error"}::${String(e.message).replace(/\r?\n/g, " ")}`);
+    const msg = /fetch failed/i.test(e.message) ? "EcoleDirecte ne répond pas au robot" + detail(e) : e.message;
+    await sauverEtat(false, msg).catch(() => {});
+    console.log(`::${e.qcm ? "warning" : "error"}::${String(msg).replace(/\r?\n/g, " ")}`);
     process.exitCode = e.qcm ? 0 : 1;
   }
 }

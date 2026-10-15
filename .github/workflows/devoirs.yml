@@ -25,6 +25,8 @@ jobs:
       - name: Installer
         working-directory: robot
         run: npm install --no-audit --no-fund --silent
+      - name: Tester l'accès à EcoleDirecte
+        run: curl -sS -m 20 -o /dev/null -w "::notice::EcoleDirecte répond HTTP %{http_code} en %{time_total}s\n" -A "Mozilla/5.0" "https://api.ecoledirecte.com/v3/login.awp?gtk=1&v=4.97.2" || echo "::warning::EcoleDirecte injoignable depuis GitHub"
       - name: Récupérer les devoirs
         working-directory: robot
         env:
