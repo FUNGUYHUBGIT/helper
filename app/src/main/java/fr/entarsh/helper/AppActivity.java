@@ -50,6 +50,7 @@ public class AppActivity extends Activity {
   @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
   @Override protected void onCreate(Bundle etat) {
     super.onCreate(etat);
+    if (!SyncDevoirs.prefs(this).getString("edId", "").isEmpty()) SyncDevoirs.planifier(this, false);
     web = new WebView(this);
     web.setBackgroundColor(Color.parseColor("#0E0E0F"));
     setContentView(web);
@@ -60,7 +61,7 @@ public class AppActivity extends Activity {
     s.setDatabaseEnabled(true);
     s.setMediaPlaybackRequiresUserGesture(false);
     s.setTextZoom(100);
-    s.setUserAgentString(s.getUserAgentString() + " HelperApp/1.3");
+    s.setUserAgentString(s.getUserAgentString() + " HelperApp/1.4");
 
     // Aucune inversion / assombrissement automatique : on garde les vraies couleurs de Helper
     if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
@@ -139,6 +140,20 @@ public class AppActivity extends Activity {
     while ((n = in.read(b)) > 0) o.write(b, 0, n); in.close(); return o.toString("UTF-8");
   }
   class PontAppli {
+    // Synchronisation automatique des devoirs en arrière-plan
+    @JavascriptInterface public void configSyncFond(String json) {
+      try { JSONObject o = new JSONObject(json); android.content.SharedPreferences.Editor e = SyncDevoirs.prefs(AppActivity.this).edit();
+        for (String k : new String[]{"edId", "edMdp", "faCn", "faCv", "email", "mdp", "ua"}) e.putString(k, o.optString(k, ""));
+        e.apply(); SyncDevoirs.planifier(AppActivity.this, true); SyncDevoirs.maintenant(AppActivity.this); } catch (Exception x) {}
+    }
+    @JavascriptInterface public void majFaSyncFond(String cn, String cv) { android.content.SharedPreferences p = SyncDevoirs.prefs(AppActivity.this); if (!p.getString("edId", "").isEmpty()) p.edit().putString("faCn", cn).putString("faCv", cv).apply(); }
+    @JavascriptInterface public void lancerSyncFond() { SyncDevoirs.maintenant(AppActivity.this); }
+    @JavascriptInterface public void arreterSyncFond() { SyncDevoirs.arreter(AppActivity.this); }
+    @JavascriptInterface public String etatSyncFond() {
+      android.content.SharedPreferences p = SyncDevoirs.prefs(AppActivity.this); JSONObject o = new JSONObject();
+      try { o.put("actif", !p.getString("edId", "").isEmpty()); o.put("compte", p.getString("edId", "")); o.put("dernier", p.getString("dernier", "")); o.put("ok", p.getBoolean("ok", false)); o.put("message", p.getString("message", "")); } catch (Exception x) {}
+      return o.toString();
+    }
     // Requête vers EcoleDirecte faite par le téléphone lui-même (même adresse IP que l'appli EcoleDirecte) ; seulement api.ecoledirecte.com
     @JavascriptInterface public void requeteED(String id, String methode, String url, String entetes, String corps) {
       final String rid = id == null ? "" : id.replaceAll("[^A-Za-z0-9_-]", "");
