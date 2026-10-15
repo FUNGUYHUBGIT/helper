@@ -53,14 +53,13 @@ async function recupererGtk(){
 }
 async function login(fa){
   await recupererGtk(); token = ""; jeton2fa = "";
-  return appel("/login.awp", {identifiant: env("ED_IDENTIFIANT"), motdepasse: env("ED_MDP"), isReLogin: false, uuid: "", fa: fa ? [fa] : []});
+  return appel("/login.awp", {identifiant: encodeURIComponent(env("ED_IDENTIFIANT")), motdepasse: encodeURIComponent(env("ED_MDP")), isReLogin: false, uuid: "", fa: fa ? [fa] : []});
 }
 // Connexion, avec la double authentification (QCM) si EcoleDirecte la demande
 async function connecterED(etat){
   let r;
   for (const v of VERSIONS){ version = v; r = await login(etat.fa); if (r.code !== 517) break; }
-  if (r.code === 505){ noter(`Réponse EcoleDirecte (mode ordinateur, v${version}) : ${r.message || "?"}`);
-    UA = UA_MOBILE; version = "7.12.1"; await pause(1500); r = await login(etat.fa); noter(`Réponse EcoleDirecte (mode application) : code ${r.code} ${r.message || ""}`); }
+  if (r.code === 505) noter(`Réponse EcoleDirecte : ${r.message || "?"}`);
   if (r.code === 200) return r;
   if (r.code === 505) throw new Error("Identifiant ou mot de passe EcoleDirecte incorrect (secrets ED_IDENTIFIANT / ED_MDP).");
   if (r.code !== 250) throw new Error(`Connexion EcoleDirecte refusée (code ${r.code}).`);
