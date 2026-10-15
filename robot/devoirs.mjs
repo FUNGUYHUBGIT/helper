@@ -7,7 +7,10 @@ const SB_URL = "https://hltchrwrefrrfhtzimkn.supabase.co";
 const SB_CLE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsdGNocndyZWZycmZodHppbWtuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMTUzMjMsImV4cCI6MjEwNjc5MTMyM30.aXJkkgIz89wsDw_7HrxesbvopPrkFleVfMVLB7X9GkM";
 const ED = "https://api.ecoledirecte.com/v3";
 const VERSIONS = [process.env.ED_VERSION, "4.97.2", "4.98.0", "4.75.0"].filter(Boolean);
-const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
+const UA_PC = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
+const UA_MOBILE = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 EDMOBILE v7.12.1";
+let UA = UA_PC;
+const noter = t => console.log("::notice::" + t);
 const env = k => { const v = (process.env[k] || "").trim(); if (!v) throw new Error(`Secret manquant : ${k}`); return v; };
 const detail = e => { const c = e && e.cause; return c ? ` (${[c.code, c.message].filter(Boolean).join(" : ")})` : ""; };
 const pause = ms => new Promise(r => setTimeout(r, ms));
@@ -44,6 +47,7 @@ async function recupererGtk(){
   const liste = typeof res.headers.getSetCookie === "function" ? res.headers.getSetCookie() : [res.headers.get("set-cookie") || ""];
   const paires = liste.flatMap(c => String(c).split(/,(?=\s*[^;,=\s]+=)/)).map(c => c.split(";")[0].trim()).filter(c => c.includes("="));
   cookies = paires.join("; ");
+  noter(`Jeton GTK : ${paires.length} cookie(s) reçu(s) [${paires.map(p => p.split("=")[0]).join(", ")}]`);
   const g = paires.find(p => p.startsWith("GTK=")); gtk = g ? g.slice(4) : "";
   if (!gtk) throw new Error("EcoleDirecte n'a pas donné de jeton de connexion (GTK).");
 }
@@ -55,6 +59,8 @@ async function login(fa){
 async function connecterED(etat){
   let r;
   for (const v of VERSIONS){ version = v; r = await login(etat.fa); if (r.code !== 517) break; }
+  if (r.code === 505){ noter(`Réponse EcoleDirecte (mode ordinateur, v${version}) : ${r.message || "?"}`);
+    UA = UA_MOBILE; version = "7.12.1"; await pause(1500); r = await login(etat.fa); noter(`Réponse EcoleDirecte (mode application) : code ${r.code} ${r.message || ""}`); }
   if (r.code === 200) return r;
   if (r.code === 505) throw new Error("Identifiant ou mot de passe EcoleDirecte incorrect (secrets ED_IDENTIFIANT / ED_MDP).");
   if (r.code !== 250) throw new Error(`Connexion EcoleDirecte refusée (code ${r.code}).`);
