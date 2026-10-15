@@ -1851,6 +1851,7 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 @media (prefers-reduced-motion:reduce){.dv-forme,.dv-formes.enerve .dv-forme svg,.dv-tag-ctrl,.dv-banniere-ctrl{animation:none}}
 @media (max-width:820px){.dv-ligne.controle{flex-wrap:wrap;row-gap:8px}.dv-ligne.controle .dv-tag-ctrl{order:-1}.dv-ligne.controle .dv-corps{flex-basis:calc(100% - 40px)}.dv-tag-ctrl{padding:5px 9px;font-size:.7rem}.dv-tag-ctrl svg{width:13px;height:13px}.dv-ctrls-liste{grid-template-columns:minmax(0,1fr)}}
 .dv-plus{align-self:center;display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:inherit;font-weight:600;font-size:.88rem;cursor:pointer}.dv-plus span{font-weight:400;color:var(--doux)}.dv-plus:hover{border-color:var(--accent)}
+.sync-fond{display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid var(--ligne)}
 .sync-ed{gap:10px}.sync-ed.erreur{border-color:color-mix(in srgb,#e5484d 55%,var(--ligne))}.sync-ed.ok{border-color:color-mix(in srgb,#5cc98a 45%,var(--ligne))}
 .qcm-ed{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 button.lien{background:none;border:0;padding:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
@@ -4699,21 +4700,21 @@ function marquerNav(v){ document.querySelectorAll("#nav button").forEach(b => b.
 const VUES = {};
 // ambiance violette de la dictée : formes du fond, menu de côté et couleur d'accent
 // ----- Application Android (téléchargée sur Entarsh Catalogue) -----
-const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.3";
+const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.4";
 const enModeApp = () => { try { if (new URLSearchParams(location.search).get("app")) sessionStorage.setItem("helper.app", "1"); } catch {}
   let s = false; try { s = sessionStorage.getItem("helper.app") === "1"; } catch {}
   return s || matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; };
 if (enModeApp()) document.body.classList.add("mode-app");
 if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 const APPLI_NATIVE = (/HelperApp\/([\d.]+)/.exec(navigator.userAgent) || [])[1] || "";
-const DERNIERE_APPLI = "1.3";
+const DERNIERE_APPLI = "1.4";
 const VIEILLE_APPLI = enModeApp() && /android/i.test(navigator.userAgent) && (!APPLI_NATIVE || parseFloat(APPLI_NATIVE) < parseFloat(DERNIERE_APPLI));   // appli Android à mettre à jour
 { const b = document.getElementById("btn-installer"); if (b){ b.hidden = (enModeApp() && !VIEILLE_APPLI) || !/android/i.test(navigator.userAgent);
-  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : devoirs EcoleDirecte" : "Nouvelle version : couleurs corrigées";
+  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : devoirs automatiques" : "Nouvelle version : couleurs corrigées";
     let vu = false; try { vu = sessionStorage.getItem("helper.majAppli") === "1"; sessionStorage.setItem("helper.majAppli", "1"); } catch {}
     if (!vu) addEventListener("load", () => setTimeout(() => b.click(), 1200)); } } }
 document.getElementById("btn-installer")?.addEventListener("click", () => { fermerMenuMobile();
-  const el = ouvrirVoile(`<h3>${VIEILLE_APPLI ? "Nouvelle version de l'application" : "Application Helper pour Android"}</h3>${VIEILLE_APPLI ? `<p style="margin:0 0 6px">${APPLI_NATIVE ? `Une nouvelle version de l'application est disponible : elle peut <b>récupérer les devoirs d'EcoleDirecte</b> et son icône prend la couleur de tes Préférences.` : `Ton application Helper est l'<b>ancienne version</b> : c'est elle qui affiche les mauvaises couleurs.`} Installe la nouvelle par-dessus.</p>` : ""}<p class="doux" style="margin:0">Helper s'ouvre comme une vraie application, en plein écran, avec son icône sur ton écran d'accueil.</p>
+  const el = ouvrirVoile(`<h3>${VIEILLE_APPLI ? "Nouvelle version de l'application" : "Application Helper pour Android"}</h3>${VIEILLE_APPLI ? `<p style="margin:0 0 6px">${APPLI_NATIVE ? `Une nouvelle version de l'application est disponible : elle peut <b>récupérer les devoirs d'EcoleDirecte toute seule</b>, même fermée, et son icône prend la couleur de tes Préférences.` : `Ton application Helper est l'<b>ancienne version</b> : c'est elle qui affiche les mauvaises couleurs.`} Installe la nouvelle par-dessus.</p>` : ""}<p class="doux" style="margin:0">Helper s'ouvre comme une vraie application, en plein écran, avec son icône sur ton écran d'accueil.</p>
     <ol class="inst-etapes"><li><span>Touche <b>Télécharger</b> ci-dessous (fichier <b>Helper-Entarsh-1.0.apk</b>).</span></li><li><span>Ouvre le fichier téléchargé. Si le téléphone le demande, autorise ton navigateur à <b>installer des applications inconnues</b>.</span></li><li><span>Touche <b>Installer</b>, puis ouvre <b>Helper</b> depuis ton écran d'accueil.</span></li></ol>
     <div class="rangee"><a class="btn" href="${URL_APK}" download>Télécharger</a><a class="btn sec" href="https://entarsh-studio.github.io/" target="_blank" rel="noopener">Voir sur Entarsh Catalogue</a><button class="btn sec" type="button" id="fen-annuler">Fermer</button></div>`, 480);
   el.querySelector("#fen-annuler").onclick = fermerFenetre;
@@ -4746,7 +4747,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.49";
+const VERSION_SITE = "1.50";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5374,7 +5375,7 @@ function libJourDevoir(d){
 }
 const quandMaj = iso => { if (!iso) return ""; const d = new Date(iso); return `${d.toLocaleDateString("fr-FR", {day: "2-digit", month: "2-digit"})} à ${d.toLocaleTimeString("fr-FR", {hour: "2-digit", minute: "2-digit"})}`; };
 // aperçu d'une ligne (le détail s'ouvre au clic)
-const apercuDevoir = t => String(t || "").replace(/\s*\((https?:[^)]+)\)/g, "").split(/\n+/).map(x => x.trim()).filter(Boolean).join(" · ").replace(/\s+/g, " ");
+const apercuDevoir = t => String(t || "").replace(/\s*\((https?:[^)]+)\)/g, "").split(/\n+/).map(x => x.replace(/^[•\-–]\s*/, "").trim()).filter(Boolean).join(" · ").replace(/\s+/g, " ");
 let dvJourVu = null, dvDevoirVu = null, dvDepuisJour = false, dvPassesTout = false;   // navigation : accueil → jour → devoir
 const NOMS_JOURS = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"], MOIS_COURTS = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 const relJour = n => n === 0 ? "Aujourd'hui" : n === 1 ? "Demain" : n === -1 ? "Hier" : n > 1 ? `Dans ${n} jours` : `Il y a ${-n} jours`;
@@ -5658,6 +5659,7 @@ async function syncED(ident, mdp, demanderQcm, etape){
     const a = await appel("/connexion/doubleauth.awp?verbe=post", {choix: txtB64(choix)});
     if (a.code !== 200 || !a.data || !a.data.cn) throw new Error("Mauvaise réponse à la question de sécurité.");
     fa = {cn: a.data.cn, cv: a.data.cv}; lsSet("helper.ed.fa", JSON.stringify(fa));
+    try { if (window.HelperApp.majFaSyncFond) window.HelperApp.majFaSyncFond(fa.cn, fa.cv); } catch {}
     r = await login(fa, enc);
   }
   if (r.code !== 200) throw new Error(`Connexion EcoleDirecte refusée (code ${r.code}${r.message ? " : " + r.message : ""}).`);
@@ -5736,10 +5738,47 @@ function panneauSync(){
         <div class="champ"><label for="ed-mdp">Mot de passe</label><input id="ed-mdp" type="password" autocomplete="current-password"></div>
         <div class="champ" style="align-self:end"><button class="btn" type="submit">Enregistrer et synchroniser</button></div></form>`}
   </div>`;
+  if (enreg) blocSyncFond(z.querySelector(".sync-ed"));
   const go = $("#sync-go"); if (go) go.onclick = () => lancerSyncED(false);
   const ou = $("#sync-oubli"); if (ou) ou.onclick = () => { ["helper.ed.mdp", "helper.ed.fa", "helper.ed.dernier"].forEach(k => lsSet(k, null)); syncEtat = null; panneauSync(); };
   const f = $("#sync-form"); if (f) f.onsubmit = ev => { ev.preventDefault(); const i = $("#ed-id").value.trim(), m = $("#ed-mdp").value;
     if (!i || !m) return; lsSet("helper.ed.id", i); lsSet("helper.ed.mdp", m); lancerSyncED(false); };
+}
+/* Synchronisation automatique en arrière-plan (appli 1.4) : le téléphone récupère les devoirs toutes les 3 h, même appli fermée */
+function blocSyncFond(bloc){
+  if (!bloc || !window.HelperApp || typeof window.HelperApp.etatSyncFond !== "function"){
+    if (bloc) bloc.insertAdjacentHTML("beforeend", `<p class="doux" style="margin:0;font-size:.85rem">Mets l'appli à jour (version 1.4) pour que les devoirs se récupèrent tout seuls, même appli fermée.</p>`);
+    return;
+  }
+  let st = {}; try { st = JSON.parse(window.HelperApp.etatSyncFond()) || {}; } catch {}
+  const d = document.createElement("div"); d.className = "sync-fond";
+  if (st.actif){
+    d.innerHTML = `<div class="rangee" style="justify-content:space-between"><span><b>🔄 Automatique</b> <span class="doux">· toutes les 3 h, même appli fermée</span></span>
+        <span class="rangee"><button type="button" class="mini-btn" id="fond-go">Lancer maintenant</button><button type="button" class="mini-btn danger" id="fond-stop">Désactiver</button></span></div>
+      <p style="margin:0;font-size:.88rem">${st.dernier ? `${st.ok ? "✅" : "⚠️"} ${esc(st.message || "")} <span class="doux">· ${quandMaj(st.dernier)}</span>` : `<span class="doux">Premier passage en cours…</span>`}</p>`;
+  } else {
+    d.innerHTML = `<p style="margin:0"><b>🔄 Synchronisation automatique</b><br><span class="doux" style="font-size:.88rem">Ton téléphone récupère les devoirs <b>tout seul toutes les 3 heures</b>, même appli fermée. Pour enregistrer les devoirs dans Helper sans toi, il a besoin de ton mot de passe Helper (gardé uniquement sur ce téléphone).</span></p>
+      <form id="fond-form" class="rangee" novalidate style="align-items:flex-end"><div class="champ" style="flex:1;min-width:180px;margin:0"><label for="fond-mdp">Mot de passe Helper</label><input id="fond-mdp" type="password" autocomplete="current-password"></div><button class="btn" type="submit">Activer</button></form>
+      <p id="fond-msg" class="statut" role="status" style="margin:0"></p>`;
+  }
+  bloc.appendChild(d);
+  const go = d.querySelector("#fond-go"); if (go) go.onclick = () => { window.HelperApp.lancerSyncFond(); go.disabled = true; go.textContent = "En cours…"; setTimeout(majSync, 25000); };
+  const stop = d.querySelector("#fond-stop"); if (stop) deuxClics(stop, () => { window.HelperApp.arreterSyncFond(); majSync(); });
+  const f = d.querySelector("#fond-form"); if (f) f.onsubmit = async ev => {
+    ev.preventDefault();
+    const msg = d.querySelector("#fond-msg"), dire = (t, ok) => { msg.className = "statut " + (ok ? "ok" : "erreur"); msg.textContent = t; };
+    const mdp = d.querySelector("#fond-mdp").value; if (!mdp) return dire("Entre ton mot de passe Helper.");
+    let email = ""; try { email = (await sb.auth.getUser()).data.user.email; } catch {}
+    if (!email) return dire("Connecte-toi avec ton compte gérant (pseudo et mot de passe) pour activer l'automatique.");
+    dire("Vérification…", true);
+    try {
+      const r = await fetch(SB_URL + "/auth/v1/token?grant_type=password", {method: "POST", headers: {apikey: SB_CLE, "Content-Type": "application/json"}, body: JSON.stringify({email, password: mdp})});
+      if (!r.ok) return dire("Mot de passe Helper incorrect.");
+    } catch { return dire("Pas de connexion internet."); }
+    const fa = lsJson("helper.ed.fa", {}) || {};
+    window.HelperApp.configSyncFond(JSON.stringify({edId: lsGet("helper.ed.id") || "", edMdp: lsGet("helper.ed.mdp") || "", faCn: fa.cn || "", faCv: fa.cv || "", email, mdp, ua: navigator.userAgent.replace(/\s*HelperApp\/[\d.]+/, "")}));
+    toast("Synchronisation automatique activée."); setTimeout(majSync, 300); setTimeout(majSync, 25000);
+  };
 }
 /* ===================== LEÇONS : documents mis en forme ===================== */
 /* Une leçon = {matiere, titre, sousTitre, html, pj:[{id|ref, nom, type, taille}]}.
