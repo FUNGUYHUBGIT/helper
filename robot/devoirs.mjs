@@ -116,8 +116,8 @@ async function principal(){
     console.log(`OK : ${devoirs.length} devoir(s) sur ${dates.length} jour(s).`);
   } catch (e){
     await sauverEtat(false, e.message).catch(() => {});
-    console.error("Échec :", e.message);
+    console.log(`::${e.qcm ? "warning" : "error"}::${String(e.message).replace(/\r?\n/g, " ")}`);
     process.exitCode = e.qcm ? 0 : 1;
   }
 }
-principal().catch(e => { console.error("Échec :", e.message); process.exitCode = 1; });
+principal().catch(e => { console.log(`::error::${String(e.message).replace(/\r?\n/g, " ")}`); process.exitCode = 1; });
