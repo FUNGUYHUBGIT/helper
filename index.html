@@ -1713,6 +1713,30 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .exemple-q p{white-space:pre-wrap}
 .apercu-fig{display:flex}
 @media (max-width:820px){.nav-groupe{display:none}.lateral .moi .qui{display:none}}
+/* Semaine datée : jours de congé, D.S., remplacements, heures événementielles */
+.conge-jour{--c:#4fc1b6;position:absolute;inset:3px;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;text-align:center;border-radius:8px;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--c) 9%,transparent) 0 10px,transparent 10px 20px),color-mix(in srgb,var(--c) 12%,#141416)}
+.conge-jour.ferie{--c:#e5c15d}
+.conge-jour b{color:var(--c);font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+.conge-jour span{font-weight:600;font-size:.92rem;color:var(--texte);overflow-wrap:anywhere}
+.cours.evenement{border-style:dashed;border-left-style:solid}
+.cours .chg.evenement{background:#a585f2;color:#170b2b}
+.cours .chg.remplace{background:#5fa8d3;color:#04131d}
+.cours .d.av{font-style:italic;font-size:.92em}
+.cours.ds-vide{opacity:.45}
+.conge-puce{--c:#4fc1b6;align-self:flex-start;font-size:.74rem;padding:2px 8px;border-radius:999px;border:1px solid color-mix(in srgb,var(--c) 60%,transparent);background:color-mix(in srgb,var(--c) 16%,#141416);color:var(--texte);white-space:nowrap}
+.conge-puce.ferie{--c:#e5c15d}
+.annulation .edt-col{cursor:copy}
+.ag-conge{--c:#4fc1b6;display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px;padding:30px 16px;text-align:center;border-radius:14px;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--c) 9%,transparent) 0 12px,transparent 12px 24px),color-mix(in srgb,var(--c) 12%,#141416)}
+.ag-conge.ferie{--c:#e5c15d}
+.ag-conge b{color:var(--c);font-family:var(--f-mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+.ag-conge span{font-family:var(--f-titre);font-size:1.25rem}
+.ag-conge small{color:var(--doux)}
+.ag-av{font-size:.8rem;color:var(--doux);font-style:italic}
+.ag-chg.evenement{background:color-mix(in srgb,#a585f2 24%,transparent);color:#cdb9ff}
+.ag-chg.remplace{background:color-mix(in srgb,#5fa8d3 24%,transparent);color:#9fd2f2}
+.ag-cours.evenement{border-style:dashed;border-left-style:solid}
+.ag-cours.ds-vide{opacity:.5}
+.edt-jours-tel button.conge:not([aria-pressed=true]) b{color:#4fc1b6;opacity:.8}.edt-jours-tel button.conge.ferie:not([aria-pressed=true]) b{color:#e5c15d}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -4602,7 +4626,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.36";
+const VERSION_SITE = "1.37";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4796,13 +4820,14 @@ const lundiDeLaSemaine = () => { const d = new Date(); d.setDate(d.getDate() - (
 const dateDuJour = j => decalerJour(lundiDeLaSemaine(), j);
 const pariteDe = date => numSemaine(new Date(date + "T12:00:00")) % 2 === 0 ? "paire" : "impaire";
 const jourDe = date => (new Date(date + "T12:00:00").getDay() + 6) % 7;
-const TYPES_CHG = [["annule","Cours annulé"],["absent","Professeur absent"],["salle","Changement de salle"],["deplace","Cours déplacé"],["autre","Autre"]];
+const TYPES_CHG = [["annule","Cours annulé"],["absent","Professeur absent"],["salle","Changement de salle"],["deplace","Cours déplacé"],["autre","Autre"],["remplace","Remplacement"],["evenement","Événement"]];
 const libChg = t => (TYPES_CHG.find(x => x[0] === t) || [, "Changement"])[1];
 const aVenir = (liste, champ = "date") => liste.filter(x => String(x[champ]) >= auj()).sort((a, b) => String(a.date).localeCompare(String(b.date)) || String(a.debut || "").localeCompare(String(b.debut || "")));
 function ligneChg(c, gerant){
-  return `<div class="ligne-info"><span class="titre"><span class="date-bloc">${JOURS[jourDe(c.date)] || ""} ${dateFr(c.date)}${c.debut ? " · " + esc(c.debut) : ""}</span>
-    <strong>${esc(c.cours)}</strong>${c.note ? `<span class="doux" style="font-size:.88rem">${esc(c.note)}</span>` : ""}</span>
-    <span class="rangee"><span class="badge ${c.type === "annule" || c.type === "absent" ? "rouge" : "accent"}">${libChg(c.type)}</span>${gerant ? `<button type="button" class="mini-btn danger" data-suppr="${esc(c.id)}">Supprimer</button>` : ""}</span></div>`;
+  return `<div class="ligne-info"><span class="titre"><span class="date-bloc">${JOURS[jourDe(c.date)] || ""} ${dateFr(c.date)}${c.debut ? " · " + esc(c.debut) + (c.fin && !c.creneauId ? " – " + esc(c.fin) : "") : ""}</span>
+    <strong>${c.type === "remplace" ? (c.creneauId && c.cours ? esc(c.cours) + " → " : "") + esc(c.matiere || c.cours || "") + (c.prof ? ` <span class="doux">· ${esc(c.prof)}</span>` : "")
+      : c.type === "evenement" ? esc(c.nom || c.cours || "Événement") + (c.creneauId && c.cours ? ` <span class="doux">(au lieu de ${esc(c.cours)})</span>` : "") : esc(c.cours)}</strong>${c.note ? `<span class="doux" style="font-size:.88rem">${esc(c.note)}</span>` : ""}</span>
+    <span class="rangee"><span class="badge ${c.type === "annule" || c.type === "absent" ? "rouge" : "accent"}" ${c.type === "evenement" ? `style="border-color:${esc(c.couleur || COUL_EVENEMENT)};color:${esc(c.couleur || COUL_EVENEMENT)}"` : ""}>${libChg(c.type)}</span>${gerant ? `<button type="button" class="mini-btn danger" data-suppr="${esc(c.id)}">Supprimer</button>` : ""}</span></div>`;
 }
 /* Année scolaire : liste des semaines (numéro ISO), D.S. par semaine et vacances */
 const debutAnneeScolaire = () => { const d = new Date(); return d.getMonth() >= 7 ? d.getFullYear() : d.getFullYear() - 1; };
@@ -4837,25 +4862,32 @@ function blocsAnnee(gerant){
     return `<${tag} ${gerant ? `type="button" data-l="${w.lundi}" aria-label="Modifier la semaine ${w.num}"` : ""} class="bloc-sem t-${s.type} ${actuelle ? "actuelle" : ""}" ${s.couleur ? `style="--c:${esc(s.couleur)}"` : ""}>
       <span class="tete-sem"><span class="num-sem">S${w.num}</span><span class="dates-sem">${courtDate(w.lundi)} – ${courtDate(w.vendredi)}</span></span>
       ${libelle ? `<span class="lib-sem">${esc(libelle)}</span>` : ""}
+      ${s.type !== "vacances" ? congesSemaine(w).map(k => `<span class="conge-puce ${k.raison}">${esc(libConge(k))} · ${k.fin && k.fin !== k.debut ? courtDate(k.debut) + " – " + courtDate(k.fin) : courtDate(k.debut)}</span>`).join("") : ""}
       ${s.ds.length ? `<span class="ds-sem">${s.ds.map(m => `<span class="ds-puce" style="--c:${esc(couleurCours(m))}"><span class="pastille-c"></span>D.S. ${esc(m)}</span>`).join("")}</span>` : ""}
       ${actuelle ? `<span class="badge accent" style="align-self:flex-start">Cette semaine</span>` : ""}
     </${tag}>`;
   };
-  return `<div class="legende-sem"><span><i style="--c:${COUL_VACANCES}"></i>Vacances</span><span><i style="--c:${COUL_EVENEMENT}"></i>Événement</span><span><i class="neutre"></i>Semaine normale</span><span><i class="inutil"></i>Inutilisée</span></div>`
+  return `<div class="legende-sem"><span><i style="--c:${COUL_VACANCES}"></i>Vacances</span><span><i style="--c:${COUL_FERIE}"></i>Jour férié</span><span><i style="--c:${COUL_EVENEMENT}"></i>Événement</span><span><i class="neutre"></i>Semaine normale</span><span><i class="inutil"></i>Inutilisée</span></div>`
     + groupes.map(g => `<section class="mois"><h3>${g.titre}</h3><div class="grille-sem">${g.semaines.map(bloc).join("")}</div></section>`).join("");
 }
 
+// jours de congé ajoutés à la main qui tombent dans la semaine (lundi → vendredi)
+const congesSemaine = w => (annee.conges || []).filter(k => k.debut <= w.vendredi && (k.fin || k.debut) >= w.lundi).sort((a, b) => a.debut.localeCompare(b.debut));
 /* Téléphone : la journée en liste (heure à gauche, cours en cartes, pauses en séparateurs) */
 function agendaJour(parite, lundi, j, jAuj){
-  const date = decalerJour(lundi, j), cs = edt.creneaux.filter(c => c.jour === j && valeCetteSemaine(c, parite)).sort((a, b) => enMin(a.debut) - enMin(b.debut));
-  const maintenant = new Date(), mn = maintenant.getHours() * 60 + maintenant.getMinutes(), estAuj = j === jAuj;
-  if (!cs.length) return `<div class="edt-agenda"><div class="ag-titre">${JOURS[j]} ${courtDate(date)}</div><div class="vide">Pas de cours ce jour-là.</div></div>`;
+  const date = decalerJour(lundi, j), k = congeDu(date), estAuj = j === jAuj;
+  const titre = `<div class="ag-titre">${JOURS[j]} ${courtDate(date)}${estAuj ? `<span class="badge accent">Aujourd'hui</span>` : ""}`;
+  if (k) return `<div class="edt-agenda">${titre}</div><div class="ag-conge ${k.raison}"><b>${k.raison === "ferie" ? "Jour férié" : "Vacances"}</b>${k.nom ? `<span>${esc(k.nom)}</span>` : ""}<small>Pas de cours ce jour-là</small></div></div>`;
+  const cs = coursDate(lundi, j, parite, dsDeLaSemaine(lundi, parite)).sort((a, b) => enMin(a.debut) - enMin(b.debut));
+  const maintenant = new Date(), mn = maintenant.getHours() * 60 + maintenant.getMinutes();
+  if (!cs.length) return `<div class="edt-agenda">${titre}</div><div class="vide">Pas de cours ce jour-là.</div></div>`;
   // cours en même temps (AP / Latin, groupes…) : réunis sur la même ligne, côte à côte
   const groupes = []; cs.forEach(c => { const g = groupes[groupes.length - 1]; if (g && enMin(c.debut) < g.fin){ g.cs.push(c); g.fin = Math.max(g.fin, enMin(c.fin)); } else groupes.push({cs: [c], debut: enMin(c.debut), fin: enMin(c.fin)}); });
-  const carte = c => { const chg = changements.find(k => k.creneauId === c.id && k.date === date), annule = chg && (chg.type === "annule" || chg.type === "absent"), enCours = estAuj && mn >= enMin(c.debut) && mn < enMin(c.fin);
-    return `<div class="ag-cours ${annule ? "annule" : ""} ${enCours ? "en-cours" : ""}" style="--c:${esc(couleurCours(c.matiere))}"><span class="ag-m">${esc(c.matiere)}</span>
-      <span class="ag-d">${[c.prof, c.salle].filter(Boolean).map(esc).join(" · ")}</span>
-      ${chg ? `<span class="ag-chg ${annule ? "" : "mod"}">${esc(libChg(chg.type))}${chg.note ? " · " + esc(chg.note) : ""}</span>` : ""}${enCours ? `<span class="ag-maint">En ce moment</span>` : ""}</div>`; };
+  const carte = it => { const annule = it.etat === "annule", enCours = estAuj && !annule && mn >= enMin(it.debut) && mn < enMin(it.fin);
+    return `<div class="ag-cours ${it.etat} ${enCours ? "en-cours" : ""}" style="--c:${esc(it.couleur)}"><span class="ag-m">${esc(it.matiere)}</span>
+      ${it.avant ? `<span class="ag-av">au lieu de ${esc(it.avant)}</span>` : ""}
+      <span class="ag-d">${[it.prof, it.salle].filter(Boolean).map(esc).join(" · ")}</span>
+      ${it.badge ? `<span class="ag-chg ${annule ? "" : "mod"} ${it.etat}">${esc(it.badge)}${it.note ? " · " + esc(it.note) : ""}</span>` : it.note ? `<span class="ag-d">${esc(it.note)}</span>` : ""}${enCours ? `<span class="ag-maint">En ce moment</span>` : ""}</div>`; };
   let html = "", fin = null;
   groupes.forEach(g => {
     if (fin !== null){ const p = PAUSES.find(([d, f]) => enMin(d) >= fin && enMin(f) <= g.debut), trou = g.debut - fin;
@@ -4865,7 +4897,7 @@ function agendaJour(parite, lundi, j, jAuj){
       <div class="ag-groupe ${g.cs.length > 1 ? "multi" : ""}">${g.cs.map(carte).join("")}</div></div>`;
     fin = g.fin;
   });
-  return `<div class="edt-agenda"><div class="ag-titre">${JOURS[j]} ${courtDate(date)}${estAuj ? `<span class="badge accent">Aujourd'hui</span>` : ""}<span class="ag-nb">${groupes.length} créneau${groupes.length > 1 ? "x" : ""} · ${minHeure(groupes[0].debut)} – ${minHeure(groupes[groupes.length - 1].fin)}</span></div>${html}</div>`;
+  return `<div class="edt-agenda">${titre}<span class="ag-nb">${groupes.length} créneau${groupes.length > 1 ? "x" : ""} · ${minHeure(groupes[0].debut)} – ${minHeure(groupes[groupes.length - 1].fin)}</span></div>${html}</div>`;
 }
 const minHeure = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
 VUES.edt = function vueEdt(){
@@ -4881,7 +4913,7 @@ VUES.edt = function vueEdt(){
         ${lundiEleve !== lundiParDefaut() ? `<button type="button" class="mini-btn" id="sem-auj">Revenir à ${lundiParDefaut() === lundiDeLaSemaine() ? "cette semaine" : "la semaine prochaine"}</button>` : ""}</div>`
       + (edt.creneaux.length ? (() => { const jAuj = lundiEleve === lundiDeLaSemaine() ? (new Date().getDay() + 6) % 7 : -1;
           if (jourEleve === null || jourEleve > 4) jourEleve = jAuj >= 0 && jAuj <= 4 ? jAuj : 0;
-          return `<div class="edt-jours-tel">${JOURS.map((j, d) => `<button type="button" data-jt="${d}" aria-pressed="${d === jourEleve}" class="${d === jAuj ? "auj" : ""}" aria-label="${j} ${courtDate(decalerJour(lundiEleve, d))}"><small>${j.slice(0, 3)}</small><b>${+courtDate(decalerJour(lundiEleve, d)).slice(0, 2)}</b></button>`).join("")}</div>`
+          return `<div class="edt-jours-tel">${JOURS.map((j, d) => `<button type="button" data-jt="${d}" aria-pressed="${d === jourEleve}" class="${d === jAuj ? "auj" : ""} ${congeDu(decalerJour(lundiEleve, d)) ? "conge " + congeDu(decalerJour(lundiEleve, d)).raison : ""}" aria-label="${j} ${courtDate(decalerJour(lundiEleve, d))}${congeDu(decalerJour(lundiEleve, d)) ? " (congé)" : ""}"><small>${j.slice(0, 3)}</small><b>${+courtDate(decalerJour(lundiEleve, d)).slice(0, 2)}</b></button>`).join("")}</div>`
             + grilleEdt(false, p, {lundi: lundiEleve, jourVu: jourEleve}) + agendaJour(p, lundiEleve, jourEleve, jAuj); })() : `<div class="vide">L'emploi du temps n'a pas encore été rempli par le gérant.</div>`)
       + (chAV.length ? `<div class="bloc"><span class="mono">Changements de cours à venir</span><div class="liste">${chAV.map(c => ligneChg(c, false)).join("")}</div></div>` : "");
   } else {
@@ -12429,10 +12461,56 @@ function disposer(cs){
   if (groupe.length) fermer();
   return sortie;
 }
+/* ----- Semaine datée : jours de congé, D.S. de la semaine, remplacements et heures événementielles ----- */
+const RAISONS_CONGE = [["vacances","Vacances"],["ferie","Jour férié"]];
+const COUL_FERIE = "#e5c15d";
+const lundiDe = date => { const d = new Date(date + "T12:00:00"); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return iso(d); };
+// jour de congé : ajouté à la main (vacances ou jour férié), ou semaine marquée « Vacances » dans D.S. année
+function congeDu(date){
+  const k = (annee.conges || []).find(x => x.debut <= date && date <= (x.fin || x.debut));
+  if (k) return {raison: k.raison === "ferie" ? "ferie" : "vacances", nom: k.nom || ""};
+  const s = infoSemaine(lundiDe(date));
+  return s.type === "vacances" ? {raison: "vacances", nom: s.nom} : null;
+}
+const libConge = k => (k.raison === "ferie" ? "Jour férié" : "Vacances") + (k.nom ? " · " + k.nom : "");
+const estCreneauDs = c => /^(devoir surveill|d\.\s?s\.?$|ds$)/i.test(String(c.matiere || "").trim());
+// D.S. prévus cette semaine (D.S. année), répartis dans l'ordre sur les heures « Devoir surveillé » de la semaine
+function dsDeLaSemaine(lundi, parite){
+  const ds = infoSemaine(lundi).ds, m = new Map();
+  const slots = edt.creneaux.filter(c => estCreneauDs(c) && valeCetteSemaine(c, parite) && !congeDu(decalerJour(lundi, c.jour))
+    && !changements.some(k => k.creneauId === c.id && k.date === decalerJour(lundi, c.jour))).sort((a, b) => a.jour - b.jour || enMin(a.debut) - enMin(b.debut));
+  slots.forEach((c, i) => m.set(c.id, i < slots.length - 1 ? (ds[i] ? [ds[i]] : []) : ds.slice(i)));
+  return m;
+}
+const chevauche = (a, b) => enMin(a.debut) < enMin(b.fin) && enMin(b.debut) < enMin(a.fin);
+// Les heures d'une journée datée, telles qu'elles ont vraiment lieu
+function coursDate(lundi, j, parite, dsSem){
+  const date = decalerJour(lundi, j), chgs = changements.filter(k => k.date === date);
+  const ajouts = chgs.filter(k => !k.creneauId && (k.type === "evenement" || k.type === "remplace") && k.debut && k.fin);
+  const base = edt.creneaux.filter(c => c.jour === j && valeCetteSemaine(c, parite) && !ajouts.some(a => a.masque !== false && chevauche(a, c)));
+  const items = base.map(c => {
+    const chg = chgs.find(k => k.creneauId === c.id);
+    const it = {id: c.id, c, chg, debut: c.debut, fin: c.fin, matiere: c.matiere, prof: c.prof || "", salle: c.salle || "", couleur: couleurCours(c.matiere), etat: "", badge: "", note: (chg && chg.note) || "", avant: ""};
+    if (!chg){
+      if (estCreneauDs(c) && dsSem){ const l = dsSem.get(c.id) || [];
+        if (l.length) Object.assign(it, {matiere: "D.S. " + l.join(" · "), couleur: couleurCours(l[0]), etat: "ds"}); else Object.assign(it, {etat: "ds-vide", note: "Pas de D.S. cette semaine"}); }
+      return it;
+    }
+    if (chg.type === "annule" || chg.type === "absent") Object.assign(it, {etat: "annule", badge: libChg(chg.type)});
+    else if (chg.type === "remplace"){ const m = chg.matiere || c.matiere; Object.assign(it, {avant: c.matiere, matiere: m, prof: chg.prof || "", salle: chg.salle || c.salle || "", couleur: couleurCours(m), etat: "remplace", badge: "Remplacement"}); }
+    else if (chg.type === "evenement") Object.assign(it, {avant: c.matiere, matiere: chg.nom || "Événement", prof: "", salle: chg.salle || "", couleur: chg.couleur || COUL_EVENEMENT, etat: "evenement", badge: "Événement"});
+    else Object.assign(it, {etat: "mod", badge: libChg(chg.type)});
+    return it;
+  });
+  ajouts.forEach(a => items.push(a.type === "evenement"
+    ? {id: a.id, chg: a, ajout: true, debut: a.debut, fin: a.fin, matiere: a.nom || "Événement", prof: "", salle: a.salle || "", couleur: a.couleur || COUL_EVENEMENT, etat: "evenement", badge: "Événement", note: a.note || "", avant: ""}
+    : {id: a.id, chg: a, ajout: true, debut: a.debut, fin: a.fin, matiere: a.matiere || "Cours", prof: a.prof || "", salle: a.salle || "", couleur: couleurCours(a.matiere), etat: "remplace", badge: "Remplacement", note: a.note || "", avant: ""}));
+  return items;
+}
 // parite : "paire" / "impaire" pour n'afficher que la bonne semaine, null pour tout afficher
-// opts.lundi : semaine datée, pour afficher les cours annulés ou modifiés cette semaine-là
+// opts.lundi : semaine datée (congés, D.S., cours annulés, remplacés, heures événementielles)
 function grilleEdt(gerant, parite, opts = {}){
-  const lundi = opts.lundi || null;
+  const lundi = opts.lundi || null, dsSem = lundi ? dsDeLaSemaine(lundi, parite) : null;
   const jIdx = lundi && lundi !== lundiDeLaSemaine() ? -1 : (new Date().getDay() + 6) % 7, cs = edt.creneaux.filter(c => !parite || valeCetteSemaine(c, parite));
   const reperes = [];
   HEURES_COURS.forEach(([d, f], i) => {
@@ -12441,20 +12519,23 @@ function grilleEdt(gerant, parite, opts = {}){
   });
   const fond = (gerant ? SEGMENTS.filter(x => x.type === "cours").map(x => `<div class="case-h" style="top:${x.y0}px;height:${x.y1 - x.y0}px"></div>`).join("") : "")
     + SEGMENTS.filter(x => x.type === "pause").map(x => `<div class="pause" style="top:${x.y0}px;height:${x.y1 - x.y0}px">${PAUSES.find(([d]) => enMin(d) === x.d)[2]}</div>`).join("");
-  const cours = d => disposer(cs.filter(c => c.jour === d)).map(x => {
-    const c = x.c, top = yDe(x.d) + 2, haut = Math.max(22, yDe(x.f) - yDe(x.d) - 4);
-    const chg = lundi ? changements.find(k => k.creneauId === c.id && k.date === decalerJour(lundi, d)) : null;
-    const annule = chg && (chg.type === "annule" || chg.type === "absent");
-    const larg = 100 / x.nb, tag = gerant ? "button" : "div";
-    return `<${tag} ${gerant ? `type="button" data-id="${esc(c.id)}" data-jour="${d}" aria-label="${opts.annulation ? "Annuler ou rétablir" : "Modifier"} ${esc(c.matiere)} ${esc(c.debut)}"` : ""} class="cours ${annule ? "annule" : ""}" ${chg ? `title="${esc(libChg(chg.type) + (chg.note ? " : " + chg.note : ""))}"` : ""} style="--c:${esc(couleurCours(c.matiere))};top:${top}px;height:${haut}px;left:calc(${x.voie * larg}% + 3px);width:calc(${larg}% - 6px)">
-      ${chg ? `<span class="chg ${annule ? "" : "mod"}">${esc(libChg(chg.type))}</span>` : ""}<span class="m">${esc(c.matiere)}</span>${c.prof ? `<span class="d">${esc(c.prof)}</span>` : ""}${c.salle ? `<span class="d">${esc(c.salle)}</span>` : ""}
-      ${c.semaine && c.semaine !== "toutes" && (gerant || !parite) && !lundi ? `<span class="sem" title="${SEM_LIB[c.semaine]}">${SEM_COURT[c.semaine]}</span>` : ""}
-    </${tag}>`;
-  }).join("");
+  const itemsDu = d => lundi ? coursDate(lundi, d, parite, dsSem)
+    : cs.filter(c => c.jour === d).map(c => ({id: c.id, c, debut: c.debut, fin: c.fin, matiere: c.matiere, prof: c.prof || "", salle: c.salle || "", couleur: couleurCours(c.matiere), etat: "", badge: "", note: "", avant: ""}));
+  const cours = d => {
+    if (lundi){ const k = congeDu(decalerJour(lundi, d)); if (k) return `<div class="conge-jour ${k.raison}"><b>${k.raison === "ferie" ? "Jour férié" : "Vacances"}</b>${k.nom ? `<span>${esc(k.nom)}</span>` : ""}</div>`; }
+    return disposer(itemsDu(d)).map(x => {
+      const it = x.c, top = yDe(x.d) + 2, haut = Math.max(22, yDe(x.f) - yDe(x.d) - 4), larg = 100 / x.nb, tag = gerant ? "button" : "div";
+      const titre = [it.badge, it.note, it.avant ? "au lieu de " + it.avant : ""].filter(Boolean).join(" · ");
+      return `<${tag} ${gerant ? `type="button" data-id="${esc(it.id)}" ${it.ajout ? `data-ajout="1"` : ""} data-jour="${d}" aria-label="${opts.annulation ? "Changer" : "Modifier"} ${esc(it.matiere)} ${esc(it.debut)}"` : ""} class="cours ${it.etat}" ${titre ? `title="${esc(titre)}"` : ""} style="--c:${esc(it.couleur)};top:${top}px;height:${haut}px;left:calc(${x.voie * larg}% + 3px);width:calc(${larg}% - 6px)">
+        ${it.badge ? `<span class="chg ${it.etat === "annule" ? "" : "mod"} ${it.etat}">${esc(it.badge)}</span>` : ""}<span class="m">${esc(it.matiere)}</span>${it.avant ? `<span class="d av">au lieu de ${esc(it.avant)}</span>` : ""}${it.etat === "ds-vide" ? `<span class="d">Pas de D.S.</span>` : ""}${it.avant ? (it.prof || it.salle ? `<span class="d">${[it.prof, it.salle].filter(Boolean).map(esc).join(" · ")}</span>` : "") : (it.prof ? `<span class="d">${esc(it.prof)}</span>` : "") + (it.salle ? `<span class="d">${esc(it.salle)}</span>` : "")}
+        ${it.c && it.c.semaine && it.c.semaine !== "toutes" && (gerant || !parite) && !lundi ? `<span class="sem" title="${SEM_LIB[it.c.semaine]}">${SEM_COURT[it.c.semaine]}</span>` : ""}
+      </${tag}>`;
+    }).join("");
+  };
   return `<div class="edt-zone"><div class="edt-grille ${gerant ? "gerant" : "eleve"} ${opts.annulation ? "annulation" : ""} ${opts.jourVu !== undefined ? "un-jour" : ""}" lang="fr">
     <div></div>${JOURS.map((j, d) => `<div class="edt-jour j${d} ${d === opts.jourVu ? "vu" : ""} ${d === jIdx ? "auj" : ""}">${j}${lundi ? ` <span class="doux" style="font-family:var(--f-mono);font-size:.72rem">${courtDate(decalerJour(lundi, d))}</span>` : ""}</div>`).join("")}
     <div class="edt-axe" style="height:${HAUTEUR_JOUR}px">${reperes.map(r => `<span class="${r.haut ? "debut" : "fin"}" style="top:${r.y}px">${r.t}</span>`).join("")}</div>
-    ${JOURS.map((j, d) => `<div class="edt-col j${d} ${d === opts.jourVu ? "vu" : ""}" data-jour="${d}" style="height:${HAUTEUR_JOUR}px" ${gerant && !opts.annulation ? `title="Clique pour ajouter un cours le ${j.toLowerCase()}"` : ""}>${fond}${cours(d)}</div>`).join("")}
+    ${JOURS.map((j, d) => `<div class="edt-col j${d} ${d === opts.jourVu ? "vu" : ""}" data-jour="${d}" style="height:${HAUTEUR_JOUR}px" ${gerant && !opts.annulation ? `title="Clique pour ajouter un cours le ${j.toLowerCase()}"` : gerant ? `title="Clique dans une case vide pour ajouter une heure ce jour-là"` : ""}>${fond}${cours(d)}</div>`).join("")}
   </div></div>`;
 }
 /* ===================== OUTILS DE GESTION ===================== */
@@ -12771,14 +12852,25 @@ function dessinerGrilleGerant(){
         <div class="rangee"><button type="button" class="mini-btn" id="sem-prec" aria-label="Semaine précédente">◀</button>
           <strong>Semaine ${numSemaine(new Date(lundiGerant + "T12:00:00"))} · ${courtDate(lundiGerant)} – ${courtDate(decalerJour(lundiGerant, 4))}</strong>
           <button type="button" class="mini-btn" id="sem-suiv" aria-label="Semaine suivante">▶</button>
-          ${lundiGerant !== lundiDeLaSemaine() ? `<button type="button" class="mini-btn" id="sem-auj">Cette semaine</button>` : ""}</div>
-        <span class="doux" style="font-size:.85rem">Semaine ${p} · clique sur un cours pour l'annuler ou le rétablir</span>
+          ${lundiGerant !== lundiDeLaSemaine() ? `<button type="button" class="mini-btn" id="sem-auj">Cette semaine</button>` : ""}
+          <button type="button" class="mini-btn" id="ajout-heure">+ Ajouter une heure</button></div>
+        <span class="doux" style="font-size:.85rem">Semaine ${p} · clique sur un cours pour le changer, ou dans une case vide pour ajouter une heure</span>
       </div>
       ${grilleEdt(true, p, {lundi: lundiGerant, annulation: true})}`;
     $("#sem-prec").onclick = () => { lundiGerant = decalerJour(lundiGerant, -7); dessinerGrilleGerant(); };
     $("#sem-suiv").onclick = () => { lundiGerant = decalerJour(lundiGerant, 7); dessinerGrilleGerant(); };
     const sa = $("#sem-auj"); if (sa) sa.onclick = () => { lundiGerant = lundiDeLaSemaine(); dessinerGrilleGerant(); };
-    z.querySelectorAll("button.cours").forEach(b => b.onclick = ev => { ev.stopPropagation(); fenetreAnnulation(edt.creneaux.find(c => c.id === b.dataset.id), decalerJour(lundiGerant, +b.dataset.jour)); });
+    $("#ajout-heure").onclick = () => { const jA = lundiGerant === lundiDeLaSemaine() ? Math.min(4, (new Date().getDay() + 6) % 7) : 0, libre = [0, 1, 2, 3, 4].map(i => (jA + i) % 5).find(i => !congeDu(decalerJour(lundiGerant, i)));
+      if (libre === undefined) return statut("Toute la semaine est en congé."); fenetreAjoutHeure(decalerJour(lundiGerant, libre), enMin(HEURES_COURS[0][0]), null, lundiGerant); };
+    z.querySelectorAll("button.cours").forEach(b => b.onclick = ev => { ev.stopPropagation(); const date = decalerJour(lundiGerant, +b.dataset.jour);
+      if (b.dataset.ajout) fenetreAjoutHeure(date, null, changements.find(k => k.id === b.dataset.id)); else fenetreChangement(edt.creneaux.find(c => c.id === b.dataset.id), date); });
+    z.querySelectorAll(".edt-col").forEach(col => col.onclick = ev => {
+      const date = decalerJour(lundiGerant, +col.dataset.jour);
+      if (congeDu(date)) return statut("Ce jour est un jour de congé : modifie-le dans « D.S. et vacances ».");
+      const m = minuteDe(ev.clientY - col.getBoundingClientRect().top);
+      if (PAUSES.some(([d, f]) => m >= enMin(d) && m < enMin(f))) return;
+      fenetreAjoutHeure(date, m, null);
+    });
     return;
   }
   z.innerHTML = `
@@ -12803,9 +12895,9 @@ VUES["g-edt"] = function vueGEdt(){
   rafraichir = dessinerGrilleGerant;
   const modele = modeEdtGerant === "modele";
   zone().innerHTML = entete(espaceNom(), "Emploi du temps", modele ? `<button class="btn" type="button" id="ajout-cours">Ajouter un cours</button>` : "")
-    + segment("mode-edt", [["modele","Modifier l'emploi du temps"],["annuler","Annuler des cours"]], modeEdtGerant) + `
+    + segment("mode-edt", [["modele","Modifier l'emploi du temps"],["annuler","Changements par semaine"]], modeEdtGerant) + `
     <p class="doux" style="max-width:75ch">${modele ? "Clique dans la grille pour ajouter un cours à cette heure, ou sur un cours pour le modifier. Pour deux cours à la même heure, mets l'un en semaines paires et l'autre en semaines impaires."
-      : "Choisis la semaine, puis clique sur un cours et coche « Cours annulé ». Les élèves de 3C le voient barré dans leur emploi du temps."}</p>
+      : "Choisis la semaine. Clique sur un cours pour l'annuler, le remplacer (autre matière ou autre professeur) ou le transformer en heure événementielle. Clique dans une case vide pour ajouter une heure ce jour-là. Les heures « Devoir surveillé » affichent toutes seules la matière du D.S. prévu dans D.S. et vacances."}</p>
     <p id="statut" class="statut" role="status"></p>
     <div id="grille-gerant" style="display:flex;flex-direction:column;gap:20px"></div>`;
   dessinerGrilleGerant();
@@ -12813,33 +12905,113 @@ VUES["g-edt"] = function vueGEdt(){
   const aj = $("#ajout-cours");
   if (aj) aj.onclick = () => fenetreCours(null, {jour: 0, debut: HEURES_COURS[0][0], fin: HEURES_COURS[0][1], semaine: "toutes"});
 };
-/* Annulation d'un cours pour une date précise */
-function fenetreAnnulation(c, date){
+/* Changements d'une semaine datée : un cours annulé, remplacé ou transformé en heure événementielle */
+const optionsMatieres = (v, id) => `<select id="${id}">${COURS.map(([n]) => `<option ${n === v ? "selected" : ""}>${n}</option>`).join("")}<option value="__autre" ${!v || COURS.some(([n]) => n === v) ? "" : "selected"}>Autre…</option></select>`;
+function ouvrirFenetreEdt(html){
   fermerFenetre();
-  const exist = changements.find(k => k.creneauId === c.id && k.date === date);
   const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
-  el.innerHTML = `<form class="fenetre" role="dialog" aria-modal="true" aria-labelledby="titre-fen" novalidate>
-    <h3 id="titre-fen">${esc(c.matiere)}</h3>
-    <p class="doux">${JOURS[jourDe(date)]} ${dateFr(date)} · ${esc(c.debut)} – ${esc(c.fin)}${c.prof ? " · " + esc(c.prof) : ""}</p>
-    <label class="interrupteur" style="border-top:0"><span><strong>Cours annulé</strong><small>Le cours apparaît barré pour les élèves.</small></span><input type="checkbox" id="an-coche" ${exist ? "checked" : ""}></label>
-    <div class="champ"><label for="an-note">Précision (facultatif)</label><input id="an-note" type="text" maxlength="160" value="${esc(exist ? exist.note || "" : "")}" placeholder="Prof absent, sortie scolaire…"></div>
-    <p id="statut-fen" class="statut" role="status"></p>
-    <div class="rangee"><button class="btn" type="submit">Enregistrer</button><button class="btn sec" type="button" id="fen-annuler">Fermer</button></div>
-  </form>`;
+  el.innerHTML = `<form class="fenetre" role="dialog" aria-modal="true" aria-labelledby="titre-fen" novalidate>${html}</form>`;
   document.body.appendChild(el);
   $("#fen-annuler").onclick = fermerFenetre;
   el.addEventListener("mousedown", ev => { if (ev.target === el) fermerFenetre(); });
   el.addEventListener("keydown", ev => { if (ev.key === "Escape") fermerFenetre(); });
+  return el;
+}
+const brancherSegment = (el, id, rappel) => el.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => { el.querySelectorAll(`#${id} button`).forEach(x => x.setAttribute("aria-pressed", x === b)); rappel(b.dataset.v); });
+function fenetreChangement(c, date){
+  if (!c) return;
+  const exist = changements.find(k => k.creneauId === c.id && k.date === date);
+  let type = !exist ? "normal" : exist.type === "remplace" || exist.type === "evenement" ? exist.type : "annule";
+  const v = exist || {};
+  const el = ouvrirFenetreEdt(`<h3 id="titre-fen">${esc(c.matiere)}</h3>
+    <p class="doux">${JOURS[jourDe(date)]} ${dateFr(date)} · ${esc(c.debut)} – ${esc(c.fin)}${c.prof ? " · " + esc(c.prof) : ""}</p>
+    <div class="champ"><span style="font-size:.85rem;font-weight:500">Ce jour-là, ce cours est…</span>${segment("chg-type", [["normal","Normal"],["annule","Annulé"],["remplace","Remplacé"],["evenement","Événement"]], type)}</div>
+    <div class="grille-form" id="bloc-remplace">
+      <div class="champ"><label for="r-matiere">Remplacé par</label>${optionsMatieres(v.matiere || c.matiere, "r-matiere")}</div>
+      <div class="champ" id="bloc-r-autre"><label for="r-autre">Nom du cours</label><input id="r-autre" type="text" value="${esc(v.matiere && !COURS.some(([n]) => n === v.matiere) ? v.matiere : "")}"></div>
+      <div class="champ"><label for="r-prof">Professeur</label><input id="r-prof" type="text" placeholder="Professeur remplaçant" value="${esc(v.prof || "")}"></div>
+      <div class="champ"><label for="r-salle">Salle</label><input id="r-salle" type="text" placeholder="${esc(c.salle || "Facultatif")}" value="${esc(type === "remplace" ? v.salle || "" : "")}"></div>
+    </div>
+    <div class="grille-form" id="bloc-evenement">
+      <div class="champ" style="grid-column:span 2"><label for="e-nom">Nom de l'événement</label><input id="e-nom" type="text" maxlength="60" placeholder="Sortie au musée, réunion, intervention…" value="${esc(v.nom || "")}"></div>
+      <div class="champ"><label for="e-coul">Couleur</label><input id="e-coul" type="color" value="${esc(v.couleur || COUL_EVENEMENT)}" style="width:100%;height:42px"></div>
+      <div class="champ"><label for="e-lieu">Lieu</label><input id="e-lieu" type="text" placeholder="Facultatif" value="${esc(type === "evenement" ? v.salle || "" : "")}"></div>
+    </div>
+    <div class="champ" id="bloc-note"><label for="an-note">Précision (facultatif)</label><input id="an-note" type="text" maxlength="160" value="${esc(v.note || "")}" placeholder="Prof absent, sortie scolaire…"></div>
+    <p id="statut-fen" class="statut" role="status"></p>
+    <div class="rangee"><button class="btn" type="submit">Enregistrer</button><button class="btn sec" type="button" id="fen-annuler">Fermer</button></div>`);
+  const maj = () => {
+    $("#bloc-remplace").hidden = type !== "remplace"; $("#bloc-evenement").hidden = type !== "evenement"; $("#bloc-note").hidden = type === "normal";
+    $("#bloc-r-autre").hidden = $("#r-matiere").value !== "__autre";
+  };
+  brancherSegment(el, "chg-type", t => { type = t; maj(); });
+  $("#r-matiere").onchange = maj; maj();
   el.querySelector("form").onsubmit = async ev => {
     ev.preventDefault();
-    const coche = $("#an-coche").checked, note = $("#an-note").value.trim();
+    const dire = t => { const s = $("#statut-fen"); s.className = "statut erreur"; s.textContent = t; };
+    const note = $("#an-note").value.trim(), base = {date, creneauId: c.id, cours: c.matiere, debut: c.debut, fin: c.fin, type, note, creeLe: exist ? exist.creeLe : new Date().toISOString(), par: moi || "gerant"};
+    let d = null;
+    if (type === "annule") d = base;
+    if (type === "remplace"){ const m = $("#r-matiere").value === "__autre" ? $("#r-autre").value.trim() : $("#r-matiere").value; if (!m) return dire("Indique le cours qui remplace.");
+      d = {...base, matiere: m, prof: $("#r-prof").value.trim(), salle: $("#r-salle").value.trim()}; }
+    if (type === "evenement"){ const nom = $("#e-nom").value.trim(); if (!nom) return dire("Donne un nom à l'événement.");
+      d = {...base, nom, couleur: $("#e-coul").value, salle: $("#e-lieu").value.trim()}; }
     try {
-      if (coche) await db.doc("changements/" + (exist ? exist.id : nouvelId("ch"))).set({date, creneauId: c.id, cours: c.matiere, debut: c.debut, fin: c.fin, type: "annule", note, creeLe: exist ? exist.creeLe : new Date().toISOString(), par: moi || "gerant"});
+      if (d) await db.doc("changements/" + (exist ? exist.id : nouvelId("ch"))).set(d);
       else if (exist) await db.doc("changements/" + exist.id).delete();
-      fermerFenetre(); statut(coche ? "Cours annulé." : "Cours rétabli.", true);
-    } catch (err){ const s = $("#statut-fen"); s.className = "statut erreur"; s.textContent = erreurEcriture(err); }
+      fermerFenetre(); statut(type === "normal" ? "Cours rétabli." : type === "annule" ? "Cours annulé." : type === "remplace" ? "Remplacement enregistré." : "Heure événementielle enregistrée.", true);
+    } catch (err){ dire(erreurEcriture(err)); }
   };
-  $("#an-coche").focus();
+}
+/* Heure ajoutée un jour précis : heure événementielle ou heure de remplacement */
+function fenetreAjoutHeure(date, minute, exist, lundiChoix){
+  const h = exist ? [exist.debut, exist.fin] : HEURES_COURS.find(([d, f]) => minute >= enMin(d) && minute < enMin(f)) || HEURES_COURS.find(([d]) => enMin(d) > minute) || HEURES_COURS[HEURES_COURS.length - 1];
+  const v = exist || {type: "evenement", masque: true};
+  let type = v.type === "remplace" ? "remplace" : "evenement";
+  const el = ouvrirFenetreEdt(`<h3 id="titre-fen">${exist ? "Modifier l'heure" : "Ajouter une heure"}</h3>
+    ${lundiChoix ? `<div class="champ"><label for="aj-date">Jour</label><select id="aj-date">${JOURS.map((j, i) => { const d = decalerJour(lundiChoix, i); return `<option value="${d}" ${d === date ? "selected" : ""} ${congeDu(d) ? "disabled" : ""}>${j} ${dateFr(d)}${congeDu(d) ? " (congé)" : ""}</option>`; }).join("")}</select></div>`
+      : `<p class="doux">${JOURS[jourDe(date)]} ${dateFr(date)} · seulement ce jour-là</p>`}
+    <div class="champ">${segment("aj-type", [["evenement","Heure événementielle"],["remplace","Heure de remplacement"]], type)}</div>
+    <div class="grille-form">
+      <div class="champ"><label for="aj-debut">De</label><input id="aj-debut" type="time" min="08:10" max="16:25" value="${esc(h[0])}"></div>
+      <div class="champ"><label for="aj-fin">À</label><input id="aj-fin" type="time" min="08:10" max="16:25" value="${esc(h[1])}"></div>
+    </div>
+    <div class="grille-form" id="bloc-evenement">
+      <div class="champ" style="grid-column:span 2"><label for="e-nom">Nom de l'événement</label><input id="e-nom" type="text" maxlength="60" placeholder="Sortie au musée, réunion, intervention…" value="${esc(v.nom || "")}"></div>
+      <div class="champ"><label for="e-coul">Couleur</label><input id="e-coul" type="color" value="${esc(v.couleur || COUL_EVENEMENT)}" style="width:100%;height:42px"></div>
+      <div class="champ"><label for="e-lieu">Lieu</label><input id="e-lieu" type="text" placeholder="Facultatif" value="${esc(type === "evenement" ? v.salle || "" : "")}"></div>
+    </div>
+    <div class="grille-form" id="bloc-remplace">
+      <div class="champ"><label for="r-matiere">Cours</label>${optionsMatieres(v.matiere || COURS[0][0], "r-matiere")}</div>
+      <div class="champ" id="bloc-r-autre"><label for="r-autre">Nom du cours</label><input id="r-autre" type="text" value="${esc(v.matiere && !COURS.some(([n]) => n === v.matiere) ? v.matiere : "")}"></div>
+      <div class="champ"><label for="r-prof">Professeur</label><input id="r-prof" type="text" placeholder="Facultatif" value="${esc(v.prof || "")}"></div>
+      <div class="champ"><label for="r-salle">Salle</label><input id="r-salle" type="text" placeholder="Facultatif" value="${esc(type === "remplace" ? v.salle || "" : "")}"></div>
+    </div>
+    <label class="interrupteur"><span><strong>Remplace les cours prévus à ces heures</strong><small>Sinon, l'heure s'affiche à côté des cours.</small></span><input type="checkbox" id="aj-masque" ${v.masque !== false ? "checked" : ""}></label>
+    <div class="champ"><label for="an-note">Précision (facultatif)</label><input id="an-note" type="text" maxlength="160" value="${esc(v.note || "")}"></div>
+    <p id="statut-fen" class="statut" role="status"></p>
+    <div class="rangee" style="justify-content:space-between"><div class="rangee"><button class="btn" type="submit">${exist ? "Enregistrer" : "Ajouter"}</button><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div>
+      ${exist ? `<button type="button" class="mini-btn danger" id="fen-suppr">Supprimer</button>` : ""}</div>`);
+  const maj = () => { $("#bloc-evenement").hidden = type !== "evenement"; $("#bloc-remplace").hidden = type !== "remplace"; $("#bloc-r-autre").hidden = $("#r-matiere").value !== "__autre"; };
+  brancherSegment(el, "aj-type", t => { type = t; maj(); });
+  $("#r-matiere").onchange = maj; maj();
+  if (exist) deuxClics($("#fen-suppr"), async () => { fermerFenetre(); try { await db.doc("changements/" + exist.id).delete(); statut("Heure supprimée.", true); } catch (err){ statut(erreurEcriture(err)); } });
+  el.querySelector("form").onsubmit = async ev => {
+    ev.preventDefault();
+    const dire = t => { const s = $("#statut-fen"); s.className = "statut erreur"; s.textContent = t; };
+    const debut = $("#aj-debut").value, fin = $("#aj-fin").value;
+    if (!debut || !fin || enMin(fin) <= enMin(debut)) return dire("L'heure de fin doit être après l'heure de début.");
+    if (enMin(debut) < JOUR_DEBUT || enMin(fin) > JOUR_FIN) return dire("Les heures ont lieu entre 08:10 et 16:25.");
+    if (lundiChoix) date = $("#aj-date").value;
+    const base = {date, creneauId: "", debut, fin, type, masque: $("#aj-masque").checked, note: $("#an-note").value.trim(), creeLe: exist ? exist.creeLe : new Date().toISOString(), par: moi || "gerant"};
+    let d;
+    if (type === "evenement"){ const nom = $("#e-nom").value.trim(); if (!nom) return dire("Donne un nom à l'événement.");
+      d = {...base, cours: nom, nom, couleur: $("#e-coul").value, salle: $("#e-lieu").value.trim()}; }
+    else { const m = $("#r-matiere").value === "__autre" ? $("#r-autre").value.trim() : $("#r-matiere").value; if (!m) return dire("Indique le cours.");
+      d = {...base, cours: m, matiere: m, prof: $("#r-prof").value.trim(), salle: $("#r-salle").value.trim()}; }
+    try { await db.doc("changements/" + (exist ? exist.id : nouvelId("ch"))).set(d); fermerFenetre(); statut(type === "evenement" ? "Heure événementielle enregistrée." : "Heure de remplacement enregistrée.", true); }
+    catch (err){ dire(erreurEcriture(err)); }
+  };
 }
 
 function fermerFenetre(){ const v = $("#voile"); if (v) v.remove(); }
@@ -13049,15 +13221,66 @@ VUES["g-annee"] = function vueGAnnee(){
   rafraichir = dessinerAnneeGerant;
   const y = debutAnneeScolaire();
   zone().innerHTML = entete(espaceNom(), `D.S. et semaines ${y}-${y + 1}`) + `
-    <p class="doux" style="max-width:75ch">Clique sur une semaine pour y placer des D.S. et choisir son type : semaine normale, vacances ou événement (avec un nom et une couleur). Les élèves de 3C voient ces blocs dans Emploi du temps → D.S. année.</p>
+    <p class="doux" style="max-width:75ch">Clique sur une semaine pour y placer des D.S. et choisir son type : semaine normale, vacances ou événement (avec un nom et une couleur). Les élèves de 3C voient ces blocs dans Emploi du temps → D.S. année. Les D.S. s'affichent aussi dans l'emploi du temps de la semaine, sur les heures « Devoir surveillé ».</p>
     <p id="statut" class="statut" role="status"></p>
+    <div class="bloc" id="bloc-conges"></div>
     <div class="annee-blocs" id="annee-gerant"></div>`;
   dessinerAnneeGerant(); allerSemaineActuelle();
 };
 function dessinerAnneeGerant(){
+  dessinerConges();
   const z = $("#annee-gerant"); if (!z) return;
   z.innerHTML = blocsAnnee(true);
   z.querySelectorAll(".bloc-sem").forEach(b => b.onclick = () => fenetreSemaine(b.dataset.l));
+}
+/* Jours de congé : un jour ou une période, pour des vacances ou un jour férié */
+const dateCourte = d => `${["Dim.","Lun.","Mar.","Mer.","Jeu.","Ven.","Sam."][new Date(d + "T12:00:00").getDay()]} ${dateFr(d)}`;
+function dessinerConges(){
+  const z = $("#bloc-conges"); if (!z) return;
+  const l = [...(annee.conges || [])].sort((a, b) => a.debut.localeCompare(b.debut));
+  z.innerHTML = `<div class="rangee" style="justify-content:space-between"><span class="mono">Jours de congé</span><button type="button" class="btn" id="ajout-conge">Ajouter des jours de congé</button></div>
+    <p class="doux" style="margin:0;font-size:.88rem">Ces jours s'affichent « Vacances » ou « Jour férié » dans l'emploi du temps des élèves, à la place des cours. Les semaines marquées « Vacances » ci-dessous le sont déjà en entier.</p>
+    ${l.length ? `<div class="liste">${l.map(k => `<div class="ligne-info"><span class="titre"><span class="date-bloc">${k.fin && k.fin !== k.debut ? "Du " + dateCourte(k.debut) + " au " + dateCourte(k.fin) : dateCourte(k.debut)}</span><strong>${esc(k.nom || (k.raison === "ferie" ? "Jour férié" : "Vacances"))}</strong></span>
+      <span class="rangee"><span class="conge-puce ${k.raison === "ferie" ? "ferie" : "vacances"}">${k.raison === "ferie" ? "Jour férié" : "Vacances"}</span><button type="button" class="mini-btn" data-modif-conge="${esc(k.id)}">Modifier</button><button type="button" class="mini-btn danger" data-suppr-conge="${esc(k.id)}">Supprimer</button></span></div>`).join("")}</div>`
+      : `<div class="vide">Aucun jour de congé ajouté.</div>`}`;
+  $("#ajout-conge").onclick = () => fenetreConge(null);
+  z.querySelectorAll("[data-modif-conge]").forEach(b => b.onclick = () => fenetreConge((annee.conges || []).find(k => k.id === b.dataset.modifConge)));
+  z.querySelectorAll("[data-suppr-conge]").forEach(b => deuxClics(b, () => { annee = {...annee, conges: (annee.conges || []).filter(k => k.id !== b.dataset.supprConge)}; dessinerAnneeGerant(); ecrireAnnee("Jour de congé supprimé."); }));
+}
+function fenetreConge(k){
+  fermerFenetre();
+  let raison = k && k.raison === "ferie" ? "ferie" : "vacances";
+  const y = debutAnneeScolaire(), min = y + "-08-15", max = (y + 1) + "-07-31";
+  const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
+  el.innerHTML = `<form class="fenetre" role="dialog" aria-modal="true" aria-labelledby="titre-fen" novalidate>
+    <h3 id="titre-fen">${k ? "Modifier les jours de congé" : "Ajouter des jours de congé"}</h3>
+    <div class="champ"><span style="font-size:.85rem;font-weight:500">Raison</span>${segment("cg-raison", RAISONS_CONGE, raison)}</div>
+    <div class="grille-form">
+      <div class="champ"><label for="cg-debut">Du</label><input id="cg-debut" type="date" min="${min}" max="${max}" value="${esc(k ? k.debut : auj())}"></div>
+      <div class="champ"><label for="cg-fin">Au (compris)</label><input id="cg-fin" type="date" min="${min}" max="${max}" value="${esc(k ? k.fin || k.debut : "")}"><span class="aide">Laisse vide pour un seul jour.</span></div>
+      <div class="champ" style="grid-column:1 / -1"><label for="cg-nom">Nom (facultatif)</label><input id="cg-nom" type="text" maxlength="40" value="${esc(k ? k.nom || "" : "")}"></div>
+    </div>
+    <p id="statut-fen" class="statut" role="status"></p>
+    <div class="rangee"><button class="btn" type="submit">${k ? "Enregistrer" : "Ajouter"}</button><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div>
+  </form>`;
+  document.body.appendChild(el);
+  const majNom = () => { $("#cg-nom").placeholder = raison === "ferie" ? "Armistice, Pâques, Ascension…" : "Toussaint, Noël, pont…"; };
+  el.querySelectorAll("#cg-raison button").forEach(b => b.onclick = () => { raison = b.dataset.v; el.querySelectorAll("#cg-raison button").forEach(x => x.setAttribute("aria-pressed", x === b)); majNom(); });
+  majNom();
+  $("#fen-annuler").onclick = fermerFenetre;
+  el.addEventListener("mousedown", ev => { if (ev.target === el) fermerFenetre(); });
+  el.addEventListener("keydown", ev => { if (ev.key === "Escape") fermerFenetre(); });
+  el.querySelector("form").onsubmit = ev => {
+    ev.preventDefault();
+    const dire = t => { const s = $("#statut-fen"); s.className = "statut erreur"; s.textContent = t; };
+    const debut = $("#cg-debut").value, fin = $("#cg-fin").value || debut;
+    if (!debut) return dire("Choisis la date du congé.");
+    if (fin < debut) return dire("La date de fin doit être après la date de début.");
+    const n = {id: k ? k.id : nouvelId("cg"), debut, fin, raison, nom: $("#cg-nom").value.trim()};
+    const conges = k ? (annee.conges || []).map(x => x.id === k.id ? n : x) : [...(annee.conges || []), n];
+    annee = {...annee, conges}; fermerFenetre(); dessinerAnneeGerant(); ecrireAnnee(k ? "Jours de congé modifiés." : "Jours de congé ajoutés.");
+  };
+  $("#cg-debut").focus();
 }
 function fenetreSemaine(l){
   fermerFenetre();
@@ -13095,7 +13318,7 @@ function fenetreSemaine(l){
     const n = {type, ds, ...(type !== "normale" ? {nom: $("#sem-nom").value.trim(), couleur: $("#sem-coul").value} : {})};
     const semaines = {...annee.semaines};
     if (type === "normale" && !ds.length) delete semaines[l]; else semaines[l] = n;
-    annee = {semaines}; fermerFenetre(); dessinerAnneeGerant(); ecrireAnnee("Semaine enregistrée.");
+    annee = {...annee, semaines}; fermerFenetre(); dessinerAnneeGerant(); ecrireAnnee("Semaine enregistrée.");
   };
 }
 /* ===================== DEMANDES DE CODE D'ACCÈS =====================
@@ -13518,7 +13741,8 @@ function basculerBrouillon(q){
   fetch("donnees/monde.json", {cache: "no-cache"}).then(r => r.ok ? r.json() : []).then(l => { mondeAuto = (Array.isArray(l) ? l : []).filter(a => a && a.id && a.titre).map(a => ({...a, auto: true})); fusionMonde(); }).catch(() => {});
   db.collection("monde").onSnapshot(s => { mondeDb = s.docs.map(d => ({...d.data(), id: d.id})); fusionMonde(); }, () => {});
   db.doc("edt/semaine").onSnapshot(s => { const d = s.exists ? s.data() : null; edt = {creneaux: d && Array.isArray(d.creneaux) ? d.creneaux : [], couleurs: d && d.couleurs && typeof d.couleurs === "object" ? d.couleurs : {}}; majVue(); }, () => {});
-  db.doc(cheminAnnee()).onSnapshot(s => { const d = s.exists ? s.data() : null; annee = {semaines: d && d.semaines && typeof d.semaines === "object" ? d.semaines : {}}; majVue(); }, () => {});
+  db.doc(cheminAnnee()).onSnapshot(s => { const d = s.exists ? s.data() : null; annee = {semaines: d && d.semaines && typeof d.semaines === "object" ? d.semaines : {},
+    conges: d && Array.isArray(d.conges) ? d.conges.filter(k => k && /^\d{4}-\d{2}-\d{2}$/.test(k.debut || "")) : []}; majVue(); }, () => {});
 
   // Connexion automatique sur cet appareil (session gardée par Supabase)
   try {
