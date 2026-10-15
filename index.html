@@ -1802,6 +1802,7 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .dv-nav-b.suiv{margin-left:auto;text-align:right}.dv-nav-b svg{width:18px;height:18px}.dv-nav-b span{display:flex;flex-direction:column;font-weight:600}.dv-nav-b small{font-weight:400;font-size:.72rem;color:var(--doux)}
 .dv-nav-b:hover{border-color:var(--accent)}
 @media (max-width:820px){
+  .dv-page-titre{font-size:1.5rem}.dv-banniere-ctrl{margin-left:0}
   .dv-focus-grille{grid-template-columns:minmax(0,1fr)}
   .dv-focus{padding:14px;border-radius:16px}.dv-focus-titre{font-size:1.25rem}
   .dv-maj{margin-left:0;width:100%}
@@ -1829,7 +1830,12 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .dv-page-tete{position:relative;overflow:hidden}
 .dv-page-tete > *:not(.dv-canvas){position:relative;z-index:1}
 .dv-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.dv-page-tete{min-height:190px}
+.dv-page-tete{min-height:170px;flex-direction:row !important;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.dv-tete-g{display:flex;flex-direction:column;gap:8px;min-width:0}
+.dv-page-titre{display:flex;align-items:center;gap:12px;margin:0;font-family:var(--f-titre);font-size:2rem;line-height:1.1;text-shadow:0 2px 14px rgba(0,0,0,.45)}
+.dv-pt-grand{width:14px;height:14px;border-radius:50%;background:var(--c);flex:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 30%,transparent)}
+.dv-page-quand{font-size:1rem;color:color-mix(in srgb,var(--texte) 80%,transparent);text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.dv-banniere-ctrl{margin-left:auto;align-self:center !important}
 .dv-formes{position:absolute;inset:0;pointer-events:none;color:var(--c)}
 .dv-forme{position:absolute;opacity:.2;animation:dv-flotte var(--d) ease-in-out infinite alternate}
 .dv-forme svg{width:100%;height:100%;display:block}
@@ -4740,7 +4746,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.48";
+const VERSION_SITE = "1.49";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5440,10 +5446,10 @@ function animerEntete(cv, couleur, enerve){
       ctx.fillRect(-1.3, -k * .4, 2.6, k * .65); ctx.beginPath(); ctx.arc(0, k * .5, 1.7, 0, 7); ctx.fill(); ctx.restore(); };
     items.forEach(it => {
       if (it.arret){   // forme gelée (blanche) + panneau rouge glitché par-dessus
-        forme(it, 0, `rgba(255,255,255,${.2 + Math.random() * .08})`);   // la forme gelée, en dessous
+        forme(it, 0, `rgba(255,255,255,${.12 + Math.random() * .05})`);   // la forme gelée, en dessous
         if (Math.random() < .15) return;   // le panneau clignote
-        const k = it.t * 1.25 + 9, j = () => (Math.random() - .5) * 3, a = .4 + Math.random() * .16;
-        panneau(it.x - 2 + j(), it.y + j(), k, `hsla(190,90%,70%,${a * .3})`); panneau(it.x + j(), it.y + j(), k, `hsla(355,95%,60%,${a})`, "hsla(355,60%,16%,.82)"); return; }
+        const k = it.t + 6, j = () => (Math.random() - .5) * 3, a = .2 + Math.random() * .1;
+        panneau(it.x - 2 + j(), it.y + j(), k, `hsla(190,90%,70%,${a * .3})`); panneau(it.x + j(), it.y + j(), k, `hsla(355,90%,62%,${a})`, "hsla(355,45%,18%,.55)"); return; }
       if (it.crise){ forme(it, -3, `hsla(350,100%,62%,${it.al * .8})`); forme(it, 3, `hsla(190,90%,70%,${it.al * .45})`); }   // décalage de couleurs façon glitch
       forme(it);
     });
@@ -5493,9 +5499,12 @@ function pageDevoir(d, l){
   const duJour = l.filter(x => x.date === d.date), i = duJour.findIndex(x => x.id === d.id), prec = duJour[i - 1], suiv = duJour[i + 1];
   return `<button type="button" class="dv-retour" id="dv-retour">${FLECHE_DV_G}${dvDepuisJour ? esc(dateLongueDv(d.date)) : "Devoirs"}</button>
     <article class="dv-page ${d.interrogation ? "controle" : ""}" style="--c:${esc(couleurCours(m))}">
-      <header class="dv-page-tete"><canvas class="dv-canvas" aria-hidden="true"></canvas><span class="dv-page-mat">${esc(m)}</span>
-        <h2>${j.n === 0 ? "Pour aujourd'hui" : j.n === 1 ? "Pour demain" : j.n < 0 ? "C'était pour le" : "Pour le"} ${j.n === 0 || j.n === 1 ? nomJourDv(d.date) + " " + courtDate(d.date) : esc(dateLongueDv(d.date).toLowerCase())}</h2>
-        ${d.interrogation ? `<div class="dv-banniere-ctrl">${ICO_CTRL}<span><b>Contrôle</b><small>${j.n === 0 ? "aujourd'hui" : j.n === 1 ? "demain — révise ce soir" : j.n > 1 ? `dans ${j.n} jours` : "passé"}</small></span></div>` : ""}<div class="rangee" style="gap:6px">${d.manuel ? `<span class="dv-badge grand">Ajouté à la main</span>` : ""}${j.n > 1 || j.n < 0 ? `<span class="dv-badge grand">${relJour(j.n)}</span>` : ""}</div></header>
+      <header class="dv-page-tete"><canvas class="dv-canvas" aria-hidden="true"></canvas>
+        <div class="dv-tete-g"><h2 class="dv-page-titre"><span class="dv-pt-grand"></span>${esc(m)}</h2>
+          <span class="dv-page-quand">${j.n === 0 ? "Pour aujourd'hui" : j.n === 1 ? "Pour demain" : j.n < 0 ? "C'était pour le" : "Pour le"} ${j.n === 0 || j.n === 1 ? nomJourDv(d.date) + " " + courtDate(d.date) : esc(dateLongueDv(d.date).toLowerCase())}</span>
+          <div class="rangee" style="gap:6px">${d.manuel ? `<span class="dv-badge grand">Ajouté à la main</span>` : ""}${j.n > 1 || j.n < 0 ? `<span class="dv-badge grand">${relJour(j.n)}</span>` : ""}</div></div>
+        ${d.interrogation ? `<div class="dv-banniere-ctrl">${ICO_CTRL}<span><b>Contrôle</b><small>${j.n === 0 ? "aujourd'hui" : j.n === 1 ? "demain — révise ce soir" : j.n > 1 ? `dans ${j.n} jours` : "passé"}</small></span></div>` : ""}
+      </header>
       <div class="dv-page-corps">
         <div class="dv-texte">${d.contenu ? texteDevoir(d.contenu) : `<span class="doux">Pas de détail.</span>`}</div>
         ${(d.documents || []).length ? `<div class="dv-docs"><span class="mono">Pièces jointes</span>${d.documents.map(x => `<span class="dv-doc">📎 ${esc(x)}</span>`).join("")}<small class="doux">À télécharger sur EcoleDirecte.</small></div>` : ""}
