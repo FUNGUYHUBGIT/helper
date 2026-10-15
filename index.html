@@ -4739,7 +4739,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.45";
+const VERSION_SITE = "1.46";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5389,12 +5389,12 @@ function animerEntete(cv, couleur, enerve){
   const PAL = enerve ? [[0, 10, 5], [-12, 5, 15], [12, 0, -5], [-25, 10, 20], [8, -10, 28]] : [[0, 0, 12], [28, 0, 8], [-28, 0, 10], [55, -10, 18], [-50, 0, 22], [0, -15, 30]];
   const TYPES = ["rond", "carre", "triangle", "croix", "point", "losange"];
   let W = 0, H = 0, dpr = 1, items = [], t = 0, glitch = 0;
-  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches, V = enerve ? 1.9 : .55;
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches, V = enerve ? 1.9 : .2;
   const creer = () => {
     const n = Math.round(Math.max(enerve ? 22 : 16, Math.min(enerve ? 60 : 44, W * H / (enerve ? 4200 : 6000))));
     items = Array.from({length: n}, () => { const ang = Math.random() * Math.PI * 2, v = V * (.4 + Math.random());
-      return {x: Math.random() * W, y: Math.random() * H, vx: Math.cos(ang) * v, vy: Math.sin(ang) * v, t: 5 + Math.random() * 13, a: Math.random() * 6.28, va: (Math.random() - .5) * (enerve ? .12 : .02),
-        type: TYPES[Math.floor(Math.random() * TYPES.length)], c: PAL[Math.floor(Math.random() * PAL.length)], al: enerve ? .26 + Math.random() * .22 : .1 + Math.random() * .14, crise: 0}; });
+      return {x: Math.random() * W, y: Math.random() * H, vx: Math.cos(ang) * v, vy: Math.sin(ang) * v, t: 5 + Math.random() * 13, a: Math.random() * 6.28, va: (Math.random() - .5) * (enerve ? .12 : .006),
+        type: TYPES[Math.floor(Math.random() * TYPES.length)], c: PAL[Math.floor(Math.random() * PAL.length)], al: enerve ? .26 + Math.random() * .22 : .1 + Math.random() * .14, crise: 0, arret: 0}; });
   };
   const taille = () => { const r = cv.getBoundingClientRect(); dpr = Math.min(2, devicePixelRatio || 1);
     if (Math.round(r.width) === W && Math.round(r.height) === H) return; W = Math.round(r.width); H = Math.round(r.height); cv.width = W * dpr; cv.height = H * dpr; creer(); };
@@ -5413,13 +5413,15 @@ function animerEntete(cv, couleur, enerve){
     taille(); t++;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
     for (const it of items){
+      if (enerve && it.arret){ it.arret--; continue; }   // forme figée : un panneau « attention » glitché apparaît à sa place
+      if (enerve && !it.arret && Math.random() < .0025 && items.filter(x => x.arret).length < 2){ it.arret = 70 + Math.floor(Math.random() * 60); continue; }
       if (enerve){ // crises : tremblements violents, téléportations, changements brusques de direction
         if (it.crise) it.crise--; else if (Math.random() < .012) it.crise = 8 + Math.floor(Math.random() * 18);
         if (Math.random() < .03){ const ang = Math.random() * 6.28, v = V * (1 + Math.random() * 2); it.vx = Math.cos(ang) * v; it.vy = Math.sin(ang) * v; it.va = (Math.random() - .5) * .45; }
         if (Math.random() < .004){ it.x += (Math.random() - .5) * 90; it.y += (Math.random() - .5) * 40; }
         const tr = it.crise ? 7 : 1.6;
         it.x += it.vx + (Math.random() - .5) * tr; it.y += it.vy + (Math.random() - .5) * tr;
-      } else { it.x += it.vx + Math.sin((t + it.t * 40) / 90) * .15; it.y += it.vy + Math.cos((t + it.t * 30) / 110) * .15; }
+      } else { it.x += it.vx + Math.sin((t + it.t * 40) / 260) * .06; it.y += it.vy + Math.cos((t + it.t * 30) / 300) * .06; }
       it.a += it.va;
       if (it.x < -20) it.x = W + 20; if (it.x > W + 20) it.x = -20; if (it.y < -20) it.y = H + 20; if (it.y > H + 20) it.y = -20;
     }
@@ -5431,7 +5433,14 @@ function animerEntete(cv, couleur, enerve){
         else { ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); }
         ctx.stroke(); }
     }
+    const panneau = (x, y, k, coul) => { ctx.save(); ctx.translate(x, y); ctx.strokeStyle = ctx.fillStyle = coul; ctx.lineWidth = 2.2; ctx.lineJoin = "round";
+      ctx.beginPath(); ctx.moveTo(0, -k); ctx.lineTo(k * 1.05, k * .8); ctx.lineTo(-k * 1.05, k * .8); ctx.closePath(); ctx.stroke();
+      ctx.fillRect(-1.3, -k * .4, 2.6, k * .65); ctx.beginPath(); ctx.arc(0, k * .5, 1.7, 0, 7); ctx.fill(); ctx.restore(); };
     items.forEach(it => {
+      if (it.arret){ if (Math.random() < .12) return;   // clignote
+        const k = 15 + Math.random() * 2, j = () => (Math.random() - .5) * 4, a = .55 + Math.random() * .3;
+        panneau(it.x - 3 + j(), it.y + j(), k, `hsla(350,100%,62%,${a * .7})`); panneau(it.x + 3 + j(), it.y + j(), k, `hsla(190,90%,70%,${a * .4})`);
+        panneau(it.x, it.y, k, `hsla(45,100%,60%,${a})`); return; }
       if (it.crise){ forme(it, -3, `hsla(350,100%,62%,${it.al * .8})`); forme(it, 3, `hsla(190,90%,70%,${it.al * .45})`); }   // décalage de couleurs façon glitch
       forme(it);
     });
