@@ -1754,8 +1754,9 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .dv-texte{line-height:1.55;overflow-wrap:anywhere}.dv-texte a{color:var(--accent)}
 .dv-docs{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.85rem;align-items:center}
 .dv-pied{font-size:.8rem;color:var(--doux)}
-.robot-ed{gap:10px}.robot-ed.erreur{border-color:color-mix(in srgb,#e5484d 55%,var(--ligne))}
-.robot-qcm{padding:12px;border-radius:10px;background:var(--surface-2)}
+.sync-ed{gap:10px}.sync-ed.erreur{border-color:color-mix(in srgb,#e5484d 55%,var(--ligne))}.sync-ed.ok{border-color:color-mix(in srgb,#5cc98a 45%,var(--ligne))}
+.qcm-ed{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+button.lien{background:none;border:0;padding:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
 @media (max-width:820px){.dv-liste{grid-template-columns:minmax(0,1fr)}}
 </style>
 
@@ -4520,6 +4521,7 @@ async function connecter(id){
   ouvrirApp();
   apresConnexionMaj();
   annoncerNouveautes();
+  setTimeout(() => { if (typeof syncAutoED === "function") syncAutoED(); }, 4000);
 }
 $("#entrer-gerant").addEventListener("click", () => {
   if (!estGerant || !db) return;
@@ -4600,21 +4602,21 @@ function marquerNav(v){ document.querySelectorAll("#nav button").forEach(b => b.
 const VUES = {};
 // ambiance violette de la dictée : formes du fond, menu de côté et couleur d'accent
 // ----- Application Android (téléchargée sur Entarsh Catalogue) -----
-const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.2";
+const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.3";
 const enModeApp = () => { try { if (new URLSearchParams(location.search).get("app")) sessionStorage.setItem("helper.app", "1"); } catch {}
   let s = false; try { s = sessionStorage.getItem("helper.app") === "1"; } catch {}
   return s || matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; };
 if (enModeApp()) document.body.classList.add("mode-app");
 if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 const APPLI_NATIVE = (/HelperApp\/([\d.]+)/.exec(navigator.userAgent) || [])[1] || "";
-const DERNIERE_APPLI = "1.2";
+const DERNIERE_APPLI = "1.3";
 const VIEILLE_APPLI = enModeApp() && /android/i.test(navigator.userAgent) && (!APPLI_NATIVE || parseFloat(APPLI_NATIVE) < parseFloat(DERNIERE_APPLI));   // appli Android à mettre à jour
 { const b = document.getElementById("btn-installer"); if (b){ b.hidden = (enModeApp() && !VIEILLE_APPLI) || !/android/i.test(navigator.userAgent);
-  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : icône à ta couleur" : "Nouvelle version : couleurs corrigées";
+  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : devoirs EcoleDirecte" : "Nouvelle version : couleurs corrigées";
     let vu = false; try { vu = sessionStorage.getItem("helper.majAppli") === "1"; sessionStorage.setItem("helper.majAppli", "1"); } catch {}
     if (!vu) addEventListener("load", () => setTimeout(() => b.click(), 1200)); } } }
 document.getElementById("btn-installer")?.addEventListener("click", () => { fermerMenuMobile();
-  const el = ouvrirVoile(`<h3>${VIEILLE_APPLI ? "Nouvelle version de l'application" : "Application Helper pour Android"}</h3>${VIEILLE_APPLI ? `<p style="margin:0 0 6px">${APPLI_NATIVE ? `Une nouvelle version de l'application est disponible : son <b>icône prend la couleur</b> choisie dans tes Préférences.` : `Ton application Helper est l'<b>ancienne version</b> : c'est elle qui affiche les mauvaises couleurs.`} Installe la nouvelle par-dessus.</p>` : ""}<p class="doux" style="margin:0">Helper s'ouvre comme une vraie application, en plein écran, avec son icône sur ton écran d'accueil.</p>
+  const el = ouvrirVoile(`<h3>${VIEILLE_APPLI ? "Nouvelle version de l'application" : "Application Helper pour Android"}</h3>${VIEILLE_APPLI ? `<p style="margin:0 0 6px">${APPLI_NATIVE ? `Une nouvelle version de l'application est disponible : elle peut <b>récupérer les devoirs d'EcoleDirecte</b> et son icône prend la couleur de tes Préférences.` : `Ton application Helper est l'<b>ancienne version</b> : c'est elle qui affiche les mauvaises couleurs.`} Installe la nouvelle par-dessus.</p>` : ""}<p class="doux" style="margin:0">Helper s'ouvre comme une vraie application, en plein écran, avec son icône sur ton écran d'accueil.</p>
     <ol class="inst-etapes"><li><span>Touche <b>Télécharger</b> ci-dessous (fichier <b>Helper-Entarsh-1.0.apk</b>).</span></li><li><span>Ouvre le fichier téléchargé. Si le téléphone le demande, autorise ton navigateur à <b>installer des applications inconnues</b>.</span></li><li><span>Touche <b>Installer</b>, puis ouvre <b>Helper</b> depuis ton écran d'accueil.</span></li></ol>
     <div class="rangee"><a class="btn" href="${URL_APK}" download>Télécharger</a><a class="btn sec" href="https://entarsh-studio.github.io/" target="_blank" rel="noopener">Voir sur Entarsh Catalogue</a><button class="btn sec" type="button" id="fen-annuler">Fermer</button></div>`, 480);
   el.querySelector("#fen-annuler").onclick = fermerFenetre;
@@ -4646,7 +4648,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.38";
+const VERSION_SITE = "1.39";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5292,7 +5294,7 @@ VUES.devoirs = function vueDevoirs(){
   const nbC = l.filter(d => d.interrogation).length;
   zone().innerHTML = entete("Devoirs", "À faire", edit ? `<button type="button" class="btn" id="ajout-devoir">Ajouter un devoir</button>` : "")
     + `<p class="doux dv-source">${devoirsED.majLe ? `Cahier de texte EcoleDirecte · mis à jour le ${quandMaj(devoirsED.majLe)}` : "Les devoirs d'EcoleDirecte ne sont pas encore récupérés."}${nbC ? ` · <b class="dv-nbc">${nbC} contrôle${nbC > 1 ? "s" : ""} à venir</b>` : ""}</p>`
-    + (edit ? `<div id="robot-devoirs"></div>` : "")
+    + (edit ? `<div id="sync-devoirs"></div>` : "")
     + (groupes.length ? groupes.map(g => { const j = libJourDevoir(g.date);
         return `<section class="dv-jour ${j.n <= 1 ? "proche" : ""}"><h3>${j.titre}<small>${j.n > 1 ? courtDate(g.date) : j.sous}</small><span class="dv-nb">${g.l.length} devoir${g.l.length > 1 ? "s" : ""}</span></h3>
           <div class="dv-liste">${g.l.map(d => carteDevoir(d, edit)).join("")}</div></section>`; }).join("")
@@ -5300,7 +5302,7 @@ VUES.devoirs = function vueDevoirs(){
   const aj = $("#ajout-devoir"); if (aj) aj.onclick = () => fenetreDevoir(null);
   zone().querySelectorAll("[data-modif-dv]").forEach(b => b.onclick = () => fenetreDevoir(devoirsMan.find(d => d.id === b.dataset.modifDv)));
   zone().querySelectorAll("[data-suppr-dv]").forEach(b => deuxClics(b, () => ecrireDevoirsMan(devoirsMan.filter(d => d.id !== b.dataset.supprDv), "Devoir supprimé.")));
-  if (edit) panneauRobot();
+  if (edit) panneauSync();
 };
 async function ecrireDevoirsMan(liste, ok){
   try { await db.doc("edt/devoirs-manuels").set({devoirs: liste}); devoirsMan = liste; toast(ok); if (vueActive === "devoirs") VUES.devoirs(); }
@@ -5341,28 +5343,135 @@ function fenetreDevoir(d){
   };
   $("#dv-texte").focus();
 }
-/* Gérant : état du robot EcoleDirecte et question de sécurité éventuelle */
-const ACTIONS_ROBOT = "https://github.com/FUNGUYHUBGIT/helper/actions/workflows/devoirs.yml";
-async function panneauRobot(){
-  const z = $("#robot-devoirs"); if (!z) return;
-  let r = null;
-  try { const s = await db.doc("robot/ecoledirecte").get(); r = s.exists ? s.data() : null; } catch { return; }
-  if (!$("#robot-devoirs")) return;
-  const der = r && r.dernier, q = r && r.qcm, deja = q && r.reponses && r.reponses[normDv(q.question)];
-  z.innerHTML = `<div class="bloc robot-ed ${der ? (der.ok ? "ok" : "erreur") : ""}">
-    <div class="rangee" style="justify-content:space-between"><span class="mono">Robot EcoleDirecte (visible par le gérant seulement)</span><a class="mini-btn" href="${ACTIONS_ROBOT}" target="_blank" rel="noopener">Lancer / voir sur GitHub</a></div>
-    <p style="margin:0">${der ? `${der.ok ? "✅" : "⚠️"} ${esc(der.message || "")} <span class="doux">· ${quandMaj(der.le)}</span>` : `Le robot n'est pas encore passé. Ajoute les 4 secrets dans GitHub, puis lance-le une première fois.`}</p>
-    ${q && !deja ? `<div class="robot-qcm"><strong>EcoleDirecte pose une question de sécurité :</strong><p style="margin:4px 0 8px">${esc(q.question)}</p>
-      <div class="rangee">${(q.propositions || []).map((p, i) => `<button type="button" class="mini-btn" data-qcm="${i}">${esc(p)}</button>`).join("")}</div>
-      <small class="doux">Choisis la bonne réponse : le robot l'utilisera à son prochain passage (ou relance-le tout de suite sur GitHub).</small></div>` : ""}
-    ${q && deja ? `<p class="doux" style="margin:0">Réponse enregistrée pour la question de sécurité : relance le robot sur GitHub ou attends son prochain passage.</p>` : ""}
-  </div>`;
-  z.querySelectorAll("[data-qcm]").forEach(b => b.onclick = async () => {
-    const choix = q.propositions[+b.dataset.qcm];
-    try { const s = await db.doc("robot/ecoledirecte").get(); const d = s.exists ? s.data() : {};
-      await db.doc("robot/ecoledirecte").set({...d, reponses: {...(d.reponses || {}), [normDv(q.question)]: choix}}); toast("Réponse enregistrée."); panneauRobot(); }
-    catch (err){ toast(erreurEcriture(err)); }
+/* ----- Synchronisation EcoleDirecte depuis l'application Android (le téléphone se connecte lui-même : même adresse IP que d'habitude) ----- */
+const ED_API = "https://api.ecoledirecte.com/v3", ED_VERSION = "4.97.2";
+const appliPeutSync = () => !!(window.HelperApp && typeof window.HelperApp.requeteED === "function");
+const lsJson = (k, d) => { try { return JSON.parse(lsGet(k) || "") || d; } catch { return d; } };
+let edN = 0, syncEnCours = false, syncEtat = null;
+const edAttente = {};
+window.__edRep = (id, r) => { const a = edAttente[id]; if (!a) return; delete edAttente[id]; clearTimeout(a.t); r && r.erreur ? a.rej(new Error("Connexion impossible (" + r.erreur + ")")) : a.res(r); };
+const edReq = (methode, url, entetes, corps = "") => new Promise((res, rej) => {
+  const id = "r" + (++edN);
+  edAttente[id] = {res, rej, t: setTimeout(() => { if (edAttente[id]){ delete edAttente[id]; rej(new Error("EcoleDirecte ne répond pas.")); } }, 40000)};
+  window.HelperApp.requeteED(id, methode, url, JSON.stringify(entetes), corps);
+});
+const b64Txt = s => { try { return new TextDecoder().decode(Uint8Array.from(atob(String(s || "")), c => c.charCodeAt(0))); } catch { return ""; } };
+const txtB64 = s => btoa(String.fromCharCode(...new TextEncoder().encode(String(s))));
+function htmlEnTexte(html){
+  const d = new DOMParser().parseFromString(String(html || ""), "text/html");
+  d.querySelectorAll("a[href]").forEach(a => { const t = a.textContent.trim(), h = a.getAttribute("href"); a.textContent = t && t !== h ? `${t} (${h})` : h; });
+  d.querySelectorAll("br").forEach(b => b.replaceWith("\n"));
+  d.querySelectorAll("p,div,li,h1,h2,h3,h4,tr").forEach(e => e.append("\n"));
+  d.querySelectorAll("li").forEach(e => e.prepend("• "));
+  return (d.body.textContent || "").replace(/ /g, " ").replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+// Connexion + cahier de texte. demanderQcm(question, propositions) → réponse choisie (ou null)
+async function syncED(ident, mdp, demanderQcm, etape){
+  const ua = navigator.userAgent.replace(/\s*HelperApp\/[\d.]+/, "");
+  let token = "", f2a = "", gtk = "", cookies = "";
+  const appel = async (chemin, data = {}) => {
+    const r = await edReq("POST", `${ED_API}${chemin}${chemin.includes("?") ? "&" : "?"}v=${ED_VERSION}`, {"Content-Type": "application/x-www-form-urlencoded", "User-Agent": ua,
+      ...(token ? {"X-Token": token} : {}), ...(f2a ? {"2fa-Token": f2a} : {}), ...(gtk ? {"X-Gtk": gtk} : {}), ...(cookies ? {Cookie: cookies} : {})}, "data=" + encodeURIComponent(JSON.stringify(data)));
+    let j; try { j = JSON.parse(r.body); } catch { throw new Error(`Réponse inattendue d'EcoleDirecte (HTTP ${r.status}).`); }
+    const tk = (r.headers || {})["x-token"] || j.token; if (tk) token = tk;
+    if ((r.headers || {})["2fa-token"]) f2a = r.headers["2fa-token"];
+    return j;
+  };
+  const login = async (fa, encoder) => {
+    const g = await edReq("GET", `${ED_API}/login.awp?gtk=1&v=${ED_VERSION}`, {"User-Agent": ua});
+    const paires = (g.cookies || []).map(c => String(c).split(";")[0].trim()).filter(c => c.includes("="));
+    cookies = paires.join("; "); const p = paires.find(x => x.startsWith("GTK=")); gtk = p ? p.slice(4) : "";
+    if (!gtk) throw new Error("EcoleDirecte n'a pas donné de jeton de connexion.");
+    token = ""; f2a = "";
+    return appel("/login.awp", {identifiant: encoder ? encodeURIComponent(ident) : ident, motdepasse: encoder ? encodeURIComponent(mdp) : mdp, isReLogin: false, uuid: "", fa: fa ? [fa] : []});
+  };
+  etape("Connexion à EcoleDirecte…");
+  let fa = lsJson("helper.ed.fa", null), enc = false, r = await login(fa, enc);
+  if (r.code === 505 && /[%+&]/.test(mdp)){ enc = true; r = await login(fa, enc); }
+  if (r.code === 505) throw new Error("EcoleDirecte refuse la connexion : " + (r.message || "identifiant ou mot de passe incorrect") + ". Si tu as reçu un mail « connexion bloquée », autorise-la depuis ce mail.");
+  if (r.code === 250){
+    const q = await appel("/connexion/doubleauth.awp?verbe=get", {});
+    if (q.code !== 200 || !q.data) throw new Error(`Question de sécurité indisponible (code ${q.code}).`);
+    const choix = await demanderQcm(b64Txt(q.data.question), (q.data.propositions || []).map(b64Txt));
+    if (!choix) throw new Error("Synchronisation annulée.");
+    const a = await appel("/connexion/doubleauth.awp?verbe=post", {choix: txtB64(choix)});
+    if (a.code !== 200 || !a.data || !a.data.cn) throw new Error("Mauvaise réponse à la question de sécurité.");
+    fa = {cn: a.data.cn, cv: a.data.cv}; lsSet("helper.ed.fa", JSON.stringify(fa));
+    r = await login(fa, enc);
+  }
+  if (r.code !== 200) throw new Error(`Connexion EcoleDirecte refusée (code ${r.code}${r.message ? " : " + r.message : ""}).`);
+  const comptes = (r.data && r.data.accounts) || [], compte = comptes.find(c => c.typeCompte === "E") || comptes[0];
+  const eleve = compte && (compte.typeCompte === "E" ? compte.id : (((compte.profile || {}).eleves || [])[0] || {}).id);
+  if (!eleve) throw new Error("Aucun compte élève trouvé sur EcoleDirecte.");
+  etape("Lecture du cahier de texte…");
+  const liste = await appel(`/Eleves/${eleve}/cahierdetexte.awp?verbe=get`, {});
+  if (liste.code !== 200) throw new Error(`Lecture du cahier de texte impossible (code ${liste.code}).`);
+  const dates = Object.keys(liste.data || {}).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort().slice(0, 30), devoirs = [];
+  for (const [i, date] of dates.entries()){
+    etape(`Lecture des devoirs… ${i + 1}/${dates.length}`);
+    const j = await appel(`/Eleves/${eleve}/cahierdetexte/${date}.awp?verbe=get`, {});
+    if (j.code !== 200 || !j.data) continue;
+    for (const m of j.data.matieres || []){ const af = m.aFaire; if (!af) continue;
+      devoirs.push({id: "ed-" + (af.idDevoir || m.id), date, matiere: m.matiere || "", prof: String(m.nomProf || "").trim(), groupe: m.entityType === "G" ? m.entityLibelle || "" : "",
+        interrogation: !!m.interrogation, donneLe: af.donneLe || "", contenu: htmlEnTexte(b64Txt(af.contenu)).slice(0, 4000), documents: (af.documents || []).map(d => d.libelle).filter(Boolean).slice(0, 10)}); }
+  }
+  return devoirs;
+}
+function demanderQcmFenetre(question, propositions){
+  return new Promise(fin => {
+    fermerFenetre();
+    const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
+    el.innerHTML = `<div class="fenetre" role="dialog" aria-modal="true" aria-labelledby="titre-fen"><h3 id="titre-fen">Question de sécurité EcoleDirecte</h3>
+      <p>${esc(question)}</p><div class="qcm-ed">${propositions.map((p, i) => `<button type="button" class="mini-btn" data-i="${i}">${esc(p)}</button>`).join("")}</div>
+      <p class="doux" style="font-size:.85rem">EcoleDirecte la pose la première fois qu'un nouvel appareil se connecte. Ta réponse reste sur ce téléphone.</p>
+      <div class="rangee"><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div></div>`;
+    document.body.appendChild(el);
+    el.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { fermerFenetre(); fin(propositions[+b.dataset.i]); });
+    $("#fen-annuler").onclick = () => { fermerFenetre(); fin(null); };
   });
+}
+async function lancerSyncED(auto){
+  if (syncEnCours || !appliPeutSync() || !peutEditerDevoirs()) return;
+  const id = lsGet("helper.ed.id"), mdp = lsGet("helper.ed.mdp");
+  if (!id || !mdp) return;
+  syncEnCours = true; syncEtat = {texte: "Connexion à EcoleDirecte…"}; majSync();
+  try {
+    const devoirs = await syncED(id, mdp, auto ? async () => null : demanderQcmFenetre, t => { syncEtat = {texte: t}; majSync(); });
+    await db.doc("edt/devoirs").set({source: "ecoledirecte", majLe: new Date().toISOString(), par: moi || "gerant", devoirs});
+    syncEtat = {ok: true, texte: `${devoirs.length} devoir${devoirs.length > 1 ? "s" : ""} récupéré${devoirs.length > 1 ? "s" : ""}.`};
+    lsSet("helper.ed.dernier", new Date().toISOString());
+  } catch (err){
+    syncEtat = {ok: false, texte: auto && /annulée/.test(err.message) ? "EcoleDirecte pose une question de sécurité : appuie sur « Synchroniser » pour y répondre." : err.message};
+  } finally { syncEnCours = false; majSync(); }
+}
+// synchronisation automatique : au plus toutes les 3 heures, quand le gérant ouvre l'application
+function syncAutoED(){
+  if (!appliPeutSync() || !peutEditerDevoirs() || !lsGet("helper.ed.id")) return;
+  const der = Date.parse(lsGet("helper.ed.dernier") || "") || 0;
+  if (Date.now() - der > 3 * 3600e3) lancerSyncED(true);
+}
+function majSync(){ if (vueActive === "devoirs") panneauSync(); }
+function panneauSync(){
+  const z = $("#sync-devoirs"); if (!z) return;
+  if (!appliPeutSync()){
+    z.innerHTML = `<div class="bloc sync-ed"><span class="mono">Synchronisation EcoleDirecte</span><p style="margin:0" class="doux">Pour récupérer les devoirs d'EcoleDirecte, ouvre cet onglet dans <b>l'application Android Helper</b> (version 1.3 ou plus) : c'est ton téléphone qui se connecte, comme l'appli EcoleDirecte.</p></div>`;
+    return;
+  }
+  const id = lsGet("helper.ed.id") || "", enreg = !!(id && lsGet("helper.ed.mdp"));
+  z.innerHTML = `<div class="bloc sync-ed ${syncEtat ? (syncEtat.ok === false ? "erreur" : syncEtat.ok ? "ok" : "") : ""}">
+    <div class="rangee" style="justify-content:space-between"><span class="mono">Synchronisation EcoleDirecte</span>
+      ${enreg ? `<button type="button" class="btn" id="sync-go" ${syncEnCours ? "disabled" : ""}>${syncEnCours ? "Synchronisation…" : "Synchroniser"}</button>` : ""}</div>
+    ${syncEtat ? `<p style="margin:0">${syncEnCours ? "⏳" : syncEtat.ok ? "✅" : "⚠️"} ${esc(syncEtat.texte)}</p>` : ""}
+    ${enreg ? `<p class="doux" style="margin:0;font-size:.85rem">Compte ${esc(id)} · synchronisation automatique toutes les 3 h quand tu ouvres l'appli. <button type="button" class="lien" id="sync-oubli">Changer de compte</button></p>`
+      : `<p class="doux" style="margin:0;font-size:.88rem">Entre ton identifiant et ton mot de passe EcoleDirecte. Ils restent <b>uniquement sur ce téléphone</b> : le téléphone se connecte lui-même à EcoleDirecte puis envoie les devoirs à Helper pour toute la classe.</p>
+      <form id="sync-form" class="grille-form" novalidate><div class="champ"><label for="ed-id">Identifiant EcoleDirecte</label><input id="ed-id" autocomplete="username" autocapitalize="none" value="${esc(id)}"></div>
+        <div class="champ"><label for="ed-mdp">Mot de passe</label><input id="ed-mdp" type="password" autocomplete="current-password"></div>
+        <div class="champ" style="align-self:end"><button class="btn" type="submit">Enregistrer et synchroniser</button></div></form>`}
+  </div>`;
+  const go = $("#sync-go"); if (go) go.onclick = () => lancerSyncED(false);
+  const ou = $("#sync-oubli"); if (ou) ou.onclick = () => { ["helper.ed.mdp", "helper.ed.fa", "helper.ed.dernier"].forEach(k => lsSet(k, null)); syncEtat = null; panneauSync(); };
+  const f = $("#sync-form"); if (f) f.onsubmit = ev => { ev.preventDefault(); const i = $("#ed-id").value.trim(), m = $("#ed-mdp").value;
+    if (!i || !m) return; lsSet("helper.ed.id", i); lsSet("helper.ed.mdp", m); lancerSyncED(false); };
 }
 /* ===================== LEÇONS : documents mis en forme ===================== */
 /* Une leçon = {matiere, titre, sousTitre, html, pj:[{id|ref, nom, type, taille}]}.
