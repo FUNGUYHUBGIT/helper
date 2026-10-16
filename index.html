@@ -1860,6 +1860,31 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .qcm-ed{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 button.lien{background:none;border:0;padding:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
 @media (max-width:820px){.dv-liste{grid-template-columns:minmax(0,1fr)}}
+/* Éditeur de dictées */
+.de-grille{display:flex;flex-direction:column;gap:16px;max-width:1000px}
+.de-infos .grille-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+.de-infos textarea{min-height:180px;font-size:1rem;line-height:1.6}
+.de-aide{margin:0;font-size:.88rem}
+.de-outils{gap:6px}
+.de-texte{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--ligne);font-size:1.05rem;line-height:2.1}
+.de-texte p{margin:0;display:flex;flex-wrap:wrap;align-items:center;row-gap:6px}
+.de-mot{--g:#b06bff;position:relative;padding:1px 4px;margin:0;border:0;border-radius:0;background:color-mix(in srgb,var(--g) 18%,transparent);color:var(--texte);font:inherit;cursor:pointer;transition:background .12s}
+.de-mot:hover{background:color-mix(in srgb,var(--g) 38%,transparent)}
+.de-mot.coupe{margin-right:12px;border-radius:0 6px 6px 0}
+.de-mot.coupe::after{content:"";position:absolute;right:-8px;top:15%;bottom:15%;width:3px;border-radius:2px;background:var(--accent)}
+.de-mot.g0{--g:#b06bff}.de-mot.g1{--g:#4fa3f7}.de-mot.g2{--g:#5cc98a}.de-mot.g3{--g:#f5a524}.de-mot.g4{--g:#ef6fa6}.de-mot.g5{--g:#4fc1b6}
+.de-texte.mode-verbes .de-mot{background:transparent}
+.de-texte.mode-verbes .de-mot:hover{background:color-mix(in srgb,#ff6b5a 18%,transparent)}
+.de-mot.verbe{text-decoration:underline 2px #ff6b5a;text-underline-offset:5px;font-weight:700}
+.de-texte.mode-verbes .de-mot.verbe{background:color-mix(in srgb,#ff6b5a 22%,transparent);border-radius:5px}
+.de-texte.mode-verbes .de-mot.coupe::after{opacity:.25}
+.de-alaligne{margin-left:8px;color:var(--doux);font-size:.85rem}
+.de-groupes ol{margin:8px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;counter-reset:g}
+.de-groupes li{--g:#b06bff;display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:10px;border-left:4px solid var(--g);background:color-mix(in srgb,var(--g) 9%,var(--surface));counter-increment:g}
+.de-groupes li::before{content:counter(g);font-family:var(--f-mono);font-size:.75rem;color:var(--doux);min-width:18px}
+.de-groupes li span{flex:1}.de-groupes li small{color:var(--doux);font-family:var(--f-mono);font-size:.7rem}
+.de-groupes li.g0{--g:#b06bff}.de-groupes li.g1{--g:#4fa3f7}.de-groupes li.g2{--g:#5cc98a}.de-groupes li.g3{--g:#f5a524}.de-groupes li.g4{--g:#ef6fa6}.de-groupes li.g5{--g:#4fc1b6}
+button.carte-dictee{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -4679,9 +4704,9 @@ function notifierEnDirect(type, docs){
 
 /* ===================== NAVIGATION ===================== */
 const ONGLETS_ELEVE = [["profil","Profil"],["prefs","Préférences"],["edt","Emploi du temps"],["lecons","Leçons"],["exos","Exercices"],["brevet","Exercices Brevet"],["devoirs","Devoirs"],["actu","Actualité"],["cloud","Cloud"]];
-const ONGLETS_ADMIN = [["g-lecons","Leçons"],["g-exos","Exercices"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"]];
+const ONGLETS_ADMIN = [["g-lecons","Leçons"],["g-exos","Exercices"],["g-dictees","Dictées"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"]];
 const espaceNom = () => modeGerant || estGerantCompte() ? "Gérant" : "Administration";
-const ONGLETS_GERANT = [["g-site","Mise à jour du site"],["g-eleves","Élèves et codes"],["g-lecons","Leçons"],["g-exos","Exercices"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"],["a-actus","Actus"],["g-cloud","Cloud"],["g-signal","Signalements"]];
+const ONGLETS_GERANT = [["g-site","Mise à jour du site"],["g-eleves","Élèves et codes"],["g-lecons","Leçons"],["g-exos","Exercices"],["g-dictees","Dictées"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"],["a-actus","Actus"],["g-cloud","Cloud"],["g-signal","Signalements"]];
 const zone = () => $("#vue");
 function initiale(p){ return esc(((p && (p.pseudo || p.nom)) || "?").slice(0, 1).toUpperCase()); }
 function majIdentite(){
@@ -4734,7 +4759,7 @@ function ambianceDictee(on){
   else if (document.documentElement.style.getPropertyValue("--accent") === "#b06bff" || Formes){ appliquerPrefs(profil && profil.prefs ? profil.prefs : PREFS_DEFAUT); Formes.ambiance(null); }
 }
 function changerVue(v){
-  if (v !== vueActive) try { dvJourVu = null; dvDevoirVu = null; } catch {}
+  if (v !== vueActive) try { dvJourVu = null; dvDevoirVu = null; if (v !== "g-dictees") dictEd = null; } catch {}
   marquerNav(v); rafraichir = null; fermerMenuMobile();
   { const b = document.querySelector(`#nav [data-vue="${v}"]`), t = document.getElementById("bm-titre"); if (t) t.textContent = b ? b.textContent.replace(/en travaux/i, "").trim() : ""; } fermerFenetre(); if (typeof arreterLecture === "function") arreterLecture(); if (document.body.classList.contains("ambiance-dictee")) ambianceDictee(false);
   vueActive = v;
@@ -4751,7 +4776,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.51";
+const VERSION_SITE = "1.52";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5088,10 +5113,7 @@ VUES.exos = function vueExos(){
         <span class="etat ${best === n ? "fait" : ""}">${best === undefined ? "Non commencé" : "Record " + best + "/" + n}</span>
       </button>`; };
   const section = (titre, aide, ls, carte) => ls.length ? `<div class="exos-section"><h3>${titre}</h3><p class="doux">${aide}</p><div class="liste">${ls.map(carte).join("")}</div></div>` : "";
-  const dictees = matiereActive === "francais" ? `<div class="exos-section"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3><p class="doux">Un texte nouveau à chaque fois, lu à voix haute. Tu l'écris, puis la correction souligne chaque faute.</p>
-      <div class="liste"><div class="ligne-liste carte-dictee"><span class="exo-tete">${iconeDictee()}<span class="titre"><strong><span class="et-theme-nom">Dictée :</span> ${choixDictee.source === "auteur" ? "Texte d'auteur" : "Histoire inventée"}</strong><span class="doux" style="font-size:.85rem">${choixDictee.source === "auteur" ? "Un extrait de Maupassant, Daudet, Zola, Verne, Flaubert, Hugo… La référence est donnée à la fin." : "Une petite histoire nouvelle à chaque fois (la mer, la forêt, la ville, la montagne)"}${prog.dictees && prog.dictees[auj()] !== undefined ? ` · meilleure note aujourd'hui : ${String(prog.dictees[auj()]).replace(".", ",")} / 10` : ""}</span>
-        <span class="rangee dt-options">${segment("dt-src", [["invente", "Texte inventé"], ["auteur", "Texte d'auteur"]], choixDictee.source || "invente")}${choixDictee.source === "auteur" ? "" : segment("dt-long", [["3", "Courte"], ["5", "Moyenne"], ["7", "Longue"]], String(choixDictee.phrases))}${choixDictee.source === "auteur" ? "" : segment("dt-temps", [["passe", "Passé"], ["present", "Présent"], ["futur", "Futur"]], choixDictee.temps)}${segment("dt-niv", [["facile", "Facile"], ["moyen", "Moyen"], ["difficile", "Difficile"]], choixDictee.niveau)}</span></span></span>
-        <button type="button" class="btn" id="dt-lancer">Commencer</button></div></div></div>` : "";
+  const dictees = matiereActive === "francais" ? sectionDictees() : "";
   zone().innerHTML = entete("Exercices", "S'entraîner") + filtres() + dictees + (toutes.length ? `
     ${segment("filtre-exos", [["tous", "Tous"], ["chaine", `Exercices en chaîne (${ch.length})`], ["type", `Exercices types (${ty.length})`]], filtreExos)}
     ${filtreExos !== "type" ? section(`${iconeExoChaine().replace('width="36" height="44"', 'width="16" height="20"')} Exercices en chaîne`, "Plusieurs questions différentes qui s'enchaînent, une à la fois.", ch, carteChaine) : ""}
@@ -5099,11 +5121,7 @@ VUES.exos = function vueExos(){
     : dictees ? "" : `<div class="vide">Aucun exercice en ${nomMatiere(matiereActive)} pour le moment.</div>`);
   brancherFiltres(vueExos);
   zone().querySelectorAll("#filtre-exos button").forEach(b => b.onclick = () => { filtreExos = b.dataset.v; vueExos(); });
-  if ($("#dt-lancer")){ $("#dt-lancer").onclick = () => lancerDictee(choixDictee);
-    zone().querySelectorAll("#dt-long button").forEach(b => b.onclick = () => { choixDictee.phrases = +b.dataset.v; vueExos(); });
-    zone().querySelectorAll("#dt-temps button").forEach(b => b.onclick = () => { choixDictee.temps = b.dataset.v; vueExos(); });
-    zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; vueExos(); });
-    zone().querySelectorAll("#dt-src button").forEach(b => b.onclick = () => { choixDictee.source = b.dataset.v; vueExos(); }); }
+  if (dictees) brancherDictees(vueExos);
   zone().querySelectorAll(".liste button[data-l]").forEach(b => b.onclick = () => { const l = toutes.find(x => x.id === b.dataset.l);
     if (estPrecis(l)) lancerExoType(l); else lancerQuiz(questionsDe(l), {titre: l.titre, sur: nomMatiere(l.matiere) + " · Exercices", lecon: l}); });
 };
@@ -11493,12 +11511,12 @@ const collerPonct = l => l.replace(/ ([.,;:!?»])/g, "$1").replace(/« /g, "« "
 let choixDictee = {phrases: 5, temps: "passe", niveau: "facile", source: "invente"};
 function lancerDictee(opts = choixDictee, deja = null){
   rafraichir = null; arreterLecture(); ambianceDictee(true);
-  const d = deja || (opts.source === "auteur" ? dicteeAuteur() : genererDictee(opts)), ref = referenceDictee(d), groupes = groupesDictee(d.texte), audio = "speechSynthesis" in window, niveau = opts.niveau || "facile";
-  zone().innerHTML = entete("Français · Dictée", d.auteur ? "Dictée : texte d'auteur" : "Dictée : " + esc(d.theme)) + `
+  const d = deja || (opts.source === "auteur" ? dicteeAuteur() : genererDictee(opts)), ref = d.manuel ? referenceManuelle(d) : referenceDictee(d), groupes = d.manuel ? groupesManuels(d) : groupesDictee(d.texte), audio = "speechSynthesis" in window, niveau = opts.niveau || "facile";
+  zone().innerHTML = entete(opts.essai ? "Essai de la dictée" : "Français · Dictée", d.manuel ? "Dictée : " + esc(d.titre || "") : d.auteur ? "Dictée : texte d'auteur" : "Dictée : " + esc(d.theme)) + `
     <div class="exo-type-page dictee-page">
       <div class="et-enonce dt-lecteur">
-        <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(/\s+/).filter(w => /\w/.test(w)).length} mots · ${{passe: "récit au passé", present: "au présent", futur: "au futur", auteur: "texte d'un écrivain, la référence est donnée à la fin"}[d.temps] || ""}</span></span></span>
-          <span class="rangee"><button type="button" class="mini-btn" id="dt-nouvelle" title="Un autre texte">↻ Nouvelle dictée</button><button type="button" class="mini-btn dt-quitter" id="dt-quitter" title="Revenir à la page des exercices">✕ Quitter la dictée</button></span></div>
+        <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(/\s+/).filter(w => /\w/.test(w)).length} mots · ${groupes.length} groupes${d.manuel ? (d.auteur ? " · " + esc(d.auteur) : "") : " · " + ({passe: "récit au passé", present: "au présent", futur: "au futur", auteur: "texte d'un écrivain, la référence est donnée à la fin"}[d.temps] || "")}</span></span></span>
+          <span class="rangee">${opts.essai ? "" : `<button type="button" class="mini-btn" id="dt-nouvelle" title="Une autre dictée">↻ Autre dictée</button>`}<button type="button" class="mini-btn dt-quitter" id="dt-quitter" title="${opts.essai ? "Revenir à l'éditeur" : "Revenir à la page des exercices"}">✕ ${opts.essai ? "Revenir à l'éditeur" : "Quitter la dictée"}</button></span></div>
         ${audio ? `<div class="dt-niveau-info"><span class="dt-badge dt-${niveau}">${{facile: "Facile", moyen: "Moyen", difficile: "Difficile"}[niveau]}</span>
           <span class="doux">${{facile: "Tu peux réécouter chaque groupe autant de fois que tu veux.", moyen: `Tu peux réécouter chaque groupe ${MAX_REPET} fois au maximum, et le texte entier 2 fois.`, difficile: "Comme en classe : la voix lit tout le texte, puis dicte chaque groupe 3 fois et continue toute seule. Écris pendant les répétitions."}[niveau]}</span></div>
           <div class="rangee dt-commandes">${niveau === "difficile"
@@ -11572,8 +11590,9 @@ function lancerDictee(opts = choixDictee, deja = null){
       };
     }
   }
-  deuxClics($("#dt-nouvelle"), () => lancerDictee(opts));
-  $("#dt-retour").onclick = $("#dt-quitter").onclick = () => { arreterLecture(); changerVue("exos"); };
+  const suivante = () => { const a = d.manuel ? autreDictee(d) : null; if (d.manuel && !a){ toast("Il n'y a pas d'autre dictée pour le moment."); return; } lancerDictee(opts, a); };
+  if ($("#dt-nouvelle")) deuxClics($("#dt-nouvelle"), suivante);
+  $("#dt-retour").onclick = $("#dt-quitter").onclick = () => { arreterLecture(); if (opts.essai){ ambianceDictee(false); changerVue("g-dictees"); } else changerVue("exos"); };
   $("#dt-corriger").onclick = () => {
     arreterLecture();
     const lignes = cpLignes(zone());
@@ -11591,7 +11610,8 @@ function lancerDictee(opts = choixDictee, deja = null){
     const parNat = {}; c.fautes.forEach(f => parNat[f.nat] = (parNat[f.nat] || 0) + 1);
     const note = Math.max(0, 10 - c.points), cle = auj();
     let gain = 0;
-    if (prog){ prog.dictees = prog.dictees || {}; const avant = prog.dictees[cle];
+    if (prog && d.manuel && !opts.essai){ prog.dicteesFaites = prog.dicteesFaites || {}; if (prog.dicteesFaites[d.id] === undefined || note > prog.dicteesFaites[d.id]) prog.dicteesFaites[d.id] = note; }
+    if (prog && !opts.essai){ prog.dictees = prog.dictees || {}; const avant = prog.dictees[cle];
       if (avant === undefined || note > avant){ gain = Math.round((note - (avant || 0)) * 2); prog.dictees[cle] = note; prog.points += gain; sauver(); } }
     $("#dt-corriger").disabled = true;
     $("#dt-bilan").innerHTML = `<div class="bloc accent"><div class="score">${c.fautes.length}<small> faute${c.fautes.length > 1 ? "s" : ""}</small></div>
@@ -11600,8 +11620,8 @@ function lancerDictee(opts = choixDictee, deja = null){
       <p class="doux">Sur ta copie : les fautes sont soulignées (survole un mot pour voir la bonne forme), les accents manquants sont ajoutés en couleur et chaque ligne est réécrite juste en dessous.</p>
       ${ref ? `<p class="dt-ref">📖 ${esc(ref)}</p>` : ""}
       <details ${ref ? "open" : ""}><summary>Le texte de la dictée</summary><p class="cp-ecrit dt-texte">${esc(d.texte).replace(/\n/g, "<br>")}</p></details>
-      <div class="rangee"><button class="btn" type="button" id="dt-encore">↻ Nouvelle dictée</button></div></div>`;
-    $("#dt-encore").onclick = () => lancerDictee(opts);
+      <div class="rangee">${opts.essai ? "" : `<button class="btn" type="button" id="dt-encore">↻ Autre dictée</button>`}</div></div>`;
+    if ($("#dt-encore")) $("#dt-encore").onclick = suivante;
   };
 }
 function iconeDictee(){
@@ -11778,6 +11798,170 @@ const DICTEES_AUTEURS = [
 // « Extrait de La Parure, de Guy de Maupassant (Contes du jour et de la nuit). »
 const referenceDictee = d => d.auteur ? `Extrait de « ${d.titre} », de ${d.auteur} (${d.source}).` : "";
 function dicteeAuteur(){ const t = choisir(DICTEES_AUTEURS); return {...t, theme: "Texte d'auteur", temps: "auteur"}; }
+/* ===================== DICTÉES FAITES À LA MAIN : éditeur (gérant / administrateur) et liste pour les élèves =====================
+   Une dictée = un texte, découpé en groupes de lecture (les morceaux que la voix dicte un par un), avec les verbes conjugués repérés
+   pour que la correction signale les fautes de conjugaison. Tout est enregistré dans le document edt/dictees. */
+let dicteesDb = [];
+const motsPar = texte => String(texte || "").split(/\n+/).map(p => p.trim()).filter(Boolean).map(p => p.split(/\s+/));
+const nettoyerMot = m => String(m).replace(/^[«"“(—–-]+|[»"”),;:.!?…]+$/g, "");
+// découpage automatique (le même que les anciennes dictées) traduit en coupes : index des mots après lesquels un groupe se termine
+function coupesAuto(texte){
+  const coupes = []; let i = 0;
+  groupesDictee(texte).forEach(g => { i += g.ecrit.split(/\s+/).length; coupes.push(i - 1); });
+  return arrangerCoupes(texte, coupes);
+}
+// une ponctuation seule (« » ! ?…) ne fait jamais un groupe à elle seule : elle reste avec ses mots
+function arrangerCoupes(texte, coupes){
+  const mots = motsPar(texte).flat(), fins = new Set(), seule = m => /^[«»"“”()\-—–.,;:!?…]+$/.test(m); let n = 0;
+  motsPar(texte).forEach(p => { n += p.length; fins.add(n - 1); });
+  const c = new Set(coupes);
+  [...c].sort((a, b) => a - b).forEach(i => {
+    if (mots[i] && /^[«“(]$/.test(mots[i])){ c.delete(i); return; }                 // pas de coupe juste après « ouvrez les guillemets »
+    let j = i; while (!fins.has(j) && mots[j + 1] && /^[»”)!?:;.,…]+$/.test(mots[j + 1])) j++;   // la ponctuation qui suit reste dans le groupe
+    if (j !== i){ c.delete(i); c.add(j); }
+  });
+  return [...c].filter(i => !(seule(mots[i]) && c.has(i - 1) && !fins.has(i - 1))).sort((a, b) => a - b);
+}
+// groupes de lecture d'une dictée faite à la main (une fin de paragraphe termine toujours un groupe)
+function groupesManuels(d){
+  const pars = motsPar(d.texte), coupes = new Set(d.coupes || []), g = []; let i = 0;
+  pars.forEach((mots, ip) => {
+    let cur = [];
+    mots.forEach((m, k) => {
+      cur.push(m);
+      const finPar = k === mots.length - 1;
+      if (coupes.has(i) || finPar){ const ecrit = cur.join(" "); g.push({ecrit, dit: direPonctuation(ecrit) + (finPar && ip < pars.length - 1 ? " À la ligne." : ""), debut: i - cur.length + 1, fin: i}); cur = []; }
+      i++;
+    });
+  });
+  return g;
+}
+const referenceManuelle = d => d.auteur ? (d.oeuvre ? `Extrait de « ${d.oeuvre} », de ${d.auteur}.` : `D'après ${d.auteur}.`) : "";
+const dicteesVisibles = () => dicteesDb.filter(d => d.visible !== false && d.texte);
+const nbMots = t => String(t || "").split(/\s+/).filter(w => /[\wÀ-ÿ]/.test(w)).length;
+async function ecrireDictees(liste, ok){
+  try { await db.doc("edt/dictees").set({dictees: liste}); dicteesDb = liste; if (ok) toast(ok); return true; }
+  catch (err){ toast(erreurEcriture(err)); return false; }
+}
+
+/* ----- Liste (gérant) ----- */
+let dictEd = null, dictMode = "groupes";
+VUES["g-dictees"] = function vueGDictees(){
+  rafraichir = () => { if (!dictEd) vueGDictees(); };
+  if (dictEd) return editeurDictee();
+  zone().innerHTML = entete(espaceNom(), "Dictées", `<button class="btn" type="button" id="nv-dictee">+ Nouvelle dictée</button>`)
+    + `<p class="doux" style="max-width:75ch">Écris le texte, puis choisis les <b>groupes de lecture</b> : ce sont les morceaux que la voix dicte un par un aux élèves. Repère aussi les verbes conjugués pour que la correction indique les fautes de conjugaison. Les élèves trouvent les dictées dans Exercices → Français.</p>`
+    + (dicteesDb.length ? `<div class="liste">${dicteesDb.map(d => { const n = groupesManuels(d).length; return `<div class="ligne-liste">
+        <span class="exo-tete">${iconeDictee()}<span class="titre"><strong>${esc(d.titre || "Sans titre")}</strong>
+          <span class="doux" style="font-size:.85rem">${nbMots(d.texte)} mots · ${n} groupe${n > 1 ? "s" : ""}${d.auteur ? " · " + esc(d.auteur) : ""}</span></span></span>
+        <span class="rangee">${d.visible === false ? `<span class="badge">Cachée</span>` : `<span class="badge accent">Visible</span>`}<button type="button" class="mini-btn" data-modif="${esc(d.id)}">Modifier</button><button type="button" class="mini-btn danger" data-suppr="${esc(d.id)}">Supprimer</button></span></div>`; }).join("")}</div>`
+      : `<div class="vide">Aucune dictée pour le moment. Clique sur « Nouvelle dictée ».</div>`);
+  $("#nv-dictee").onclick = () => { dictEd = {id: nouvelId("dt"), titre: "", auteur: "", oeuvre: "", texte: "", coupes: [], verbes: [], visible: true, nouveau: true}; dictMode = "groupes"; editeurDictee(); };
+  zone().querySelectorAll("[data-modif]").forEach(b => b.onclick = () => { dictEd = structuredClone(dicteesDb.find(d => d.id === b.dataset.modif)); dictMode = "groupes"; editeurDictee(); });
+  zone().querySelectorAll("[data-suppr]").forEach(b => deuxClics(b, () => ecrireDictees(dicteesDb.filter(d => d.id !== b.dataset.suppr), "Dictée supprimée.").then(() => vueGDictees())));
+};
+
+/* ----- Éditeur ----- */
+function editeurDictee(){
+  const d = dictEd;
+  zone().innerHTML = `<button type="button" class="dv-retour" id="de-retour">${FLECHE_DV_G}Toutes les dictées</button>`
+    + entete(espaceNom() + " · Dictée", d.nouveau ? "Nouvelle dictée" : "Modifier la dictée", `<span class="rangee"><button class="btn sec" type="button" id="de-essai">▶ Essayer</button><button class="btn" type="button" id="de-enreg">Enregistrer</button></span>`)
+    + `<p id="statut" class="statut" role="status"></p>
+    <div class="de-grille">
+      <section class="bloc de-infos">
+        <span class="mono">1 · Le texte</span>
+        <div class="grille-form">
+          <div class="champ" style="grid-column:1/-1"><label for="de-titre">Titre</label><input id="de-titre" maxlength="80" placeholder="La tempête, Le marché…" value="${esc(d.titre)}"></div>
+          <div class="champ"><label for="de-auteur">Auteur (facultatif)</label><input id="de-auteur" maxlength="60" placeholder="Victor Hugo" value="${esc(d.auteur || "")}"></div>
+          <div class="champ"><label for="de-oeuvre">Œuvre (facultatif)</label><input id="de-oeuvre" maxlength="80" placeholder="Les Misérables" value="${esc(d.oeuvre || "")}"></div>
+        </div>
+        <div class="champ"><label for="de-texte">Texte de la dictée</label><textarea id="de-texte" rows="9" placeholder="Écris ou colle le texte. Va à la ligne pour un nouveau paragraphe : la voix dira « à la ligne ».">${esc(d.texte)}</textarea>
+          <span class="aide" id="de-compte"></span></div>
+        <label class="interrupteur"><span><strong>Visible pour les élèves</strong><small>Décoche pour la préparer sans la montrer.</small></span><input type="checkbox" id="de-visible" ${d.visible !== false ? "checked" : ""}></label>
+      </section>
+      <section class="bloc de-decoupe">
+        <div class="rangee" style="justify-content:space-between"><span class="mono">2 · Groupes et verbes</span>
+          ${segment("de-mode", [["groupes", "✂ Groupes de lecture"], ["verbes", "Verbes conjugués"]], dictMode)}</div>
+        <p class="doux de-aide" id="de-aide"></p>
+        <div class="rangee de-outils"><button type="button" class="mini-btn" id="de-auto">✨ Découper automatiquement</button><button type="button" class="mini-btn" id="de-phrases">Une phrase par groupe</button><button type="button" class="mini-btn" id="de-vider">Tout effacer</button>
+          <button type="button" class="mini-btn" id="de-tout">🔊 Écouter tout</button></div>
+        <div class="de-texte" id="de-mots"></div>
+        <div class="de-groupes" id="de-groupes"></div>
+      </section>
+    </div>`;
+  const maj = () => dessinerDecoupe();
+  $("#de-retour").onclick = () => { arreterLecture(); dictEd = null; VUES["g-dictees"](); };
+  $("#de-titre").oninput = () => { d.titre = $("#de-titre").value; };
+  $("#de-auteur").oninput = () => { d.auteur = $("#de-auteur").value; };
+  $("#de-oeuvre").oninput = () => { d.oeuvre = $("#de-oeuvre").value; };
+  $("#de-visible").onchange = () => { d.visible = $("#de-visible").checked; };
+  let attente = null;
+  $("#de-texte").oninput = () => { clearTimeout(attente); attente = setTimeout(() => {
+    const avant = motsPar(d.texte).flat(); d.texte = $("#de-texte").value; const apres = motsPar(d.texte).flat();
+    // le nombre de mots change : on garde les coupes tant qu'on peut, sinon on redécoupe
+    if (avant.length !== apres.length) d.coupes = d.coupes.length && Math.abs(avant.length - apres.length) <= 2 ? d.coupes.filter(i => i < apres.length) : coupesAuto(d.texte);
+    d.verbes = d.verbes.filter(v => apres.some(m => nettoyerMot(m) === v));
+    maj(); }, 350); };
+  zone().querySelectorAll("#de-mode button").forEach(b => b.onclick = () => { dictMode = b.dataset.v; zone().querySelectorAll("#de-mode button").forEach(x => x.setAttribute("aria-pressed", x === b)); maj(); });
+  $("#de-auto").onclick = () => { d.coupes = coupesAuto(d.texte); maj(); };
+  $("#de-phrases").onclick = () => { const c = []; motsPar(d.texte).flat().forEach((m, i) => { if (/[.!?…]["»”]?$/.test(m)) c.push(i); }); d.coupes = arrangerCoupes(d.texte, c); maj(); };
+  $("#de-vider").onclick = () => { if (dictMode === "verbes") d.verbes = []; else d.coupes = []; maj(); };
+  $("#de-tout").onclick = () => parler(direPonctuation(d.texte), .9);
+  $("#de-essai").onclick = () => { if (!d.texte.trim()) return statut("Écris d'abord le texte."); lancerDictee({niveau: "facile", essai: true}, {...d, manuel: true}); };
+  $("#de-enreg").onclick = async () => {
+    d.titre = d.titre.trim(); d.texte = d.texte.trim();
+    if (!d.titre) return statut("Donne un titre à la dictée.");
+    if (nbMots(d.texte) < 3) return statut("Le texte est trop court.");
+    const n = {id: d.id, titre: d.titre, auteur: (d.auteur || "").trim(), oeuvre: (d.oeuvre || "").trim(), texte: d.texte, coupes: [...new Set(d.coupes)].sort((a, b) => a - b), verbes: [...new Set(d.verbes)], visible: d.visible !== false,
+      creeLe: d.creeLe || new Date().toISOString(), majLe: new Date().toISOString(), par: moi || "gerant"};
+    const liste = dicteesDb.some(x => x.id === n.id) ? dicteesDb.map(x => x.id === n.id ? n : x) : [...dicteesDb, n];
+    if (await ecrireDictees(liste, "Dictée enregistrée.")){ delete d.nouveau; dictEd = {...n}; statut("Dictée enregistrée.", true); }
+  };
+  if (!d.coupes.length && d.texte) d.coupes = coupesAuto(d.texte);
+  maj();
+}
+// le texte en mots cliquables : en mode groupes, un clic coupe (ou recolle) après le mot ; en mode verbes, un clic marque le verbe
+function dessinerDecoupe(){
+  const d = dictEd, z = $("#de-mots"); if (!z) return;
+  const pars = motsPar(d.texte), coupes = new Set(d.coupes), verbes = new Set(d.verbes), gs = groupesManuels(d);
+  const grp = i => gs.findIndex(g => i >= g.debut && i <= g.fin);
+  $("#de-aide").innerHTML = dictMode === "groupes"
+    ? "Clique sur un mot pour <b>couper après lui</b> (ou recoller s'il est déjà coupé). Chaque couleur est un groupe dicté d'un coup. Vise 3 à 6 mots par groupe."
+    : "Clique sur les <b>verbes conjugués</b> (pas les infinitifs) : si un élève se trompe sur l'un d'eux, la correction l'indiquera comme faute de conjugaison.";
+  $("#de-compte").textContent = d.texte.trim() ? `${nbMots(d.texte)} mots · ${gs.length} groupes · environ ${Math.max(1, Math.round(nbMots(d.texte) / Math.max(1, gs.length)))} mots par groupe` : "";
+  let i = 0;
+  z.className = "de-texte mode-" + dictMode;
+  z.innerHTML = pars.length ? pars.map(mots => `<p>${mots.map(m => { const k = i++, g = grp(k), v = verbes.has(nettoyerMot(m));
+      return `<button type="button" class="de-mot g${g % 6} ${coupes.has(k) ? "coupe" : ""} ${v ? "verbe" : ""}" data-i="${k}">${esc(m)}</button>`; }).join("")}<span class="de-alaligne" title="Fin du paragraphe : la voix dit « à la ligne »">↵</span></p>`).join("")
+    : `<p class="doux">Le texte apparaîtra ici, mot par mot.</p>`;
+  z.querySelectorAll(".de-mot").forEach(b => b.onclick = () => {
+    const k = +b.dataset.i, m = nettoyerMot(b.textContent);
+    if (dictMode === "groupes"){ if (coupes.has(k)) d.coupes = d.coupes.filter(x => x !== k); else d.coupes = [...d.coupes, k]; }
+    else if (m){ d.verbes = verbes.has(m) ? d.verbes.filter(x => x !== m) : [...d.verbes, m]; }
+    dessinerDecoupe();
+  });
+  const zg = $("#de-groupes");
+  zg.innerHTML = gs.length ? `<span class="mono">Ce que la voix dicte</span><ol>${gs.map((g, k) => `<li class="g${k % 6}"><button type="button" class="mini-btn" data-ecoute="${k}" title="Écouter ce groupe">🔊</button><span>${esc(g.ecrit)}</span><small>${g.ecrit.split(/\s+/).length} mot${g.ecrit.split(/\s+/).length > 1 ? "s" : ""}</small></li>`).join("")}</ol>` : "";
+  zg.querySelectorAll("[data-ecoute]").forEach(b => b.onclick = () => parler(gs[+b.dataset.ecoute].dit, .9));
+}
+
+/* ----- Élèves : liste des dictées dans Exercices → Français ----- */
+function sectionDictees(){
+  const ls = dicteesVisibles(), faites = (prog && prog.dicteesFaites) || {};
+  return `<div class="exos-section"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3>
+    <div class="rangee" style="justify-content:space-between"><p class="doux" style="margin:0">Le texte est lu à voix haute, groupe par groupe. Tu l'écris, puis la correction souligne chaque faute.</p>${ls.length ? `<span class="rangee"><span class="doux" style="font-size:.85rem">Niveau</span>${segment("dt-niv", [["facile", "Facile"], ["moyen", "Moyen"], ["difficile", "Difficile"]], choixDictee.niveau)}</span>` : ""}</div>
+    ${ls.length ? `<div class="liste">${ls.map(d => { const n = faites[d.id]; return `<button type="button" class="ligne-liste carte-dictee" data-dictee="${esc(d.id)}">
+        <span class="exo-tete">${iconeDictee()}<span class="titre"><strong><span class="et-theme-nom">Dictée :</span> ${esc(d.titre)}</strong>
+          <span class="doux" style="font-size:.85rem">${nbMots(d.texte)} mots${d.auteur ? " · " + esc(d.auteur) : ""}</span></span></span>
+        <span class="etat ${n !== undefined ? "fait" : ""}">${n !== undefined ? "Meilleure note " + String(n).replace(".", ",") + "/10" : "À faire"}</span></button>`; }).join("")}</div>`
+      : `<div class="vide">Aucune dictée pour le moment.</div>`}</div>`;
+}
+function brancherDictees(redessiner){
+  zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; redessiner(); });
+  zone().querySelectorAll("[data-dictee]").forEach(b => b.onclick = () => { const d = dicteesDb.find(x => x.id === b.dataset.dictee); if (d) lancerDictee(choixDictee, {...d, manuel: true}); });
+}
+// une autre dictée (au hasard, sauf celle qu'on vient de faire)
+function autreDictee(d){ const ls = dicteesVisibles().filter(x => x.id !== d.id); return ls.length ? {...choisir(ls), manuel: true} : null; }
 /* ===================== EXERCICES TYPES (« exos précis ») =====================
    Deux sortes d'exercices :
    - les exercices en chaîne (type "chaine", par défaut) : une suite de questions différentes, une par une ;
@@ -14302,6 +14486,7 @@ function basculerBrouillon(q){
   db.collection("monde").onSnapshot(s => { mondeDb = s.docs.map(d => ({...d.data(), id: d.id})); fusionMonde(); }, () => {});
   db.doc("edt/semaine").onSnapshot(s => { const d = s.exists ? s.data() : null; edt = {creneaux: d && Array.isArray(d.creneaux) ? d.creneaux : [], couleurs: d && d.couleurs && typeof d.couleurs === "object" ? d.couleurs : {}}; majVue(); }, () => {});
   db.doc("edt/devoirs").onSnapshot(s => { const d = s.exists ? s.data() : null; devoirsED = {devoirs: d && Array.isArray(d.devoirs) ? d.devoirs : [], majLe: d ? d.majLe || null : null, existe: !!d}; majVue(); }, () => {});
+  db.doc("edt/dictees").onSnapshot(s => { const d = s.exists ? s.data() : null; dicteesDb = d && Array.isArray(d.dictees) ? d.dictees : []; majVue(); }, () => {});
   db.doc("edt/devoirs-manuels").onSnapshot(s => { const d = s.exists ? s.data() : null; devoirsMan = d && Array.isArray(d.devoirs) ? d.devoirs : []; majVue(); }, () => {});
   db.doc(cheminAnnee()).onSnapshot(s => { const d = s.exists ? s.data() : null; annee = {semaines: d && d.semaines && typeof d.semaines === "object" ? d.semaines : {},
     conges: d && Array.isArray(d.conges) ? d.conges.filter(k => k && /^\d{4}-\d{2}-\d{2}$/.test(k.debut || "")) : []}; majVue(); }, () => {});
