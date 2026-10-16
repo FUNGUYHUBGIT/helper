@@ -16,7 +16,7 @@
 <link rel="icon" type="image/png" sizes="512x512" href="icone-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="dark only"><meta name="supported-color-schemes" content="dark"><meta name="darkreader-lock">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Helper">
@@ -56,7 +56,7 @@
   --f-texte:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
   --r:6px;
-  color-scheme:dark;
+  color-scheme:dark only;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -310,6 +310,10 @@ input[type="color"]{width:34px;height:28px;padding:0;border:1px solid var(--lign
 .choix-ed input[type="radio"]{accent-color:var(--accent);width:18px;height:18px}
 .role{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
 *,*::before,*::after{-webkit-tap-highlight-color:transparent}
+/* le site est déjà sombre : on le déclare pour que les navigateurs (Samsung Internet, Chrome…) ne l'assombrissent pas une 2e fois */
+:root{color-scheme:dark only}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark only;--theme-sombre:1}}
+@media (prefers-color-scheme:light){:root{color-scheme:dark only;--theme-sombre:1}}
 /* ---------- Version 3 : profil, préférences, groupes de navigation ---------- */
 .nav-groupe{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--doux);padding:12px 10px 4px}
 .nav-groupe:first-child{padding-top:0}
@@ -4481,7 +4485,7 @@ function appliquerPrefs(p){
   document.documentElement.style.setProperty("--accent", accent);
   Formes.accent(accent);
   Formes.nombre(p && Number.isFinite(p.formes) ? p.formes : null);
-  if (p !== PREFS_DEFAUT) try { window.HelperApp && window.HelperApp.icone(accent); } catch {}   // icône de l'appli Android
+  if (p !== PREFS_DEFAUT) try { window.HelperApp && window.HelperApp.icone(lsGet("helper.iconeCouleur") === "1" ? accent : PREFS_DEFAUT.accent); } catch {}   // icône de l'appli Android (aux couleurs seulement si choisi)
 }
 function toast(t){
   const el = document.createElement("div"); el.className = "toast"; el.textContent = t;
@@ -4747,7 +4751,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.50";
+const VERSION_SITE = "1.51";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4913,6 +4917,10 @@ VUES.prefs = function vuePrefs(){
         <button type="button" class="mini-btn" id="formes-auto">Automatique</button></div>
       <p class="doux" style="font-size:.85rem">0 pour un fond sans formes. Automatique adapte le nombre à la taille de l'écran.</p>
     </div>
+    ${window.HelperApp && typeof window.HelperApp.icone === "function" ? `<div class="bloc">
+      <span class="mono">Application Android</span>
+      <label class="interrupteur"><span><strong>Icône aux couleurs du site</strong><small>L'icône de Helper prend la couleur choisie ci-dessus. Elle change quand tu quittes l'appli. Sur certains téléphones, l'icône peut alors disparaître de l'écran d'accueil : remets-la depuis la liste des applications.</small></span><input type="checkbox" id="icone-couleur" ${lsGet("helper.iconeCouleur") === "1" ? "checked" : ""}></label>
+    </div>` : ""}
     <div class="bloc">
       <span class="mono">Connexion</span>
       <label class="interrupteur"><span><strong>Connexion automatique</strong><small>Rester connecté sur cet appareil à la prochaine ouverture.</small></span><input type="checkbox" id="auto" ${auto ? "checked" : ""}></label>
@@ -4928,6 +4936,7 @@ VUES.prefs = function vuePrefs(){
   $("#accent-libre").oninput = () => { p.accent = $("#accent-libre").value; appliquerPrefs(p); zone().querySelectorAll(".nuancier button").forEach(b => b.setAttribute("aria-pressed", "false")); };
   $("#accent-libre").onchange = enregistrerPrefs;
   $("#nb-formes").oninput = () => { p.formes = +$("#nb-formes").value; $("#nb-formes-val").textContent = p.formes; enregistrerPrefs(); };
+  const ic = $("#icone-couleur"); if (ic) ic.onchange = () => { lsSet("helper.iconeCouleur", ic.checked ? "1" : "0"); appliquerPrefs(p); };
   $("#formes-auto").onclick = () => { p.formes = null; $("#nb-formes-val").textContent = "Auto"; enregistrerPrefs(); };
   $("#auto").onchange = () => { const on = $("#auto").checked; lsSet("helper.auto", on ? "1" : "0"); statut(on ? "Connexion automatique activée sur cet appareil." : "Connexion automatique désactivée.", true); };
   zone().querySelectorAll("[data-n]").forEach(i => i.onchange = () => { p.notifs[i.dataset.n] = i.checked; enregistrerPrefs(); });
