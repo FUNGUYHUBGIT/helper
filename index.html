@@ -4808,7 +4808,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.53";
+const VERSION_SITE = "1.54";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -11979,29 +11979,27 @@ function dessinerDecoupe(){
 
 /* ----- Élèves : liste des dictées dans Exercices → Français ----- */
 const NIVEAUX_DICTEE = [["facile", "Facile", "Réécoute autant que tu veux"], ["moyen", "Moyen", "2 répétitions par groupe"], ["difficile", "Difficile", "Comme en classe, sans pause"]];
+// (ancienne présentation en cartes)
 const ONDES_DICTEE = `<svg viewBox="0 0 40 24" aria-hidden="true"><g stroke="currentColor" stroke-width="3" stroke-linecap="round">${[4, 10, 16, 22, 28, 34].map((x, i) => `<line x1="${x}" x2="${x}" y1="${12 - [4, 8, 10, 6, 9, 4][i]}" y2="${12 + [4, 8, 10, 6, 9, 4][i]}" style="animation-delay:${i * .12}s"/>`).join("")}</g></svg>`;
 function sectionDictees(){
   const ls = dicteesVisibles(), faites = (prog && prog.dicteesFaites) || {};
   const carte = d => {
     const n = faites[d.id], mots = nbMots(d.texte), gs = groupesManuels(d).length, lg = mots < 90 ? "Courte" : mots < 180 ? "Moyenne" : "Longue";
-    const cl = n === undefined ? "nouvelle" : n >= 8 ? "bien" : n >= 5 ? "moyen" : "faible";
-    return `<button type="button" class="dc-carte" data-dictee="${esc(d.id)}">
-      <span class="dc-haut"><span class="dc-ico">${ONDES_DICTEE}</span>
-        <span class="dc-note ${cl}">${n === undefined ? "Nouvelle" : `<b>${String(n).replace(".", ",")}</b>/10`}</span></span>
-      <span class="dc-titre">${esc(d.titre)}</span>
-      <span class="dc-auteur">${d.auteur ? esc(d.auteur) + (d.oeuvre ? ` · <i>${esc(d.oeuvre)}</i>` : "") : "Texte de la classe"}</span>
-      <span class="dc-chips"><span>${mots} mots</span><span>${gs} groupe${gs > 1 ? "s" : ""}</span><span>${lg}</span><span>≈ ${Math.max(5, Math.round(mots / 12))} min</span></span>
-      <span class="dc-go">${n === undefined ? "▶ Commencer" : "↻ Refaire"}</span>
+    return `<button type="button" class="carte-dictee" data-dictee="${esc(d.id)}">
+      <span class="exo-tete">${iconeDictee()}<span class="titre"><strong><span class="et-theme-nom">Dictée :</span> ${esc(d.titre)}</strong>
+        <span class="doux" style="font-size:.85rem">${mots} mots · ${gs} groupe${gs > 1 ? "s" : ""} · ${d.auteur ? esc(d.auteur) + (d.oeuvre ? ", " + esc(d.oeuvre) : "") : "texte de la classe"}</span>
+        <span class="exo-types"><span class="exo-type"><i aria-hidden="true">🔊</i>Lue à voix haute</span><span class="exo-type"><i aria-hidden="true">✎</i>${lg}</span></span></span></span>
+      <span class="etat ${n !== undefined && n >= 8 ? "fait" : ""}">${n === undefined ? "Non commencée" : "Record " + String(n).replace(".", ",") + "/10"}</span>
     </button>`; };
-  return `<section class="dc-zone">
-    <header class="dc-tete"><div class="dc-intro"><h3>${iconeDictee().replace('width="36" height="44"', 'width="22" height="27"')} Dictées</h3>
-      <p>La voix lit le texte groupe par groupe, ponctuation comprise. Tu l'écris sur la feuille, puis la correction souligne chaque faute et te donne une note.</p></div>
-      ${ls.length ? `<div class="dc-niveaux" role="group" aria-label="Niveau">${NIVEAUX_DICTEE.map(([v, t, s]) => `<button type="button" data-niv="${v}" aria-pressed="${choixDictee.niveau === v}"><b>${t}</b><small>${s}</small></button>`).join("")}</div>` : ""}</header>
-    ${ls.length ? `<div class="dc-grille">${ls.map(carte).join("")}</div>` : `<div class="vide">Aucune dictée pour le moment.</div>`}
-  </section>`;
+  return `<div class="exos-section">
+    <h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3>
+    <div class="rangee" style="justify-content:space-between;align-items:center"><p class="doux" style="margin:0">Le texte est lu à voix haute, groupe par groupe. Tu l'écris, puis la correction souligne chaque faute.</p>
+      ${ls.length ? `<span class="rangee" style="gap:8px"><span class="doux" style="font-size:.85rem">Niveau</span>${segment("dt-niv", NIVEAUX_DICTEE.map(([v, t]) => [v, t]), choixDictee.niveau)}</span>` : ""}</div>
+    ${ls.length ? `<p class="doux" style="margin:0;font-size:.82rem">${(NIVEAUX_DICTEE.find(x => x[0] === choixDictee.niveau) || NIVEAUX_DICTEE[0])[2]}.</p><div class="liste">${ls.map(carte).join("")}</div>` : `<div class="vide">Aucune dictée pour le moment.</div>`}
+  </div>`;
 }
 function brancherDictees(redessiner){
-  zone().querySelectorAll(".dc-niveaux [data-niv]").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.niv; redessiner(); });
+  zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; redessiner(); });
   zone().querySelectorAll("[data-dictee]").forEach(b => b.onclick = () => { const d = dicteesDb.find(x => x.id === b.dataset.dictee); if (d) lancerDictee(choixDictee, {...d, manuel: true}); });
 }
 // une autre dictée (au hasard, sauf celle qu'on vient de faire)
