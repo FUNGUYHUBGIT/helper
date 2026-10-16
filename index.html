@@ -1885,6 +1885,38 @@ button.lien{background:none;border:0;padding:0;color:var(--accent);font:inherit;
 .de-groupes li span{flex:1}.de-groupes li small{color:var(--doux);font-family:var(--f-mono);font-size:.7rem}
 .de-groupes li.g0{--g:#b06bff}.de-groupes li.g1{--g:#4fa3f7}.de-groupes li.g2{--g:#5cc98a}.de-groupes li.g3{--g:#f5a524}.de-groupes li.g4{--g:#ef6fa6}.de-groupes li.g5{--g:#4fc1b6}
 button.carte-dictee{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer}
+/* Dictées : liste pour les élèves */
+.dc-zone{--v:#b06bff;display:flex;flex-direction:column;gap:16px;padding:20px;border-radius:20px;border:1px solid color-mix(in srgb,var(--v) 35%,var(--ligne));background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--v) 16%,transparent) 0%,transparent 55%),var(--surface);max-width:1100px}
+.dc-tete{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.dc-intro{display:flex;flex-direction:column;gap:6px;max-width:52ch}
+.dc-intro h3{display:flex;align-items:center;gap:10px;margin:0;font-family:var(--f-titre);font-size:1.5rem}
+.dc-intro p{margin:0;color:var(--doux);font-size:.92rem;line-height:1.5}
+.dc-niveaux{display:flex;gap:6px;padding:5px;border-radius:14px;background:var(--surface-2);border:1px solid var(--ligne)}
+.dc-niveaux button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 14px;border:0;border-radius:10px;background:none;color:var(--texte);font:inherit;cursor:pointer;text-align:left;transition:background .15s}
+.dc-niveaux button b{font-size:.92rem}.dc-niveaux button small{font-size:.72rem;color:var(--doux)}
+.dc-niveaux button[aria-pressed=true]{background:var(--v);color:#fff;box-shadow:0 6px 18px -8px var(--v)}.dc-niveaux button[aria-pressed=true] small{color:rgba(255,255,255,.85)}
+.dc-niveaux button:not([aria-pressed=true]):hover{background:color-mix(in srgb,var(--v) 12%,transparent)}
+.dc-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.dc-carte{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:16px;border:1px solid color-mix(in srgb,var(--v) 30%,var(--ligne));background:linear-gradient(165deg,color-mix(in srgb,var(--v) 14%,var(--surface-2)) 0%,var(--surface-2) 60%);color:var(--texte);font:inherit;text-align:left;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s}
+.dc-carte:hover{transform:translateY(-3px);border-color:var(--v);box-shadow:0 14px 30px -16px var(--v)}
+.dc-haut{display:flex;justify-content:space-between;align-items:center}
+.dc-ico{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--v);color:#fff;box-shadow:0 6px 16px -8px var(--v)}
+.dc-ico svg{width:26px;height:16px}
+.dc-carte:hover .dc-ico line{animation:dc-onde .7s ease-in-out infinite alternate;transform-origin:center;transform-box:fill-box}
+@keyframes dc-onde{from{transform:scaleY(.4)}to{transform:scaleY(1)}}
+.dc-note{font-family:var(--f-mono);font-size:.75rem;padding:4px 10px;border-radius:999px;border:1px solid var(--ligne);color:var(--doux)}
+.dc-note b{font-size:1rem;color:var(--texte)}
+.dc-note.nouvelle{border-color:color-mix(in srgb,var(--v) 60%,transparent);color:#d7b8ff;background:color-mix(in srgb,var(--v) 14%,transparent)}
+.dc-note.bien{border-color:#5cc98a;background:color-mix(in srgb,#5cc98a 14%,transparent)}.dc-note.bien b{color:#7fe0a8}
+.dc-note.moyen{border-color:#f5a524;background:color-mix(in srgb,#f5a524 14%,transparent)}.dc-note.moyen b{color:#ffc35c}
+.dc-note.faible{border-color:#e5484d;background:color-mix(in srgb,#e5484d 14%,transparent)}.dc-note.faible b{color:#ff8a8d}
+.dc-titre{font-family:var(--f-titre);font-size:1.3rem;line-height:1.2}
+.dc-auteur{font-size:.86rem;color:var(--doux)}
+.dc-chips{display:flex;flex-wrap:wrap;gap:6px}
+.dc-chips span{font-size:.74rem;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--ligne);color:var(--doux)}
+.dc-go{margin-top:auto;align-self:flex-start;padding:8px 16px;border-radius:10px;background:var(--v);color:#fff;font-weight:700;font-size:.9rem}
+@media (max-width:820px){.dc-zone{padding:14px;border-radius:16px}.dc-niveaux{width:100%}.dc-niveaux button{flex:1;padding:8px}.dc-niveaux button small{display:none}.dc-grille{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){.dc-carte:hover .dc-ico line{animation:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -4776,7 +4808,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.52";
+const VERSION_SITE = "1.53";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -11946,18 +11978,30 @@ function dessinerDecoupe(){
 }
 
 /* ----- Élèves : liste des dictées dans Exercices → Français ----- */
+const NIVEAUX_DICTEE = [["facile", "Facile", "Réécoute autant que tu veux"], ["moyen", "Moyen", "2 répétitions par groupe"], ["difficile", "Difficile", "Comme en classe, sans pause"]];
+const ONDES_DICTEE = `<svg viewBox="0 0 40 24" aria-hidden="true"><g stroke="currentColor" stroke-width="3" stroke-linecap="round">${[4, 10, 16, 22, 28, 34].map((x, i) => `<line x1="${x}" x2="${x}" y1="${12 - [4, 8, 10, 6, 9, 4][i]}" y2="${12 + [4, 8, 10, 6, 9, 4][i]}" style="animation-delay:${i * .12}s"/>`).join("")}</g></svg>`;
 function sectionDictees(){
   const ls = dicteesVisibles(), faites = (prog && prog.dicteesFaites) || {};
-  return `<div class="exos-section"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3>
-    <div class="rangee" style="justify-content:space-between"><p class="doux" style="margin:0">Le texte est lu à voix haute, groupe par groupe. Tu l'écris, puis la correction souligne chaque faute.</p>${ls.length ? `<span class="rangee"><span class="doux" style="font-size:.85rem">Niveau</span>${segment("dt-niv", [["facile", "Facile"], ["moyen", "Moyen"], ["difficile", "Difficile"]], choixDictee.niveau)}</span>` : ""}</div>
-    ${ls.length ? `<div class="liste">${ls.map(d => { const n = faites[d.id]; return `<button type="button" class="ligne-liste carte-dictee" data-dictee="${esc(d.id)}">
-        <span class="exo-tete">${iconeDictee()}<span class="titre"><strong><span class="et-theme-nom">Dictée :</span> ${esc(d.titre)}</strong>
-          <span class="doux" style="font-size:.85rem">${nbMots(d.texte)} mots${d.auteur ? " · " + esc(d.auteur) : ""}</span></span></span>
-        <span class="etat ${n !== undefined ? "fait" : ""}">${n !== undefined ? "Meilleure note " + String(n).replace(".", ",") + "/10" : "À faire"}</span></button>`; }).join("")}</div>`
-      : `<div class="vide">Aucune dictée pour le moment.</div>`}</div>`;
+  const carte = d => {
+    const n = faites[d.id], mots = nbMots(d.texte), gs = groupesManuels(d).length, lg = mots < 90 ? "Courte" : mots < 180 ? "Moyenne" : "Longue";
+    const cl = n === undefined ? "nouvelle" : n >= 8 ? "bien" : n >= 5 ? "moyen" : "faible";
+    return `<button type="button" class="dc-carte" data-dictee="${esc(d.id)}">
+      <span class="dc-haut"><span class="dc-ico">${ONDES_DICTEE}</span>
+        <span class="dc-note ${cl}">${n === undefined ? "Nouvelle" : `<b>${String(n).replace(".", ",")}</b>/10`}</span></span>
+      <span class="dc-titre">${esc(d.titre)}</span>
+      <span class="dc-auteur">${d.auteur ? esc(d.auteur) + (d.oeuvre ? ` · <i>${esc(d.oeuvre)}</i>` : "") : "Texte de la classe"}</span>
+      <span class="dc-chips"><span>${mots} mots</span><span>${gs} groupe${gs > 1 ? "s" : ""}</span><span>${lg}</span><span>≈ ${Math.max(5, Math.round(mots / 12))} min</span></span>
+      <span class="dc-go">${n === undefined ? "▶ Commencer" : "↻ Refaire"}</span>
+    </button>`; };
+  return `<section class="dc-zone">
+    <header class="dc-tete"><div class="dc-intro"><h3>${iconeDictee().replace('width="36" height="44"', 'width="22" height="27"')} Dictées</h3>
+      <p>La voix lit le texte groupe par groupe, ponctuation comprise. Tu l'écris sur la feuille, puis la correction souligne chaque faute et te donne une note.</p></div>
+      ${ls.length ? `<div class="dc-niveaux" role="group" aria-label="Niveau">${NIVEAUX_DICTEE.map(([v, t, s]) => `<button type="button" data-niv="${v}" aria-pressed="${choixDictee.niveau === v}"><b>${t}</b><small>${s}</small></button>`).join("")}</div>` : ""}</header>
+    ${ls.length ? `<div class="dc-grille">${ls.map(carte).join("")}</div>` : `<div class="vide">Aucune dictée pour le moment.</div>`}
+  </section>`;
 }
 function brancherDictees(redessiner){
-  zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; redessiner(); });
+  zone().querySelectorAll(".dc-niveaux [data-niv]").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.niv; redessiner(); });
   zone().querySelectorAll("[data-dictee]").forEach(b => b.onclick = () => { const d = dicteesDb.find(x => x.id === b.dataset.dictee); if (d) lancerDictee(choixDictee, {...d, manuel: true}); });
 }
 // une autre dictée (au hasard, sauf celle qu'on vient de faire)
