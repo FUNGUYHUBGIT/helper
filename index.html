@@ -1961,7 +1961,6 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .pp-apercu{display:grid;grid-template-columns:12px 26px;align-items:center;gap:4px 5px;color:var(--accent)}.pp-apercu .puce-ic{width:12px;height:12px}.pp-apercu b{height:3px;border-radius:2px;background:var(--doux);opacity:.6}
 
 /* correcteur d'orthographe (clic droit) */
-::highlight(faute-ortho){text-decoration:underline wavy #e5484d;text-decoration-thickness:1.5px;text-underline-offset:3px}
 .mini-barre .mb-ortho{display:flex;flex-direction:column;gap:4px;padding-bottom:6px;margin-bottom:2px;border-bottom:1px solid var(--ligne)}
 .mini-barre .mb-ortho[hidden]{display:none}
 .mini-barre .mb-ortho-titre{font-size:.75rem;color:var(--doux);padding:0 2px}
@@ -4862,7 +4861,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.62";
+const VERSION_SITE = "1.63";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5918,7 +5917,7 @@ const motAVerifier = m => String(m || "").replace(/’/g, "'").replace(/^['\-]+|
 function motConnu(brut){
   const m = motAVerifier(brut);
   if (!m || !dicoMots || ORTHO_IGNORES.has(m)) return true;
-  if (/\d/.test(m) || m.length < 2) return true;
+  if (/\d/.test(m) || m.length < 3) return true;   // av, er, ex… : abréviations
   if (/^\p{Lu}/u.test(m) && !/^\p{Lu}+$/u.test(m) && !dicoMots.has(m.toLowerCase())) return true;   // nom propre : on ne le corrige pas
   const v = [m, m.toLowerCase(), m.replace(/œ/g, "oe"), m.toLowerCase().replace(/œ/g, "oe")];
   return v.some(x => dicoMots.has(x)) || (m.includes("-") && m.split("-").every(x => !x || dicoMots.has(x.toLowerCase())));
@@ -5973,21 +5972,6 @@ function motSousPointeur(x, y, racine){
   if (a >= b) return null;
   const range = document.createRange(); range.setStart(noeud, a); range.setEnd(noeud, b);
   return {mot: t.slice(a, b), range};
-}
-// souligne en rouge les mots inconnus, sans toucher au texte (CSS Custom Highlight API)
-const SOULIGNE_POSSIBLE = typeof CSS !== "undefined" && !!CSS.highlights && typeof Highlight !== "undefined";
-function soulignerFautes(racine){
-  if (!SOULIGNE_POSSIBLE) return;
-  if (!racine.isConnected) return CSS.highlights.delete("faute-ortho");
-  if (!dicoMots) return;
-  const ranges = [], re = /[\p{L}\p{M}][\p{L}\p{M}'’\-]*/gu;
-  const tw = document.createTreeWalker(racine, NodeFilter.SHOW_TEXT, {acceptNode: n => n.parentElement.closest("figure, .sommaire-lecon, [contenteditable=false]") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
-  for (let n; (n = tw.nextNode()) && ranges.length < 2000;){
-    const t = n.textContent; let m; re.lastIndex = 0;
-    while ((m = re.exec(t))){ let w = m[0], a = m.index; while (/['’\-]$/.test(w)) w = w.slice(0, -1);
-      if (!motConnu(w)){ const r = new Range(); r.setStart(n, a); r.setEnd(n, a + w.length); ranges.push(r); } }
-  }
-  CSS.highlights.set("faute-ortho", new Highlight(...ranges));
 }
 /* ===================== LEÇONS : documents mis en forme ===================== */
 /* Une leçon = {matiere, titre, sousTitre, html, pj:[{id|ref, nom, type, taille}]}.
@@ -6649,10 +6633,10 @@ function dessinerEditeur(){
     ortho.querySelectorAll("button").forEach(b => b.addEventListener("mousedown", ev => ev.preventDefault()));
     ortho.querySelectorAll("[data-prop]").forEach(b => b.onclick = () => {
       const sel = getSelection(); doc.focus(); sel.removeAllRanges(); sel.addRange(motMini.range);
-      document.execCommand("insertText", false, b.dataset.prop); cacherMini(); verifierOrtho();
+      document.execCommand("insertText", false, b.dataset.prop); cacherMini();
     });
-    ortho.querySelector('[data-o="ignorer"]').onclick = () => { ORTHO_IGNORES.add(motAVerifier(motMini.mot)); cacherMini(); verifierOrtho(); };
-    ortho.querySelector('[data-o="ajouter"]').onclick = () => { ajouterAuDico(motMini.mot); toast(`« ${motAVerifier(motMini.mot)} » ajouté au dictionnaire`); cacherMini(); verifierOrtho(); };
+    ortho.querySelector('[data-o="ignorer"]').onclick = () => { ORTHO_IGNORES.add(motAVerifier(motMini.mot)); cacherMini(); };
+    ortho.querySelector('[data-o="ajouter"]').onclick = () => { ajouterAuDico(motMini.mot); toast(`« ${motAVerifier(motMini.mot)} » ajouté au dictionnaire`); cacherMini(); };
   };
   doc.addEventListener("contextmenu", async ev => {
     if (ev.ctrlKey || ev.pointerType === "touch" || ev.target.closest("figure, .sommaire-lecon")) return;   // Ctrl + clic droit : menu habituel du navigateur
@@ -6684,10 +6668,8 @@ function dessinerEditeur(){
   miniSel("plus").onclick = () => pas(1); miniSel("moins").onclick = () => pas(-1);
   miniSel("partie").onclick = () => { $("#o-partie").click(); placerMini(); };
 
-  // ----- Fautes soulignées en rouge (notre dictionnaire remplace celui du navigateur) -----
-  let minuteurOrtho = 0;
-  const verifierOrtho = () => { clearTimeout(minuteurOrtho); minuteurOrtho = setTimeout(() => soulignerFautes(doc), 350); };
-  if (SOULIGNE_POSSIBLE){ doc.spellcheck = false; chargerDico().then(verifierOrtho); doc.addEventListener("input", verifierOrtho); }
+  // Les fautes sont soulignées par le correcteur du navigateur ; le clic droit ouvre notre menu avec les corrections
+  chargerDico();
 
   // ----- Symboles -----
   $("#o-symb").onmousedown = ev => { ev.preventDefault(); garder(); };
