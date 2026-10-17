@@ -544,7 +544,7 @@ body.mode-app .barre-mobile{padding-top:calc(12px + env(safe-area-inset-top))}
 .ruban .r-bas{padding-top:6px;border-top:1px solid var(--ligne);gap:2px}
 .ruban .sep{height:22px;align-self:center;margin-inline:1px}
 .ruban select{height:32px;border-radius:6px}
-.ruban #o-police{width:94px}.ruban #o-taille{width:82px}.ruban #o-puce{width:64px}
+.ruban #o-police{width:94px}.ruban #o-taille{width:82px}.ruban #o-puce{width:auto}
 .ruban .r-lot{display:inline-flex;align-items:center;border:1px solid var(--ligne);border-radius:6px;background:var(--surface)}
 .ruban .r-lot>button{border:0;border-radius:0;background:none;height:30px;min-width:30px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center}
 .ruban .r-lot>button+button{border-left:1px solid var(--ligne)}
@@ -1942,6 +1942,23 @@ button.carte-dictee{width:100%;font:inherit;color:inherit;text-align:left;cursor
 .carte-place{border:2px dashed color-mix(in srgb,var(--accent) 70%,transparent);border-radius:12px;background:color-mix(in srgb,var(--accent) 8%,transparent)}
 body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:none}
 .prevenir-lecon{white-space:nowrap}
+/* Puces des listes : formes dessinées (même taille et bien centrées sur la première ligne) */
+.doc-lecon ul[class*="puce-"]>li::before{content:"" !important;position:absolute;left:-1.15em;top:calc(.8em - var(--tp) / 2) !important;width:var(--tp);height:var(--tp);font-size:1em !important;background:var(--puce,currentColor);-webkit-mask:var(--mp) center/contain no-repeat;mask:var(--mp) center/contain no-repeat}
+.doc-lecon ul.puce-disque,.puce-ic[data-forme="disque"]{--mp:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PGNpcmNsZSBjeD0iNiIgY3k9IjYiIHI9IjUiIGZpbGw9ImJsYWNrIi8+PC9zdmc+");--tp:0.42em}
+.doc-lecon ul.puce-cercle,.puce-ic[data-forme="cercle"]{--mp:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PGNpcmNsZSBjeD0iNiIgY3k9IjYiIHI9IjQuMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIxLjgiLz48L3N2Zz4=");--tp:0.46em}
+.doc-lecon ul.puce-carre,.puce-ic[data-forme="carre"]{--mp:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHJlY3QgeD0iMS41IiB5PSIxLjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIxLjYiIGZpbGw9ImJsYWNrIi8+PC9zdmc+");--tp:0.38em}
+.doc-lecon ul.puce-losange,.puce-ic[data-forme="losange"]{--mp:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHBhdGggZD0iTTYgLjggMTEuMiA2IDYgMTEuMi44IDZ6IiBmaWxsPSJibGFjayIvPjwvc3ZnPg==");--tp:0.46em}
+.doc-lecon ul.puce-fleche,.puce-ic[data-forme="fleche"]{--mp:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHBhdGggZD0iTTIuMiAxLjQgMTEgNiAyLjIgMTAuNiA0LjIgNnoiIGZpbGw9ImJsYWNrIi8+PC9zdmc+");--tp:0.48em}
+.doc-lecon ul.puce-coche,.puce-ic[data-forme="coche"]{--mp:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHBhdGggZD0iTTEuNiA2LjQgNC43IDkuNCAxMC42IDIuNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyLjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==");--tp:0.56em}
+.doc-lecon ul.puce-etoile,.puce-ic[data-forme="etoile"]{--mp:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHBhdGggZD0iTTYgLjcgNy42IDQuMmwzLjguNC0yLjkgMi41LjkgMy43TDYgOC45IDIuNiAxMC44bC45LTMuN0wuNiA0LjZsMy44LS40eiIgZmlsbD0iYmxhY2siLz48L3N2Zz4=");--tp:0.58em}
+.doc-lecon ul.puce-tiret,.puce-ic[data-forme="tiret"]{--mp:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHJlY3QgeD0iLjgiIHk9IjUiIHdpZHRoPSIxMC40IiBoZWlnaHQ9IjIiIHJ4PSIxIiBmaWxsPSJibGFjayIvPjwvc3ZnPg==");--tp:0.56em}
+.puce-ic{display:inline-block;width:14px;height:14px;background:currentColor;-webkit-mask:var(--mp) center/78% no-repeat;mask:var(--mp) center/78% no-repeat}
+.ruban .o-puce-btn .puce-ic{width:15px;height:15px}
+.pop-puces{width:300px}.pp-grille{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.pp-forme{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:1px solid var(--ligne);border-radius:8px;background:var(--surface-2);color:var(--texte);font:inherit;cursor:pointer}
+.pp-forme:hover{border-color:var(--accent)}.pp-forme.actif{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface-2))}
+.pp-forme small{font-size:.7rem;color:var(--doux)}
+.pp-apercu{display:grid;grid-template-columns:12px 26px;align-items:center;gap:4px 5px;color:var(--accent)}.pp-apercu .puce-ic{width:12px;height:12px}.pp-apercu b{height:3px;border-radius:2px;background:var(--doux);opacity:.6}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -4833,7 +4850,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.60";
+const VERSION_SITE = "1.61";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6019,13 +6036,25 @@ const PALETTE_TEXTE = ["#f4f2ed", "#b9bcc4", "#7d808a", "#3a3d45", "#ff5c5c", "#
 const PALETTE_SURLIGNE = ["245,197,24", "111,191,115", "95,168,211", "232,111,154", "245,140,40", "165,133,242", "46,196,182", "255,92,92"].map(c => `rgba(${c}, 0.38)`);
 const couleursRecentes = prop => { try { return JSON.parse(lsGet("helper.couleurs." + prop) || "[]"); } catch { return []; } };
 const couleurRecente = (prop, v) => lsSet("helper.couleurs." + prop, JSON.stringify([v, ...couleursRecentes(prop).filter(x => x !== v)].slice(0, 8)));
+const FORMES_PUCES = [["disque", "Disque"], ["cercle", "Cercle"], ["carre", "Carré"], ["losange", "Losange"], ["fleche", "Flèche"], ["coche", "Coche"], ["etoile", "Étoile"], ["tiret", "Tiret"]];
+function ouvrirFormesPuces(btn, actuelle, choisir){
+  const deja = btn.getAttribute("aria-expanded") === "true"; fermerPalette(); if (deja) return;
+  const p = document.createElement("div"); p.className = "pop-couleurs pop-puces"; p.id = "pop-couleurs"; p.setAttribute("role", "dialog"); p.setAttribute("aria-label", "Forme des puces");
+  p.innerHTML = `<div class="pc-titre">Forme des puces</div><div class="pp-grille">${FORMES_PUCES.map(([v, t]) => `<button type="button" class="pp-forme ${v === actuelle ? "actif" : ""}" data-f="${v}" title="${t}"><span class="pp-apercu"><i class="puce-ic" data-forme="${v}"></i><b></b><i class="puce-ic" data-forme="${v}"></i><b></b></span><small>${t}</small></button>`).join("")}</div>`;
+  btn.after(p); btn.setAttribute("aria-expanded", "true");
+  const r = btn.getBoundingClientRect(), barre = btn.closest(".barre-outils").getBoundingClientRect();
+  p.style.left = Math.max(0, Math.min(r.left - barre.left, barre.width - 300)) + "px"; p.style.top = (r.bottom - barre.top + 4) + "px";
+  p.querySelectorAll("[data-f]").forEach(x => { x.onmousedown = ev => ev.preventDefault(); x.onclick = () => { fermerPalette(); choisir(x.dataset.f); }; });
+  setTimeout(() => { const loin = ev => { if (!p.isConnected){ document.removeEventListener("mousedown", loin, true); return; } if (!p.contains(ev.target) && !btn.contains(ev.target)){ fermerPalette(); document.removeEventListener("mousedown", loin, true); } };
+    document.addEventListener("mousedown", loin, true); }, 0);
+}
 function fermerPalette(){ document.getElementById("pop-couleurs")?.remove(); document.querySelectorAll(".o-pal[aria-expanded=true]").forEach(b => b.setAttribute("aria-expanded", "false")); }
 function ouvrirPalette(btn, prop, choisir){
   const deja = btn.getAttribute("aria-expanded") === "true"; fermerPalette(); if (deja) return;
-  const texte = prop === "color", base = texte ? PALETTE_TEXTE : PALETTE_SURLIGNE, rec = couleursRecentes(prop).filter(c => !base.includes(c));
+  const texte = prop === "color" || prop === "puce", base = texte ? PALETTE_TEXTE : PALETTE_SURLIGNE, rec = couleursRecentes(prop).filter(c => !base.includes(c));
   const pastille = c => `<button type="button" class="pc-c${texte ? "" : " pc-surl"}" data-c="${esc(c)}" style="--c:${esc(c)}" title="${esc(c)}" aria-label="Couleur ${esc(c)}"></button>`;
-  const p = document.createElement("div"); p.className = "pop-couleurs"; p.id = "pop-couleurs"; p.setAttribute("role", "dialog"); p.setAttribute("aria-label", texte ? "Couleur du texte" : "Surlignage");
-  p.innerHTML = `<div class="pc-titre">${texte ? "Couleur du texte" : "Surlignage"}</div><div class="pc-grille">${base.map(pastille).join("")}</div>
+  const p = document.createElement("div"); p.className = "pop-couleurs"; p.id = "pop-couleurs"; p.setAttribute("role", "dialog"); p.setAttribute("aria-label", prop === "puce" ? "Couleur des puces" : texte ? "Couleur du texte" : "Surlignage");
+  p.innerHTML = `<div class="pc-titre">${prop === "puce" ? "Couleur des puces" : texte ? "Couleur du texte" : "Surlignage"}</div><div class="pc-grille">${base.map(pastille).join("")}</div>
     ${rec.length ? `<div class="pc-titre">Récentes</div><div class="pc-grille">${rec.map(pastille).join("")}</div>` : ""}
     <div class="pc-pied"><button type="button" class="mini-btn" data-c="">${texte ? "↺ Couleur par défaut" : "✕ Sans surlignage"}</button>
       <label class="mini-btn pc-autre">🎨 Autre couleur…<input type="color" id="pc-autre" value="${texte ? "#f2ae02" : "#f5c518"}"></label></div>`;
@@ -6308,8 +6337,10 @@ function dessinerEditeur(){
                 <button type="button" data-cmd="insertUnorderedList" title="Liste à puces" aria-label="Liste à puces"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="7" r="1.2" fill="currentColor"/><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="5" cy="17" r="1.2" fill="currentColor"/><path d="M9.5 7H20M9.5 12H20M9.5 17H20"/></svg></button>
                 <button type="button" data-cmd="insertOrderedList" title="Liste numérotée" aria-label="Liste numérotée"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5 5.5 4.5V9.5M4 9.5h3M4 14.2c.3-.8 2.6-1 2.6.4 0 1-2.6 2-2.6 3.4h2.8"/><path d="M10 7H20M10 12H20M10 17H20"/></svg></button>
               </span>
-          <select id="o-puce" aria-label="Forme des puces" title="Forme des puces (liste à puces)"><option value="">Puce…</option><option value="disque">● Disque</option><option value="cercle">○ Cercle</option><option value="carre">■ Carré</option><option value="losange">◆ Losange</option><option value="fleche">➤ Flèche</option><option value="coche">✓ Coche</option><option value="etoile">★ Étoile</option><option value="tiret">– Tiret</option></select>
-          <label class="o-couleur o-couleur-puce" title="Couleur des puces"><span aria-hidden="true">●</span><input type="color" id="o-puce-couleur" value="#f2ae02" aria-label="Couleur des puces"></label>
+          <span class="r-lot">
+            <button type="button" class="o-pal o-puce-btn" id="o-puce" title="Forme des puces" aria-label="Forme des puces" aria-haspopup="true" aria-expanded="false"><span class="o-pal-ic"><i class="puce-ic" id="o-puce-ic" data-forme="disque"></i><i class="o-pal-barre o-sans" style="display:none"></i></span><span class="o-pal-fl" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+            <button type="button" class="o-pal" id="o-puce-coul" data-pal="puce" title="Couleur des puces" aria-label="Couleur des puces" aria-haspopup="true" aria-expanded="false"><span class="o-pal-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="8" r="2.4" fill="currentColor"/><path d="M11 8h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".6"/></svg><i class="o-pal-barre" id="o-puce-barre"></i></span><span class="o-pal-fl" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+          </span>
           <span class="sep"></span>
           <span class="r-lot">
                 <button type="button" data-cmd="justifyLeft" title="Aligner à gauche" aria-label="Aligner à gauche"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h10M4 14h16M4 18h10"/></svg></button>
@@ -6413,8 +6444,9 @@ function dessinerEditeur(){
     $("#o-couleur-barre").style.background = cs.color;
     let fond = "transparent"; for (let x = el; x && x !== doc && doc.contains(x); x = x.parentElement){ const b = getComputedStyle(x).backgroundColor; if (b && !/rgba\(0, 0, 0, 0\)|transparent/.test(b)){ fond = b; break; } }
     $("#o-surligne-barre").style.background = fond; $("#o-surligne-barre").classList.toggle("o-sans", fond === "transparent");
-    const ul = el.closest("ul"); $("#o-puce").value = ul && doc.contains(ul) ? ((ul.className.match(/puce-(\w+)/) || [, "disque"])[1]) : "";
-    if (ul && doc.contains(ul)) $("#o-puce-couleur").value = versHex(ul.style.getPropertyValue("--puce") || cs.color);
+    const ul = el.closest("ul"), dansListe = ul && doc.contains(ul);
+    $("#o-puce-ic").dataset.forme = dansListe ? ((ul.className.match(/puce-(\w+)/) || [, "disque"])[1]) : "disque";
+    $("#o-puce-barre").style.background = dansListe && ul.style.getPropertyValue("--puce") ? ul.style.getPropertyValue("--puce") : cs.color;
     marquerMixte();
   };
   const surSelection = () => { if (!doc.isConnected) return document.removeEventListener("selectionchange", surSelection); const sel = getSelection(); if (sel.rangeCount && doc.contains(sel.anchorNode)){ selection = sel.getRangeAt(0).cloneRange(); majRuban(); } };
@@ -6430,17 +6462,20 @@ function dessinerEditeur(){
     if (val) couleurRecente(prop, val);
     doc.dispatchEvent(new Event("input", {bubbles: true})); majRuban();
   };
-  zone().querySelectorAll(".o-pal").forEach(b => { b.onmousedown = ev => { ev.preventDefault(); garder(); };
+  zone().querySelectorAll(".o-pal:not(#o-puce):not(#o-puce-coul)").forEach(b => { b.onmousedown = ev => { ev.preventDefault(); garder(); };
     b.onclick = () => ouvrirPalette(b, b.dataset.pal, v => appliquerCouleur(b.dataset.pal, v)); });
+  $("#o-puce-coul").onmousedown = ev => { ev.preventDefault(); garder(); };
   // ----- Puces : forme et couleur de la liste -----
   const listeCourante = () => { const sel = getSelection(); if (!sel.rangeCount) return null; const n = sel.anchorNode; const el = n && (n.nodeType === 1 ? n : n.parentElement); const ul = el && el.closest("ul"); return ul && doc.contains(ul) ? ul : null; };
-  $("#o-puce").onchange = () => { const forme = $("#o-puce").value; if (!forme) return; rendre(); let ul = listeCourante();
-    if (!ul){ document.execCommand("insertUnorderedList"); ul = listeCourante(); }
-    if (ul){ ul.className = ul.className.replace(/\bpuce-\w+/g, "").trim(); ul.classList.add("puce-" + forme); }
-    garder(); majRuban(); };
-  $("#o-puce-couleur").onmousedown = () => garder();
-  $("#o-puce-couleur").onchange = () => { rendre(); let ul = listeCourante(); if (!ul){ document.execCommand("insertUnorderedList"); ul = listeCourante(); }
-    if (ul){ ul.style.setProperty("--puce", $("#o-puce-couleur").value); if (!/puce-/.test(ul.className)) ul.classList.add("puce-disque"); } garder(); majRuban(); };
+  const listePourPuce = () => { rendre(); let ul = listeCourante(); if (!ul){ document.execCommand("insertUnorderedList"); ul = listeCourante(); } return ul; };
+  $("#o-puce").onmousedown = ev => { ev.preventDefault(); garder(); };
+  $("#o-puce").onclick = () => ouvrirFormesPuces($("#o-puce"), $("#o-puce-ic").dataset.forme, forme => {
+    const ul = listePourPuce(); if (ul){ ul.className = ul.className.replace(/\bpuce-\w+/g, "").trim(); ul.classList.add("puce-" + forme); }
+    garder(); doc.dispatchEvent(new Event("input", {bubbles: true})); majRuban(); });
+  // la couleur des puces se choisit comme la couleur du texte (même palette, couleurs récentes, « autre couleur »)
+  $("#o-puce-coul").onclick = () => ouvrirPalette($("#o-puce-coul"), "puce", v => {
+    const ul = listePourPuce(); if (ul){ if (v) ul.style.setProperty("--puce", v); else ul.style.removeProperty("--puce"); if (!/puce-/.test(ul.className)) ul.classList.add("puce-disque"); }
+    if (v) couleurRecente("puce", v); garder(); doc.dispatchEvent(new Event("input", {bubbles: true})); majRuban(); });
   doc.addEventListener("paste", ev => { ev.preventDefault(); document.execCommand("insertText", false, ev.clipboardData.getData("text/plain")); });
 
   // ----- Mini-barre façon Word : apparaît au-dessus du texte sélectionné -----
