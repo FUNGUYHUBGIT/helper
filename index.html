@@ -1959,6 +1959,18 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .pp-forme:hover{border-color:var(--accent)}.pp-forme.actif{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface-2))}
 .pp-forme small{font-size:.7rem;color:var(--doux)}
 .pp-apercu{display:grid;grid-template-columns:12px 26px;align-items:center;gap:4px 5px;color:var(--accent)}.pp-apercu .puce-ic{width:12px;height:12px}.pp-apercu b{height:3px;border-radius:2px;background:var(--doux);opacity:.6}
+
+/* correcteur d'orthographe (clic droit) */
+::highlight(faute-ortho){text-decoration:underline wavy #e5484d;text-decoration-thickness:1.5px;text-underline-offset:3px}
+.mini-barre .mb-ortho{display:flex;flex-direction:column;gap:4px;padding-bottom:6px;margin-bottom:2px;border-bottom:1px solid var(--ligne)}
+.mini-barre .mb-ortho[hidden]{display:none}
+.mini-barre .mb-ortho-titre{font-size:.75rem;color:var(--doux);padding:0 2px}
+.mini-barre .mb-ortho-titre b{color:var(--erreur);font-weight:600}
+.mini-barre .mb-ortho-props{display:flex;flex-direction:column;gap:2px}
+.mini-barre .mb-prop{text-align:left;font-weight:600;padding:4px 8px;background:none;border-color:transparent}.mini-barre .mb-prop:hover{background:var(--surface)}
+.mini-barre .mb-ortho-vide{font-size:.78rem;opacity:.6;padding:2px}
+.mini-barre .mb-presse{padding-top:6px;margin-top:2px;border-top:1px solid var(--ligne)}
+.mini-barre .mb-presse button,.mini-barre .mb-ortho .mb-ligne button{flex:1;white-space:nowrap}.mini-barre .mb-ortho .mb-ligne button{font-size:.76rem;padding:3px 6px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -4850,7 +4862,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.61";
+const VERSION_SITE = "1.62";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5881,6 +5893,102 @@ function blocSyncFond(bloc){
     toast("Synchronisation automatique activée."); setTimeout(majSync, 300); setTimeout(majSync, 25000);
   };
 }
+/* ===================== Correcteur d'orthographe de l'éditeur (clic droit sur un mot) =====================
+   Dictionnaire : ~336 000 mots français (donnees/mots-fr.txt, chargé au premier besoin) + mots ajoutés par l'utilisateur. */
+let dicoMots = null, dicoSansAccents = null, dicoSons = null, dicoPromesse = null;
+const ORTHO_IGNORES = new Set();
+const dicoPerso = () => { try { return JSON.parse(lsGet("helper.dico.perso") || "[]"); } catch { return []; } };
+function chargerDico(){
+  if (dicoPromesse) return dicoPromesse;
+  dicoPromesse = fetch("donnees/mots-fr.txt").then(r => { if (!r.ok) throw new Error("dico"); return r.text(); })
+    .then(t => { dicoMots = new Set(t.split("\n")); dicoPerso().forEach(m => dicoMots.add(m)); setTimeout(indexerDico, 1500); return dicoMots; })
+    .catch(() => { dicoPromesse = null; return null; });
+  return dicoPromesse;
+}
+const sansAccentsOrtho = m => m.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/œ/g, "oe").replace(/æ/g, "ae");
+// clé « phonétique » simple : fote, faute, phaute → même clé (pour proposer le mot qui se prononce pareil)
+const sonOrtho = m => sansAccentsOrtho(m.toLowerCase()).replace(/[^a-z]/g, "")
+  .replace(/ph/g, "f").replace(/ch/g, "S").replace(/h/g, "").replace(/([aeiouy])s(?=[aeiouy])/g, "$1z").replace(/qu|q|ck|c(?=[aou])|k/g, "k").replace(/c(?=[eiy])|ss|s(?=[^aeiouy]|$)|ç/g, "s")
+  .replace(/g(?=[eiy])/g, "j").replace(/gu(?=[ei])/g, "g").replace(/eau|au/g, "o").replace(/ai|ei/g, "e").replace(/y/g, "i")
+  .replace(/(an|en|am|em)(?=[^aeiou]|$)/g, "A").replace(/(ain|ein|in|im|un)(?=[^aeiou]|$)/g, "I").replace(/(on|om)(?=[^aeiou]|$)/g, "O")
+  .replace(/(.)\1+/g, "$1").replace(/(es|e|s|t|x|d|z)$/, "").replace(/(.)\1+/g, "$1");
+const ELISIONS = /^(l|d|j|m|n|s|t|c|qu|jusqu|lorsqu|puisqu|quoiqu|presqu)['’]/i;
+// le mot à vérifier, sans apostrophe d'élision (l'arbre → arbre) ni ponctuation autour
+const motAVerifier = m => String(m || "").replace(/’/g, "'").replace(/^['\-]+|['\-]+$/g, "").replace(ELISIONS, "");
+function motConnu(brut){
+  const m = motAVerifier(brut);
+  if (!m || !dicoMots || ORTHO_IGNORES.has(m)) return true;
+  if (/\d/.test(m) || m.length < 2) return true;
+  if (/^\p{Lu}/u.test(m) && !/^\p{Lu}+$/u.test(m) && !dicoMots.has(m.toLowerCase())) return true;   // nom propre : on ne le corrige pas
+  const v = [m, m.toLowerCase(), m.replace(/œ/g, "oe"), m.toLowerCase().replace(/œ/g, "oe")];
+  return v.some(x => dicoMots.has(x)) || (m.includes("-") && m.split("-").every(x => !x || dicoMots.has(x.toLowerCase())));
+}
+function indexerDico(){
+  if (!dicoSansAccents){ dicoSansAccents = new Map(); dicoMots.forEach(w => { const k = sansAccentsOrtho(w.toLowerCase()); const l = dicoSansAccents.get(k); if (l) l.push(w); else dicoSansAccents.set(k, [w]); }); }
+  if (!dicoSons){ dicoSons = new Map(); dicoMots.forEach(w => { if (/^\p{Lu}/u.test(w)) return; const k = sonOrtho(w); const l = dicoSons.get(k); if (l) l.push(w); else dicoSons.set(k, [w]); }); }
+}
+const LETTRES_ORTHO = "abcdefghijklmnopqrstuvwxyzéèêëàâäîïôöùûüçœ-'";
+function editions(m){
+  const r = new Set();
+  for (let i = 0; i <= m.length; i++){
+    const a = m.slice(0, i), b = m.slice(i);
+    if (b) r.add(a + b.slice(1));                                   // lettre en trop
+    if (b.length > 1) r.add(a + b[1] + b[0] + b.slice(2));          // deux lettres inversées
+    for (const c of LETTRES_ORTHO){ if (b) r.add(a + c + b.slice(1)); r.add(a + c + b); }   // lettre fausse / oubliée
+  }
+  r.delete(m); return r;
+}
+// suggestions classées : même mot à l'accent près, puis 1 faute, puis 2 fautes
+function suggestionsOrtho(brut, max = 5){
+  if (!dicoMots) return [];
+  const m0 = motAVerifier(brut), prefixe = String(brut).replace(/’/g, "'").slice(0, String(brut).replace(/’/g, "'").indexOf(m0)), maj = /^\p{Lu}/u.test(m0), m = m0.toLowerCase();
+  indexerDico();
+  const vus = new Set(), res = [];
+  const ajouter = (w, score) => { if (!vus.has(w)){ vus.add(w); res.push([w, score]); } };
+  (dicoSansAccents.get(sansAccentsOrtho(m)) || []).forEach(w => ajouter(w, 0));
+  (dicoSons.get(sonOrtho(m)) || []).filter(w => Math.abs(w.length - m.length) <= 3).slice(0, 6).forEach(w => ajouter(w, .6 + Math.abs(w.length - m.length) * .1));
+  const e1 = editions(m);
+  e1.forEach(w => { if (dicoMots.has(w)) ajouter(w, 1 + (w[0] === m[0] ? 0 : .5) + Math.abs(w.length - m.length) * .1); });
+  if (res.length < max && m.length > 3){
+    let n = 0;
+    for (const w1 of e1){ if (++n > 1500) break; editions(w1).forEach(w => { if (dicoMots.has(w)) ajouter(w, 2 + (w[0] === m[0] ? 0 : .5) + Math.abs(w.length - m.length) * .1); }); if (res.length > 40) break; }
+  }
+  const elide = /['’]$/.test(prefixe);
+  return res.filter(([w]) => !elide || /^[aeiouyhâàéèêîïôœ]/i.test(w)).sort((a, b) => a[1] - b[1]).slice(0, max).map(([w]) => prefixe + (maj ? w.charAt(0).toUpperCase() + w.slice(1) : w));
+}
+function ajouterAuDico(brut){
+  const m = motAVerifier(brut); if (!m) return;
+  lsSet("helper.dico.perso", JSON.stringify([...new Set([...dicoPerso(), m])].slice(-500)));
+  if (dicoMots) dicoMots.add(m);
+}
+// le mot qui se trouve sous le pointeur, dans le texte modifiable
+function motSousPointeur(x, y, racine){
+  let noeud, pos;
+  if (document.caretRangeFromPoint){ const r = document.caretRangeFromPoint(x, y); if (!r) return null; noeud = r.startContainer; pos = r.startOffset; }
+  else if (document.caretPositionFromPoint){ const c = document.caretPositionFromPoint(x, y); if (!c) return null; noeud = c.offsetNode; pos = c.offset; }
+  if (!noeud || noeud.nodeType !== 3 || !racine.contains(noeud)) return null;
+  const t = noeud.textContent, lettre = ch => /[\p{L}\p{M}'’\-]/u.test(ch || "");
+  let a = pos, b = pos; while (a > 0 && lettre(t[a - 1])) a--; while (b < t.length && lettre(t[b])) b++;
+  while (a < b && /['’\-]/.test(t[a])) a++; while (b > a && /['’\-]/.test(t[b - 1])) b--;
+  if (a >= b) return null;
+  const range = document.createRange(); range.setStart(noeud, a); range.setEnd(noeud, b);
+  return {mot: t.slice(a, b), range};
+}
+// souligne en rouge les mots inconnus, sans toucher au texte (CSS Custom Highlight API)
+const SOULIGNE_POSSIBLE = typeof CSS !== "undefined" && !!CSS.highlights && typeof Highlight !== "undefined";
+function soulignerFautes(racine){
+  if (!SOULIGNE_POSSIBLE) return;
+  if (!racine.isConnected) return CSS.highlights.delete("faute-ortho");
+  if (!dicoMots) return;
+  const ranges = [], re = /[\p{L}\p{M}][\p{L}\p{M}'’\-]*/gu;
+  const tw = document.createTreeWalker(racine, NodeFilter.SHOW_TEXT, {acceptNode: n => n.parentElement.closest("figure, .sommaire-lecon, [contenteditable=false]") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
+  for (let n; (n = tw.nextNode()) && ranges.length < 2000;){
+    const t = n.textContent; let m; re.lastIndex = 0;
+    while ((m = re.exec(t))){ let w = m[0], a = m.index; while (/['’\-]$/.test(w)) w = w.slice(0, -1);
+      if (!motConnu(w)){ const r = new Range(); r.setStart(n, a); r.setEnd(n, a + w.length); ranges.push(r); } }
+  }
+  CSS.highlights.set("faute-ortho", new Highlight(...ranges));
+}
 /* ===================== LEÇONS : documents mis en forme ===================== */
 /* Une leçon = {matiere, titre, sousTitre, html, pj:[{id|ref, nom, type, taille}]}.
    Les leçons intégrées sont converties en document ; le gérant peut les modifier (copie enregistrée
@@ -6508,27 +6616,62 @@ function dessinerEditeur(){
     mini.querySelector('[data-barre="color"]').style.background = $("#o-couleur-barre").style.background; mini.querySelector('[data-barre="color"]').classList.toggle("mixte", $("#o-couleur-barre").classList.contains("mixte"));
     const sb = mini.querySelector('[data-barre="backgroundColor"]'); sb.style.background = $("#o-surligne-barre").style.background; sb.classList.toggle("o-sans", $("#o-surligne-barre").classList.contains("o-sans"));
   };
-  const cacherMini = () => { if (mini.hidden) return; fermerPalette(); mini.classList.remove("visible"); mini.hidden = true; };
+  const cacherMini = () => { if (mini.hidden) return; fermerPalette(); mini.classList.remove("visible"); mini.hidden = true; ptMini = null; motMini = null; };
   const placerMini = () => {
-    const sel = getSelection(); if (!sel.rangeCount || sel.isCollapsed || !doc.contains(sel.anchorNode) || !doc.contains(sel.focusNode)) return cacherMini();
-    const r = sel.getRangeAt(0).getBoundingClientRect(); if (!r.width && !r.height) return cacherMini();
+    if (!ptMini) return cacherMini();
     majMini(); const neuf = mini.hidden; mini.hidden = false;
-    const L = mini.offsetWidth, H = mini.offsetHeight, ruban = $(".barre-outils:not(.mini-barre)"), bas = ruban ? Math.max(0, ruban.getBoundingClientRect().bottom) : 0;
-    let y = r.top - H - 10; if (y < bas + 6) y = r.bottom + 10;
-    mini.style.left = Math.max(8, Math.min(innerWidth - L - 8, r.left + r.width / 2 - L / 2)) + "px"; mini.style.top = Math.max(8, Math.min(innerHeight - H - 8, y)) + "px";
+    const L = mini.offsetWidth, H = mini.offsetHeight;
+    let x = ptMini.x + 4, y = ptMini.y + 6; if (x + L > innerWidth - 8) x = ptMini.x - L - 4; if (y + H > innerHeight - 8) y = ptMini.y - H - 6;
+    mini.style.left = Math.max(8, Math.min(innerWidth - L - 8, x)) + "px"; mini.style.top = Math.max(8, Math.min(innerHeight - H - 8, y)) + "px";
     if (neuf){ mini.classList.remove("visible"); mini.getBoundingClientRect(); mini.classList.add("visible"); }
   };
-  // le relâchement de la souris peut se faire hors du texte (sélection tirée jusque dans la marge) : on écoute toute la page
-  const finSouris = ev => { if (!doc.isConnected) return document.removeEventListener("mouseup", finSouris, true); if (mini.contains(ev.target) || ev.target.closest?.(".pop-couleurs")) return;
-    setTimeout(() => { const sel = getSelection(); if (sel.rangeCount && !sel.isCollapsed && doc.contains(sel.anchorNode) && doc.contains(sel.focusNode)) placerMini(); }, 0); };
-  document.addEventListener("mouseup", finSouris, true);
-  doc.addEventListener("dblclick", () => setTimeout(placerMini, 0));
-  doc.addEventListener("keyup", ev => { if (ev.shiftKey || ev.key === "Shift") placerMini(); });
+  // ----- Clic droit : la mini-barre s'ouvre (à la place du menu du navigateur), avec la correction si le mot est faux -----
+  let ptMini = null, motMini = null;   // point du clic droit / mot inconnu sous le pointeur {mot, range}
+  const ortho = document.createElement("div"); ortho.className = "mb-ortho"; mini.prepend(ortho);
+  const presse = document.createElement("div"); presse.className = "mb-ligne mb-presse";
+  presse.innerHTML = `<button type="button" data-pp="couper">Couper</button><button type="button" data-pp="copier">Copier</button><button type="button" data-pp="coller">Coller</button>`;
+  mini.appendChild(presse);
+  presse.querySelectorAll("button").forEach(b => b.addEventListener("mousedown", ev => ev.preventDefault()));
+  presse.querySelector('[data-pp="couper"]').onclick = () => { rendre(); document.execCommand("cut"); cacherMini(); };
+  presse.querySelector('[data-pp="copier"]').onclick = () => { rendre(); document.execCommand("copy"); cacherMini(); };
+  presse.querySelector('[data-pp="coller"]').onclick = async () => {
+    rendre(); const sel = getSelection(), r = sel.rangeCount ? sel.getRangeAt(0).cloneRange() : null;
+    try { const t = await navigator.clipboard.readText(); doc.focus(); if (r){ sel.removeAllRanges(); sel.addRange(r); } document.execCommand("insertText", false, t); }
+    catch { toast("Utilise Ctrl+V pour coller."); }
+    cacherMini();
+  };
+  const remplirOrtho = () => {
+    ortho.innerHTML = ""; ortho.hidden = !motMini; if (!motMini) return;
+    const props = suggestionsOrtho(motMini.mot);
+    ortho.innerHTML = `<div class="mb-ortho-titre">Mot inconnu : <b>${esc(motMini.mot)}</b></div>
+      <div class="mb-ortho-props">${props.length ? props.map(p => `<button type="button" class="mb-prop" data-prop="${esc(p)}">${esc(p)}</button>`).join("") : `<span class="mb-ortho-vide">Aucune suggestion</span>`}</div>
+      <div class="mb-ligne"><button type="button" data-o="ignorer">Ignorer</button><button type="button" data-o="ajouter">Ajouter au dictionnaire</button></div>`;
+    ortho.querySelectorAll("button").forEach(b => b.addEventListener("mousedown", ev => ev.preventDefault()));
+    ortho.querySelectorAll("[data-prop]").forEach(b => b.onclick = () => {
+      const sel = getSelection(); doc.focus(); sel.removeAllRanges(); sel.addRange(motMini.range);
+      document.execCommand("insertText", false, b.dataset.prop); cacherMini(); verifierOrtho();
+    });
+    ortho.querySelector('[data-o="ignorer"]').onclick = () => { ORTHO_IGNORES.add(motAVerifier(motMini.mot)); cacherMini(); verifierOrtho(); };
+    ortho.querySelector('[data-o="ajouter"]').onclick = () => { ajouterAuDico(motMini.mot); toast(`« ${motAVerifier(motMini.mot)} » ajouté au dictionnaire`); cacherMini(); verifierOrtho(); };
+  };
+  doc.addEventListener("contextmenu", async ev => {
+    if (ev.ctrlKey || ev.pointerType === "touch" || ev.target.closest("figure, .sommaire-lecon")) return;   // Ctrl + clic droit : menu habituel du navigateur
+    ev.preventDefault();
+    const sel = getSelection(), dedans = sel.rangeCount && !sel.isCollapsed && [...sel.getRangeAt(0).getClientRects()].some(q => ev.clientX >= q.left - 2 && ev.clientX <= q.right + 2 && ev.clientY >= q.top - 2 && ev.clientY <= q.bottom + 2);
+    const sousPt = motSousPointeur(ev.clientX, ev.clientY, doc);
+    if (!dedans && sousPt){ sel.removeAllRanges(); sel.addRange(sousPt.range.cloneRange()); }
+    garder();
+    await chargerDico();
+    const motSel = sel.rangeCount ? sel.toString().trim() : "";
+    motMini = sousPt && (!dedans || motSel === sousPt.mot) && !motConnu(sousPt.mot) ? sousPt : null;
+    remplirOrtho();
+    ptMini = {x: ev.clientX, y: ev.clientY}; placerMini();
+  });
   doc.addEventListener("keydown", ev => { if (!ev.shiftKey && !ev.ctrlKey && !ev.metaKey) cacherMini(); });
   doc.addEventListener("mousedown", cacherMini);
-  const suivreMini = () => { if (!doc.isConnected){ mini.remove(); removeEventListener("scroll", suivreMini, true); return; } if (!mini.hidden && !document.getElementById("pop-couleurs")) placerMini(); };
+  const suivreMini = ev => { if (!doc.isConnected){ mini.remove(); removeEventListener("scroll", suivreMini, true); return; } if (!mini.hidden && !document.getElementById("pop-couleurs") && !mini.contains(ev.target)) cacherMini(); };
   addEventListener("scroll", suivreMini, true);
-  document.addEventListener("selectionchange", () => { if (!doc.isConnected) return mini.remove(); const sel = getSelection(); if (!mini.hidden && (!sel.rangeCount || sel.isCollapsed) && !mini.contains(document.activeElement)) cacherMini(); });
+  document.addEventListener("selectionchange", () => { if (!doc.isConnected) mini.remove(); });
   document.addEventListener("mousedown", ev => { if (!doc.isConnected) return; if (!mini.contains(ev.target) && !ev.target.closest?.(".pop-couleurs")) cacherMini(); }, true);
   mini.querySelectorAll("button").forEach(b => b.addEventListener("mousedown", ev => ev.preventDefault()));
   mini.querySelectorAll("[data-cmd]").forEach(b => b.onclick = () => { cmd(b.dataset.cmd); majMini(); });
@@ -6540,6 +6683,11 @@ function dessinerEditeur(){
   const pas = d => { const t = $("#o-taille"), opts = [...t.options].map(o => o.value), i = opts.indexOf(t.value), j = Math.max(0, Math.min(opts.length - 1, i + d)); if (j !== i){ cmd("fontSize", opts[j]); } placerMini(); };
   miniSel("plus").onclick = () => pas(1); miniSel("moins").onclick = () => pas(-1);
   miniSel("partie").onclick = () => { $("#o-partie").click(); placerMini(); };
+
+  // ----- Fautes soulignées en rouge (notre dictionnaire remplace celui du navigateur) -----
+  let minuteurOrtho = 0;
+  const verifierOrtho = () => { clearTimeout(minuteurOrtho); minuteurOrtho = setTimeout(() => soulignerFautes(doc), 350); };
+  if (SOULIGNE_POSSIBLE){ doc.spellcheck = false; chargerDico().then(verifierOrtho); doc.addEventListener("input", verifierOrtho); }
 
   // ----- Symboles -----
   $("#o-symb").onmousedown = ev => { ev.preventDefault(); garder(); };
