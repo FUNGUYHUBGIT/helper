@@ -1930,12 +1930,18 @@ button.carte-dictee{width:100%;font:inherit;color:inherit;text-align:left;cursor
 .carte-dictee .exo-type i{color:#c9a2ff}
 .ds-note.moyen{border-color:#f5a524;color:#ffc35c}.ds-note.faible{border-color:#e5484d;color:#ff8a8d}
 @media (max-width:820px){.ds-niveau{align-items:stretch;width:100%}.ds-niveau .segment{display:flex;width:100%}.ds-niveau .segment button{flex:1}.ds-niveau small{text-align:center}.carte-dictee{flex-wrap:wrap}.carte-dictee .ds-droite{flex-direction:row;align-items:center;justify-content:space-between;width:100%;padding-left:52px}}
-.ruban .r-enreg{display:grid;place-items:center;width:34px;height:32px;padding:0;border-radius:7px;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--ligne));background:color-mix(in srgb,var(--accent) 14%,var(--surface-2));color:var(--accent);cursor:pointer;flex:none}
-.ruban .r-enreg:hover{background:color-mix(in srgb,var(--accent) 26%,var(--surface-2))}
-.ruban .r-enreg .ic{width:18px;height:18px;grid-area:1/1}.ruban .r-enreg .ic.ok{opacity:0;transform:scale(.4);transition:opacity .2s,transform .2s}
-.ruban .r-enreg.fait{border-color:#5cc98a;color:#5cc98a;background:color-mix(in srgb,#5cc98a 16%,var(--surface-2))}
-.ruban .r-enreg.fait .ic:not(.ok){opacity:0}.ruban .r-enreg.fait .ic.ok{opacity:1;transform:none}
+.ruban .r-lot>.r-enreg{display:grid;place-items:center;color:var(--texte);cursor:pointer}
+.ruban .r-enreg .ic{width:16px;height:16px;grid-area:1/1;transition:opacity .2s,transform .2s}.ruban .r-enreg .ic.ok{opacity:0;transform:scale(.4)}
+.ruban .r-enreg.fait{color:#5cc98a}.ruban .r-enreg.fait .ic:not(.ok){opacity:0}.ruban .r-enreg.fait .ic.ok{opacity:1;transform:none}
 .ruban .r-enreg:disabled{opacity:.6;cursor:wait}
+/* Ranger les leçons par glisser-déposer */
+.cartes-lecons.triable .carte-lecon{position:relative;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.cartes-lecons.triable .poignee{position:absolute;top:8px;right:8px;z-index:2;display:grid;place-items:center;width:28px;height:28px;border-radius:7px;background:color-mix(in srgb,var(--fond) 70%,transparent);color:var(--doux);font-size:1.05rem;cursor:grab;opacity:.75;transition:opacity .15s}
+.cartes-lecons.triable .carte-lecon:hover .poignee{opacity:1;color:var(--texte)}
+.carte-lecon.en-glisse{position:fixed !important;z-index:1000;pointer-events:none;transform:rotate(1.5deg) scale(1.03);box-shadow:0 22px 50px -12px rgba(0,0,0,.7),0 0 0 2px var(--accent);border-radius:12px;opacity:.95}
+.carte-place{border:2px dashed color-mix(in srgb,var(--accent) 70%,transparent);border-radius:12px;background:color-mix(in srgb,var(--accent) 8%,transparent)}
+body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:none}
+.prevenir-lecon{white-space:nowrap}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -4827,7 +4833,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.59";
+const VERSION_SITE = "1.60";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5906,8 +5912,11 @@ function legendeAuteur(l){
 const htmlLegendeAuteur = l => `<p class="legende-auteur">${legendeAuteur(l)}</p>`;
 const groupesDe = m => [...new Set(leconsDe(m).map(l => String(l.groupe || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr"));
 // regroupe les leçons d'une matière par groupe (les leçons sans groupe à la fin)
+let ordreLecons = {};   // ordre choisi par le gérant dans chaque groupe : {"matiere|groupe": [id, …]}
+const cleGroupe = (m, g) => m + "|" + String(g || "").trim();
 function parGroupes(ls){
   const g = new Map(); ls.forEach(l => { const k = String(l.groupe || "").trim(); if (!g.has(k)) g.set(k, []); g.get(k).push(l); });
+  g.forEach((l2, k) => { const o = ordreLecons[cleGroupe((l2[0] || {}).matiere, k)] || []; if (o.length){ const r = id => { const i = o.indexOf(id); return i < 0 ? 1e6 : i; }; l2.sort((a, b) => r(a.id) - r(b.id)); } });
   return [...g.entries()].sort((a, b) => !a[0] ? 1 : !b[0] ? -1 : a[0].localeCompare(b[0], "fr"));
 }
 // Sommaire : liste cliquable des parties (titres « § Partie ») du document
@@ -6133,7 +6142,7 @@ function lireLecon(l){
   rafraichir = null;
   const serie = toutesSeries().find(s => s.id === l.id);
   zone().innerHTML = `<button type="button" class="retour" id="retour">← ${nomMatiere(l.matiere)}</button>
-    ${entete(nomMatiere(l.matiere) + " · Leçon", esc(l.titre))}
+    ${entete(nomMatiere(l.matiere) + " · Leçon", esc(l.titre), `<button type="button" class="btn sec prevenir-lecon" id="prevenir-lecon" title="Signaler une faute ou une erreur dans cette leçon">⚑ Prévenir</button>`)}
     ${l.sousTitre ? `<p class="sous-titre-lecon">${esc(l.sousTitre)}</p>` : ""}
     <article class="bloc"><div class="doc-lecon">${htmlTitreFixe(l)}${nettoyerHtml(l.html)}</div>${htmlLegendeAuteur(l)}</article>
     ${(l.pj || []).length ? `<div class="bloc"><span class="mono">Pièces jointes</span><div class="rangee">${l.pj.map(lienPj).join("")}</div></div>` : ""}
@@ -6143,10 +6152,48 @@ function lireLecon(l){
     </div>`;
   remplirImages(zone()); remplirObjets(zone()); brancherPj(zone());
   $("#retour").onclick = VUES.lecons;
+  // le texte sélectionné dans la leçon est repris dans le signalement
+  $("#prevenir-lecon").onmousedown = ev => ev.preventDefault();
+  $("#prevenir-lecon").onclick = () => { const sel = String(getSelection() || "").trim(), dans = getSelection().rangeCount && zone().querySelector(".doc-lecon").contains(getSelection().anchorNode); fenetrePrevenirLecon(l, dans ? sel : ""); };
   const c = $("#compris");
   if (c) c.onclick = () => { prog.lecons[l.id] = true; prog.points += 10; sauver(); lireLecon(l); };
   const v = $("#vers-exos");
   if (v) v.onclick = () => { marquerNav("exos"); lancerQuiz(questionsDe(serie), {titre: serie.titre, sur: nomMatiere(serie.matiere) + " · Exercices", lecon: serie}); };
+}
+
+/* ----- Élève : prévenir d'une faute dans une leçon ----- */
+const TYPES_SIGNAL_LECON = [["faute-l", "Faute d'orthographe"], ["erreur-l", "Erreur dans le cours"], ["affichage-l", "Problème d'affichage"], ["autre-l", "Autre"]];
+function fenetrePrevenirLecon(l, extrait){
+  fermerFenetre();
+  const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
+  el.innerHTML = `<div class="fenetre" role="dialog" aria-modal="true" aria-labelledby="titre-fen">
+    <h3 id="titre-fen">Prévenir d'une faute</h3>
+    <p class="doux" style="font-size:.88rem;margin:0"><b>${esc(l.titre)}</b> · ${esc(nomMatiere(l.matiere))}</p>
+    <span class="mono">Quel est le problème ?</span>
+    ${segment("sig-type", TYPES_SIGNAL_LECON, "faute-l")}
+    <div class="champ"><label for="sig-extrait">Passage concerné</label><textarea id="sig-extrait" rows="2" maxlength="300" placeholder="Copie le passage où se trouve la faute (astuce : sélectionne-le dans la leçon avant de cliquer sur « Prévenir »)">${esc(extrait.slice(0, 300))}</textarea></div>
+    <div class="champ"><label for="sig-msg">Explique (facultatif)</label><textarea id="sig-msg" rows="3" maxlength="600" placeholder="Ex. : « ils mange » au lieu de « ils mangent », la date est fausse…"></textarea></div>
+    <p id="statut-fen" class="statut" role="status"></p>
+    <div class="rangee"><button class="btn" type="button" id="sig-envoyer">Envoyer</button><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div></div>`;
+  document.body.appendChild(el);
+  let type = "faute-l";
+  el.querySelectorAll("#sig-type button").forEach(b => b.onclick = () => { type = b.dataset.v; el.querySelectorAll("#sig-type button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  $("#fen-annuler").onclick = fermerFenetre;
+  el.addEventListener("mousedown", ev => { if (ev.target === el) fermerFenetre(); });
+  const echap = ev => { if (!el.isConnected) return document.removeEventListener("keydown", echap); if (ev.key === "Escape") fermerFenetre(); };
+  document.addEventListener("keydown", echap);
+  (extrait ? $("#sig-msg") : $("#sig-extrait")).focus();
+  $("#sig-envoyer").onclick = async () => {
+    const st = $("#statut-fen"), ex = $("#sig-extrait").value.trim(), msg = $("#sig-msg").value.trim();
+    if (!ex && !msg){ st.className = "statut erreur"; st.textContent = "Indique le passage ou explique le problème."; return; }
+    if (!db){ st.className = "statut erreur"; st.textContent = "Envoi impossible pour le moment."; return; }
+    $("#sig-envoyer").disabled = true;
+    try {
+      await db.doc("signalements/" + nouvelId("s")).set({origine: "lecon", type, message: msg.slice(0, 600), question: ex.slice(0, 300), quiz: String(l.titre).slice(0, 200), sur: nomMatiere(l.matiere) + " · Leçon",
+        lecon: l.id, matiere: nomMatiere(l.matiere), navigateur: navigator.userAgent.slice(0, 160), par: modeGerant ? "Gérant" : (profil && profil.pseudo) || "?", le: new Date().toISOString(), traite: false, capture: false});
+      fermerFenetre(); toast("Merci ! Le gérant a été prévenu.");
+    } catch { $("#sig-envoyer").disabled = false; st.className = "statut erreur"; st.textContent = "L'envoi a échoué, réessaie."; }
+  };
 }
 
 /* ----- Gérant : liste des leçons ----- */
@@ -6155,8 +6202,8 @@ VUES["g-lecons"] = function vueGLecons(){
   const ls = leconsDe(matiereActive);
   zone().innerHTML = entete(espaceNom(), "Leçons", `<button class="btn" type="button" id="nouvelle">Nouvelle leçon</button>`) + filtres(id => leconsDe(id).length) + `
     <p id="statut" class="statut" role="status"></p>
-    ${ls.length ? parGroupes(ls).map(([g, l2]) => `<section class="groupe-lecons"><h3 class="titre-groupe">${g ? esc(g) : "Sans groupe"}<span class="doux">${l2.length} leçon${l2.length > 1 ? "s" : ""}</span></h3><div class="cartes-lecons">${l2.map(l => `
-      <div class="carte-lecon">${miniLecon(l, `data-modif="${esc(l.id)}"`)}
+    ${ls.length ? parGroupes(ls).map(([g, l2]) => `<section class="groupe-lecons"><h3 class="titre-groupe">${g ? esc(g) : "Sans groupe"}<span class="doux">${l2.length} leçon${l2.length > 1 ? "s" : ""}</span></h3><div class="cartes-lecons triable" data-cle="${esc(cleGroupe(matiereActive, g))}">${l2.map(l => `
+      <div class="carte-lecon" data-id="${esc(l.id)}"><span class="poignee" title="Maintiens puis fais glisser pour ranger la leçon" aria-hidden="true">⠿</span>${miniLecon(l, `data-modif="${esc(l.id)}"`)}
         <div class="corps-lecon"><strong>${esc(l.titre)}</strong><span class="doux">${l.integree ? (l.modifiee ? "Leçon de départ, modifiée" : "Leçon de départ") : "Ajoutée"}${(l.pj || []).length ? ` · ${l.pj.length} pièce${l.pj.length > 1 ? "s" : ""} jointe${l.pj.length > 1 ? "s" : ""}` : ""}</span>
           <span class="rangee"><button type="button" class="mini-btn" data-modif="${esc(l.id)}">Modifier</button><button type="button" class="mini-btn danger" data-suppr="${esc(l.id)}">Supprimer</button></span></div>
       </div>`).join("")}</div></section>`).join("") : `<div class="vide">Aucune leçon en ${nomMatiere(matiereActive)}. Clique sur « Nouvelle leçon » pour en écrire une.</div>`}`;
@@ -6164,6 +6211,10 @@ VUES["g-lecons"] = function vueGLecons(){
   ajusterMiniatures(zone());
   $("#nouvelle").onclick = () => ouvrirEditeur(null);
   zone().querySelectorAll("[data-modif]").forEach(b => b.onclick = () => ouvrirEditeur(ls.find(l => l.id === b.dataset.modif)));
+  zone().querySelectorAll(".cartes-lecons.triable").forEach(c => rendreTriable(c, async ids => {
+    const groupes = {...ordreLecons, [c.dataset.cle]: ids}; ordreLecons = groupes;
+    try { await db.doc("edt/ordre-lecons").set({groupes}); statut("Ordre des leçons enregistré.", true); } catch (err){ statut(erreurEcriture(err)); }
+  }));
   zone().querySelectorAll("[data-suppr]").forEach(b => deuxClics(b, async () => {
     const l = ls.find(x => x.id === b.dataset.suppr);
     if (l.integree) await db.doc("lecons/" + l.id).set({supprime: true, majLe: new Date().toISOString()});
@@ -6171,6 +6222,44 @@ VUES["g-lecons"] = function vueGLecons(){
     (l.pj || []).forEach(p => supprimerImage(p.id ? "a:" + p.id : "r:" + p.ref));
   }));
 };
+
+/* Ranger des cartes en les maintenant puis en les faisant glisser (souris ou doigt), seulement dans leur conteneur */
+function rendreTriable(cont, fini){
+  cont.querySelectorAll(":scope > .carte-lecon").forEach(card => {
+    let actif = false;
+    card.addEventListener("touchmove", e => { if (actif) e.preventDefault(); }, {passive: false});
+    card.addEventListener("click", e => { if (card.dataset.glisse){ e.stopPropagation(); e.preventDefault(); delete card.dataset.glisse; } }, true);
+    card.addEventListener("pointerdown", ev => {
+      if (ev.button !== 0 || ev.target.closest(".mini-btn")) return;
+      const x0 = ev.clientX, y0 = ev.clientY, maintien = ev.target.closest(".poignee") ? 0 : 260; let place, dx, dy;
+      const demarrer = () => {
+        actif = true; const r = card.getBoundingClientRect(); dx = x0 - r.left; dy = y0 - r.top;
+        place = document.createElement("div"); place.className = "carte-place"; place.style.height = r.height + "px"; card.after(place);
+        card.classList.add("en-glisse"); Object.assign(card.style, {width: r.width + "px", height: r.height + "px", left: r.left + "px", top: r.top + "px"});
+        document.body.classList.add("tri-en-cours"); if (navigator.vibrate) navigator.vibrate(12);
+      };
+      const t = setTimeout(demarrer, maintien);
+      const bouge = e => {
+        if (!actif){ if (Math.hypot(e.clientX - x0, e.clientY - y0) > 8){ clearTimeout(t); stop(); } return; }
+        e.preventDefault();
+        card.style.left = (e.clientX - dx) + "px"; card.style.top = (e.clientY - dy) + "px";
+        let best = null, bd = 1e9;
+        cont.querySelectorAll(":scope > .carte-lecon:not(.en-glisse)").forEach(o => { const r = o.getBoundingClientRect(), d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)); if (d < bd){ bd = d; best = o; } });
+        if (best){ const r = best.getBoundingClientRect(), avant = e.clientY < r.top || (e.clientY <= r.bottom && e.clientX < r.left + r.width / 2);
+          if (avant){ if (best.previousElementSibling !== place) best.before(place); } else if (best.nextElementSibling !== place) best.after(place); }
+      };
+      const fin = () => {
+        clearTimeout(t); stop();
+        if (!actif) return;
+        actif = false; card.dataset.glisse = "1"; setTimeout(() => delete card.dataset.glisse, 50);
+        place.replaceWith(card); card.classList.remove("en-glisse"); ["width", "height", "left", "top"].forEach(k => card.style[k] = ""); document.body.classList.remove("tri-en-cours");
+        fini([...cont.querySelectorAll(":scope > .carte-lecon")].map(c => c.dataset.id));
+      };
+      const stop = () => { removeEventListener("pointermove", bouge); removeEventListener("pointerup", fin); removeEventListener("pointercancel", fin); };
+      addEventListener("pointermove", bouge, {passive: false}); addEventListener("pointerup", fin); addEventListener("pointercancel", fin);
+    });
+  });
+}
 
 /* ----- Gérant : éditeur de leçon façon traitement de texte ----- */
 const POLICES = [["IBM Plex Sans","Plex Sans (par défaut)"],["Sora","Sora"],["Georgia, serif","Georgia"],["'Times New Roman', serif","Times"],["Arial, sans-serif","Arial"],["'Comic Sans MS', cursive","Comic Sans"],["'IBM Plex Mono', monospace","Mono"]];
@@ -6196,7 +6285,7 @@ function dessinerEditeur(){
     <div class="editeur">
       <div class="barre-outils ruban" role="toolbar" aria-label="Mise en forme">
         <div class="r-ligne">
-          <button type="button" id="enreg-rapide" class="r-enreg" title="Enregistrer sans fermer la leçon (Ctrl+S)" aria-label="Enregistrer sans fermer la leçon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h11l3.5 3.5v12a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 19V5A1.5 1.5 0 0 1 5 3.5z"/><path d="M7.5 3.5v5h8v-5M7.5 20.5v-6h9v6"/></svg><svg class="ic ok" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="enreg-etat" class="enreg-etat" hidden></span></button>
+          <span class="r-lot"><button type="button" id="enreg-rapide" class="r-enreg" title="Enregistrer sans fermer la leçon (Ctrl+S)" aria-label="Enregistrer sans fermer la leçon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h11l3.5 3.5v12a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 19V5A1.5 1.5 0 0 1 5 3.5z"/><path d="M7.5 3.5v5h8v-5M7.5 20.5v-6h9v6"/></svg><svg class="ic ok" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="enreg-etat" class="enreg-etat" hidden></span></button></span>
           <select id="o-police" aria-label="Police" title="Police">${POLICES.map(([v, t]) => `<option value="${esc(v)}">${t}</option>`).join("")}</select>
         <select id="o-taille" aria-label="Taille du texte" title="Taille">${TAILLES.map(([v, t]) => `<option value="${v}" ${v === "3" ? "selected" : ""}>${t}</option>`).join("")}</select>
           <span class="sep"></span>
@@ -14453,11 +14542,11 @@ function imageCapture(id){
 let filtreSignal = "ouverts";
 VUES["g-signal"] = function vueSignal(){
   rafraichir = vueSignal;
-  const lib = Object.fromEntries([...TYPES_SIGNAL, ...TYPES_SIGNAL_FICHIER, ...TYPES_SIGNAL_MONDE]);
+  const lib = Object.fromEntries([...TYPES_SIGNAL, ...TYPES_SIGNAL_FICHIER, ...TYPES_SIGNAL_MONDE, ...TYPES_SIGNAL_LECON]);
   const ouverts = signalements.filter(x => !x.traite).length;
   const liste = signalements.filter(x => filtreSignal === "tous" || !x.traite).sort((a, b) => String(b.le).localeCompare(String(a.le)));
   zone().innerHTML = entete("Gérant", "Signalements") + `
-    <p class="doux">Les problèmes signalés par les élèves avec le bouton « ⚑ Prévenir » des exercices et du cloud.</p>
+    <p class="doux">Les problèmes signalés par les élèves avec le bouton « ⚑ Prévenir » des exercices, des leçons, des actualités et du cloud.</p>
     ${segment("sig-filtre", [["ouverts", `À traiter (${ouverts})`], ["tous", `Tous (${signalements.length})`]], filtreSignal)}
     <p id="statut" class="statut" role="status"></p>
     ${htmlDemandesGerant()}
@@ -14466,6 +14555,8 @@ VUES["g-signal"] = function vueSignal(){
         <span class="titre" style="min-width:0">
           <span class="rangee" style="gap:8px"><span class="badge ${x.traite ? "" : "accent"}">${esc(lib[x.type] || "Autre")}</span>${x.origine === "monde" ? `<span class="badge">Actu Monde</span><strong style="overflow-wrap:anywhere">${esc(x.quiz)}</strong><span class="doux" style="font-size:.82rem">${esc(x.source || "")}${monde.some(m => m.id === x.actu) ? "" : " · actu supprimée depuis"}</span></span>
           ${x.lien ? `<a class="lien" href="${esc(x.lien)}" target="_blank" rel="noopener noreferrer" style="font-size:.85rem;overflow-wrap:anywhere">${esc(x.lien)} ↗</a>` : ""}`
+          : x.origine === "lecon" ? `<span class="badge">Leçon</span><strong style="overflow-wrap:anywhere">${esc(x.quiz)}</strong><span class="doux" style="font-size:.82rem">${esc(x.matiere || "")}</span></span>
+          ${x.question ? `<span style="overflow-wrap:anywhere">« ${esc(x.question)} »</span>` : ""}${toutesLecons().some(l => l.id === x.lecon) ? `<button type="button" class="mini-btn" data-ouvrir-lecon="${esc(x.lecon)}" style="align-self:flex-start">Modifier la leçon</button>` : ""}`
           : x.origine === "cloud" ? `<span class="badge">Cloud</span><strong style="overflow-wrap:anywhere">${esc(x.quiz)}</strong><span class="doux" style="font-size:.82rem">${esc(x.dossier || "")}${cloud.some(c => c.docId === x.fichier) ? "" : " · fichier supprimé depuis"}</span></span>
           ${x.apercu ? `<img class="sig-fichier" src="${esc(blobUrl(x.apercu))}" alt="Aperçu du fichier">` : ""}`
           : `<strong>${esc(x.quiz)}</strong><span class="doux" style="font-size:.82rem">question ${esc(String(x.numero || "?"))}${x.matiere ? " · " + esc(x.matiere) : ""}</span></span>
@@ -14490,6 +14581,7 @@ VUES["g-signal"] = function vueSignal(){
     };
   });
   zone().querySelectorAll("#sig-filtre button").forEach(b => b.onclick = () => { filtreSignal = b.dataset.v; vueSignal(); });
+  zone().querySelectorAll("[data-ouvrir-lecon]").forEach(b => b.onclick = () => { const l = toutesLecons().find(x => x.id === b.dataset.ouvrirLecon); if (l){ matiereActive = l.matiere; marquerNav("g-lecons"); vueActive = "g-lecons"; ouvrirEditeur(l); } });
   brancherDemandesGerant();
   zone().querySelectorAll("[data-traite]").forEach(b => b.onclick = async () => {
     const x = signalements.find(y => y.id === b.dataset.traite);
@@ -14567,6 +14659,7 @@ function basculerBrouillon(q){
   db.collection("monde").onSnapshot(s => { mondeDb = s.docs.map(d => ({...d.data(), id: d.id})); fusionMonde(); }, () => {});
   db.doc("edt/semaine").onSnapshot(s => { const d = s.exists ? s.data() : null; edt = {creneaux: d && Array.isArray(d.creneaux) ? d.creneaux : [], couleurs: d && d.couleurs && typeof d.couleurs === "object" ? d.couleurs : {}}; majVue(); }, () => {});
   db.doc("edt/devoirs").onSnapshot(s => { const d = s.exists ? s.data() : null; devoirsED = {devoirs: d && Array.isArray(d.devoirs) ? d.devoirs : [], majLe: d ? d.majLe || null : null, existe: !!d}; majVue(); }, () => {});
+  db.doc("edt/ordre-lecons").onSnapshot(s => { const d = s.exists ? s.data() : null; ordreLecons = d && d.groupes && typeof d.groupes === "object" ? d.groupes : {}; majVue(); }, () => {});
   db.doc("edt/dictees").onSnapshot(s => { const d = s.exists ? s.data() : null; dicteesDb = d && Array.isArray(d.dictees) ? d.dictees : []; majVue(); }, () => {});
   db.doc("edt/devoirs-manuels").onSnapshot(s => { const d = s.exists ? s.data() : null; devoirsMan = d && Array.isArray(d.devoirs) ? d.devoirs : []; majVue(); }, () => {});
   db.doc(cheminAnnee()).onSnapshot(s => { const d = s.exists ? s.data() : null; annee = {semaines: d && d.semaines && typeof d.semaines === "object" ? d.semaines : {},
