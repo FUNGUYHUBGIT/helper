@@ -1970,6 +1970,11 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .mini-barre .mb-ortho-vide{font-size:.78rem;opacity:.6;padding:2px}
 .mini-barre .mb-presse{padding-top:6px;margin-top:2px;border-top:1px solid var(--ligne)}
 .mini-barre .mb-presse button,.mini-barre .mb-ortho .mb-ligne button{flex:1;white-space:nowrap}.mini-barre .mb-ortho .mb-ligne button{font-size:.76rem;padding:3px 6px}
+
+/* gérant : IP et classe modifiables dans les tableaux */
+.tableau .champ-ip{width:100%;min-width:110px;padding:4px 8px;background:transparent;border:1px solid transparent;border-radius:6px;font:inherit;color:inherit}
+.tableau .champ-ip:hover{border-color:var(--ligne)}.tableau .champ-ip:focus{border-color:var(--accent);background:var(--surface-2);outline:none}
+.choix-classe{padding:4px 6px;background:var(--surface-2);border:1px solid var(--ligne);border-radius:6px;color:var(--texte);font:inherit;font-size:.85rem}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -4588,10 +4593,13 @@ const Formes = (() => {
 })();
 
 /* ===================== PRÉFÉRENCES D'AFFICHAGE ===================== */
+const CLASSES = ["3A", "3B", "3C", "3D", "3E", "3F", "Hors-élèves"];
+const optionsClasses = actuelle => { const a = String(actuelle || ""), connue = CLASSES.some(c => normClasse(c) === normClasse(a));
+  return (connue || !a ? "" : `<option value="${esc(a)}" selected>${esc(a)}</option>`) + CLASSES.map(c => `<option value="${c}" ${normClasse(c) === normClasse(a) ? "selected" : ""}>${c === "Hors-élèves" ? "Hors-élèves" : "Classe " + c}</option>`).join(""); };
 const ACCENTS = [["Or","#f2ae02"],["Orange","#f5a524"],["Corail","#ff6b3d"],["Bleu","#4fa3f7"],["Vert","#5cc98a"],["Rose","#ef6fa6"],["Violet","#a585f2"]];
 const PREFS_DEFAUT = {accent: "#f2ae02", formes: null, notifs: {actus: true, chg: true}};
 function appliquerPrefs(p){
-  const accent = /^#[0-9a-f]{6}$/i.test(p && p.accent || "") ? p.accent : PREFS_DEFAUT.accent;
+  const accent = ACCENTS.some(([, c]) => c === String(p && p.accent || "").toLowerCase()) ? String(p.accent).toLowerCase() : PREFS_DEFAUT.accent;   // seulement les couleurs de la palette
   document.documentElement.style.setProperty("--accent", accent);
   Formes.accent(accent);
   Formes.nombre(p && Number.isFinite(p.formes) ? p.formes : null);
@@ -4861,7 +4869,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.63";
+const VERSION_SITE = "1.64";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -4946,12 +4954,12 @@ VUES.profil = function vueProfil(){
         </div>
         <dl class="fiche">
           <dt>Pseudo</dt><dd>${esc(p.pseudo)} <span class="doux" style="font-weight:400">(sert à te connecter)</span></dd>
-          <dt>Nom</dt><dd>${esc(p.nom) || `<span class="doux">Non renseigné</span>`}</dd>
+          <dt>IP <span class="doux" style="font-weight:400">(identifiant personnel)</span></dt><dd>${esc(p.nom) || `<span class="doux">Non renseigné</span>`}</dd>
           <dt>Rang</dt><dd>${RANGS[p.rang] || "Élève"}</dd>
           <dt>Classe</dt><dd>${esc(p.classe) || `<span class="doux">Aucune</span>`}</dd>
           <dt>Compte créé le</dt><dd>${p.creeLe ? dateFr(p.creeLe.slice(0, 10)) : "—"}</dd>
         </dl>
-        <p class="doux" style="font-size:.85rem">Le nom, le rang et la classe viennent de ton code d'accès : seul le gérant peut les changer.</p>
+        <p class="doux" style="font-size:.85rem">L'IP, le rang et la classe viennent de ton code d'accès : seul le gérant peut les changer.</p>
       </div>
       ${blocPseudo(p)}
       <form class="bloc" id="form-mdp" novalidate>
@@ -4967,7 +4975,7 @@ VUES.profil = function vueProfil(){
       <span class="mono">Confidentialité</span>
       <dl class="fiche">
         <dt>Enregistré</dt><dd style="font-weight:400">Ton pseudo, ton mot de passe chiffré, ta photo, tes préférences et ta progression (${lues} leçon${lues > 1 ? "s" : ""} lue${lues > 1 ? "s" : ""}, ${nbDefis} défi${nbDefis > 1 ? "s" : ""}, ${prog.points} points).</dd>
-        <dt>Qui le voit</dt><dd style="font-weight:400">Le gérant voit ton pseudo, ton nom, ta classe et ta progression dans la liste des élèves. Rien de ton compte n'est affiché aux autres élèves.</dd>
+        <dt>Qui le voit</dt><dd style="font-weight:400">Le gérant voit ton pseudo, ton IP, ta classe et ta progression dans la liste des élèves. Rien de ton compte n'est affiché aux autres élèves.</dd>
       </dl>
       <p id="statut" class="statut" role="status"></p>
       <div class="rangee">
@@ -5018,8 +5026,7 @@ VUES.prefs = function vuePrefs(){
   zone().innerHTML = entete("Préférences", "Réglages") + `
     <div class="bloc">
       <span class="mono">Couleur du site</span>
-      <div class="nuancier">${ACCENTS.map(([n, c]) => `<button type="button" style="--c:${c}" data-c="${c}" aria-pressed="${p.accent.toLowerCase() === c}" aria-label="${n}" title="${n}"></button>`).join("")}
-        <label class="rangee" style="gap:8px;margin-left:6px"><input type="color" id="accent-libre" value="${esc(p.accent)}"><span class="doux">Autre couleur</span></label></div>
+      <div class="nuancier">${ACCENTS.map(([n, c]) => `<button type="button" style="--c:${c}" data-c="${c}" aria-pressed="${p.accent.toLowerCase() === c}" aria-label="${n}" title="${n}"></button>`).join("")}</div>
     </div>
     <div class="bloc">
       <span class="mono">Formes en arrière-plan</span>
@@ -5043,8 +5050,6 @@ VUES.prefs = function vuePrefs(){
     </div>
     <p id="statut" class="statut" role="status"></p>`;
   zone().querySelectorAll(".nuancier button").forEach(b => b.onclick = () => { p.accent = b.dataset.c; enregistrerPrefs(); vuePrefs(); });
-  $("#accent-libre").oninput = () => { p.accent = $("#accent-libre").value; appliquerPrefs(p); zone().querySelectorAll(".nuancier button").forEach(b => b.setAttribute("aria-pressed", "false")); };
-  $("#accent-libre").onchange = enregistrerPrefs;
   $("#nb-formes").oninput = () => { p.formes = +$("#nb-formes").value; $("#nb-formes-val").textContent = p.formes; enregistrerPrefs(); };
   const ic = $("#icone-couleur"); if (ic) ic.onchange = () => { lsSet("helper.iconeCouleur", ic.checked ? "1" : "0"); appliquerPrefs(p); };
   $("#formes-auto").onclick = () => { p.formes = null; $("#nb-formes-val").textContent = "Auto"; enregistrerPrefs(); };
@@ -14187,12 +14192,12 @@ VUES["g-eleves"] = function vueGEleves(){
   zone().innerHTML = entete("Gérant", "Élèves et codes d'accès") + `
     <form class="bloc" id="form-code" novalidate>
       <span class="mono">Créer un identifiant d'accès unique (IAUWL)</span>
-      <p class="doux" style="font-size:.88rem;max-width:75ch">Chaque code sert une seule fois, pour créer un compte. Il donne au compte son nom, son rang et sa classe. Un compte Gérant a tous les onglets élève et gérant ; un compte Élève n'a que les onglets élève.</p>
+      <p class="doux" style="font-size:.88rem;max-width:75ch">Chaque code sert une seule fois, pour créer un compte. Il donne au compte son IP (identifiant personnel), son rang et sa classe. Un compte Gérant a tous les onglets élève et gérant ; un compte Élève n'a que les onglets élève.</p>
       <div class="grille-form">
         <div class="champ" style="grid-column:span 2"><label for="nc-code">Code</label><div class="rangee" style="flex-wrap:nowrap"><input id="nc-code" type="text" class="code-clair" spellcheck="false" autocapitalize="characters" value="${genererCode()}" style="flex:1;min-width:0"><button type="button" class="mini-btn" id="nc-gen">Générer</button></div></div>
-        <div class="champ"><label for="nc-nom">Nom</label><input id="nc-nom" type="text" placeholder="Gabriel.C." maxlength="40"></div>
+        <div class="champ"><label for="nc-nom" style="white-space:nowrap">IP <small class="doux" style="font-size:.78em">: identifiant personnel</small></label><input id="nc-nom" type="text" placeholder="Gabriel.C." maxlength="40"></div>
         <div class="champ"><label for="nc-rang">Rang</label><select id="nc-rang"><option value="eleve">Élève</option><option value="administrateur">Administrateur (leçons, exercices, emploi du temps, D.S.)</option><option value="gerant">Gérant</option></select></div>
-        <div class="champ"><label for="nc-classe">Classe</label><input id="nc-classe" type="text" value="3C" maxlength="10"></div>
+        <div class="champ"><label for="nc-classe">Classe</label><select id="nc-classe">${optionsClasses("3C")}</select></div>
       </div>
       <p id="statut" class="statut" role="status"></p>
       <div><button class="btn" type="submit">Créer le code</button></div>
@@ -14204,7 +14209,7 @@ VUES["g-eleves"] = function vueGEleves(){
     ev.preventDefault();
     const code = $("#nc-code").value.trim().toUpperCase(), nom = $("#nc-nom").value.trim(), classe = $("#nc-classe").value.trim();
     if (!/^[A-Z0-9]{6,24}$/.test(code)) return statut("Le code doit faire 6 à 24 caractères : lettres sans accent et chiffres.");
-    if (!nom) return statut("Indique le nom de l'élève.");
+    if (!nom) return statut("Indique l'IP (identifiant personnel) de l'élève.");
     const h = await hashCode(code), ref = db.doc("codes/" + h);
     try {
       if ((await ref.get()).exists) return statut("Ce code existe déjà. Génère-en un autre.");
@@ -14220,10 +14225,10 @@ function dessinerEleves(){
   const zc = $("#liste-codes"), za = $("#liste-comptes"); if (!zc) return;
   const pseudoDe = id => { const c = comptes.find(x => x.id === id); return c ? c.pseudo || id : id; };
   const tri = codes.slice().sort((a, b) => String(b.creeLe).localeCompare(String(a.creeLe)));
-  zc.innerHTML = tri.length ? `<div class="tableau"><table><thead><tr><th>Nom</th><th>Code</th><th>Rang</th><th>Classe</th><th>État</th><th></th></tr></thead><tbody>${tri.map(c => {
+  zc.innerHTML = tri.length ? `<div class="tableau"><table><thead><tr><th title="Identifiant personnel">IP</th><th>Code</th><th>Rang</th><th>Classe</th><th>État</th><th></th></tr></thead><tbody>${tri.map(c => {
       const u = utilisations[c.id];
-      return `<tr><td>${esc(marqueStudio(c.nom))}</td><td class="code-clair">${codesClairs[c.id] ? esc(codesClairs[c.id]) : `<span class="doux" title="Créé depuis un autre appareil ou un autre compte gérant">masqué</span>`}</td>
-        <td>${RANGS[rangDe(c.rang)]}</td><td>${esc(c.classe) || "—"}</td>
+      return `<tr><td><input class="champ-ip" data-ip-code="${esc(c.id)}" value="${esc(c.nom || "")}" maxlength="40" aria-label="IP (identifiant personnel)" spellcheck="false"></td><td class="code-clair">${codesClairs[c.id] ? esc(codesClairs[c.id]) : `<span class="doux" title="Créé depuis un autre appareil ou un autre compte gérant">masqué</span>`}</td>
+        <td>${RANGS[rangDe(c.rang)]}</td><td><select class="choix-classe" data-classe-code="${esc(c.id)}" aria-label="Classe">${optionsClasses(c.classe)}</select></td>
         <td>${u && u.compte ? `<span class="badge accent">Utilisé · ${esc(pseudoDe(u.compte))}</span>` : `<span class="badge">Libre</span>`}</td>
         <td style="text-align:right"><button type="button" class="mini-btn danger" data-suppr-code="${esc(c.id)}">Supprimer</button></td></tr>`; }).join("")}</tbody></table></div>`
     : `<div class="vide">Aucun code pour le moment. Crée le premier ci-dessus, par exemple pour toi avec le rang Gérant.</div>`;
@@ -14234,10 +14239,10 @@ function dessinerEleves(){
   }));
   const infosCode = c => { if (!c.codeHash) return {nom: "", rang: "eleve", classe: "3C", ancien: true}; const k = codes.find(x => x.id === c.codeHash); return k ? k : {nom: "", rang: "eleve", classe: "", sansCode: true}; };
   const lignes = comptes.filter(c => c.hash).sort((a, b) => String(a.pseudo || a.id).localeCompare(String(b.pseudo || b.id)));
-  za.innerHTML = lignes.length ? `<div class="tableau"><table><thead><tr><th>Pseudo</th><th>Nom</th><th>Rang</th><th>Classe</th><th>Points</th><th>Série</th><th>Créé le</th><th></th></tr></thead><tbody>${lignes.map(c => {
+  za.innerHTML = lignes.length ? `<div class="tableau"><table><thead><tr><th>Pseudo</th><th title="Identifiant personnel">IP</th><th>Rang</th><th>Classe</th><th>Points</th><th>Série</th><th>Créé le</th><th></th></tr></thead><tbody>${lignes.map(c => {
       const k = infosCode(c), p = progresTous[c.id] || {};
       return `<tr><td><span class="rangee" style="gap:8px;flex-wrap:nowrap"><span class="avatar" style="width:28px;height:28px;font-size:.75rem">${c.avatar ? `<img src="${esc(c.avatar)}" alt="">` : esc((c.pseudo || c.id).slice(0, 1).toUpperCase())}</span>${esc(c.pseudo || c.id)}</span></td>
-        <td>${esc(k.nom) || `<span class="doux">${k.ancien ? "Ancien compte" : k.sansCode ? "Code supprimé" : "—"}</span>`}</td><td>${k.ancien || k.sansCode || !c.codeHash ? (RANGS[rangDe(k.rang)]) : `<select class="choix-rang" data-rang-code="${esc(c.codeHash)}" data-compte="${esc(c.id)}" aria-label="Rôle de ${esc(c.pseudo || c.id)}"${c.id === moi ? ` disabled title="Tu ne peux pas changer ton propre rôle"` : ""}>${Object.entries(RANGS).map(([r, t]) => `<option value="${r}" ${rangDe(k.rang) === r ? "selected" : ""}>${t}</option>`).join("")}</select>`}</td><td>${esc(k.classe) || "—"}</td>
+        <td>${k.ancien || k.sansCode ? `<span class="doux">${k.ancien ? "Ancien compte" : "Code supprimé"}</span>` : `<input class="champ-ip" data-ip-code="${esc(c.codeHash)}" value="${esc(k.nom || "")}" maxlength="40" aria-label="IP de ${esc(c.pseudo || c.id)}" spellcheck="false">`}</td><td>${k.ancien || k.sansCode || !c.codeHash ? (RANGS[rangDe(k.rang)]) : `<select class="choix-rang" data-rang-code="${esc(c.codeHash)}" data-compte="${esc(c.id)}" aria-label="Rôle de ${esc(c.pseudo || c.id)}"${c.id === moi ? ` disabled title="Tu ne peux pas changer ton propre rôle"` : ""}>${Object.entries(RANGS).map(([r, t]) => `<option value="${r}" ${rangDe(k.rang) === r ? "selected" : ""}>${t}</option>`).join("")}</select>`}</td><td>${k.ancien || k.sansCode ? esc(k.classe) || "—" : `<select class="choix-classe" data-classe-code="${esc(c.codeHash)}" aria-label="Classe de ${esc(c.pseudo || c.id)}">${optionsClasses(k.classe)}</select>`}</td>
         <td class="num">${p.points || 0}</td><td class="num">${p.serie || 0} j</td><td>${c.creeLe ? dateFr(String(c.creeLe).slice(0, 10)) : "—"}</td><td style="text-align:right;white-space:nowrap">${c.pseudoBloque ? `<span class="badge" title="Changement de pseudo désactivé">🔒 Pseudo</span> ` : ""}<button type="button" class="mini-btn" data-moderer="${esc(c.id)}">Pseudo…</button> <button type="button" class="mini-btn danger" data-suppr-compte="${esc(c.id)}">Supprimer</button></td></tr>`; }).join("")}</tbody></table></div>`
     : `<div class="vide">Aucun compte créé pour le moment.</div>`;
   za.querySelectorAll("[data-suppr-compte]").forEach(b => deuxClics(b, () => supprimerCompteGerant(b.dataset.supprCompte)));
@@ -14245,6 +14250,21 @@ function dessinerEleves(){
     const c = comptes.find(x => x.id === sel.dataset.compte), r = sel.value;
     try { await db.doc("codes/" + sel.dataset.rangCode).update({rang: r}); statut(`« ${c ? c.pseudo || c.id : sel.dataset.compte} » est maintenant ${RANGS[r]}. Le changement s'applique à sa prochaine connexion.`, true); Formes.succes(); }
     catch (err){ statut(erreurEcriture(err)); dessinerEleves(); }
+  });
+  // IP et classe modifiables (enregistrés dans le code d'accès : appliqués à la prochaine connexion)
+  [zc, za].forEach(z => {
+    z.querySelectorAll("[data-ip-code]").forEach(inp => {
+      inp.onkeydown = ev => { if (ev.key === "Enter"){ ev.preventDefault(); inp.blur(); } if (ev.key === "Escape"){ inp.value = inp.defaultValue; inp.blur(); } };
+      inp.onchange = async () => {
+        const v = inp.value.trim(); if (!v){ inp.value = inp.defaultValue; return statut("L'IP ne peut pas être vide."); }
+        try { await db.doc("codes/" + inp.dataset.ipCode).update({nom: v}); const k = codes.find(x => x.id === inp.dataset.ipCode); if (k) k.nom = v; inp.defaultValue = v; statut(`IP changé en « ${v} ». Le changement s'applique à la prochaine connexion.`, true); Formes.succes(); }
+        catch (err){ statut(erreurEcriture(err)); inp.value = inp.defaultValue; }
+      };
+    });
+    z.querySelectorAll("[data-classe-code]").forEach(sel => sel.onchange = async () => {
+      try { await db.doc("codes/" + sel.dataset.classeCode).update({classe: sel.value}); const k = codes.find(x => x.id === sel.dataset.classeCode); if (k) k.classe = sel.value; statut(`Classe changée : ${sel.value}. Le changement s'applique à la prochaine connexion.`, true); Formes.succes(); }
+      catch (err){ statut(erreurEcriture(err)); dessinerEleves(); }
+    });
   });
   za.querySelectorAll("[data-moderer]").forEach(b => b.onclick = () => { const c = comptes.find(x => x.id === b.dataset.moderer); if (c) fenetrePseudo(c); });
 }
@@ -14429,7 +14449,7 @@ function formulaireDemande(){
     <b>Demander un code d'accès</b>
     <span class="doux">Le gérant reçoit ta demande et répond oui ou non. Si c'est oui, ton code apparaîtra ici, sur cet appareil.</span>
     <div class="champ"><label for="dm-nom">Prénom et nom</label><input id="dm-nom" type="text" maxlength="60" autocomplete="name" placeholder="ex. Léa Martin"></div>
-    <div class="champ"><label for="dm-classe">Classe</label><input id="dm-classe" type="text" maxlength="12" value="3C"></div>
+    <div class="champ"><label for="dm-classe">Classe</label><select id="dm-classe">${optionsClasses("3C")}</select></div>
     <div class="champ"><label for="dm-msg">Message pour le gérant (facultatif)</label><input id="dm-msg" type="text" maxlength="300" placeholder="ex. Je suis dans le groupe de Gabriel."></div>
     <p class="message" id="dm-statut" role="status"></p>
     <div class="rangee"><button class="btn" type="submit" id="dm-envoyer">Envoyer la demande</button><button class="btn sec" type="button" id="dm-annuler">Annuler</button></div></form>`;
