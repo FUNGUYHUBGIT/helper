@@ -2005,7 +2005,7 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .qd-illu.qd-carte{padding:6px;overflow:hidden}.qd-carte .fig-exo,.qd-carte .mod-exo,.qd-carte .obj-doc,.qd-carte .mod-carte{margin:0;padding:0;border:0;background:none;box-shadow:none}.qd-carte svg{display:block;width:100%;max-height:200px;border-radius:8px}
 .qd-svg{display:block;width:100%;height:auto}
 .qd-svg .qd-trait{fill:none;stroke:var(--doux);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.qd-svg .qd-plein{fill:var(--doux)}.qd-svg .qd-a{fill:var(--qc)}.qd-svg .qd-b{fill:color-mix(in srgb,var(--doux) 55%,var(--surface-2))}.qd-svg .qd-c{fill:#4fa3f7}.qd-svg .qd-fond{fill:var(--surface)}
+.qd-svg .qd-plein{fill:var(--doux)}.qd-svg .qd-grille{stroke:var(--ligne);stroke-width:1}.qd-svg .qd-a{fill:var(--qc)}.qd-svg .qd-b{fill:color-mix(in srgb,var(--doux) 55%,var(--surface-2))}.qd-svg .qd-c{fill:#4fa3f7}.qd-svg .qd-fond{fill:var(--surface)}
 .qd-svg text{font:600 11px var(--f-texte);fill:var(--doux)}.qd-svg .fort{fill:var(--texte);font-weight:700}.qd-svg .blanc{fill:#fff}
 .qd-citation{position:relative;margin:0;background:var(--surface-2);border:1px solid var(--ligne);border-left:3px solid var(--qc);border-radius:10px;padding:14px 16px 14px 38px}
 .qd-citation blockquote{margin:0;font-size:1.02rem;line-height:1.5;font-style:italic}
@@ -5523,7 +5523,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.72";
+const VERSION_SITE = "1.73";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -10356,6 +10356,33 @@ const ILLU = {
     <ellipse cx="240" cy="40" rx="30" ry="10" class="qd-trait"/><path d="M210 40v60a30 10 0 0 0 60 0V40" class="qd-trait" style="fill:color-mix(in srgb,var(--qc) 12%,transparent)"/>`),
   fraction: () => svgIllu(`<circle cx="160" cy="65" r="48" class="qd-trait" style="fill:var(--surface-2)"/><path d="M160 65V17A48 48 0 0 1 201.6 89z" fill="var(--qc)"/><path d="M160 65V17M160 65l41.6 24M160 65l-41.6 24" class="qd-trait"/>`)
 };
+ILLU.poids = () => svgIllu(`<path d="M120 12h80" class="qd-trait" style="stroke-width:4"/><path d="M160 12v10l-9 4 18 6-18 6 18 6-18 6 9 4v8" class="qd-trait" style="stroke-width:2"/>
+  <rect x="138" y="68" width="44" height="34" rx="5" class="qd-a"/><path d="M160 85v34" stroke="#e5484d" stroke-width="3.5" stroke-linecap="round"/><path d="M160 126l-7-11h14z" fill="#e5484d"/>
+  <path d="M30 122a180 40 0 0 1 260 0" class="qd-trait" style="stroke:#4fa3f7;stroke-width:3"/>`);
+ILLU.orbite = () => svgIllu(`<ellipse cx="160" cy="65" rx="130" ry="42" class="qd-trait" style="stroke-dasharray:5 6"/><circle cx="160" cy="65" r="30" fill="#4fa3f7" opacity=".6"/><path d="M142 58c8-6 16 3 24-2s10 10 3 14-20 3-27-12z" fill="#5cc98a" opacity=".85"/>
+  <g transform="translate(272 46) rotate(20)"><rect x="-6" y="-5" width="12" height="10" rx="2" class="qd-plein"/><rect x="-24" y="-3" width="16" height="6" fill="#4fa3f7"/><rect x="8" y="-3" width="16" height="6" fill="#4fa3f7"/></g>
+  <path d="M283 70a130 42 0 0 1-30 18" class="qd-trait" style="stroke:var(--qc);stroke-width:2.5"/><path d="M253 88l12-1-5-8z" fill="var(--qc)"/>`);
+// repère avec la droite d'une fonction (points lus dans l'énoncé : f(-1) = -2 …)
+function grapheFonction(q){
+  const nb = x => parseFloat(String(x).replace("−", "-").replace(",", "."));
+  const pts = [...String(q.q).matchAll(/f\s*\(\s*([−-]?\d+(?:[.,]\d+)?)\s*\)\s*=\s*([−-]?\d+(?:[.,]\d+)?)/g)].map(m => [nb(m[1]), nb(m[2])]).filter(p => p.every(Number.isFinite));
+  const P = pts.length >= 2 ? pts.slice(0, 2) : [[-1, -1], [2, 2]];
+  const xs = [-4, 4], ymax = Math.max(4, ...P.map(p => Math.abs(p[1])) ) + 1, xmax = Math.max(4, ...P.map(p => Math.abs(p[0]))) + 1;
+  const W = 220, H = 130, ox = 160, oy = 65, kx = (W / 2 - 8) / xmax, ky = (H / 2 - 8) / ymax, X = x => ox + x * kx, Y = y => oy - y * ky;
+  const [a, b] = P, pente = (b[1] - a[1]) / (b[0] - a[0] || 1), yAt = x => a[1] + pente * (x - a[0]);
+  const pasX = Math.ceil(xmax / 5), pasY = Math.ceil(ymax / 4); let grille = "";
+  for (let i = -Math.floor(xmax / pasX) * pasX; i <= xmax; i += pasX) grille += `<path d="M${X(i)} ${oy - H / 2 + 4}V${oy + H / 2 - 4}" class="qd-grille"/>`;
+  for (let j = -Math.floor(ymax / pasY) * pasY; j <= ymax; j += pasY) grille += `<path d="M${ox - W / 2 + 4} ${Y(j)}H${ox + W / 2 - 4}" class="qd-grille"/>`;
+  return svgIllu(`${grille}<path d="M${ox - W / 2} ${oy}H${ox + W / 2}M${ox} ${oy + H / 2}V${oy - H / 2}" class="qd-trait"/>
+    <path d="M${X(-xmax)} ${Y(yAt(-xmax))}L${X(xmax)} ${Y(yAt(xmax))}" stroke="var(--qc)" stroke-width="2.5" stroke-linecap="round"/>
+    ${pts.length >= 2 ? P.map(([x, y]) => `<circle cx="${X(x)}" cy="${Y(y)}" r="4.5" fill="#f5a524"/>${T(X(x) > 250 ? X(x) - 7 : X(x) + 7, Math.max(12, Y(y) - 6), `(${String(x).replace(".", ",")} ; ${String(y).replace(".", ",")})`, `class="qd-t fort"${X(x) > 250 ? ' text-anchor="end"' : ""}`)}`).join("") : ""}${T(ox + W / 2 - 4, oy - 6, "x", 'text-anchor="end" class="qd-t"')}${T(ox + 6, oy - H / 2 + 12, "y", 'class="qd-t"')}`);
+}
+// masque sur l'illustration les mots qui donneraient la réponse
+function masquerIlluDnb(racine, q){
+  const rep = [...(q.choix || []), ...[].concat(q.rep || [])].map(normaliserEtiquette).filter(Boolean);
+  racine.querySelectorAll(".qd-illu text, .qd-illu tspan").forEach(el => { if (el.children.length) return; const L = normaliserEtiquette(el.textContent);
+    if (L && rep.some(A => A === L || (L.length >= 4 && (" " + A + " ").includes(" " + L + " ")))) el.textContent = "?"; });
+}
 // frise du XXe siècle (repères neutres : on ne place pas la réponse)
 const friseIllu = () => svgIllu(`<path d="M20 70h280" class="qd-trait" style="stroke-width:3"/><path d="M300 70l-10-6v12z" class="qd-plein"/>
   ${[1900, 1920, 1940, 1960, 1980, 2000, 2020].map((a, i) => { const x = 25 + i * 43; return `<path d="M${x} 62v16" class="qd-trait"/>${T(x, 98, String(a), 'text-anchor="middle" class="qd-t"')}`; }).join("")}
@@ -10381,14 +10408,14 @@ function illustrationDnb(q){
   if (q.fig || q.genre) return "";
   const t = (q.q + " " + (q.ctx || "")).toLowerCase(), m = q.mat;
   const svg = cle => `<div class="qd-illu fig-exo">${ILLU[cle]()}</div>`;
-  if (m === "francais") { const c = citationIllu(q); return c || (/(poème|vers|alexandrin|roman|théâtre|auteur|écrivain|récit|genre|registre|didascal)/.test(t) ? svg("livre") : ""); }
+  if (m === "francais") return citationIllu(q);   // seulement quand la question cite une phrase
   if (m === "sciences"){
     const r = [[/\bph\b|acide|basique|neutre/, "ph"], [/atome|électron|proton|noyau|\bion\b|ions\b/, "atome"], [/tension|intensité|ampèremètre|voltmètre|circuit|lampe|résistance|\bohm/, "circuit"],
-      [/vitesse|km\/h|m\/s|mouvement|ralenti|accéléré/, "vitesse"], [/énergie|puissance|kwh|\bwatt|\bjoule|charbon|renouvelable/, "energie"], [/masse volumique|flotte|g\/cm|poids|masse|newton|force/, "densite"],
+      [/vitesse|km\/h|m\/s|mouvement|ralenti|accéléré/, "vitesse"], [/énergie|puissance|kwh|\bwatt|\bjoule|charbon|renouvelable/, "energie"], [/poids|newton|dynamomètre|pesanteur|n\/kg/, "poids"], [/masse volumique|flotte|coule|g\/cm/, "densite"], [/\biss\b|orbite|satellite|station spatiale|lune|planète/, "orbite"],
       [/\bson\b|fréquence|hz\b|décibel/, "son"], [/lumière/, "lumiere"], [/chromosome|adn|gène|allèle|spermatozoïde|ovule|fécondation|sexe/, "adn"], [/cellule|mitose/, "cellule"],
       [/globule|anticorps|vaccin|bactérie|antibiotique|lymphocyte|micro-organisme/, "immunite"], [/climat|effet de serre|réchauffement|co₂|dioxyde de carbone|eau de chaux/, "terre"],
       [/séisme|plaque|volcan|tectonique/, "plaques"], [/écosystème|chaîne alimentaire|sélection naturelle|darwin|espèce/, "chaine"], [/moteur|capteur|programme|boucle|octet|algorithme|instruction|matériau|conducteur/, "techno"]];
-    const f = r.find(([re]) => re.test(t)); return svg(f ? f[1] : "flacon");
+    const f = r.find(([re]) => re.test(t)); return f ? svg(f[1]) : "";   // pas d'image « au hasard »
   }
   if (m === "hge"){
     const date = /en quelle année|quand |en quel siècle/.test(t);
@@ -10401,9 +10428,10 @@ function illustrationDnb(q){
     if (/drom|outre-mer|zee/.test(t)) return `<div class="qd-illu qd-carte">${carteIllu("monde")}</div>`;
     if (/géograph|région|port|métropole|aire urbaine|littoral|périurbain|densité|parc naturel|faible densité|ville/.test(t)) return `<div class="qd-illu qd-carte">${carteIllu("france")}</div>`;
     if (/mondialisation|guerre froide|rideau de fer|otan|décolonisation|indépendance|urss|onu/.test(t) && !date) return `<div class="qd-illu qd-carte">${carteIllu("monde")}</div>`;
-    return `<div class="qd-illu fig-exo">${friseIllu()}</div>`;
+    return "";
   }
   if (m === "maths" && !q.ctx){
+    if (/fonction|affine|linéaire|image de|antécédent/.test(t)) return `<div class="qd-illu fig-exo">${grapheFonction(q)}</div>`;
     if (/probabilit|urne|\bdé\b|hasard/.test(t)) return svg("de");
     if (/%|pourcentage|réduction|augment|remise/.test(t)) return svg("pourcent");
     if (/volume|pavé|cylindre|cône|boule|pyramide|cube/.test(t)) return svg("solide");
@@ -15499,7 +15527,7 @@ function lancerQuiz(questions, ctx){
           : `<form id="f-rep" class="rangee" autocomplete="off" style="align-items:flex-end"><div class="champ" style="flex:1 1 220px"><label for="rep">Ta réponse</label><input id="rep" type="text" spellcheck="false"></div><button class="btn" type="submit">Valider</button></form>`}
         <div id="verdict" aria-live="polite"></div>
       </div>`;
-    remplirImages(zone()); masquerFigure(zone(), q); Promise.resolve(remplirObjets(zone())).then(() => masquerFigure(zone(), q));
+    remplirImages(zone()); masquerFigure(zone(), q); if (dnb) masquerIlluDnb(zone(), q); Promise.resolve(remplirObjets(zone())).then(() => masquerFigure(zone(), q));
     $("#prevenir").onclick = () => fenetrePrevenir(q, ctx, i + 1, capturerZone());
     fermerBrouillon(); if ($("#ouvrir-brouillon")) $("#ouvrir-brouillon").onclick = () => basculerBrouillon(q);
     const repondre = juste => {
