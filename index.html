@@ -1995,6 +1995,50 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .sd-doc b{font-weight:600}.sd-doc span{color:var(--doux)}.sd-doc .doux{font-size:.8rem}.sd-doc:hover span{color:inherit}
 .sd-pages{display:flex;flex-direction:column;align-items:center;gap:14px}
 .sd-feuille{width:100%;max-width:1000px;height:auto;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.45)}
+
+/* module « question DNB » (séries des Exercices Brevet) */
+.qd-mat{display:inline-flex;align-items:center;gap:6px;padding:3px 11px 3px 8px;border-radius:999px;background:color-mix(in srgb,var(--mc) 15%,transparent);color:var(--mc);font-weight:700;font-size:.78rem;letter-spacing:.01em}
+.qd-mat svg{width:15px;height:15px}
+.qd-corps{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:20px;align-items:center;margin:4px 0 2px}
+.qd-corps .question{margin:0}
+.qd-illu{background:var(--surface-2);border:1px solid var(--ligne);border-radius:12px;padding:10px 12px;min-width:0}
+.qd-illu.qd-carte{padding:6px;overflow:hidden}.qd-carte .fig-exo,.qd-carte .mod-exo,.qd-carte .obj-doc,.qd-carte .mod-carte{margin:0;padding:0;border:0;background:none;box-shadow:none}.qd-carte svg{display:block;width:100%;max-height:200px;border-radius:8px}
+.qd-svg{display:block;width:100%;height:auto}
+.qd-svg .qd-trait{fill:none;stroke:var(--doux);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.qd-svg .qd-plein{fill:var(--doux)}.qd-svg .qd-a{fill:var(--qc)}.qd-svg .qd-b{fill:color-mix(in srgb,var(--doux) 55%,var(--surface-2))}.qd-svg .qd-c{fill:#4fa3f7}.qd-svg .qd-fond{fill:var(--surface)}
+.qd-svg text{font:600 11px var(--f-texte);fill:var(--doux)}.qd-svg .fort{fill:var(--texte);font-weight:700}.qd-svg .blanc{fill:#fff}
+.qd-citation{position:relative;margin:0;background:var(--surface-2);border:1px solid var(--ligne);border-left:3px solid var(--qc);border-radius:10px;padding:14px 16px 14px 38px}
+.qd-citation blockquote{margin:0;font-size:1.02rem;line-height:1.5;font-style:italic}
+.qd-citation mark{background:color-mix(in srgb,var(--qc) 32%,transparent);color:inherit;border-radius:4px;padding:0 3px;font-style:normal;font-weight:600}
+.qd-citation figcaption{margin-top:6px;font-size:.8rem;color:var(--doux)}
+.qd-guillemet{position:absolute;left:10px;top:2px;font:700 2.4rem/1 Georgia,serif;color:var(--qc)}
+.qd-trou{display:inline-block;min-width:2.4em;border-bottom:2px dashed var(--qc);color:transparent}
+.qd-choix button{display:flex;align-items:center;gap:12px}
+.qd-lettre{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:7px;background:var(--surface);border:1px solid var(--ligne);font:700 .78rem var(--f-mono);color:var(--doux)}
+.qd-choix button.juste .qd-lettre{background:var(--ok);border-color:var(--ok);color:#10140f}.qd-choix button.faux .qd-lettre{background:var(--erreur);border-color:var(--erreur);color:#fff}
+@media (max-width:760px){.qd-corps{grid-template-columns:1fr;gap:12px}.qd-illu{max-width:420px}}
+/* module frise (remettre dans l'ordre) */
+.qc-frise{display:flex;flex-direction:column;gap:12px}
+.qc-axe{display:flex;align-items:center;gap:10px}
+.qc-borne{font:700 .7rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.qc-fleche{position:relative;flex:1;height:3px;border-radius:2px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 35%,transparent),var(--accent))}
+.qc-fleche::after{content:"";position:absolute;right:-2px;top:50%;transform:translateY(-50%);border:6px solid transparent;border-left:9px solid var(--accent);border-right:0}
+.qc-cases{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:10px}
+.qc-case{position:relative;display:flex;flex-direction:column;justify-content:center;gap:6px;min-height:92px;padding:24px 8px 8px;border:1.5px dashed var(--ligne);border-radius:10px;background:var(--surface);cursor:pointer;transition:border-color .15s,background .15s}
+.qc-case:not(.vide){border-style:solid}
+.qc-case.survol,.qc-frise:not(.fige) .qc-case.vide:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
+.qc-num{position:absolute;top:6px;left:9px;font:700 .7rem var(--f-mono);color:var(--doux)}
+.qc-place{font-size:.78rem;color:var(--doux);text-align:center}
+.qc-carte{width:100%;padding:9px 10px;border:1px solid var(--ligne);border-radius:8px;background:var(--surface-2);color:var(--texte);font:inherit;font-size:.86rem;line-height:1.3;text-align:left;cursor:grab;touch-action:none;user-select:none}
+.qc-pioche .qc-carte{width:auto;max-width:100%}
+.qc-carte.choisi{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent)}
+.qc-pioche{display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-radius:10px;border:1px solid var(--ligne);background:color-mix(in srgb,var(--surface-2) 60%,transparent)}
+.qc-aide{margin:0;font-size:.82rem}
+.qc-fantome{position:fixed;z-index:90;pointer-events:none;opacity:.95;box-shadow:0 12px 28px rgba(0,0,0,.55)}.qc-source{opacity:.35}
+.qc-case.ok{border-color:var(--ok)}.qc-case.ko{border-color:var(--erreur)}.qc-case.corrige{border-color:#f5a524}.qc-case.corrige .qc-date{color:#f5a524}
+.qc-date{font:700 .8rem var(--f-mono)}.qc-case.ok .qc-date{color:var(--ok)}.qc-case.ko .qc-date{color:var(--erreur)}
+.qc-frise.fige .qc-carte{cursor:default}
+@media (max-width:640px){.qc-cases{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2741,7 +2785,7 @@ const BANQUE_REVISION = [
   RV("dnb","hge","En quelle année est créée l'ONU ?",["1945","1919","1957","1989"],0,"La charte des Nations unies est signée à San Francisco en 1945."),
   RV("dnb","hge","Quand le mur de Berlin tombe-t-il ?",["9 novembre 1989","13 août 1961","3 octobre 1990","1er janvier 1993"],0,"Construit en 1961, il tombe le 9 novembre 1989."),
   RV("dnb","hge","Quelle crise de 1962 oppose les États-Unis et l'URSS à propos de missiles ?",["La crise de Cuba","La crise de Berlin","La guerre de Corée","La crise de Suez"],0,"Des missiles soviétiques sont installés à Cuba ; l'URSS finit par les retirer."),
-  RV("dnb","hge","En quelle année est fondée la Ve République ?",["1958","1946","1945","1962"],0,"Constitution adoptée par référendum en septembre 1958."),
+  RV("dnb","hge","En France, en quelle année la Ve République est-elle fondée ?",["1958","1946","1945","1962"],0,"Constitution adoptée par référendum en septembre 1958."),
   RV("dnb","hge","En quelle année les Françaises votent-elles pour la première fois ?",["1945","1918","1936","1968"],0,"Le droit de vote est accordé en 1944, premier vote aux municipales de 1945."),
   RV("dnb","hge","En quelle année l'Algérie devient-elle indépendante ?",["1962","1954","1947","1958"],0,"Après la guerre d'Algérie (1954-1962) et les accords d'Évian."),
   RV("dnb","hge","Quel traité crée la Communauté économique européenne en 1957 ?",["Le traité de Rome","Le traité de Maastricht","Le traité de Versailles","Le traité de Lisbonne"],0,"Six pays fondateurs signent le traité de Rome."),
@@ -2753,7 +2797,7 @@ const BANQUE_REVISION = [
   RV("dnb","hge","Quel mot désigne la concentration des populations et des activités dans les grandes villes ?",["La métropolisation","La périurbanisation","La désertification","La décentralisation"],0,"Les métropoles concentrent emplois, services et fonctions de commandement."),
   RV("dnb","hge","Quelle loi de 1905 établit la laïcité en France ?",["La loi de séparation des Églises et de l'État","La loi Ferry","La loi Veil","La loi Le Chapelier"],0,"L'État ne reconnaît ni ne finance aucun culte et garantit la liberté de conscience."),
   RV("dnb","hge","À partir de quel âge peut-on voter en France ?",["18 ans","16 ans","21 ans","15 ans"],0,"Depuis 1974."),
-  RV("dnb","hge","Pour combien d'années le président de la République est-il élu ?",["5 ans","7 ans","4 ans","6 ans"],0,"Le quinquennat a remplacé le septennat (référendum de 2000)."),
+  RV("dnb","hge","En France, pour combien d'années le président de la République est-il élu ?",["5 ans","7 ans","4 ans","6 ans"],0,"Le quinquennat a remplacé le septennat (référendum de 2000)."),
   RV("dnb","hge","Quelles assemblées forment le Parlement français ?",["L'Assemblée nationale et le Sénat","Le Sénat et le Conseil constitutionnel","L'Assemblée nationale et le gouvernement","Le Conseil d'État et le Sénat"],0,"Le Parlement vote les lois et contrôle le gouvernement."),
   RV("dnb","hge","Quel texte de 1789 proclame que « les hommes naissent et demeurent libres et égaux en droits » ?",["La Déclaration des droits de l'homme et du citoyen","Le Code civil","La Constitution de 1958","La Déclaration universelle de 1948"],0,"La DDHC du 26 août 1789."),
   /* ---------- DNB · Français ---------- */
@@ -2821,11 +2865,11 @@ const GENERATEURS = [
   ["dnb","maths", () => { const a = alea(1, 9), b = alea(1, 9), s = a + b, p = a * b;
     return qcm({q: `Développe et réduis l'expression (x + ${a})(x + ${b}). Quelle est la bonne forme réduite ?`, exp: `x² + ${b}x + ${a}x + ${p} = x² + ${s}x + ${p}.`}, `x² + ${s}x + ${p}`, [`x² + ${p}x + ${s}`, `x² + ${p}`, `2x + ${s}`, `x² + ${s}x + ${s}`]); }],
   ["dnb","maths", () => { const a = alea(2, 12);
-    return qcm({q: `Factorise x² − ${a * a} (pense à l'identité a² − b² = (a − b)(a + b)).`, exp: `Identité a² − b² = (a − b)(a + b) avec b = ${a}.`}, `(x − ${a})(x + ${a})`, [`(x − ${a})²`, `(x + ${a})²`, `x(x − ${a * a})`, `(x − ${a * a})(x + 1)`]); }],
+    return qcm({q: `Factorise x² − ${a * a}.`, exp: `Identité a² − b² = (a − b)(a + b) avec b = ${a}.`}, `(x − ${a})(x + ${a})`, [`(x − ${a})²`, `(x + ${a})²`, `x(x − ${a * a})`, `(x − ${a * a})(x + 1)`]); }],
   ["dnb","maths", () => { const a = alea(2, 5), b = alea(-9, 9), x = alea(-4, 4), y = a * x * x + b;
     return {q: `f(x) = ${a}x² ${b < 0 ? "−" : "+"} ${Math.abs(b)}. Calcule l'image de ${x} par f, c'est-à-dire f(${x}). Écris seulement le nombre.`, rep: repNum(y), exp: `${a} × (${x})² ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${a * x * x} ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${y}.`}; }],
   ["dnb","maths", () => { const a = alea(-5, 6) || 2, b = alea(-8, 8), x1 = alea(-3, 1), x2 = x1 + alea(1, 4);
-    return {q: `Une fonction affine f vérifie f(${x1}) = ${a * x1 + b} et f(${x2}) = ${a * x2 + b}. Calcule son coefficient directeur a (a = différence des images ÷ différence des nombres). Écris seulement le nombre.`, rep: repNum(a), exp: `(${a * x2 + b} − ${a * x1 + b}) / (${x2} − ${x1}) = ${a * (x2 - x1)} / ${x2 - x1} = ${a}.`}; }],
+    return {q: `Une fonction affine f vérifie f(${x1}) = ${a * x1 + b} et f(${x2}) = ${a * x2 + b}. Calcule son coefficient directeur a. Écris seulement le nombre.`, rep: repNum(a), exp: `(${a * x2 + b} − ${a * x1 + b}) / (${x2} − ${x1}) = ${a * (x2 - x1)} / ${x2 - x1} = ${a}.`}; }],
   ["dnb","maths", () => { const n = Array.from({length: 5}, () => alea(6, 19)); const s = n.reduce((x, y) => x + y, 0); const m = s / 5;
     return qcm({q: `Voici 5 notes sur 20 : ${n.join(" ; ")}. Quelle est la moyenne de ces notes ?`, exp: `Somme ${s} ÷ 5 = ${fr(m)}.`}, fr(m), [fr(m + 1), fr([...n].sort((a, b) => a - b)[2]), fr(s / 4), fr(Math.max(...n) - Math.min(...n))]); }],
   ["dnb","maths", () => { const n = Array.from({length: 7}, () => alea(1, 30)); const t = [...n].sort((a, b) => a - b);
@@ -2843,7 +2887,7 @@ const GENERATEURS = [
     const ecrit = t => { const c = {}; t.forEach(x => c[x] = (c[x] || 0) + 1); return Object.entries(c).map(([p, e]) => e > 1 ? `${p}${e === 2 ? "²" : "³"}` : p).join(" × "); };
     return qcm({q: `Quelle est la décomposition en facteurs premiers de ${n} ?`, exp: `${n} = ${f.join(" × ")} = ${ecrit(f)}.`}, ecrit(f), [ecrit([...f.slice(1), 4].sort()), `${f[0]} × ${n / f[0]}`, ecrit([...f, 2]), `${n / 2} × 2`]); }],
   ["dnb","maths", () => { const v = prendre([36, 54, 72, 90, 108, 126]);
-    return qcm({q: `Convertis ${v} km/h en m/s (1 km = 1 000 m et 1 h = 3 600 s).`, exp: `${v} ÷ 3,6 = ${fr(v / 3.6)} m/s.`}, fr(v / 3.6) + " m/s", [fr(v * 3.6) + " m/s", fr(v / 60) + " m/s", fr(v / 1.6) + " m/s"]); }],
+    return qcm({q: `Convertis ${v} km/h en m/s.`, exp: `${v} ÷ 3,6 = ${fr(v / 3.6)} m/s.`}, fr(v / 3.6) + " m/s", [fr(v * 3.6) + " m/s", fr(v / 60) + " m/s", fr(v / 1.6) + " m/s"]); }],
   ["dnb","maths", () => { const d = alea(12, 90) * 5, h = prendre([1.5, 2, 2.5, 3, 4, 5]);
     return qcm({q: `Une voiture parcourt ${d} km en ${fr(h)} h. Quelle est sa vitesse moyenne, en km/h ?`, exp: `v = d / t = ${d} / ${fr(h)} = ${fr(d / h)} km/h.`}, fr(d / h) + " km/h", [fr(d * h) + " km/h", fr(d / h / 60) + " km/h", fr(d / (h + 1)) + " km/h"]); }],
   ["dnb","maths", () => { const ang = prendre([30, 35, 40, 50, 60]), h = alea(5, 20), a = h * Math.cos(ang * Math.PI / 180);
@@ -2863,7 +2907,7 @@ const GENERATEURS = [
   ["dnb","sciences", () => { const m = prendre([500, 800, 1000, 1200, 1500]), v = prendre([10, 15, 20, 25, 30]), e = .5 * m * v * v;
     return qcm({q: `Une voiture de ${m} kg roule à ${v} m/s. Quelle est son énergie cinétique ? (Ec = ½ m v²)`, exp: `½ × ${m} × ${v}² = ${e.toLocaleString("fr-FR")} J.`}, e.toLocaleString("fr-FR") + " J", [(m * v).toLocaleString("fr-FR") + " J", (m * v * v).toLocaleString("fr-FR") + " J", (.5 * m * v).toLocaleString("fr-FR") + " J"]); }],
   ["dnb","sciences", () => { const r = prendre([10, 22, 47, 100, 220]), i = prendre([0.05, 0.1, 0.2, 0.5]), u = r * i;
-    return qcm({q: `Une résistance de ${r} Ω est traversée par un courant de ${fr(i)} A. Quelle est la tension à ses bornes ? (U = R × I)`, exp: `${r} × ${fr(i)} = ${fr(u)} V.`}, fr(u) + " V", [fr(r / i) + " V", fr(i / r, 4) + " V", fr(r + i) + " V"]); }],
+    return qcm({q: `Une résistance de ${r} Ω est traversée par un courant de ${fr(i)} A. Quelle est la tension à ses bornes ?`, exp: `${r} × ${fr(i)} = ${fr(u)} V.`}, fr(u) + " V", [fr(r / i) + " V", fr(i / r, 4) + " V", fr(r + i) + " V"]); }],
   ["dnb","sciences", () => { const p = prendre([60, 100, 500, 1000, 2000]), h = prendre([2, 3, 5, 10]), e = p * h / 1000;
     return qcm({q: `Un appareil de ${p} W fonctionne ${h} h. Quelle énergie consomme-t-il ?`, exp: `E = P × t = ${p} W × ${h} h = ${p * h} Wh = ${fr(e)} kWh.`}, fr(e) + " kWh", [fr(p * h) + " kWh", fr(p / h) + " kWh", fr(e * 10) + " kWh"]); }],
   ["dnb","sciences", () => { const m = alea(2, 30) * 10, v = prendre([10, 20, 25, 50, 100]);
@@ -3445,7 +3489,7 @@ GENERATEURS.push(
     return {genre: "frise", evenements: ev.map(([texte, date]) => ({texte, date})), marge: 0, q: "Place ces événements sur la frise chronologique.", exp: ev.sort((a, b) => a[1] - b[1]).map(([t, d]) => `${d} : ${t}`).join(" · ")}; }],
   ["dnb","hge", () => { const ev = melanger(EVTS_XX).slice(0, 4).sort((a, b) => a[1] - b[1]);
     if (new Set(ev.map(e => e[1])).size < 4) return null;
-    return {genre: "ordre", extremes: ["Plus ancien", "Plus récent"], items: ev.map(e => e[0]), q: "Remets ces événements dans l'ordre chronologique (du plus ancien au plus récent).", exp: ev.map(([t, d]) => `${d} : ${t}`).join(" · ")}; }],
+    return {genre: "chrono", items: ev.map(e => e[0]), dates: ev.map(e => e[1]), q: "Place ces événements sur la frise, du plus ancien au plus récent.", exp: ev.map(([t, d]) => `${d} : ${t}`).join(" · ")}; }],
   /* --- Croquis de France --- */
   ["dnb","hge", () => { const f = melanger(FIGURES_CROQUIS).slice(0, 4), ordre = FIGURES_CROQUIS.filter(x => f.includes(x));
     return {genre: "associer", paires: ordre.map((x, i) => ["Figuré " + (i + 1), x[1]]), q: "Complète la légende du croquis : associe chaque figuré numéroté à sa signification.",
@@ -3600,11 +3644,11 @@ GENERATEURS.push(
       rep: variantes(v * 1000, (v * 1000).toLocaleString("fr-FR")), exp: `Volume = ${a} × ${b} × ${nbFr(c)} = ${nbFr(v)} m³, soit ${(v * 1000).toLocaleString("fr-FR")} L.`, fig: FG_pave(a, b, c, a + " m", b + " m", nbFr(c) + " m", {legende: FG_PAS_ECHELLE})}); }],
   // aire d'un disque
   ["dnb", "maths", () => { const r = alea(2, 15), a = Math.PI * r * r;
-    return AVEC({q: `Calcule l'aire d'un disque de rayon ${r} cm (A = π × r²). Donne le résultat arrondi au cm² près, sans écrire l'unité.`, brouillon: `pi xx ${r}^2 =`, rep: variantes(Math.round(a)),
+    return AVEC({q: `Calcule l'aire d'un disque de rayon ${r} cm. Donne le résultat arrondi au cm² près, sans écrire l'unité.`, brouillon: `pi xx ${r}^2 =`, rep: variantes(Math.round(a)),
       exp: `A = π × ${r}² = ${r * r}π ≈ ${nbFr(a)} cm², soit ${Math.round(a)} cm² arrondi à l'unité.`, fig: FG_disque({rayon: r + " cm"})}); }],
   // périmètre d'un cercle
   ["dnb", "maths", () => { const d = alea(3, 30), p = Math.PI * d;
-    return AVEC({q: `Un cercle a un diamètre de ${d} cm. Calcule son périmètre (P = π × diamètre), arrondi au dixième de cm. Écris seulement le nombre.`, brouillon: `pi xx ${d} =`, rep: repN(Math.round(p * 10) / 10, 1),
+    return AVEC({q: `Un cercle a un diamètre de ${d} cm. Calcule son périmètre, arrondi au dixième de cm. Écris seulement le nombre.`, brouillon: `pi xx ${d} =`, rep: repN(Math.round(p * 10) / 10, 1),
       exp: `P = π × ${d} ≈ ${nbFr(p, 3)} cm, soit ${nbFr(Math.round(p * 10) / 10, 1)} cm au dixième.`, fig: FG_disque({diametre: d + " cm"})}); }],
   // volume d'une pyramide
   ["dnb", "maths", () => { const c = alea(2, 10), h = 3 * alea(1, 6), v = c * c * h / 3;
@@ -5479,7 +5523,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.71";
+const VERSION_SITE = "1.72";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -10239,6 +10283,180 @@ function svgReseauInteractif(res, o = {}){
     else if (a.ip) svg += svgTexte(x, y + 47, a.ip, "gr-txt"); });
   return `<svg viewBox="0 0 ${W} ${H}" class="mod-svg" role="img" aria-label="Schéma de réseau">${svg}</svg>`;
 }
+/* ===================== MODULE « QUESTION DNB » (séries des Exercices Brevet, DNB uniquement) =====================
+   Bandeau de matière coloré, illustration automatique (schéma, carte, frise, citation…), réponses A B C D,
+   et un module de frise chronologique pour remettre des événements dans l'ordre. */
+const MAT_DNB_Q = {
+  maths: {nom: "Maths", c: "#4fa3f7", ic: `<path d="M5 12h14M12 5v14" stroke-width="2.4"/><path d="M15.5 15.5l3 3m0-3l-3 3M5.5 6.5h4" stroke-width="1.8"/>`},
+  francais: {nom: "Français", c: "#b991ff", ic: `<path d="M5 19c4-1 8-5 11-11l2-3-3 2C9 10 6 14 5 19z"/><path d="M5 19l5-5"/>`},
+  hge: {nom: "Histoire-Géo-EMC", c: "#f5a524", ic: `<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c3 3 3 13 0 16M12 4c-3 3-3 13 0 16"/>`},
+  sciences: {nom: "Sciences", c: "#5cc98a", ic: `<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 15h9"/>`},
+  langues: {nom: "Langues", c: "#ef6fa6", ic: `<path d="M4 6h10M9 4v2M6 6c1 4 4 7 7 8M12 6c-1 4-4 7-7 8"/><path d="M13 20l4-9 4 9M14.5 17h5"/>`}
+};
+const matDnbQ = q => MAT_DNB_Q[q.mat] || MAT_DNB_Q.maths;
+const bandeauDnbQ = q => { const m = matDnbQ(q);
+  return `<span class="qd-mat" style="--mc:${m.c}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${m.ic}</svg>${esc(m.nom)}</span>`; };
+
+/* ---------- Illustrations (SVG simples aux couleurs du site) ---------- */
+const svgIllu = (corps, vb = "0 0 320 130") => `<svg viewBox="${vb}" class="qd-svg" role="img" aria-hidden="true">${corps}</svg>`;
+const T = (x, y, t, o = "") => `<text x="${x}" y="${y}" ${o}>${esc(t)}</text>`;
+const ILLU = {
+  ph: () => svgIllu(`${[...Array(15)].map((_, i) => `<rect x="${12 + i * 19.7}" y="34" width="19.7" height="30" fill="hsl(${i < 7 ? i * 12 : i === 7 ? 110 : 160 + (i - 7) * 16} 70% ${i === 7 ? 45 : 50}%)"/>`).join("")}
+    ${[0, 7, 14].map(v => T(22 + v * 19.7, 84, String(v), 'text-anchor="middle" class="qd-t"')).join("")}
+    ${T(28, 24, "Acide", 'class="qd-t"')}${T(160, 24, "Neutre", 'text-anchor="middle" class="qd-t"')}${T(296, 24, "Basique", 'text-anchor="end" class="qd-t"')}
+    <path d="M22 100h276" class="qd-trait"/><path d="M22 100l8-4v8zM298 100l-8-4v8z" class="qd-plein"/>${T(160, 120, "pH", 'text-anchor="middle" class="qd-t fort"')}`),
+  atome: () => svgIllu(`<ellipse cx="160" cy="65" rx="120" ry="30" class="qd-trait"/><ellipse cx="160" cy="65" rx="120" ry="30" class="qd-trait" transform="rotate(60 160 65)"/><ellipse cx="160" cy="65" rx="120" ry="30" class="qd-trait" transform="rotate(-60 160 65)"/>
+    ${[[150, 60, 1], [168, 58, 0], [158, 72, 1], [172, 70, 0], [145, 72, 0]].map(([x, y, p]) => `<circle cx="${x}" cy="${y}" r="8" class="${p ? "qd-a" : "qd-b"}"/>${p ? T(x, y + 4, "+", 'text-anchor="middle" class="qd-t blanc"') : ""}`).join("")}
+    ${[[280, 65], [100, 13], [100, 117]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6" class="qd-c"/>${T(x, y + 4, "−", 'text-anchor="middle" class="qd-t blanc"')}`).join("")}`),
+  circuit: () => svgIllu(`<rect x="40" y="20" width="240" height="90" rx="6" class="qd-trait"/>
+    <rect x="30" y="50" width="20" height="30" class="qd-fond"/><path d="M30 55h20M34 63h12" class="qd-trait" style="stroke-width:3"/>${T(18, 70, "+", 'class="qd-t"')}
+    <circle cx="160" cy="20" r="13" class="qd-fond qd-trait"/><path d="M151 11l18 18M169 11l-18 18" class="qd-trait"/>
+    <circle cx="280" cy="65" r="13" class="qd-fond qd-trait"/>${T(280, 70, "A", 'text-anchor="middle" class="qd-t fort"')}
+    <path d="M120 110v-5M200 110v-5" class="qd-trait"/><circle cx="160" cy="110" r="13" class="qd-fond qd-trait"/>${T(160, 115, "R", 'text-anchor="middle" class="qd-t fort"')}`),
+  vitesse: () => svgIllu(`<path d="M70 110a90 90 0 0 1 180 0" class="qd-trait" style="stroke-width:10;stroke:var(--surface-2)"/><path d="M70 110a90 90 0 0 1 150-67" class="qd-trait" style="stroke-width:10;stroke:var(--qc)"/>
+    ${[...Array(9)].map((_, i) => { const a = Math.PI * (1 - i / 8), x1 = 160 + 74 * Math.cos(a), y1 = 110 - 74 * Math.sin(a), x2 = 160 + 64 * Math.cos(a), y2 = 110 - 64 * Math.sin(a); return `<path d="M${x1} ${y1}L${x2} ${y2}" class="qd-trait"/>`; }).join("")}
+    <path d="M160 110L205 62" class="qd-trait" style="stroke-width:3"/><circle cx="160" cy="110" r="6" class="qd-plein"/>${T(160, 92, "km/h", 'text-anchor="middle" class="qd-t"')}`),
+  energie: () => svgIllu(`<rect x="70" y="35" width="150" height="60" rx="8" class="qd-trait"/><rect x="220" y="52" width="12" height="26" rx="3" class="qd-plein"/>
+    <rect x="78" y="43" width="90" height="44" rx="4" class="qd-a" style="opacity:.8"/><path d="M150 30l-22 38h18l-10 34 30-44h-19l12-28z" class="qd-plein" style="fill:#f5c518"/>`),
+  densite: () => svgIllu(`<path d="M100 20v90a8 8 0 0 0 8 8h104a8 8 0 0 0 8-8V20" class="qd-trait"/><path d="M101 55h118v55a8 8 0 0 1-8 8H109a8 8 0 0 1-8-8z" fill="#4fa3f7" opacity=".35"/>
+    <rect x="135" y="38" width="26" height="26" class="qd-b" transform="rotate(8 148 51)"/><circle cx="190" cy="98" r="12" class="qd-a"/>${T(240, 60, "eau", 'class="qd-t"')}`),
+  son: () => svgIllu(`<path d="M80 50h20l25-22v74l-25-22H80z" class="qd-plein"/>${[30, 50, 70].map(r => `<path d="M${135 + r * .3} ${65 - r * .6}a${r} ${r} 0 0 1 0 ${r * 1.2}" class="qd-trait"/>`).join("")}
+    <path d="M200 65c8-30 16 30 24 0s16 30 24 0 16 30 24 0" class="qd-trait" style="stroke:var(--qc);stroke-width:2.5"/>`),
+  lumiere: () => svgIllu(`<circle cx="80" cy="65" r="22" fill="#f5c518"/>${[...Array(8)].map((_, i) => { const a = i * Math.PI / 4; return `<path d="M${80 + 30 * Math.cos(a)} ${65 + 30 * Math.sin(a)}L${80 + 40 * Math.cos(a)} ${65 + 40 * Math.sin(a)}" stroke="#f5c518" stroke-width="3" stroke-linecap="round"/>`; }).join("")}
+    <path d="M125 65h150" class="qd-trait" style="stroke:#f5c518;stroke-width:3"/><path d="M275 65l-10-6v12z" fill="#f5c518"/>`),
+  adn: () => svgIllu(`${[...Array(13)].map((_, i) => { const x = 40 + i * 20, y1 = 65 + 32 * Math.sin(i * .7), y2 = 65 - 32 * Math.sin(i * .7); return `<path d="M${x} ${y1}L${x} ${y2}" stroke="${["#4fa3f7", "#f5a524", "#5cc98a", "#ef6fa6"][i % 4]}" stroke-width="4" stroke-linecap="round"/>`; }).join("")}
+    <path d="${[...Array(121)].map((_, k) => `${k ? "L" : "M"}${40 + k * 2} ${65 + 32 * Math.sin(k * .07)}`).join("")}" class="qd-trait" style="stroke-width:3"/>
+    <path d="${[...Array(121)].map((_, k) => `${k ? "L" : "M"}${40 + k * 2} ${65 - 32 * Math.sin(k * .07)}`).join("")}" class="qd-trait" style="stroke-width:3"/>`),
+  cellule: () => svgIllu(`<ellipse cx="160" cy="65" rx="110" ry="50" class="qd-trait" style="fill:color-mix(in srgb,var(--qc) 12%,transparent)"/><circle cx="175" cy="60" r="20" class="qd-a" style="opacity:.75"/>
+    ${[[100, 50], [120, 85], [230, 80], [220, 40]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="9" ry="5" class="qd-b"/>`).join("")}`),
+  immunite: () => svgIllu(`<ellipse cx="90" cy="65" rx="34" ry="18" class="qd-b" transform="rotate(-20 90 65)"/>${[[60, 50], [62, 82], [120, 48], [118, 80]].map(([x, y]) => `<path d="M${x} ${y}l-8 ${y < 65 ? -6 : 6}" class="qd-trait"/>`).join("")}
+    ${[[200, 40], [250, 75], [190, 95]].map(([x, y]) => `<g transform="translate(${x} ${y})"><path d="M0 22V6M0 6L-12 -8M0 6L12 -8" class="qd-trait" style="stroke:var(--qc);stroke-width:4"/></g>`).join("")}`),
+  terre: () => svgIllu(`<circle cx="160" cy="80" r="38" fill="#4fa3f7" opacity=".55"/><path d="M135 70c10-8 20 4 30-2s12 12 4 18-24 4-34-16z" fill="#5cc98a" opacity=".85"/>
+    <circle cx="160" cy="80" r="52" class="qd-trait" style="stroke-dasharray:4 5"/><circle cx="40" cy="25" r="14" fill="#f5c518"/><path d="M55 32l70 30" stroke="#f5c518" stroke-width="2.5"/><path d="M196 60l50-30" stroke="#e5484d" stroke-width="2.5" stroke-dasharray="6 4"/>`),
+  plaques: () => svgIllu(`<path d="M20 70h130l-10 40H20zM300 70H170l10 40h120z" class="qd-b"/><path d="M150 70l10 -28 10 28" class="qd-a"/><path d="M60 55h50M110 55l-8-5v10zM260 55h-50M210 55l8-5v10z" class="qd-trait" style="stroke-width:2.5"/>`),
+  chaine: () => svgIllu(`<path d="M50 85c-10-30 15-45 25-50 0 20-5 40-25 50z" fill="#5cc98a"/><path d="M50 85l18-35" class="qd-trait"/>
+    <ellipse cx="160" cy="75" rx="22" ry="15" class="qd-b"/><ellipse cx="146" cy="56" rx="4" ry="12" class="qd-b"/><ellipse cx="156" cy="54" rx="4" ry="12" class="qd-b"/>
+    <path d="M250 85l20-30 20 30z" fill="#f5a524"/><path d="M256 62l-6-12 12 6M284 62l6-12-12 6" fill="#f5a524"/>
+    <path d="M90 70h40M200 70h40" class="qd-trait" style="stroke-width:2.5"/><path d="M130 70l-8-5v10zM240 70l-8-5v10z" class="qd-plein"/>`),
+  techno: () => svgIllu(`<rect x="110" y="25" width="100" height="80" rx="8" class="qd-trait"/><rect x="132" y="47" width="56" height="36" rx="4" class="qd-a" style="opacity:.8"/>
+    ${[40, 60, 80, 100].map(y => `<path d="M95 ${y - 10}h15M210 ${y - 10}h15" class="qd-trait"/>`).join("")}${[130, 150, 170, 190].map(x => `<path d="M${x} 10v15M${x} 105v15" class="qd-trait"/>`).join("")}`),
+  flacon: () => svgIllu(`<path d="M145 15h30M150 15v35l-30 55a8 8 0 0 0 7 12h66a8 8 0 0 0 7-12l-30-55V15" class="qd-trait"/><path d="M131 85h58l12 22a4 4 0 0 1-4 6h-74a4 4 0 0 1-4-6z" fill="var(--qc)" opacity=".5"/><circle cx="165" cy="95" r="4" class="qd-plein"/><circle cx="152" cy="102" r="3" class="qd-plein"/>`),
+  vote: () => svgIllu(`<path d="M100 60h120v55H100z" class="qd-fond qd-trait"/><path d="M100 60l15-20h90l15 20" class="qd-trait"/><rect x="140" y="58" width="40" height="5" class="qd-plein"/>
+    <rect x="148" y="18" width="24" height="34" class="qd-fond qd-trait" transform="rotate(-8 160 35)"/>${T(160, 95, "Urne", 'text-anchor="middle" class="qd-t"')}`),
+  hemicycle: () => svgIllu(`${[40, 60, 80, 100].map((r, k) => [...Array(7 + k * 3)].map((_, i, a) => { const t = Math.PI * (i / (a.length - 1)); return `<circle cx="${160 - r * Math.cos(t)}" cy="${115 - r * Math.sin(t)}" r="4.5" fill="${["#4fa3f7", "#5cc98a", "#f5a524", "#e5484d", "#b991ff"][Math.floor(i / a.length * 5)]}"/>`; }).join("")).join("")}<rect x="148" y="104" width="24" height="12" rx="2" class="qd-b"/>`),
+  balance: () => svgIllu(`<path d="M160 20v90M120 115h80M90 40h140" class="qd-trait" style="stroke-width:3"/><circle cx="160" cy="20" r="5" class="qd-plein"/>
+    <path d="M90 40l-25 45h50zM230 40l-25 45h50z" class="qd-trait"/><path d="M65 85a25 8 0 0 0 50 0M205 85a25 8 0 0 0 50 0" class="qd-plein"/>`),
+  republique: () => svgIllu(`<rect x="70" y="30" width="60" height="70" fill="#1f4fa8"/><rect x="130" y="30" width="60" height="70" fill="#f4f4f4"/><rect x="190" y="30" width="60" height="70" fill="#d8323c"/><rect x="70" y="30" width="180" height="70" class="qd-trait"/>`),
+  livre: () => svgIllu(`<path d="M160 30c-25-12-60-12-85 0v80c25-12 60-12 85 0 25-12 60-12 85 0V30c-25-12-60-12-85 0z" class="qd-trait" style="fill:var(--surface-2)"/><path d="M160 30v80" class="qd-trait"/>
+    ${[45, 58, 71, 84].map(y => `<path d="M88 ${y}c20-6 45-6 60 0M172 ${y}c15-6 40-6 60 0" class="qd-trait" style="opacity:.5"/>`).join("")}`),
+  de: () => svgIllu(`<rect x="90" y="30" width="70" height="70" rx="12" class="qd-trait" style="fill:var(--surface-2)"/>${[[110, 50], [140, 80], [125, 65]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6" class="qd-plein"/>`).join("")}
+    <rect x="180" y="40" width="60" height="60" rx="10" class="qd-trait" style="fill:var(--surface-2)" transform="rotate(14 210 70)"/>${[[198, 58], [222, 82], [198, 82], [222, 58]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" class="qd-plein" transform="rotate(14 210 70)"/>`).join("")}`),
+  pourcent: () => svgIllu(`<rect x="40" y="50" width="240" height="30" rx="6" class="qd-trait" style="fill:var(--surface-2)"/><rect x="40" y="50" width="150" height="30" rx="6" fill="var(--qc)"/>${T(160, 112, "%", 'text-anchor="middle" class="qd-t fort" style="font-size:22px"')}`),
+  solide: () => svgIllu(`<path d="M70 50l40-20h70l-40 20zM70 50h70v60H70zM140 50l40-20v60l-40 20z" class="qd-trait" style="fill:color-mix(in srgb,var(--qc) 18%,transparent)"/>
+    <ellipse cx="240" cy="40" rx="30" ry="10" class="qd-trait"/><path d="M210 40v60a30 10 0 0 0 60 0V40" class="qd-trait" style="fill:color-mix(in srgb,var(--qc) 12%,transparent)"/>`),
+  fraction: () => svgIllu(`<circle cx="160" cy="65" r="48" class="qd-trait" style="fill:var(--surface-2)"/><path d="M160 65V17A48 48 0 0 1 201.6 89z" fill="var(--qc)"/><path d="M160 65V17M160 65l41.6 24M160 65l-41.6 24" class="qd-trait"/>`)
+};
+// frise du XXe siècle (repères neutres : on ne place pas la réponse)
+const friseIllu = () => svgIllu(`<path d="M20 70h280" class="qd-trait" style="stroke-width:3"/><path d="M300 70l-10-6v12z" class="qd-plein"/>
+  ${[1900, 1920, 1940, 1960, 1980, 2000, 2020].map((a, i) => { const x = 25 + i * 43; return `<path d="M${x} 62v16" class="qd-trait"/>${T(x, 98, String(a), 'text-anchor="middle" class="qd-t"')}`; }).join("")}
+  <path d="M25 40h270" class="qd-trait" style="stroke:var(--qc);stroke-dasharray:3 6;stroke-width:2"/><circle cx="160" cy="40" r="15" fill="var(--qc)"/>${T(160, 46, "?", 'text-anchor="middle" class="qd-t blanc fort" style="font-size:17px"')}`);
+// carte (module « carte » du site)
+const carteIllu = (zone, o = {}) => figureHtml({type: "module", module: {kind: "module", type: "carte", zone, epoque: "actuelle", noms: false, fleuves: false, exercice: true, couleurs: [], points: [], ...o}});
+
+// Français : la phrase citée, avec le mot ou le groupe étudié surligné
+const questionCourteDnb = q => { const frag = [...String(q.q).matchAll(/«\s*([^»]+?)\s*»/g)]; if (q.mat !== "francais" || frag.length < 2) return q.q;
+  const der = frag[frag.length - 1]; return String(q.q).slice(0, der.index).replace(/\s+$/, " ") + "cette phrase" + String(q.q).slice(der.index + der[0].length); };
+function citationIllu(q){
+  const frag = [...String(q.q).matchAll(/«\s*([^»]+?)\s*»/g)].map(m => m[1]);
+  if (!frag.length) return "";
+  const phrase = frag.length > 1 ? frag[frag.length - 1] : frag[0], cible = frag.length > 1 ? frag[0] : "";
+  let h = esc(phrase);
+  if (cible && phrase.includes(cible)) h = esc(phrase).replace(esc(cible), `<mark>${esc(cible)}</mark>`);
+  h = h.replace(/…|\.\.\./g, `<span class="qd-trou">…</span>`);
+  const auteur = (String(q.q).match(/»\s*\(([^)]+)\)/) || [])[1];
+  return `<figure class="qd-citation"><span class="qd-guillemet" aria-hidden="true">“</span><blockquote>${h}</blockquote>${auteur ? `<figcaption>${esc(auteur)}</figcaption>` : ""}</figure>`;
+}
+
+function illustrationDnb(q){
+  if (q.fig || q.genre) return "";
+  const t = (q.q + " " + (q.ctx || "")).toLowerCase(), m = q.mat;
+  const svg = cle => `<div class="qd-illu fig-exo">${ILLU[cle]()}</div>`;
+  if (m === "francais") { const c = citationIllu(q); return c || (/(poème|vers|alexandrin|roman|théâtre|auteur|écrivain|récit|genre|registre|didascal)/.test(t) ? svg("livre") : ""); }
+  if (m === "sciences"){
+    const r = [[/\bph\b|acide|basique|neutre/, "ph"], [/atome|électron|proton|noyau|\bion\b|ions\b/, "atome"], [/tension|intensité|ampèremètre|voltmètre|circuit|lampe|résistance|\bohm/, "circuit"],
+      [/vitesse|km\/h|m\/s|mouvement|ralenti|accéléré/, "vitesse"], [/énergie|puissance|kwh|\bwatt|\bjoule|charbon|renouvelable/, "energie"], [/masse volumique|flotte|g\/cm|poids|masse|newton|force/, "densite"],
+      [/\bson\b|fréquence|hz\b|décibel/, "son"], [/lumière/, "lumiere"], [/chromosome|adn|gène|allèle|spermatozoïde|ovule|fécondation|sexe/, "adn"], [/cellule|mitose/, "cellule"],
+      [/globule|anticorps|vaccin|bactérie|antibiotique|lymphocyte|micro-organisme/, "immunite"], [/climat|effet de serre|réchauffement|co₂|dioxyde de carbone|eau de chaux/, "terre"],
+      [/séisme|plaque|volcan|tectonique/, "plaques"], [/écosystème|chaîne alimentaire|sélection naturelle|darwin|espèce/, "chaine"], [/moteur|capteur|programme|boucle|octet|algorithme|instruction|matériau|conducteur/, "techno"]];
+    const f = r.find(([re]) => re.test(t)); return svg(f ? f[1] : "flacon");
+  }
+  if (m === "hge"){
+    const date = /en quelle année|quand |en quel siècle/.test(t);
+    if (date) return `<div class="qd-illu fig-exo">${friseIllu()}</div>`;
+    if (/\bvote|électi|suffrage|urne|recens/.test(t)) return svg("vote");
+    if (/assemblée|députés|parlement|sénat|vote les lois/.test(t)) return svg("hemicycle");
+    if (/juge|judiciaire|conseil constitutionnel|justice|déclaration|droits/.test(t)) return svg("balance");
+    if (/devise|hymne|laïcité|république|jdc|défense|bénévol|citoyen|président/.test(t) && !date) return svg("republique");
+    if (/union européenne|\bue\b|schengen|euro\b|cee|maastricht|brexit|europe/.test(t) && !date) return `<div class="qd-illu qd-carte">${carteIllu("europe")}</div>`;
+    if (/drom|outre-mer|zee/.test(t)) return `<div class="qd-illu qd-carte">${carteIllu("monde")}</div>`;
+    if (/géograph|région|port|métropole|aire urbaine|littoral|périurbain|densité|parc naturel|faible densité|ville/.test(t)) return `<div class="qd-illu qd-carte">${carteIllu("france")}</div>`;
+    if (/mondialisation|guerre froide|rideau de fer|otan|décolonisation|indépendance|urss|onu/.test(t) && !date) return `<div class="qd-illu qd-carte">${carteIllu("monde")}</div>`;
+    return `<div class="qd-illu fig-exo">${friseIllu()}</div>`;
+  }
+  if (m === "maths" && !q.ctx){
+    if (/probabilit|urne|\bdé\b|hasard/.test(t)) return svg("de");
+    if (/%|pourcentage|réduction|augment|remise/.test(t)) return svg("pourcent");
+    if (/volume|pavé|cylindre|cône|boule|pyramide|cube/.test(t)) return svg("solide");
+    if (/fraction|\d+\/\d+/.test(t)) return svg("fraction");
+    if (/vitesse|km\/h|m\/s/.test(t)) return svg("vitesse");
+  }
+  return "";
+}
+
+/* ---------- Module « frise » : placer les événements dans l'ordre sur une frise ---------- */
+INTERACTIFS.chrono = {
+  monter(el, q){
+    const items = (q.items || []).filter(Boolean), dates = q.dates || [], n = items.length;
+    let cases = Array(n).fill(null), choisi = null, fige = false, bonnes = null;
+    const pioche = melanger(items.map((_, i) => i));
+    const dessiner = () => {
+      const libres = pioche.filter(i => !cases.includes(i));
+      el.innerHTML = `<div class="qc-frise${fige ? " fige" : ""}">
+        <div class="qc-axe"><span class="qc-borne">Plus ancien</span><span class="qc-fleche" aria-hidden="true"></span><span class="qc-borne">Plus récent</span></div>
+        <ol class="qc-cases" style="--n:${n}">${cases.map((v, p) => `<li class="qc-case${v === null ? " vide" : ""}${fige ? (bonnes ? (bonnes[p] ? " ok" : " corrige") : v === p ? " ok" : " ko") : ""}" data-case="${p}">
+          <span class="qc-num">${p + 1}</span>${v === null ? `<span class="qc-place">Place un événement</span>` : `<button type="button" class="qc-carte" data-carte="${v}"${fige ? " disabled" : ""}>${esc(items[v])}</button>`}
+          ${fige && v !== null && dates[v] !== undefined ? `<span class="qc-date">${esc(String(dates[v]))}</span>` : ""}</li>`).join("")}</ol>
+        ${fige ? "" : `<div class="qc-pioche">${libres.length ? libres.map(i => `<button type="button" class="qc-carte${choisi === i ? " choisi" : ""}" data-carte="${i}">${esc(items[i])}</button>`).join("") : `<span class="doux" style="font-size:.84rem">Toutes les cartes sont placées. Clique sur une carte de la frise pour la reprendre.</span>`}</div>
+        <p class="doux qc-aide">Choisis une carte, puis la case de la frise où elle va (ou fais-la glisser).</p>`}
+      </div>`;
+      if (fige) return;
+      el.querySelectorAll(".qc-pioche .qc-carte").forEach(b => { b.onclick = () => { choisi = choisi === +b.dataset.carte ? null : +b.dataset.carte; dessiner(); }; glisser(b); });
+      el.querySelectorAll(".qc-cases .qc-carte").forEach(b => { b.onclick = ev => { ev.stopPropagation(); const v = +b.dataset.carte;
+        if (choisi !== null){ const p = cases.indexOf(v); poser(choisi, p); return; } cases[cases.indexOf(v)] = null; choisi = v; dessiner(); }; glisser(b); });
+      el.querySelectorAll(".qc-case").forEach(c => c.onclick = () => { if (choisi !== null) poser(choisi, +c.dataset.case); });
+    };
+    const poser = (v, p) => { const ancien = cases.indexOf(v), dejaLa = cases[p]; if (ancien >= 0) cases[ancien] = dejaLa; cases[p] = v; choisi = null; dessiner(); };
+    // glisser-déposer au doigt ou à la souris
+    const glisser = b => b.addEventListener("pointerdown", ev => {
+      if (ev.button !== 0) return; const v = +b.dataset.carte, x0 = ev.clientX, y0 = ev.clientY; let fantome = null;
+      const bouge = e => { if (!fantome && Math.hypot(e.clientX - x0, e.clientY - y0) < 8) return;
+        if (!fantome){ fantome = b.cloneNode(true); fantome.classList.add("qc-fantome"); fantome.style.width = b.offsetWidth + "px"; document.body.appendChild(fantome); b.classList.add("qc-source"); }
+        fantome.style.left = e.clientX - b.offsetWidth / 2 + "px"; fantome.style.top = e.clientY - 18 + "px";
+        el.querySelectorAll(".qc-case").forEach(c => c.classList.toggle("survol", c.contains(document.elementFromPoint(e.clientX, e.clientY)))); };
+      const fin = e => { removeEventListener("pointermove", bouge); removeEventListener("pointerup", fin);
+        if (!fantome) return; fantome.remove(); b.classList.remove("qc-source");
+        const c = document.elementFromPoint(e.clientX, e.clientY)?.closest?.(".qc-case"); b.addEventListener("click", ev2 => ev2.stopImmediatePropagation(), {once: true, capture: true});
+        if (c && el.contains(c)) poser(v, +c.dataset.case); else dessiner(); };
+      addEventListener("pointermove", bouge); addEventListener("pointerup", fin);
+    });
+    dessiner();
+    return {
+      verifier: () => { fige = true; dessiner(); return cases.every((v, p) => v === p); },
+      // la frise se remet dans le bon ordre : en vert les cartes bien placées, en orange celles qui ont bougé
+      solution: () => { bonnes = cases.map((v, p) => v === p); cases = items.map((_, i) => i); dessiner(); }
+    };
+  }
+};
 /* ===================== FRANÇAIS : exercices interactifs du brevet ===================== */
 /* propositions (délimiter et nommer), etiquettes (classes / fonctions), conjugaison (tableau),
    reecriture (passage à réécrire), dictee (lecture audio), homophones (mot à choisir dans le texte). */
@@ -15267,17 +15485,17 @@ function lancerQuiz(questions, ctx){
   questions = questions.map(melangerChoix);
   let i = 0, score = 0;
   const etape = () => {
-    const q = questions[i];
+    const q = questions[i], dnb = ctx.brevet === "dnb", illu = dnb ? illustrationDnb(q) : "";
     zone().innerHTML = entete(esc(ctx.sur), esc(ctx.titre)) + `
       ${q.ctx || ctx.contexte || q.sujet ? `<details class="contexte" open><summary>Document et énoncé</summary>${q.ctxTitre ? `<p class="ctx-titre">${esc(q.ctxTitre)}</p>` : ""}${q.ctx || ctx.contexte ? `<p class="${String(q.ctx || ctx.contexte).length > 380 ? "ctx-long" : ""}">${esc(q.ctx || ctx.contexte)}</p>` : ""}${q.ctxFig ? figureHtml(q.ctxFig) : ""}
         ${q.sujet && SUJETS[q.sujet] ? `<p class="source-q">Source : ${esc(SUJETS[q.sujet].titre)}${q.src ? " · " + esc(q.src) : ""} — <a href="${esc(SUJETS[q.sujet].url)}" target="_blank" rel="noopener">Ouvrir le sujet complet ↗</a></p>` : ""}</details>` : ""}
       <div class="bloc">
-        <div class="rangee" style="justify-content:space-between"><span class="mono">${q.matiere ? esc(q.matiere) : "Question"}${NIVEAUX[q.n] ? ` · <span class="niveau">${NIVEAUX[q.n]}</span>` : ""}</span><span class="rangee" style="gap:10px">${avecBrouillon(q, ctx) ? `<button type="button" class="btn-brouillon" id="ouvrir-brouillon" title="Ouvrir une page de brouillon pour poser tes calculs">✎ Brouillon</button>` : ""}<button type="button" class="prevenir" id="prevenir" title="Signaler un bug, une erreur ou un glitch">⚑ Prévenir</button><span class="mono">${i + 1} / ${questions.length}</span></span></div>
+        <div class="rangee" style="justify-content:space-between">${dnb ? `<span class="rangee" style="gap:10px">${bandeauDnbQ(q)}<span class="mono">${esc(String(q.matiere || "").split(" · ").slice(1).join(" · "))}</span></span>` : `<span class="mono">${q.matiere ? esc(q.matiere) : "Question"}${NIVEAUX[q.n] ? ` · <span class="niveau">${NIVEAUX[q.n]}</span>` : ""}</span>`}<span class="rangee" style="gap:10px">${avecBrouillon(q, ctx) ? `<button type="button" class="btn-brouillon" id="ouvrir-brouillon" title="Ouvrir une page de brouillon pour poser tes calculs">✎ Brouillon</button>` : ""}<button type="button" class="prevenir" id="prevenir" title="Signaler un bug, une erreur ou un glitch">⚑ Prévenir</button><span class="mono">${i + 1} / ${questions.length}</span></span></div>
         <div class="avance"><i style="width:${i / questions.length * 100}%"></i></div>
         ${q.exemple ? `<div class="exemple-q"><span class="mono">Exemple</span><p>${esc(q.exemple)}</p></div>` : ""}
         ${figureHtml(q.fig)}
-        <p class="question">${esc(q.q)}</p>
-        ${q.genre && INTERACTIFS[q.genre] ? `<div id="interactif"></div><div><button class="btn" type="button" id="valider-int" data-valider>Valider</button></div>` : q.choix ? `<div class="choix">${q.choix.map((c, k) => `<button type="button" data-k="${k}">${esc(c)}</button>`).join("")}</div>`
+        ${dnb && illu ? `<div class="qd-corps" style="--qc:${matDnbQ(q).c}">${illu}<p class="question">${esc(illu.includes("qd-citation") ? questionCourteDnb(q) : q.q)}</p></div>` : `<p class="question">${esc(q.q)}</p>`}
+        ${q.genre && INTERACTIFS[q.genre] ? `<div id="interactif"></div><div><button class="btn" type="button" id="valider-int" data-valider>Valider</button></div>` : q.choix ? `<div class="choix${dnb ? " qd-choix" : ""}">${q.choix.map((c, k) => `<button type="button" data-k="${k}">${dnb ? `<span class="qd-lettre">${"ABCDEFGH"[k]}</span>` : ""}${esc(c)}</button>`).join("")}</div>`
           : `<form id="f-rep" class="rangee" autocomplete="off" style="align-items:flex-end"><div class="champ" style="flex:1 1 220px"><label for="rep">Ta réponse</label><input id="rep" type="text" spellcheck="false"></div><button class="btn" type="submit">Valider</button></form>`}
         <div id="verdict" aria-live="polite"></div>
       </div>`;
