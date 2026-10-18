@@ -1975,6 +1975,12 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .tableau .champ-ip{width:100%;min-width:110px;padding:4px 8px;background:transparent;border:1px solid transparent;border-radius:6px;font:inherit;color:inherit}
 .tableau .champ-ip:hover{border-color:var(--ligne)}.tableau .champ-ip:focus{border-color:var(--accent);background:var(--surface-2);outline:none}
 .choix-classe{padding:4px 6px;background:var(--surface-2);border:1px solid var(--ligne);border-radius:6px;color:var(--texte);font:inherit;font-size:.85rem}
+
+/* sujets du DNB */
+#bloc-sujets-dnb .segment{flex-wrap:wrap}
+.sd-go{font-weight:700;font-size:.88rem;color:var(--accent)}
+.sd-pages{display:flex;flex-direction:column;align-items:center;gap:14px}
+.sd-feuille{width:100%;max-width:1000px;height:auto;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.45)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -3989,6 +3995,499 @@ Object.entries(BD_LANGUES).forEach(([lv, ds]) => ds.forEach(d => {
   d.questions.forEach(([q, choix, exp]) => BANQUE_LANGUES.push(LQ(lv, "Dialogue en BD", {fig: bdFig(lv, d, bdLignes(d)), q: (lv === "es" ? "Lee el cómic. " : "Lis la BD. ") + q, choix, bonne: 0, exp})));
   d.fautes.forEach(f => { const q = bdFaute(lv, d, f); if (q) BANQUE_LANGUES.push(q); });
 }));
+/* Liste des sujets du DNB (série générale) : fichiers dans donnees/dnb/.
+   Maths : sujets et corrigés de l'APMEP (apmep.fr), retranscrits d'après les sujets officiels de l'Éducation nationale. */
+const SUJETS_DNB = [
+  {"id": "2018-amerique-du-nord-maths", "an": 2018, "session": "Amérique du Nord", "mat": "maths", "date": "2018-06-05", "sujet": "donnees/dnb/2018-amerique-du-nord-maths-sujet.pdf", "corrige": "donnees/dnb/2018-amerique-du-nord-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Amerique_du_Nord_5_juin_2018_FK_2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_AmeriqueNord_5_06_2018-2.pdf"},
+  {"id": "2018-centres-etrangers-maths", "an": 2018, "session": "Centres étrangers", "mat": "maths", "date": "2018-06-18", "sujet": "donnees/dnb/2018-centres-etrangers-maths-sujet.pdf", "corrige": "donnees/dnb/2018-centres-etrangers-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_etranger_18_juin_2018_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Etranger_juin_2018_MG.pdf"},
+  {"id": "2018-asie-maths", "an": 2018, "session": "Asie", "mat": "maths", "date": "2018-06-25", "sujet": "donnees/dnb/2018-asie-maths-sujet.pdf", "corrige": "donnees/dnb/2018-asie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Asie_25_juin_2018-2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Asie_juin_2018.pdf"},
+  {"id": "2018-metropole-maths", "an": 2018, "session": "Métropole", "mat": "maths", "date": "2018-06-28", "sujet": "donnees/dnb/2018-metropole-maths-sujet.pdf", "corrige": "donnees/dnb/2018-metropole-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_metropole_Reunion_28_juin2018_FH-2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_metropole_juin_2018_MG.pdf"},
+  {"id": "2018-polynesie-maths", "an": 2018, "session": "Polynésie", "mat": "maths", "date": "2018-07-02", "sujet": "donnees/dnb/2018-polynesie-maths-sujet.pdf", "corrige": "donnees/dnb/2018-polynesie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Polynesie_2_juillet_2018-DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Polynesie_juin_2018_DV.pdf"},
+  {"id": "2018-metropole-septembre-maths", "an": 2018, "session": "Métropole (septembre)", "mat": "maths", "date": "2018-09-20", "sujet": "donnees/dnb/2018-metropole-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2018-metropole-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Metropole_20_sept_2018_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Metropole_sept_2018.pdf"},
+  {"id": "2019-amerique-du-nord-maths", "an": 2019, "session": "Amérique du Nord", "mat": "maths", "date": "2019-06-04", "sujet": "donnees/dnb/2019-amerique-du-nord-maths-sujet.pdf", "corrige": "donnees/dnb/2019-amerique-du-nord-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Amerique_du_Nord_4_juin_2019_FK.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Amerique_Nord_4_juin_2019_DV.pdf"},
+  {"id": "2019-centres-etrangers-maths", "an": 2019, "session": "Centres étrangers", "mat": "maths", "date": "2019-06-14", "sujet": "donnees/dnb/2019-centres-etrangers-maths-sujet.pdf", "corrige": "donnees/dnb/2019-centres-etrangers-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_centres_etrangers_14_juin_2019.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_centres_etrangers_14_juin_2019.pdf"},
+  {"id": "2019-asie-maths", "an": 2019, "session": "Asie", "mat": "maths", "date": "2019-06-24", "sujet": "donnees/dnb/2019-asie-maths-sujet.pdf", "corrige": "donnees/dnb/2019-asie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Asie_24_juin_2019_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Asie_juin_2019_DV.pdf"},
+  {"id": "2019-metropole-maths", "an": 2019, "session": "Métropole", "mat": "maths", "date": "2019-07-01", "sujet": "donnees/dnb/2019-metropole-maths-sujet.pdf", "corrige": "donnees/dnb/2019-metropole-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Metropole_1_juillet_2019_DV-2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Metropole_juillet_2019_DV.pdf"},
+  {"id": "2019-polynesie-maths", "an": 2019, "session": "Polynésie", "mat": "maths", "date": "2019-07-01", "sujet": "donnees/dnb/2019-polynesie-maths-sujet.pdf", "corrige": "donnees/dnb/2019-polynesie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Polynesie_1_juillet_2019.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Polynesie_juin_2019_bis.pdf"},
+  {"id": "2019-metropole-septembre-maths", "an": 2019, "session": "Métropole (septembre)", "mat": "maths", "date": "2019-09-16", "sujet": "donnees/dnb/2019-metropole-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2019-metropole-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Metropole_16_sept_2019.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_16_sept_2019_Metropole.pdf"},
+  {"id": "2020-metropole-septembre-maths", "an": 2020, "session": "Métropole (septembre)", "mat": "maths", "date": "2020-09-14", "sujet": "donnees/dnb/2020-metropole-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2020-metropole-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_metropole_sept_2020_dv-2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/corrige_brevet_metropole_sept_2020_dv.pdf"},
+  {"id": "2020-centres-etrangers-septembre-maths", "an": 2020, "session": "Centres étrangers (septembre)", "mat": "maths", "date": "2020-09-15", "sujet": "donnees/dnb/2020-centres-etrangers-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2020-centres-etrangers-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_etranger_sept_2020_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_brevet_etrangers_sept_2020_DV.pdf"},
+  {"id": "2020-polynesie-septembre-maths", "an": 2020, "session": "Polynésie (septembre)", "mat": "maths", "date": "2020-09-07", "sujet": "donnees/dnb/2020-polynesie-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2020-polynesie-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_polynesie_sept_2020_dv.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_brevet_Polynesie_sept_2020_DV-2.pdf"},
+  {"id": "2021-amerique-du-nord-maths", "an": 2021, "session": "Amérique du Nord", "mat": "maths", "date": "2021-06-03", "sujet": "donnees/dnb/2021-amerique-du-nord-maths-sujet.pdf", "corrige": "donnees/dnb/2021-amerique-du-nord-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_amerique_du_nord_2021_fk.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/corrige_brevet_amerique_nord_juin_2021_dv.pdf"},
+  {"id": "2021-centres-etrangers-maths", "an": 2021, "session": "Centres étrangers", "mat": "maths", "date": "2021-06-15", "sujet": "donnees/dnb/2021-centres-etrangers-maths-sujet.pdf", "corrige": "donnees/dnb/2021-centres-etrangers-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_centres_etrangers_g1_2021_fk.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/corrige_etranger_juin_2021_dv.pdf"},
+  {"id": "2021-asie-maths", "an": 2021, "session": "Asie", "mat": "maths", "date": "2021-06-21", "sujet": "donnees/dnb/2021-asie-maths-sujet.pdf", "corrige": "donnees/dnb/2021-asie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Asie_Brevet_21_juin_2021_DV-3.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/corrige__asie_brevet_21_06_2012_dv.pdf"},
+  {"id": "2021-metropole-maths", "an": 2021, "session": "Métropole", "mat": "maths", "date": "2021-06-28", "sujet": "donnees/dnb/2021-metropole-maths-sujet.pdf", "corrige": "donnees/dnb/2021-metropole-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_metropole_28_06_2021_dv.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/corrige_brevet_metropole_28_06_2021_ol.pdf"},
+  {"id": "2021-polynesie-maths", "an": 2021, "session": "Polynésie", "mat": "maths", "date": "2021-06-25", "sujet": "donnees/dnb/2021-polynesie-maths-sujet.pdf", "corrige": "donnees/dnb/2021-polynesie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_polynesie_25_06_2021_dv.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_brevet_Polynesie_juin_2021_DV-2.pdf"},
+  {"id": "2021-metropole-septembre-maths", "an": 2021, "session": "Métropole (septembre)", "mat": "maths", "date": "2021-09-13", "sujet": "donnees/dnb/2021-metropole-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2021-metropole-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Metropole_13_sept_2021_DV-3.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_brevet_Metro_13_09_2021_DV-2.pdf"},
+  {"id": "2022-amerique-du-nord-maths", "an": 2022, "session": "Amérique du Nord", "mat": "maths", "date": "2022-06-03", "sujet": "donnees/dnb/2022-amerique-du-nord-maths-sujet.pdf", "corrige": "donnees/dnb/2022-amerique-du-nord-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Amerique_Nord_juin_2022_DV_FK-3.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Amerique_Nord_juin_2022_FK.pdf"},
+  {"id": "2022-centres-etrangers-maths", "an": 2022, "session": "Centres étrangers", "mat": "maths", "date": "2022-06-14", "sujet": "donnees/dnb/2022-centres-etrangers-maths-sujet.pdf", "corrige": "donnees/dnb/2022-centres-etrangers-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_centres_etrangers_14_06_2022_dv.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/corrige_brevet_centres_etrangers_14_06_2022_fh_2.pdf"},
+  {"id": "2022-asie-maths", "an": 2022, "session": "Asie", "mat": "maths", "date": "2022-06-20", "sujet": "donnees/dnb/2022-asie-maths-sujet.pdf", "corrige": "donnees/dnb/2022-asie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_asie_juin_2022_fk.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/corrige_brevet_asie_2022_a_batazzi.pdf"},
+  {"id": "2022-metropole-maths", "an": 2022, "session": "Métropole", "mat": "maths", "date": "2022-06-30", "sujet": "donnees/dnb/2022-metropole-maths-sujet.pdf", "corrige": "donnees/dnb/2022-metropole-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_metro_juin_2022_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/corrige_brevet_metropole_30_06_2022_cp-2.pdf"},
+  {"id": "2022-polynesie-maths", "an": 2022, "session": "Polynésie", "mat": "maths", "date": "2022-06-23", "sujet": "donnees/dnb/2022-polynesie-maths-sujet.pdf", "corrige": "donnees/dnb/2022-polynesie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_polynesie_23_juin_2022_dv.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Polynesie_juin_2022_Patazzi-2.pdf"},
+  {"id": "2022-metropole-septembre-maths", "an": 2022, "session": "Métropole (septembre)", "mat": "maths", "date": "2022-09-12", "sujet": "donnees/dnb/2022-metropole-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2022-metropole-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/brevet_metropole_sept_2022_dv.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_brevet_Metropole_sept_2022_DV-2.pdf"},
+  {"id": "2023-amerique-du-nord-maths", "an": 2023, "session": "Amérique du Nord", "mat": "maths", "date": "2023-05-31", "sujet": "donnees/dnb/2023-amerique-du-nord-maths-sujet.pdf", "corrige": "donnees/dnb/2023-amerique-du-nord-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Ameri_Nord_mai_2023_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Amerique_Nord_Mai_2023_v3_adreluefk.pdf"},
+  {"id": "2023-centres-etrangers-maths", "an": 2023, "session": "Centres étrangers", "mat": "maths", "date": "2023-06-14", "sujet": "donnees/dnb/2023-centres-etrangers-maths-sujet.pdf", "corrige": "donnees/dnb/2023-centres-etrangers-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Etranger_gr_I_14_juin_2023_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Etranger_14_06_2023_DV.pdf"},
+  {"id": "2023-asie-maths", "an": 2023, "session": "Asie", "mat": "maths", "date": "2023-06-19", "sujet": "donnees/dnb/2023-asie-maths-sujet.pdf", "corrige": "donnees/dnb/2023-asie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/DNB_Asie_19_juin_2023_FH.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Asie_19_juin_2023_DV.pdf"},
+  {"id": "2023-metropole-maths", "an": 2023, "session": "Métropole", "mat": "maths", "date": "2023-06-26", "sujet": "donnees/dnb/2023-metropole-maths-sujet.pdf", "corrige": "donnees/dnb/2023-metropole-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Metropole_26_juin_2023_FK.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevevet_Metropole_26_06_2023_DV.pdf"},
+  {"id": "2023-polynesie-maths", "an": 2023, "session": "Polynésie", "mat": "maths", "date": "2023-06-23", "sujet": "donnees/dnb/2023-polynesie-maths-sujet.pdf", "corrige": "donnees/dnb/2023-polynesie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Polynesie_23_06_2023_FH_2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Polynesie_juin_2023_DV.pdf"},
+  {"id": "2023-metropole-septembre-maths", "an": 2023, "session": "Métropole (septembre)", "mat": "maths", "date": "2023-09-18", "sujet": "donnees/dnb/2023-metropole-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2023-metropole-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Metropole_18_sept_2023_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Metropole_18_sept_2023_JCS.pdf"},
+  {"id": "2024-amerique-du-nord-maths", "an": 2024, "session": "Amérique du Nord", "mat": "maths", "date": "2024-05-29", "sujet": "donnees/dnb/2024-amerique-du-nord-maths-sujet.pdf", "corrige": "donnees/dnb/2024-amerique-du-nord-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Ameri_Nord_mai_2024_FK.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Am_du_No_29_05_2024_DV.pdf"},
+  {"id": "2024-centres-etrangers-maths", "an": 2024, "session": "Centres étrangers", "mat": "maths", "date": "2024-06-10", "sujet": "donnees/dnb/2024-centres-etrangers-maths-sujet.pdf", "corrige": "donnees/dnb/2024-centres-etrangers-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Centres_Etrangers_juin_2024_FK.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige__Brevet_Centres_Etrangers_juin_2024_FK.pdf"},
+  {"id": "2024-asie-maths", "an": 2024, "session": "Asie", "mat": "maths", "date": "2024-06-18", "sujet": "donnees/dnb/2024-asie-maths-sujet.pdf", "corrige": "donnees/dnb/2024-asie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Asie_18_06_2024_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige__Asie_18_06_2024_FK.pdf"},
+  {"id": "2024-metropole-maths", "an": 2024, "session": "Métropole", "mat": "maths", "date": "2024-07-01", "sujet": "donnees/dnb/2024-metropole-maths-sujet.pdf", "corrige": "donnees/dnb/2024-metropole-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Metropole_1_07_2024_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_brevet_Metropole_1_07_2024_DV.pdf"},
+  {"id": "2024-polynesie-maths", "an": 2024, "session": "Polynésie", "mat": "maths", "date": "2024-06-27", "sujet": "donnees/dnb/2024-polynesie-maths-sujet.pdf", "corrige": "donnees/dnb/2024-polynesie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Polynesie_27_06_2024_DV-2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Polynesie_27_06_2024_DV.pdf"},
+  {"id": "2024-metropole-septembre-maths", "an": 2024, "session": "Métropole (septembre)", "mat": "maths", "date": "2024-09-19", "sujet": "donnees/dnb/2024-metropole-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2024-metropole-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_19_09_2024_Metro_Ant__DV_3.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_19_09_2024_Metro_Ant__FH.pdf"},
+  {"id": "2025-amerique-du-nord-maths", "an": 2025, "session": "Amérique du Nord", "mat": "maths", "date": "2025-06-04", "sujet": "donnees/dnb/2025-amerique-du-nord-maths-sujet.pdf", "corrige": "donnees/dnb/2025-amerique-du-nord-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Am_du_Nord_4_06_2025_DV_JCS_PS.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_brevet_Am_du_Nord_juin_2025_DV.pdf"},
+  {"id": "2025-asie-maths", "an": 2025, "session": "Asie", "mat": "maths", "date": "2025-06-09", "sujet": "donnees/dnb/2025-asie-maths-sujet.pdf", "corrige": "donnees/dnb/2025-asie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Asie_9_06_2025_JCS_FH2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige__Brevet_Asie_9_06_2025_LGFK.pdf"},
+  {"id": "2025-centres-etrangers-maths", "an": 2025, "session": "Centres étrangers", "mat": "maths", "date": "2025-06-16", "sujet": "donnees/dnb/2025-centres-etrangers-maths-sujet.pdf", "corrige": "donnees/dnb/2025-centres-etrangers-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_etranger_16_06_2025_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_brevet_Etranger_2025_DV.pdf"},
+  {"id": "2025-metropole-maths", "an": 2025, "session": "Métropole", "mat": "maths", "date": "2025-06-26", "sujet": "donnees/dnb/2025-metropole-maths-sujet.pdf", "corrige": "donnees/dnb/2025-metropole-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Me_tropole_26_06_2025_FK.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Metropole_26_06_2025_DV.pdf"},
+  {"id": "2025-polynesie-maths", "an": 2025, "session": "Polynésie", "mat": "maths", "date": "2025-06-26", "sujet": "donnees/dnb/2025-polynesie-maths-sujet.pdf", "corrige": "donnees/dnb/2025-polynesie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Polynesie_26_06_2025_DV_2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige__Brevet_Polyne_sie_26_06_2025_FK.pdf"},
+  {"id": "2025-metropole-septembre-maths", "an": 2025, "session": "Métropole (septembre)", "mat": "maths", "date": "2025-09-10", "sujet": "donnees/dnb/2025-metropole-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2025-metropole-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Metropole_sept_2025_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Metro_sept_2025_DV.pdf"},
+  {"id": "2026-amerique-du-nord-maths", "an": 2026, "session": "Amérique du Nord", "mat": "maths", "date": "2026-06-03", "sujet": "donnees/dnb/2026-amerique-du-nord-maths-sujet.pdf", "corrige": "donnees/dnb/2026-amerique-du-nord-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Ameri_Nord_3_06_2026_DV.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/Corrige_Brevet_Ameri_Nord_3_06_2026_FH-2.pdf"},
+  {"id": "2026-asie-maths", "an": 2026, "session": "Asie", "mat": "maths", "date": "2026-06-15", "sujet": "donnees/dnb/2026-asie-maths-sujet.pdf", "corrige": "donnees/dnb/2026-asie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/DNB_generale_Sujet_2026-06-15_Asie_DV-v3.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/DNB_gene_Corrige_2026-06-15_Asie_MD.pdf"},
+  {"id": "2026-centres-etrangers-maths", "an": 2026, "session": "Centres étrangers", "mat": "maths", "date": "2026-06-18", "sujet": "donnees/dnb/2026-centres-etrangers-maths-sujet.pdf", "corrige": "donnees/dnb/2026-centres-etrangers-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/DNB_generale_Sujet_2026-06-18_Centres-etrangers_DV-v3.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/DNB_generale_Corrige_2026-06-18_Centres-etrangers_HP-v3.pdf"},
+  {"id": "2026-polynesie-maths", "an": 2026, "session": "Polynésie", "mat": "maths", "date": "2026-06-26", "sujet": "donnees/dnb/2026-polynesie-maths-sujet.pdf", "corrige": "donnees/dnb/2026-polynesie-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/Brevet_Polynesie_26_juin_2026_DV-3.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/DNB_generale_Corrige_2026-06-26_Polynesie_FK-v2.pdf"},
+  {"id": "2026-metropole-maths", "an": 2026, "session": "Métropole", "mat": "maths", "date": "2026-06-30", "sujet": "donnees/dnb/2026-metropole-maths-sujet.pdf", "corrige": "donnees/dnb/2026-metropole-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/DNB_generale_Sujet_2026-06-30_Metropole_FK-v2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/DNB_generale_Corrige_2026-06-30_Metropole_MD-v4.pdf"},
+  {"id": "2026-antilles-guyane-maths", "an": 2026, "session": "Antilles-Guyane", "mat": "maths", "date": "2026-06-30", "sujet": "donnees/dnb/2026-antilles-guyane-maths-sujet.pdf", "corrige": "donnees/dnb/2026-antilles-guyane-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/DNB_generale_Sujet_2026-06-30_Antilles-Guyane_DV-v2.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/DNB_generale_Corrige_2026-06-30_Antilles-Guyane_JG-v2.pdf"},
+  {"id": "2026-metropole-septembre-maths", "an": 2026, "session": "Métropole (septembre)", "mat": "maths", "date": "2026-09-10", "sujet": "donnees/dnb/2026-metropole-septembre-maths-sujet.pdf", "corrige": "donnees/dnb/2026-metropole-septembre-maths-corrige.pdf", "srcSujet": "https://www.apmep.fr/IMG/pdf/DNB_generale_Sujet_2026-09-10_Metropole_FB.pdf", "srcCorrige": "https://www.apmep.fr/IMG/pdf/DNB_corrige_metropole_antilles_guyane_10-09-2026_FB.pdf"}
+];
+/* ===================== DNB · MATHS : QUESTIONS TIRÉES DES SUJETS 2018 → 2026 =====================
+   Chaque question renvoie à son sujet (PDF hébergé sur Helper, liste SUJETS_DNB). Réponses vérifiées sur les corrigés de l'APMEP. */
+(() => {
+  SUJETS_DNB.forEach(s => { SUJETS["dnb-" + s.an + "-" + s.id.replace(/^\d+-/, "").replace(/-maths$/, "") + "-maths"] = {titre: `DNB ${s.an} ${s.session} · Mathématiques`, url: s.sujet, heberge: true}; });
+})();
+const cleSujetDnb = (an, ses) => "dnb-" + an + "-" + ses + "-maths";
+// QA(an, session, source, contexte, question, {choix, bonne} | {rep}, explication)
+const QA = (an, ses, src, ctx, q, r, exp) => ({ex: "dnb", an, mat: "maths", sujet: cleSujetDnb(an, ses), src, ...(ctx ? {ctx} : {}), q, ...r, exp});
+const C = (choix, bonne) => ({choix, bonne}), R = (...rep) => ({rep: rep.map(String)});
+const CTX2 = {
+  m26_med: "Médailles aux Jeux paralympiques de Paris 2024 (or / argent / bronze / total) : Chine 94/76/50/220 ; Grande-Bretagne 49/44/31/124 ; États-Unis 36/42/27/105 ; Pays-Bas 27/17/12/56 ; Brésil 25/26/38/89 ; Italie 24/15/32/71 ; Ukraine 22/28/32/82 ; France 19/28/28/75 ; Australie ?/17/28/63.",
+  m26_tri: "(BD) et (CE) se coupent en A ; (BC) // (DE). AB = 6,4 cm ; AC = 4,8 cm ; AD = 4,8 cm ; BC = 8 cm.",
+  m26_bon: "Un confiseur veut répartir 112 bonbons à la fraise et 140 bonbons au caramel dans des sachets identiques, en utilisant tous les bonbons.",
+  an26_tri: "B, A, E alignés ; C, A, D alignés ; ABC rectangle en B. DE = 4,8 cm ; AD = 7,3 cm ; AE = 5,5 cm ; BC = 7,2 cm.",
+  an26_f: "f(x) = (x − 1)(x + 3) et g(x) = 2x + 1.",
+  an26_ia: "Une IA est entraînée sur 50 000 images : 28 000 « Objets du quotidien », 12 000 « Animaux », 8 000 « Véhicules », le reste « Autres ».",
+  an26_elec: "En 2024, l'IA consomme 82 000 GWh par an ; un collège consomme en moyenne 200 000 kWh par an. 1 kWh = 10³ Wh ; 1 GWh = 10⁹ Wh. Il y a environ 7 100 collèges en France.",
+  as26_tel: "Offre A : 175 € à l'achat puis 16 € par mois. Offre B : rien à l'achat puis 23 € par mois. Engagement de 24 mois minimum.",
+  as26_cone: "O, A, B alignés ; O, D, C alignés ; (AD) // (BC), OAD rectangle en A. OD = 8,2 cm ; AD = 1,8 cm ; BC = 4,5 cm. Un gobelet est le tronc de cône obtenu en retirant le petit cône (hauteur OA) au grand cône (hauteur OB).",
+  as26_prog: "Programme A : choisir un nombre, calculer 3 fois son carré, y ajouter 7 fois le nombre, puis soustraire 6. Programme B : (3 × nombre − 2) × (nombre + 3).",
+  ce26_tri: "A, B, M alignés ; A, C, N alignés ; ABC rectangle en B ; AMN rectangle en M. AB = 6,4 cm ; BM = 3,2 cm ; AC = 8 cm.",
+  ce26_bon: "Bonbon en forme de gélule de 15 mm de long : un cylindre et deux demi-boules de rayon 2,5 mm.",
+  ce26_prog: "Programme A : (nombre + 6) × (nombre − 4). Programme B : carré du nombre, moins 9."
+};
+BANQUE_BREVET.push(
+  /* ===== 2026 Métropole ===== */
+  QA(2026, "metropole", "Automatismes", "", "Quelle fraction est égale à 0,75 ?", C(["3/4", "7/5", "75/10", "1/4"], 0), "0,75 = 75/100 = 3/4."),
+  QA(2026, "metropole", "Automatismes", "", "Calcule −4,7 + 3,5.", R("-1.2", "−1,2", "-1,2"), "On fait 4,7 − 3,5 = 1,2 avec le signe du plus grand : −1,2."),
+  QA(2026, "metropole", "Automatismes", "", "Résous l'équation 10x + 16 = −64.", C(["x = 8", "x = −4,8", "x = −8", "x = −14"], 2), "10x = −80, donc x = −8."),
+  QA(2026, "metropole", "Automatismes", "", "Quelle est l'écriture scientifique de 0,004 58 ?", C(["458 × 10⁻³", "4,58 × 10³", "4,58 × 10⁻³", "458 × 10⁻⁵"], 2), "On décale la virgule de 3 rangs vers la droite : 4,58 × 10⁻³."),
+  QA(2026, "metropole", "Automatismes", "", "Un sac contient 10 boules rouges, 4 bleues et 6 vertes. Quelle est la probabilité de tirer une boule bleue ?", C(["1/4", "4/20", "4/16", "1/3"], 1), "4 boules bleues sur 20 : 4/20 = 0,2."),
+  QA(2026, "metropole", "Ex. 1", CTX2.m26_med, "Combien de médailles d'or l'Australie a-t-elle obtenues ?", R(18), "63 − (17 + 28) = 18."),
+  QA(2026, "metropole", "Ex. 1", CTX2.m26_med, "Quel pourcentage des médailles de la Grande-Bretagne sont en bronze ?", R("25", "25 %", "25%"), "31 ÷ 124 = 0,25, soit 25 %."),
+  QA(2026, "metropole", "Ex. 1", CTX2.m26_med, "Quelle est la médiane du nombre total de médailles de ces 9 pays ?", R(82), "Rangés : 56 ; 63 ; 71 ; 75 ; 82 ; 89 ; 105 ; 124 ; 220. La 5e valeur est 82."),
+  QA(2026, "metropole", "Ex. 1", CTX2.m26_med + " À Tokyo (2021), le Brésil avait obtenu 20 médailles d'argent.", "De quel pourcentage le nombre de médailles d'argent du Brésil a-t-il augmenté ?", R("30", "30 %", "30%"), "26 ÷ 20 = 1,3 = 1 + 30/100 : +30 %."),
+  QA(2026, "metropole", "Ex. 2", CTX2.m26_tri, "Pourquoi le triangle ABC est-il rectangle en A ?", C(["Car AB² + AC² = BC² (40,96 + 23,04 = 64)", "Car AB = AC", "Car (BC) // (DE)", "Car BC est le plus grand côté"], 0), "Réciproque du théorème de Pythagore : 6,4² + 4,8² = 64 = 8²."),
+  QA(2026, "metropole", "Ex. 2", CTX2.m26_tri, "Calcule la longueur DE, en cm.", R(6), "Thalès : AD/AB = DE/BC, soit 4,8/6,4 = DE/8, donc DE = 6 cm (et AE = 3,6 cm)."),
+  QA(2026, "metropole", "Ex. 2", CTX2.m26_tri, "Les angles ABC et ADE sont égaux. Pourquoi ?", C(["Ils sont alternes-internes et (BC) // (DE)", "Ils sont opposés par le sommet", "Ils sont complémentaires", "Le triangle ABC est isocèle"], 0), "Deux droites parallèles coupées par une sécante forment des angles alternes-internes égaux."),
+  QA(2026, "metropole", "Ex. 2", CTX2.m26_tri + " On a trouvé AE = 3,6 cm.", "Les diagonales de BEDC sont perpendiculaires (en A). Quelle est l'aire de BEDC, en cm² ?", R("47.04", "47,04"), "Diagonales BD = 11,2 cm et CE = 8,4 cm : aire = 11,2 × 8,4 ÷ 2 = 47,04 cm²."),
+  QA(2026, "metropole", "Ex. 3", "Une imprimante 3D fabrique des boules de rayon 2,5 cm. V = 4/3 × π × R³.", "Quel est le volume d'une boule, arrondi au cm³ ?", R(65), "4/3 × π × 2,5³ ≈ 65,4 cm³."),
+  QA(2026, "metropole", "Ex. 3", "Boules de 65 cm³ chacune ; une bobine contient 1 000 cm³ de plastique.", "Combien de boules complètes peut-on fabriquer avec une bobine ?", R(15), "1 000 = 65 × 15 + 25 : 15 boules."),
+  QA(2026, "metropole", "Ex. 3", "Boules de 65 cm³ ; masse volumique du plastique : 0,9 g/cm³.", "Quelle est la masse d'une boule, en g ?", R("58.5", "58,5"), "65 × 0,9 = 58,5 g."),
+  QA(2026, "metropole", "Ex. 4", CTX2.m26_bon, "Quel est le nombre maximal de sachets ?", R(28), "112 = 2⁴ × 7 et 140 = 2² × 5 × 7 : PGCD = 2² × 7 = 28."),
+  QA(2026, "metropole", "Ex. 4", CTX2.m26_bon, "Avec 28 sachets, combien de bonbons au caramel y a-t-il dans chaque sachet ?", R(5), "140 ÷ 28 = 5 (et 112 ÷ 28 = 4 à la fraise)."),
+  /* ===== 2026 Amérique du Nord ===== */
+  QA(2026, "amerique-du-nord", "Automatismes", "", "Calcule 2/3 + 3/4.", C(["17/12", "5/7", "6/12", "5/12"], 0), "8/12 + 9/12 = 17/12."),
+  QA(2026, "amerique-du-nord", "Automatismes", "", "Un article coûte 45 €. Quel est son prix après une réduction de 10 % ?", R("40.5", "40,5", "40,50"), "10 % de 45 = 4,5 ; 45 − 4,5 = 40,50 €."),
+  QA(2026, "amerique-du-nord", "Automatismes", "", "Résous l'équation 5x − 15 = 20.", R(7, "x=7"), "5x = 35, donc x = 7."),
+  QA(2026, "amerique-du-nord", "Automatismes", "", "Quelle est la médiane de la série 8 ; 19 ; 12 ; 3 ; 12 ; 25 ; 3 ; 11 ; 1 ?", R(11), "Rangée : 1 ; 3 ; 3 ; 8 ; 11 ; 12 ; 12 ; 19 ; 25. La 5e valeur est 11."),
+  QA(2026, "amerique-du-nord", "Automatismes", "ABC est rectangle en A, BC = 5 cm et l'angle ABC mesure 60°.", "Quelle formule donne AB ?", C(["5 × cos(60)", "5 × sin(60)", "5 ÷ cos(60)", "5 ÷ sin(60)"], 0), "AB est le côté adjacent à l'angle B : cos(B) = AB/BC."),
+  QA(2026, "amerique-du-nord", "Automatismes", "", "Donne un diviseur de 387 autre que 1 et 387.", R(3, 9, 43, 129), "3 + 8 + 7 = 18 : 387 est divisible par 3 et par 9 (387 = 9 × 43)."),
+  QA(2026, "amerique-du-nord", "Ex. 1", CTX2.an26_tri, "Pourquoi le triangle AED est-il rectangle en E ?", C(["Car DE² + AE² = AD² (23,04 + 30,25 = 53,29)", "Car AE = DE", "Car (BC) // (ED)", "Car AD = 7,3 cm"], 0), "Réciproque de Pythagore : 4,8² + 5,5² = 53,29 = 7,3²."),
+  QA(2026, "amerique-du-nord", "Ex. 1", CTX2.an26_tri, "Quelle est l'aire du triangle AED, en cm² ?", R("13.2", "13,2"), "4,8 × 5,5 ÷ 2 = 13,2 cm²."),
+  QA(2026, "amerique-du-nord", "Ex. 1", CTX2.an26_tri, "Calcule la longueur AB, en cm.", R("8.25", "8,25"), "(BC) // (ED), Thalès : AB/AE = BC/ED, AB = 5,5 × 7,2 ÷ 4,8 = 8,25 cm."),
+  QA(2026, "amerique-du-nord", "Ex. 1", CTX2.an26_tri + " L'angle ACB mesure environ 49°.", "Combien mesure l'angle ADE, en degrés ?", R(49), "Angles alternes-internes avec (BC) // (ED) : ils sont égaux."),
+  QA(2026, "amerique-du-nord", "Ex. 2", CTX2.an26_f, "Calcule f(−4).", R(5), "(−4 − 1)(−4 + 3) = (−5)(−1) = 5."),
+  QA(2026, "amerique-du-nord", "Ex. 2", CTX2.an26_f, "Quel est l'antécédent de 2 par la fonction g ?", R("0.5", "0,5", "1/2"), "2x + 1 = 2 donne x = 0,5."),
+  QA(2026, "amerique-du-nord", "Ex. 2", CTX2.an26_f, "L'équation f(x) = g(x) revient à…", C(["x² − 4 = 0", "x² + 2x − 3 = 0", "2x + 1 = 0", "x² + 4 = 0"], 0), "x² + 2x − 3 = 2x + 1 donne x² − 4 = 0 : solutions 2 et −2."),
+  QA(2026, "amerique-du-nord", "Ex. 3", CTX2.an26_ia, "Combien d'images sont dans la catégorie « Autres » ?", R(2000), "50 000 − (28 000 + 12 000 + 8 000) = 2 000."),
+  QA(2026, "amerique-du-nord", "Ex. 3", CTX2.an26_ia, "L'IA reconnaît 90 % des « Objets du quotidien ». Combien d'images est-ce ?", R(25200), "0,9 × 28 000 = 25 200."),
+  QA(2026, "amerique-du-nord", "Ex. 3", CTX2.an26_ia, "L'IA reconnaît 5 600 « Véhicules ». Quel est son pourcentage de réussite dans cette catégorie ?", R("70", "70 %", "70%"), "5 600 ÷ 8 000 = 0,7 = 70 %."),
+  QA(2026, "amerique-du-nord", "Ex. 3", CTX2.an26_ia, "On tire une image au hasard. Quelle est la probabilité que ce soit un « Objet du quotidien » ?", R("0.56", "0,56"), "28 000 ÷ 50 000 = 0,56."),
+  QA(2026, "amerique-du-nord", "Ex. 3", CTX2.an26_elec, "Combien de collèges pourrait-on alimenter pendant un an avec la consommation de l'IA ?", R(410000), "8,2 × 10¹³ Wh ÷ 2 × 10⁸ Wh = 410 000 collèges."),
+  QA(2026, "amerique-du-nord", "Ex. 3", CTX2.an26_elec, "Pendant environ combien d'années pourrait-on alimenter tous les collèges français ?", C(["Environ 58 ans", "Environ 6 ans", "Environ 410 ans", "Environ 7 ans"], 0), "410 000 ÷ 7 100 ≈ 57,7 : environ 58 ans."),
+  QA(2026, "amerique-du-nord", "Ex. 4", "Bloc « triangle équilatéral » : répéter C fois (avancer de 50 pas ; tourner de D degrés).", "Quelle valeur faut-il pour D ?", R(120), "Pour un triangle équilatéral, on tourne de 180 − 60 = 120° à chaque sommet (3 × 120 = 360)."),
+  /* ===== 2026 Asie ===== */
+  QA(2026, "asie", "Automatismes", "", "Quelle est l'écriture scientifique de 45 310 ?", C(["45,31 × 10³", "4,531 × 10⁴", "4,531 × 10⁻⁴", "4 531 × 10¹"], 1), "Un seul chiffre non nul avant la virgule : 4,531 × 10⁴."),
+  QA(2026, "asie", "Automatismes", "", "Développe (4x − 3)(4x + 3).", C(["4x² − 9", "16x² + 9", "16x² − 9", "8x² − 6"], 2), "(a − b)(a + b) = a² − b² = 16x² − 9."),
+  QA(2026, "asie", "Automatismes", "", "Quel est le volume d'un pavé droit de 4,5 cm × 4 cm × 10 cm ?", C(["180 cm³", "170 cm³", "160,5 cm³", "18,5 cm³"], 0), "4,5 × 4 × 10 = 180 cm³."),
+  QA(2026, "asie", "Automatismes", "N = 2 025 et P = 2 026.", "Lequel est divisible par 9 ?", C(["Les deux", "N seulement", "P seulement", "Aucun"], 1), "2 + 0 + 2 + 5 = 9 est divisible par 9 ; pour P, la somme 10 ne l'est pas."),
+  QA(2026, "asie", "Automatismes", "", "Une personne court 9 km en 45 minutes. Quelle est sa vitesse moyenne en km/h ?", R(12), "45 min = 0,75 h ; 9 ÷ 0,75 = 12 km/h."),
+  QA(2026, "asie", "Ex. 1", CTX2.as26_tel, "Au bout de 24 mois, quelle offre est la moins chère ?", C(["L'offre B (552 €)", "L'offre A (559 €)", "Elles coûtent pareil"], 0), "A : 175 + 16 × 24 = 559 € ; B : 23 × 24 = 552 €."),
+  QA(2026, "asie", "Ex. 1", CTX2.as26_tel, "Au bout de combien de mois paie-t-on le même prix ?", R(25), "175 + 16x = 23x donne 7x = 175, soit x = 25 mois (après la fin de l'engagement)."),
+  QA(2026, "asie", "Ex. 2", CTX2.as26_cone, "Quelle est la longueur OA, en cm ?", R(8), "Pythagore dans OAD : OA² = 8,2² − 1,8² = 64, donc OA = 8 cm."),
+  QA(2026, "asie", "Ex. 2", CTX2.as26_cone, "Quelle est la longueur OB, en cm ?", R(20), "Thalès : OB/OA = BC/AD, OB = 8 × 4,5 ÷ 1,8 = 20 cm."),
+  QA(2026, "asie", "Ex. 2", CTX2.as26_cone + " V(cône) = π × R² × H ÷ 3.", "Volume du grand cône, arrondi au cm³ ?", R(424), "π × 4,5² × 20 ÷ 3 = 135π ≈ 424 cm³."),
+  QA(2026, "asie", "Ex. 2", CTX2.as26_cone + " V(cône) = π × R² × H ÷ 3.", "Volume du gobelet, arrondi au cm³ ?", R(397), "135π − π × 1,8² × 8 ÷ 3 ≈ 424,1 − 27,1 ≈ 397 cm³."),
+  QA(2026, "asie", "Ex. 3", CTX2.as26_prog, "Quel résultat donne le programme A avec 5 ?", R(104), "3 × 25 + 7 × 5 − 6 = 75 + 35 − 6 = 104."),
+  QA(2026, "asie", "Ex. 3", CTX2.as26_prog, "Les deux programmes donnent-ils toujours le même résultat ?", C(["Oui : (3x − 2)(x + 3) = 3x² + 7x − 6", "Non, seulement pour x = 5", "Non, jamais"], 0), "En développant B : 3x² + 9x − 2x − 6 = 3x² + 7x − 6 = A."),
+  QA(2026, "asie", "Ex. 3", CTX2.as26_prog, "Pour quelles valeurs les programmes donnent-ils 0 ?", C(["x = 2/3 et x = −3", "x = −2/3 et x = 3", "x = 2 et x = −3", "x = 0 seulement"], 0), "Produit nul : 3x − 2 = 0 ou x + 3 = 0."),
+  QA(2026, "asie", "Ex. 4", "ABCD est un carré, ABF un triangle équilatéral ; F, A, E alignés.", "Combien mesure l'angle EAD ?", R(30), "180 − 60 − 90 = 30°."),
+  /* ===== 2026 Centres étrangers ===== */
+  QA(2026, "centres-etrangers", "Automatismes", "", "Quelle est la médiane de 0 °C ; −1 °C ; 3 °C ; 7 °C ; 1 °C ?", R(1, "1 °C"), "Rangées : −1 ; 0 ; 1 ; 3 ; 7. La médiane est 1 °C."),
+  QA(2026, "centres-etrangers", "Automatismes", "", "Une boîte contient 3 boules rouges et 5 vertes. Probabilité de tirer une rouge ?", C(["3/8", "3/5", "5/8", "1/3"], 0), "3 rouges sur 8 boules."),
+  QA(2026, "centres-etrangers", "Automatismes", "", "Quelle est la notation scientifique de 311 200 000 ?", C(["3,112 × 10⁸", "31,12 × 10⁷", "3,112 × 10⁶", "3 112 × 10⁵"], 0), "On place la virgule après le premier chiffre : 3,112 × 10⁸."),
+  QA(2026, "centres-etrangers", "Automatismes", "", "Charlie roule 2 h 30 min à 40 km/h. Quelle distance parcourt-il, en km ?", R(100), "2,5 × 40 = 100 km."),
+  QA(2026, "centres-etrangers", "Automatismes", "", "Factorise 5x + 5.", C(["5(x + 1)", "5(x + 5)", "10x", "25x"], 0), "5x + 5 = 5 × x + 5 × 1 = 5(x + 1)."),
+  QA(2026, "centres-etrangers", "Ex. 1", CTX2.ce26_tri, "Calcule BC, en cm.", R("4.8", "4,8"), "Pythagore : BC² = 8² − 6,4² = 23,04, BC = 4,8 cm."),
+  QA(2026, "centres-etrangers", "Ex. 1", CTX2.ce26_tri, "Pourquoi (BC) et (MN) sont-elles parallèles ?", C(["Elles sont toutes deux perpendiculaires à (AM)", "Elles ont la même longueur", "Car AB = 2 × BM", "Car ABC est isocèle"], 0), "Deux droites perpendiculaires à une même droite sont parallèles."),
+  QA(2026, "centres-etrangers", "Ex. 1", CTX2.ce26_tri, "Calcule AN, en cm.", R(12), "AM = 9,6 cm ; Thalès : AN = 8 × 9,6 ÷ 6,4 = 12 cm (et MN = 7,2 cm)."),
+  QA(2026, "centres-etrangers", "Ex. 1", CTX2.ce26_tri + " BC = 4,8 cm ; MN = 7,2 cm ; AN = 12 cm.", "Le périmètre de ABC et celui de BMNC sont-ils égaux ?", C(["Oui, 19,2 cm chacun", "Non, BMNC est plus grand", "Non, ABC est plus grand"], 0), "ABC : 6,4 + 4,8 + 8 = 19,2 ; BMNC : 3,2 + 7,2 + 4 + 4,8 = 19,2 cm."),
+  QA(2026, "centres-etrangers", "Ex. 2", CTX2.ce26_bon, "Quelle est la hauteur du cylindre, en mm ?", R(10), "15 − 2 × 2,5 = 10 mm."),
+  QA(2026, "centres-etrangers", "Ex. 2", CTX2.ce26_bon, "Le volume total d'un bonbon est environ…", C(["262 mm³", "196 mm³", "65 mm³", "785 mm³"], 0), "Cylindre π × 2,5² × 10 ≈ 196,3 mm³ + boule 4/3 × π × 2,5³ ≈ 65,4 mm³ : ≈ 261,8 mm³."),
+  QA(2026, "centres-etrangers", "Ex. 2", CTX2.ce26_bon + " Un bonbon fait environ 261,8 mm³ ; la confiserie prépare 83 L de mélange par jour.", "Peut-elle produire plus de 300 000 bonbons par jour ?", C(["Oui, environ 317 000", "Non, environ 260 000", "Non, environ 83 000"], 0), "83 L = 83 000 000 mm³ ; 83 000 000 ÷ 261,8 ≈ 317 000."),
+  QA(2026, "centres-etrangers", "Ex. 2", "Format A : 500 g pour 7,90 €. Format B : 250 g pour 4,30 €, et pour 3 sachets achetés le quatrième est à moitié prix.", "Pour 1 kg, quel format est le moins cher ?", C(["Le format B (15,05 €)", "Le format A (15,80 €)", "Ils coûtent pareil"], 0), "A : 2 × 7,90 = 15,80 € ; B : 3 × 4,30 + 2,15 = 15,05 €."),
+  QA(2026, "centres-etrangers", "Ex. 3", CTX2.ce26_prog, "Quel résultat donne le programme B avec 10 ?", R(91), "10² − 9 = 91."),
+  QA(2026, "centres-etrangers", "Ex. 3", CTX2.ce26_prog, "Quels nombres donnent 16 avec le programme B ?", C(["5 et −5", "5 seulement", "25 et −25", "4 et −4"], 0), "x² − 9 = 16 donne x² = 25."),
+  QA(2026, "centres-etrangers", "Ex. 3", CTX2.ce26_prog, "Quel nombre de départ donne le même résultat avec A et B ?", R("7.5", "7,5"), "x² + 2x − 24 = x² − 9 donne 2x = 15, x = 7,5."),
+  /* ===== 2025 Amérique du Nord ===== */
+  QA(2025, "amerique-du-nord", "Ex. 1", "Une urne contient 40 boules : 5 rouges, 20 vertes et 15 blanches.", "Quelle est la probabilité de tirer une boule verte ?", C(["1/2", "1/4", "20/15", "3/8"], 0), "20 vertes sur 40 boules : 20/40 = 1/2."),
+  QA(2025, "amerique-du-nord", "Ex. 1", "", "Quelle est la décomposition en facteurs premiers de 1 050 ?", C(["2 × 3 × 5² × 7", "2 × 5 × 105", "2² × 3 × 5 × 7", "10 × 105"], 0), "1 050 = 2 × 525 = 2 × 3 × 175 = 2 × 3 × 5² × 7."),
+  QA(2025, "amerique-du-nord", "Ex. 1", "", "Un article coûte 25 €. Quel est son prix après une hausse de 14 % ?", R("28.5", "28,5", "28,50"), "25 × 1,14 = 28,50 €."),
+  QA(2025, "amerique-du-nord", "Ex. 1", "Le polygone 2 est un agrandissement de coefficient 2,5 du polygone 1, d'aire 7,5 cm².", "Quelle est l'aire du polygone 2, en cm² ?", R("46.875", "46,875"), "Les aires sont multipliées par 2,5² = 6,25 : 7,5 × 6,25 = 46,875 cm²."),
+  QA(2025, "amerique-du-nord", "Ex. 1", "Tailles (cm) / effectifs : 152 (2) ; 157 (4) ; 160 (2) ; 162 (5) ; 165 (2) ; 170 (4) ; 174 (6) ; 180 (5).", "Quelle est la taille moyenne des élèves, en cm ?", R("167.2", "167,2"), "Somme = 5 016 cm pour 30 élèves : 5 016 ÷ 30 = 167,2 cm."),
+  QA(2025, "amerique-du-nord", "Ex. 1", "Tailles (cm) / effectifs : 152 (2) ; 157 (4) ; 160 (2) ; 162 (5) ; 165 (2) ; 170 (4) ; 174 (6) ; 180 (5).", "Quelle est la taille médiane, en cm ?", R("167.5", "167,5"), "30 élèves : la médiane est entre la 15e (165) et la 16e valeur (170) ; on prend souvent le milieu, 167,5 cm."),
+  QA(2025, "amerique-du-nord", "Ex. 2", "A, B, E, M alignés ; A, C, D alignés ; ADE rectangle en E ; ABC rectangle en B. AD = 70 m ; BC = 30 m ; AC = 50 m.", "Calcule AB, en m.", R(40), "Pythagore : AB² = 50² − 30² = 1 600, AB = 40 m."),
+  QA(2025, "amerique-du-nord", "Ex. 2", "A, B, E, M alignés ; A, C, D alignés ; (DE) // (BC). AD = 70 m ; BC = 30 m ; AC = 50 m.", "Calcule DE, en m.", R(42), "Thalès : DE = BC × AD ÷ AC = 30 × 70 ÷ 50 = 42 m."),
+  QA(2025, "amerique-du-nord", "Ex. 3", "Programme A : multiplier par 3, ajouter 15, diviser par 3, soustraire le nombre de départ.", "Quel résultat donne toujours le programme A ?", R(5), "(3x + 15) ÷ 3 − x = x + 5 − x = 5."),
+  QA(2025, "amerique-du-nord", "Ex. 3", "Programme B : (nombre − 1) × (nombre − 6), puis ajouter 5.", "Quel résultat donne le programme B avec 10 ?", R(41), "9 × 4 + 5 = 41."),
+  QA(2025, "amerique-du-nord", "Ex. 3", "Programme A donne toujours 5. Programme B : (x − 1)(x − 6) + 5.", "Pour quels nombres les deux programmes donnent-ils le même résultat ?", C(["1 et 6", "−1 et −6", "5 seulement", "0 et 5"], 0), "(x − 1)(x − 6) + 5 = 5 donne (x − 1)(x − 6) = 0."),
+  QA(2025, "amerique-du-nord", "Ex. 4", "Parcours de 13,5 km : Louise court à 12 km/h, Hillal à 10 km/h ; ils partent en même temps.", "Quand Louise arrive, quelle distance la sépare de Hillal, en km ?", R("2.25", "2,25"), "Louise met 13,5 ÷ 12 = 1,125 h ; Hillal a alors couru 11,25 km : 13,5 − 11,25 = 2,25 km."),
+  QA(2025, "amerique-du-nord", "Ex. 5", "Le programme tire un nombre au hasard parmi 1, 2 et 3 ; il dessine seulement si c'est 3.", "Quelle est la probabilité que le dessin s'affiche ?", C(["1/3", "1/2", "2/3", "1/6"], 0), "Une issue favorable sur trois."),
+  QA(2025, "amerique-du-nord", "Ex. 5", "Sur 100 lancers du programme, « Voici le dessin ! » s'affiche 40 fois.", "Quelle est la fréquence de cet affichage ?", R("0.4", "0,4", "40 %", "40%"), "40 ÷ 100 = 0,4 : elle diffère de 1/3 car 100 essais restent peu nombreux (fluctuation)."),
+  /* ===== 2025 Asie ===== */
+  QA(2025, "asie", "Ex. 1", "Une urne contient 4 boules bleues, 6 violettes, 7 rouges et 3 jaunes.", "Probabilité de tirer une boule violette ?", C(["6/14", "1/4", "3/10", "14/20"], 2), "6 violettes sur 20 boules : 6/20 = 3/10."),
+  QA(2025, "asie", "Ex. 1", "", "Calculer 70 % d'une quantité revient à la multiplier par…", C(["0,30", "0,70", "1,70", "1,30"], 1), "70 % = 70/100 = 0,70."),
+  QA(2025, "asie", "Ex. 1", "Série : 7 ; 18 ; 12 ; 13 ; 15.", "Quelle affirmation est vraie ?", C(["L'étendue est 8", "La médiane est 12", "La moyenne est 53", "La moyenne est 13"], 3), "Somme 65 ÷ 5 = 13 (étendue 11, médiane 13)."),
+  QA(2025, "asie", "Ex. 2", "CDE rectangle en D ; G, C, E alignés ; F, C, D alignés ; (GF) // (DE). CD = 21,6 cm ; CE = 29,1 cm ; FC = 17,2 cm.", "Calcule DE, en cm.", R("19.5", "19,5"), "Pythagore : DE² = 29,1² − 21,6² = 380,25, DE = 19,5 cm."),
+  QA(2025, "asie", "Ex. 2", "CDE rectangle en D, CD = 21,6 cm et DE = 19,5 cm.", "Quelle est l'aire du triangle CDE, en cm² ?", R("210.6", "210,6"), "21,6 × 19,5 ÷ 2 = 210,6 cm²."),
+  QA(2025, "asie", "Ex. 2", "(GF) // (DE) ; CD = 21,6 cm ; DE = 19,5 cm ; FC = 17,2 cm.", "Calcule GF, arrondie au mm (en cm).", R("15.5", "15,5"), "Thalès : GF = DE × FC ÷ CD = 19,5 × 17,2 ÷ 21,6 ≈ 15,5 cm."),
+  QA(2025, "asie", "Ex. 2", "Le triangle ABC est une réduction du triangle EDC ; son aire est 1/9 de celle de CDE. DE = 19,5 cm.", "Calcule AB, en cm.", R("6.5", "6,5"), "Aire × 1/9 donc longueurs × 1/3 : 19,5 ÷ 3 = 6,5 cm."),
+  QA(2025, "asie", "Ex. 3", "Rectangle de côtés x et 16 − 2x ; carré de côté 2x.", "Pour quelle valeur de x les deux périmètres sont-ils égaux ?", R("3.2", "3,2"), "Rectangle : 2(x + 16 − 2x) = −2x + 32 ; carré : 8x. 8x = −2x + 32 donne x = 3,2."),
+  QA(2025, "asie", "Ex. 5", "Un magasin répartit 350 poissons de type A et 300 de type B en lots identiques, sans reste.", "Quel est le nombre maximal de lots ?", R(50), "350 = 2 × 5² × 7 et 300 = 2² × 3 × 5² : PGCD = 2 × 5² = 50 (7 A et 6 B par lot)."),
+  QA(2025, "asie", "Ex. 5", "", "Quelle est la décomposition de 300 en facteurs premiers ?", C(["2² × 3 × 5²", "2 × 5 × 15", "2² × 75", "3 × 10²"], 0), "300 = 2 × 2 × 3 × 5 × 5."),
+  QA(2025, "asie", "Ex. 5", "Un poisson coûte 15 € et l'aquarium 40 € ; remise de 15 % sur le total.", "Combien paie la famille, en € ?", R("46.75", "46,75"), "(15 + 40) × 0,85 = 46,75 €."),
+  /* ===== 2021 Métropole ===== */
+  QA(2021, "metropole", "Ex. 1", "Températures moyennes à Tours en 2019 (°C) : 4,4 ; 7,8 ; 9,6 ; 11,2 ; 13,4 ; 19,4 ; 22,6 ; 20,5 ; 17,9 ; 14,4 ; 8,2 ; 7,8.", "Quelle est l'étendue de cette série, en °C ?", R("18.2", "18,2"), "22,6 − 4,4 = 18,2 °C."),
+  QA(2021, "metropole", "Ex. 1", "Les températures sont dans les cellules B2 à M2 d'un tableur.", "Quelle formule calcule la moyenne annuelle en N2 ?", C(["=MOYENNE(B2:M2)", "=SOMME(B2:M2)", "=B2+M2/12", "=MOYENNE(B1:M1)"], 0), "La fonction MOYENNE sur la plage B2:M2."),
+  QA(2021, "metropole", "Ex. 1", "Moyenne annuelle à Tours : 11,9 °C en 2009 et 13,1 °C en 2019.", "Quel est le pourcentage d'augmentation, arrondi à l'unité ?", C(["7 %", "10 %", "13 %"], 1), "13,1 ÷ 11,9 ≈ 1,10 : environ +10 %."),
+  QA(2021, "metropole", "Ex. 2", "Le Futuroscope a reçu 1,9 million de visiteurs en 2019.", "L'affirmation « environ 5 200 visiteurs par jour » est-elle vraie ?", C(["Oui", "Non"], 0), "1 900 000 ÷ 365 ≈ 5 205."),
+  QA(2021, "metropole", "Ex. 2", "Un professeur répartit 126 garçons et 90 filles en groupes identiques.", "Quel est le plus grand nombre de groupes possible ?", R(18), "126 = 2 × 3² × 7 et 90 = 2 × 3² × 5 : PGCD = 18 (7 garçons et 5 filles par groupe)."),
+  QA(2021, "metropole", "Ex. 2", "A, E, B alignés ; A, D, C alignés ; (ED) // (BC). Marie (ED = 1,60 m) est à AD = 2 m du bout de l'ombre ; DC = 54,25 m.", "Quelle est la hauteur BC de la Gyrotour, en m ?", R(45), "AC = 56,25 m ; Thalès : BC = 1,6 × 56,25 ÷ 2 = 45 m."),
+  QA(2021, "metropole", "Ex. 3", "Une urne contient 7 jetons verts, 4 rouges, 3 bleus et 2 jaunes.", "Quel événement a une probabilité de 7/16 ?", C(["Obtenir un jeton vert", "Obtenir un jeton rouge ou jaune", "Obtenir un jeton qui n'est pas vert"], 0), "7 jetons verts sur 16."),
+  QA(2021, "metropole", "Ex. 3", "Une urne contient 7 jetons verts, 4 rouges, 3 bleus et 2 jaunes.", "Quelle est la probabilité de ne pas tirer un jeton bleu ?", C(["13/16", "3/16", "3/4"], 0), "1 − 3/16 = 13/16."),
+  QA(2021, "metropole", "Ex. 3", "Le motif 11 est l'image du motif 1 par l'homothétie de centre O et de rapport 2.", "L'aire du motif 11 est égale…", C(["à 4 fois l'aire du motif 1", "au double de l'aire du motif 1", "à la moitié de l'aire du motif 1"], 0), "Avec un rapport k, les aires sont multipliées par k² = 4."),
+  QA(2021, "metropole", "Ex. 4", "Programme : carré du nombre, plus le triple du nombre, moins 10.", "Quel résultat donne le programme avec −3 ?", R(-10, "−10"), "9 − 9 − 10 = −10."),
+  QA(2021, "metropole", "Ex. 4", "Programme : x² + 3x − 10 = (x + 5)(x − 2).", "Quels nombres donnent 0 ?", C(["−5 et 2", "5 et −2", "10 seulement", "0 et 3"], 0), "Produit nul : x + 5 = 0 ou x − 2 = 0."),
+  QA(2021, "metropole", "Ex. 5", "En 2007, un Français produisait 5,2 tonnes de déchets par an ; cette production a baissé de 6,5 % jusqu'en 2017.", "De combien de tonnes a-t-elle diminué ?", R("0.338", "0,338"), "5,2 × 0,065 = 0,338 t."),
+  /* ===== 2019 Métropole ===== */
+  QA(2019, "metropole", "Ex. 1", "Un trésor de 69 diamants, 1 150 perles et 4 140 pièces d'or est partagé équitablement entre des marins, sans reste.", "Combien y a-t-il de marins ?", R(23), "69 = 3 × 23 ; 1 150 = 2 × 5² × 23 ; 4 140 = 2² × 3² × 5 × 23 : le seul diviseur commun (> 1) est 23."),
+  QA(2019, "metropole", "Ex. 1", "23 marins se partagent 69 diamants, 1 150 perles et 4 140 pièces d'or.", "Combien de perles reçoit chaque marin ?", R(50), "1 150 ÷ 23 = 50."),
+  QA(2019, "metropole", "Ex. 2", "ADM est rectangle en A, AD = 2 m et l'angle ADM mesure 60°.", "Quelle est la longueur AM, au centième (en m) ?", R("3.46", "3,46"), "tan(60°) = AM ÷ AD, AM = 2 × tan(60°) ≈ 3,46 m."),
+  QA(2019, "metropole", "Ex. 3", "Le sable (4,95 cm³) s'écoule avec un débit constant de 1,98 cm³/min.", "Combien de temps dure l'écoulement ?", C(["2 min 30 s", "2 min 50 s", "2 min 05 s", "3 min"], 0), "4,95 ÷ 1,98 = 2,5 min = 2 min 30 s."),
+  QA(2019, "metropole", "Ex. 4", "Le script choisit au hasard, avec la même probabilité, de dessiner un carré ou un tiret.", "Probabilité que les deux premiers éléments soient des carrés ?", C(["1/4", "1/2", "1/3", "2/3"], 0), "1/2 × 1/2 = 1/4."),
+  QA(2019, "metropole", "Ex. 5", "Le rectangle ABCD (aire 1,215 m²) est l'image d'un petit rectangle par une homothétie de rapport 3.", "Quelle est l'aire d'un petit rectangle, en m² ?", R("0.135", "0,135"), "Les aires sont multipliées par 3² = 9 : 1,215 ÷ 9 = 0,135 m²."),
+  QA(2019, "metropole", "Ex. 5", "ABCD a une aire de 1,215 m² et le ratio longueur : largeur vaut 3 : 2.", "Quelle est la largeur de ABCD, en m ?", R("0.9", "0,9", "0,90"), "L = 1,5 l donc 1,5 l² = 1,215, l² = 0,81 : l = 0,9 m (et L = 1,35 m)."),
+  QA(2019, "metropole", "Ex. 6", "Programme 1 : 3x + 1. Programme 2 : (x − 1)(x + 2).", "Quels nombres donnent le même résultat avec les deux programmes ?", C(["−1 et 3", "1 et −3", "0 et 2", "−2 et 1"], 0), "B(x) − A(x) = x² − 2x − 3 = (x + 1)(x − 3) = 0."),
+  QA(2019, "metropole", "Ex. 6", "Programme 1 : 3x + 1.", "Quel nombre faut-il choisir pour obtenir 0 ?", C(["−1/3", "1/3", "−3", "3"], 0), "3x + 1 = 0 donne x = −1/3."),
+  /* ===== 2018 Métropole ===== */
+  QA(2018, "metropole", "Ex. 1", "Le gros globe de cristal : une boule de 23 cm de diamètre posée sur un cylindre de 6 cm de diamètre et de 23 cm de haut. V(boule) = 4/3 × π × R³.", "Quel est le volume de la boule, arrondi au cm³ ?", R(6371), "4/3 × π × 11,5³ ≈ 6 371 cm³."),
+  QA(2018, "metropole", "Ex. 1", "Boule ≈ 6 371 cm³ ; cylindre de rayon 3 cm et de hauteur 23 cm.", "La boule représente-t-elle environ 90 % du volume total ?", C(["Oui (≈ 90,7 %)", "Non (≈ 75 %)", "Non (≈ 99 %)"], 0), "Cylindre : π × 3² × 23 ≈ 650 cm³ ; 6 371 ÷ 7 021 ≈ 0,907."),
+  QA(2018, "metropole", "Ex. 2", "Concentrations en PM10 à Grenoble du 16 au 25 janvier 2017 (µg/m³) : 32 ; 39 ; 52 ; 57 ; 78 ; 63 ; 60 ; 82 ; 82 ; 89.", "Quelle est la concentration moyenne à Grenoble ?", R("63.4", "63,4"), "Somme 634 ÷ 10 = 63,4 µg/m³ (contre 72,5 à Lyon)."),
+  QA(2018, "metropole", "Ex. 2", "Lyon : minimum 22 µg/m³, maximum 107 µg/m³. Grenoble : de 32 à 89 µg/m³.", "Quelle ville a la plus grande étendue ?", C(["Lyon (85)", "Grenoble (57)", "Elles sont égales"], 0), "107 − 22 = 85 contre 89 − 32 = 57."),
+  QA(2018, "metropole", "Ex. 2", "À Lyon, sur 10 jours, la médiane des concentrations vaut 83,5 µg/m³.", "Le seuil de 80 µg/m³ a-t-il été dépassé au moins 5 fois ?", C(["Oui", "Non", "On ne peut pas savoir"], 0), "La moitié des 10 valeurs (au moins 5) sont supérieures ou égales à la médiane, 83,5 > 80."),
+  QA(2018, "metropole", "Ex. 3", "Théo a 375 morceaux, dont 125 de rap.", "Quelle est la probabilité qu'il écoute du rap ?", C(["1/3", "1/4", "125/250", "3/8"], 0), "125 ÷ 375 = 1/3."),
+  QA(2018, "metropole", "Ex. 3", "Théo a 375 morceaux ; la probabilité d'écouter du rock est 7/15.", "Combien a-t-il de morceaux de rock ?", R(175), "375 × 7 ÷ 15 = 175."),
+  QA(2018, "metropole", "Ex. 3", "Probabilité de rock : 7/15 pour Théo ; Alice a 40 % de rock.", "Qui a le plus de chances d'écouter du rock ?", C(["Théo", "Alice", "Autant"], 0), "7/15 ≈ 0,47 > 0,40."),
+  QA(2018, "metropole", "Ex. 4", "BDC est rectangle en B, BC = 7,5 cm et CD = 8,5 cm.", "Calcule BD, en cm.", R(4), "BD² = 8,5² − 7,5² = 16, BD = 4 cm."),
+  QA(2018, "metropole", "Ex. 5", "Programme : multiplier par 4, ajouter 8, multiplier par 2.", "Quel nombre de départ donne 30 ?", R("1.75", "1,75", "7/4"), "2(4x + 8) = 30 donne 4x + 8 = 15, x = 1,75."),
+  QA(2018, "metropole", "Ex. 5", "Résultat du programme : 2(4x + 8) = 8x + 16.", "Pour un entier x, le résultat est toujours…", C(["un multiple de 8", "positif", "impair", "un multiple de 16"], 0), "8x + 16 = 8(x + 2). Il peut être négatif (x = −3 donne −8)."),
+  QA(2018, "metropole", "Ex. 6", "Le petit carré est une réduction du grand de rapport 2/3.", "Quel est le rapport des aires des deux carrés ?", C(["4/9", "2/3", "1/3", "8/27"], 0), "(2/3)² = 4/9."),
+  QA(2018, "metropole", "Ex. 7", "Vitesse d'un hand-spinner : V(t) = −0,214 × t + 20 (tours par seconde).", "Quelle est sa vitesse au bout de 30 s ?", R("13.58", "13,58"), "−0,214 × 30 + 20 = 13,58 tours/s."),
+  QA(2018, "metropole", "Ex. 7", "V(t) = −0,214 × t + 20.", "Au bout de combien de secondes s'arrête-t-il (environ) ?", C(["93 s", "20 s", "214 s", "47 s"], 0), "−0,214t + 20 = 0 donne t = 20 ÷ 0,214 ≈ 93,5 s."),
+  /* ===== 2024 Amérique du Nord ===== */
+  QA(2024, "amerique-du-nord", "Ex. 1", "Prix d'un vêtement dans 5 magasins (€) : 12 ; 15 ; 10 ; 7 ; 13.", "Quelle est la médiane de ces prix, en € ?", R(12), "Rangés : 7 ; 10 ; 12 ; 13 ; 15. La médiane est 12 € (la moyenne vaut 11,40 €)."),
+  QA(2024, "amerique-du-nord", "Ex. 1", "Une élève court 20 m en 6 secondes.", "Quelle est sa vitesse moyenne en km/h ?", R(12), "20 ÷ 6 ≈ 3,33 m/s ; × 3,6 = 12 km/h (et non 14)."),
+  QA(2024, "amerique-du-nord", "Ex. 1", "Une urne contient 15 boules numérotées de 1 à 15.", "Probabilité de tirer un nombre premier ?", C(["2/5", "1/3", "7/15", "1/2"], 0), "2, 3, 5, 7, 11, 13 : 6 sur 15 = 2/5."),
+  QA(2024, "amerique-du-nord", "Ex. 1", "A′B′C′ est l'image de ABC par l'homothétie de centre O et de rapport −3.", "L'aire de A′B′C′ est égale à…", C(["9 fois l'aire de ABC", "3 fois l'aire de ABC", "−3 fois l'aire de ABC", "6 fois l'aire de ABC"], 0), "Les aires sont multipliées par (−3)² = 9."),
+  QA(2024, "amerique-du-nord", "Ex. 2", "Programme : (nombre + 2) × 4, puis on multiplie par (5 × nombre − 3).", "Quel résultat obtient-on avec −3 ?", R(72), "(−3 + 2) × 4 = −4 ; 5 × (−3) − 3 = −18 ; −4 × (−18) = 72."),
+  QA(2024, "amerique-du-nord", "Ex. 2", "Résultat : (4x + 8)(5x − 3).", "Quels nombres donnent 0 ?", C(["−2 et 3/5", "2 et −3/5", "−8 et 3", "4 et 5"], 0), "4x + 8 = 0 donne x = −2 ; 5x − 3 = 0 donne x = 0,6."),
+  QA(2024, "amerique-du-nord", "Ex. 3", "Tarif Classique : 11 € l'entrée. Essentiel : 50 € par an puis 5 € l'entrée. Liberté : 240 € par an, entrées illimitées.", "Quel tarif est proportionnel au nombre d'entrées ?", C(["Classique", "Essentiel", "Liberté"], 0), "Prix = 11 × nombre d'entrées : pas de partie fixe."),
+  QA(2024, "amerique-du-nord", "Ex. 3", "Tarif Essentiel : 50 € par an puis 5 € l'entrée.", "Combien d'entrées au maximum avec 150 € ?", R(20), "(150 − 50) ÷ 5 = 20."),
+  QA(2024, "amerique-du-nord", "Ex. 3", "Classique : 11 € l'entrée. Essentiel : 50 € + 5 € l'entrée. Liberté : 240 €.", "À partir de combien d'entrées le tarif Liberté est-il le moins cher ?", R(39), "50 + 5x > 240 dès x > 38 : à partir de 39 entrées."),
+  QA(2024, "amerique-du-nord", "Ex. 4", "Terrasse : trapèze rectangle de bases 10 m et 6 m et de hauteur 3 m, épaisseur 15 cm.", "Quel est le volume de béton, en m³ ?", R("3.6", "3,6"), "Aire (10 + 6) × 3 ÷ 2 = 24 m² ; 24 × 0,15 = 3,6 m³."),
+  QA(2024, "amerique-du-nord", "Ex. 4", "Pour 4 m³ de béton il faut 1 000 kg de ciment ; ciment, gravier et sable sont dans le ratio 2 : 7 : 5.", "Quelle masse de gravier faut-il, en kg ?", R(3500), "Une part = 1 000 ÷ 2 = 500 kg ; gravier 7 × 500 = 3 500 kg (sable 2 500 kg)."),
+  QA(2024, "amerique-du-nord", "Ex. 4", "Il faut 9,6 L de peinture. Pot A : 5 L à 79,90 €. Pot B : 10 L à 129,90 €. Offre : −50 % sur le deuxième article identique.", "Quel est le choix le moins cher ?", C(["2 pots A (119,85 €)", "1 pot B (129,90 €)", "2 pots B (194,85 €)"], 0), "79,90 + 39,95 = 119,85 € < 129,90 €."),
+  /* ===== 2024 Centres étrangers ===== */
+  QA(2024, "centres-etrangers", "Ex. 1", "", "Quelle est l'écriture scientifique de 0,193 × 10⁻¹⁰⁰ ?", C(["1,93 × 10⁻⁹⁹", "1,93 × 10⁻¹⁰¹", "193 × 10⁻¹⁰³", "193 × 10⁻⁹⁷"], 1), "0,193 = 1,93 × 10⁻¹, donc 1,93 × 10⁻¹⁰¹."),
+  QA(2024, "centres-etrangers", "Ex. 1", "", "Lili parcourt 480 km en 5 h 42 min. Sa vitesse moyenne, au dixième ?", C(["84,2 km/h", "88,6 km/h", "1,4 km/h", "23,4 km/h"], 0), "5 h 42 min = 5,7 h ; 480 ÷ 5,7 ≈ 84,2 km/h."),
+  QA(2024, "centres-etrangers", "Ex. 1", "Liste : 5 ; 1 ; 3 ; 10 ; 17 ; 11 ; 10.", "Que représente le nombre 5 pour cette liste ?", C(["La médiane", "L'étendue", "La moyenne", "Rien de particulier"], 3), "Médiane 10, étendue 16, moyenne ≈ 8,1."),
+  QA(2024, "centres-etrangers", "Ex. 2", "Circuit 1 : 280 s par tour. Circuit 2 : 350 s par tour. Camille et Dominique partent en même temps.", "Au bout de combien de temps se retrouvent-ils ensemble au départ pour la première fois ?", C(["23 min 20 s", "46 min 40 s", "10 min 30 s", "1 h"], 0), "280 = 2³ × 5 × 7, 350 = 2 × 5² × 7 : plus petit multiple commun 1 400 s = 23 min 20 s."),
+  QA(2024, "centres-etrangers", "Ex. 2", "Circuit 1 : 5 exercices de 40 s, chacun suivi de 16 s de repos.", "Combien de secondes dure un tour du circuit 1 ?", R(280), "5 × (40 + 16) = 280 s."),
+  QA(2024, "centres-etrangers", "Ex. 3", "Programme : (nombre − 2) × (nombre + 1).", "Quels nombres donnent 0 ?", C(["2 et −1", "−2 et 1", "0 et 2", "1 et 2"], 0), "Produit nul : x − 2 = 0 ou x + 1 = 0."),
+  QA(2024, "centres-etrangers", "Ex. 4", "E, A, F alignés ; E, B, D alignés ; (FD) // (AB). AE = 4,4 cm ; EB = 3,3 cm ; AB = 5,5 cm ; BD = 6,6 cm.", "Calcule FD, en cm.", R("16.5", "16,5"), "ED = 9,9 cm ; Thalès : FD = 5,5 × 9,9 ÷ 3,3 = 16,5 cm."),
+  QA(2024, "centres-etrangers", "Ex. 4", "ABE est rectangle en E ; EB = 3,3 cm et AB = 5,5 cm.", "Quelle est la mesure de l'angle ABE, au degré près ?", R(53), "cos(ABE) = 3,3 ÷ 5,5 = 0,6 ; ABE ≈ 53°."),
+  QA(2024, "centres-etrangers", "Ex. 5", "Chapeau conique : rayon de base 9 cm, hauteur 30 cm. V = 1/3 × π × R² × h.", "Quel est le volume du chapeau, arrondi au cm³ ?", R(2545), "1/3 × π × 81 × 30 = 810π ≈ 2 545 cm³."),
+  QA(2024, "centres-etrangers", "Ex. 5", "Les bonbons remplissent le chapeau conique jusqu'à la moitié de sa hauteur (à partir de la pointe).", "Quelle part du volume occupent-ils ?", C(["12,5 %", "50 %", "25 %", "15 %"], 0), "Réduction de rapport 1/2 : volume × (1/2)³ = 1/8 = 12,5 %."),
+  QA(2024, "centres-etrangers", "Ex. 5", "Un cône a pour rayon 9 cm et pour hauteur 30 cm.", "Quelle est la longueur de sa génératrice, au dixième (cm) ?", R("31.3", "31,3"), "√(9² + 30²) = √981 ≈ 31,3 cm."),
+  /* ===== 2024 Asie ===== */
+  QA(2024, "asie", "Ex. 1", "", "Lequel de ces nombres est premier ?", C(["1", "21", "37", "54"], 2), "37 n'a que deux diviseurs ; 1 n'est pas premier ; 21 = 3 × 7."),
+  QA(2024, "asie", "Ex. 1", "", "Quelle est l'aire totale du patron d'un cube d'arête 5 cm ?", C(["125 cm²", "150 cm²", "120 cm²", "100 cm²"], 1), "6 faces de 25 cm² : 150 cm²."),
+  QA(2024, "asie", "Ex. 1", "", "Factorise 4x² − 9.", C(["(4x − 3)(4x + 3)", "(2x − 3)(2x + 3)", "(2x − 3)²", "(4x − 9)(4x + 9)"], 1), "a² − b² = (a − b)(a + b) avec a = 2x et b = 3."),
+  QA(2024, "asie", "Ex. 1", "Un écran au format 16 : 9 mesure 110 cm de long.", "Quelle est sa largeur environ ?", C(["62 cm", "103 cm", "196 cm", "94 cm"], 0), "110 × 9 ÷ 16 ≈ 61,9 cm."),
+  QA(2024, "asie", "Ex. 1", "Série : 4,1 ; 3,67 ; 4,23 ; 4,5 ; 3,4.", "Quelle est la médiane ?", C(["0,83", "4,1", "4,23", "3,98"], 1), "Rangée : 3,4 ; 3,67 ; 4,1 ; 4,23 ; 4,5."),
+  QA(2024, "asie", "Ex. 2", "Urne : 4 boules rouges et 6 bleues. Dé à 6 faces.", "La probabilité de tirer une boule bleue est-elle supérieure à celle d'obtenir un nombre pair ?", C(["Oui (0,6 > 0,5)", "Non, elles sont égales", "Non (0,4 < 0,5)"], 0), "6/10 = 0,6 et 3/6 = 0,5."),
+  QA(2024, "asie", "Ex. 3", "(AB) ⟂ (CG), C milieu de [AB] ; CG = 10 cm et BG = 20 cm.", "Combien mesure l'angle CGB ?", R(60), "cos(CGB) = 10 ÷ 20 = 0,5 : 60° (et AGB = 120°)."),
+  QA(2024, "asie", "Ex. 3", "Chaque pièce est un secteur de disque de rayon 20 cm et d'angle 120°.", "Quelle est l'aire d'une pièce, arrondie au cm² ?", R(419), "Trois pièces font un disque : π × 20² ÷ 3 ≈ 418,9 cm²."),
+  QA(2024, "asie", "Ex. 4", "Strasbourg – Marseille : 803 km. Formule A : 0,50 €/km. Formule B : 300 € + 0,25 €/km. Formule C : 900 €.", "Quelle formule est la moins chère pour l'aller-retour ?", C(["La formule B (701,50 €)", "La formule A (803 €)", "La formule C (900 €)"], 0), "1 606 km : A = 803 € ; B = 300 + 401,50 = 701,50 € ; C = 900 €."),
+  QA(2024, "asie", "Ex. 4", "Formule A : 0,50 €/km. Formule B : 300 € + 0,25 €/km.", "Pour quelle distance les formules A et B coûtent-elles pareil, en km ?", R(1200), "0,25x + 300 = 0,5x donne x = 1 200 km."),
+  QA(2024, "asie", "Ex. 4", "1 606 km ; consommation 5,6 L aux 100 km ; gazole à 1,87 €/L.", "Quel est le coût du carburant, arrondi à l'euro ?", R(168), "1 606 × 5,6 ÷ 100 ≈ 89,9 L ; × 1,87 ≈ 168 €."),
+  QA(2024, "asie", "Ex. 5", "« mettre côté à 80 », puis 3 fois : Motif ; « mettre côté à côté × 1,2 ».", "Quelle est la valeur de « côté » à la fin ?", R("138.24", "138,24"), "80 × 1,2³ = 138,24."),
+  /* ===== 2023 Amérique du Nord ===== */
+  QA(2023, "amerique-du-nord", "Ex. 1", "", "Quelle est la décomposition en facteurs premiers de 780 ?", C(["2² × 3 × 5 × 13", "2 × 3 × 130", "2² × 195", "4 × 5 × 39"], 0), "780 = 2 × 390 = 2² × 195 = 2² × 3 × 5 × 13."),
+  QA(2023, "amerique-du-nord", "Ex. 1", "On tire une carte au hasard dans un jeu de 32 cartes.", "Probabilité d'obtenir un roi ou un cœur ?", C(["11/32", "12/32", "1/4", "1/8"], 0), "4 rois + 8 cœurs − le roi de cœur compté deux fois = 11 cartes."),
+  QA(2023, "amerique-du-nord", "Ex. 1", "", "Développe et réduis (2x + 5)(3x − 4).", C(["6x² + 7x − 20", "6x² − 7x − 20", "6x² − 20", "5x + 1"], 0), "6x² − 8x + 15x − 20 = 6x² + 7x − 20."),
+  QA(2023, "amerique-du-nord", "Ex. 1", "Le polygone 2 est un agrandissement de coefficient 3 du polygone 1, d'aire 11 cm².", "Quelle est l'aire du polygone 2, en cm² ?", R(99), "Aire × 3² = 9 : 99 cm²."),
+  QA(2023, "amerique-du-nord", "Ex. 2", "LNA est rectangle en L : LN = 5 cm, AL = 12 cm, AN = 13 cm.", "Combien mesure l'angle LNA, au degré près ?", R(67), "tan(LNA) = 12 ÷ 5 = 2,4 ; LNA ≈ 67°."),
+  QA(2023, "amerique-du-nord", "Ex. 2", "LNA rectangle en L (aire 30 cm²) ; ONH rectangle en O avec ON = 3 cm et OH = 7,2 cm.", "Quelle part de l'aire de LNA représente le quadrilatère LOHA ?", C(["64 %", "36 %", "50 %", "72 %"], 0), "ONH : 3 × 7,2 ÷ 2 = 10,8 cm² ; LOHA : 30 − 10,8 = 19,2 cm² ; 19,2 ÷ 30 = 0,64."),
+  QA(2023, "amerique-du-nord", "Ex. 3", "Visiteurs : 187 216 en 2020 et 219 042 en 2021. Objectif : au moins +15 %.", "L'objectif est-il atteint ?", C(["Oui (+17 % environ)", "Non (+12 % environ)", "Non (+15 % pile)"], 0), "219 042 ÷ 187 216 ≈ 1,17."),
+  QA(2023, "amerique-du-nord", "Ex. 3", "Prix d'une nuit d'hôtel (€) / effectifs : 60 (1 200) ; 80 (1 350) ; 85 (1 000) ; 90 (1 100) ; 110 (1 200) ; 120 (1 300) ; 350 (900) ; 500 (300).", "Quel est le prix moyen d'une nuit, arrondi à l'euro ?", R(134), "1 117 000 € ÷ 8 350 nuits ≈ 134 €."),
+  QA(2023, "amerique-du-nord", "Ex. 3", "Prix d'une nuit d'hôtel (€) / effectifs : 60 (1 200) ; 80 (1 350) ; 85 (1 000) ; 90 (1 100) ; 110 (1 200) ; 120 (1 300) ; 350 (900) ; 500 (300).", "« Au moins la moitié des nuits est facturée moins de 100 € » : vrai ?", C(["Oui", "Non"], 0), "4 650 nuits sur 8 350 sont à moins de 100 €, soit plus de la moitié."),
+  QA(2023, "amerique-du-nord", "Ex. 4", "Le motif « Fleur » répète : un pétale, puis tourner de 72 degrés.", "Combien de pétales a la fleur ?", R(5), "360 ÷ 72 = 5."),
+  QA(2023, "amerique-du-nord", "Ex. 5", "Piste : deux lignes droites de 850 m et deux demi-cercles de rayon 40 m.", "Quelle est la longueur d'un tour, environ (en m) ?", R(1951), "2 × 850 + 2π × 40 ≈ 1 951 m."),
+  QA(2023, "amerique-du-nord", "Ex. 5", "Un cheval fait un tour de 1 951 m en 2 min 9 s.", "Quelle est sa vitesse, arrondie au m/s ?", R(15), "1 951 ÷ 129 ≈ 15 m/s, soit 54 km/h."),
+  /* ===== 2023 Centres étrangers ===== */
+  QA(2023, "centres-etrangers", "Ex. 1", "", "Quelle est l'écriture scientifique de 302,4 × 10¹⁸ ?", C(["3,024 × 10¹⁶", "3,024 × 10²⁰", "0,302 4 × 10²¹"], 1), "302,4 = 3,024 × 10²."),
+  QA(2023, "centres-etrangers", "Ex. 1", "Masses de 8 biscuits (g) : 12 ; 10 ; 18 ; 8 ; 12 ; 15 ; 11 ; 13. Le biscuit de 18 g pèse en réalité 16 g.", "Après correction, la médiane est…", C(["La même", "Plus petite", "Plus grande"], 0), "La médiane reste (12 + 12) ÷ 2 = 12 g : seule la plus grande valeur change."),
+  QA(2023, "centres-etrangers", "Ex. 2", "FDE est rectangle en D : DF = 1,2 m et DE = 2,04 m.", "Combien mesure l'angle DEF, au degré près ?", R(30), "tan(DEF) = 1,2 ÷ 2,04 ≈ 0,588 : environ 30°."),
+  QA(2023, "centres-etrangers", "Ex. 2", "(AC) // (MN) ; AC = 0,5 m ; BC = 1,2 m ; BN = 0,84 m.", "Quelle est la longueur MN, en m ?", R("0.35", "0,35"), "Thalès : MN = 0,5 × 0,84 ÷ 1,2 = 0,35 m."),
+  QA(2023, "centres-etrangers", "Ex. 2", "Bac à sable de 0,72 m³ rempli de sable à maçonner et de sable fin dans le ratio 3 : 2.", "Quel volume de sable fin faut-il, en m³ ?", R("0.288", "0,288"), "0,72 ÷ 5 = 0,144 ; sable fin : 2 × 0,144 = 0,288 m³."),
+  QA(2023, "centres-etrangers", "Ex. 3", "Programme d'Amir : 2(x − 5). Programme de Sonia : x(x + 3) − 16.", "Pour quels nombres obtient-on le même résultat ?", C(["2 et −3", "−2 et 3", "5 et 16", "0 seulement"], 0), "Égalité équivalente à (x − 2)(x + 3) = 0."),
+  QA(2023, "centres-etrangers", "Ex. 4", "Une urne contient 3 boules noires (n° 1 à 3) et 4 boules rouges (n° 1 à 4).", "Probabilité de tirer une boule de numéro pair ?", C(["3/7", "2/7", "4/7", "1/2"], 0), "Noire 2, rouge 2 et rouge 4 : 3 boules sur 7."),
+  QA(2023, "centres-etrangers", "Ex. 4", "On dispose de 195 figurines et 234 autocollants pour faire des lots identiques, sans reste.", "Combien de lots au maximum ?", R(39), "195 = 3 × 5 × 13 et 234 = 2 × 3² × 13 : PGCD = 39 (5 figurines et 6 autocollants par lot)."),
+  /* ===== 2023 Asie ===== */
+  QA(2023, "asie", "Ex. 1", "C, E, D alignés ; C, F, G alignés ; (EF) // (DG) ; (DG) ⟂ (CD). CE = 30 m ; ED = 10 m ; DG = 24 m.", "Calcule CG, au dixième de mètre.", R("46.6", "46,6"), "CD = 40 m ; CG² = 40² + 24² = 2 176 ; CG ≈ 46,6 m."),
+  QA(2023, "asie", "Ex. 1", "(EF) // (DG) ; CE = 30 m ; CD = 40 m ; DG = 24 m.", "Quelle est la longueur de la clôture EF, en m ?", R(18), "Thalès : EF = 24 × 30 ÷ 40 = 18 m."),
+  QA(2023, "asie", "Ex. 1", "Zone de jeux : triangle rectangle de côtés 30 m et 18 m. Sacs de graines à 22,90 € couvrant 140 m² chacun.", "Quel budget faut-il, en € ?", R("45.8", "45,8", "45,80"), "Aire : 30 × 18 ÷ 2 = 270 m², donc 2 sacs : 45,80 €."),
+  QA(2023, "asie", "Ex. 1", "Triangle CDG (CD = 40 m, DG = 24 m) partagé en zone de jeux (270 m²) et potager.", "Le potager est-il plus grand que la zone de jeux ?", C(["Non (210 m² contre 270 m²)", "Oui (480 m²)", "Ils sont égaux"], 0), "CDG : 40 × 24 ÷ 2 = 480 m² ; potager : 480 − 270 = 210 m²."),
+  QA(2023, "asie", "Ex. 2", "", "Une année-lumière vaut environ 9 461 milliards de km. En mètres, cela fait…", C(["9,461 × 10¹⁵ m", "9,461 × 10¹² m", "9,461 × 10⁹ m"], 0), "9 461 × 10⁹ km = 9,461 × 10¹² km = 9,461 × 10¹⁵ m."),
+  QA(2023, "asie", "Ex. 2", "", "La fonction f(x) = −9 − 7x est…", C(["affine", "linéaire", "ni affine ni linéaire"], 0), "De la forme ax + b avec a = −7 et b = −9 (b ≠ 0 : pas linéaire)."),
+  QA(2023, "asie", "Ex. 3", "Programme : carré du nombre, × 5, + 4, × 2, − 8 : le résultat vaut 10x².", "Quel nombre positif donne 30 (valeur exacte) ?", C(["√3", "3", "1,73", "√30"], 0), "10x² = 30 donne x² = 3, x = √3 ≈ 1,73."),
+  QA(2023, "asie", "Ex. 4", "Bloc « carré » : répéter N fois (avancer de 50 pas ; tourner de M degrés).", "Quelles valeurs faut-il pour N et M ?", C(["N = 4 et M = 90", "N = 4 et M = 60", "N = 3 et M = 90", "N = 90 et M = 4"], 0), "4 côtés et 4 angles droits."),
+  /* ===== 2022 Amérique du Nord ===== */
+  QA(2022, "amerique-du-nord", "Ex. 1", "MHS est rectangle en H ; MH = 5 cm et MS = 13 cm.", "Calcule HS, en cm.", R(12), "HS² = 13² − 5² = 144, HS = 12 cm."),
+  QA(2022, "amerique-du-nord", "Ex. 1", "M, A, S alignés ; M, T, H alignés ; (HS) // (AT). MH = 5 cm ; HS = 12 cm ; MT = 7 cm.", "Calcule AT, en cm.", R("16.8", "16,8"), "Thalès : AT = 12 × 7 ÷ 5 = 16,8 cm."),
+  QA(2022, "amerique-du-nord", "Ex. 1", "MHS est rectangle en H ; MH = 5 cm et MS = 13 cm.", "Combien mesure l'angle HMS, au degré près ?", R(67), "cos(HMS) = 5 ÷ 13 ; HMS ≈ 67°."),
+  QA(2022, "amerique-du-nord", "Ex. 1", "MAT est un agrandissement de MHS de coefficient 1,4.", "L'aire de MAT est-elle 1,4 fois celle de MHS ?", C(["Non, elle est 1,96 fois plus grande", "Oui", "Non, elle est 2,8 fois plus grande"], 0), "Les aires sont multipliées par 1,4² = 1,96."),
+  QA(2022, "amerique-du-nord", "Ex. 2", "", "On lance un dé équilibré à 20 faces. Probabilité d'obtenir un nombre inférieur ou égal à 5 ?", C(["1/4", "1/20", "1/5", "5/6"], 0), "5 issues favorables sur 20."),
+  QA(2022, "amerique-du-nord", "Ex. 2", "Une boisson contient du sirop et de l'eau dans le ratio 1 : 7.", "Quelle quantité d'eau faut-il pour 560 mL de boisson ?", C(["490 mL", "70 mL", "80 mL", "400 mL"], 0), "560 ÷ 8 = 70 mL par part ; eau : 7 × 70 = 490 mL."),
+  QA(2022, "amerique-du-nord", "Ex. 3", "1,6 million d'adolescents interrogés ; 81 % ne font pas une heure de sport par jour.", "Combien d'adolescents ne respectent pas la recommandation ?", R(1296000), "0,81 × 1 600 000 = 1 296 000."),
+  QA(2022, "amerique-du-nord", "Ex. 3", "Durées de sport sur 14 jours (min) : 50 ; 15 ; 60 ; 100 ; 30 ; 90 ; 40 ; 15 ; 60 ; 90 ; 30 ; 60 ; 60 ; 0.", "Quelle est la médiane, en minutes ?", R(55), "Rangées, les 7e et 8e valeurs sont 50 et 60 : médiane 55 min."),
+  QA(2022, "amerique-du-nord", "Ex. 3", "En 14 jours, l'adolescent a fait 700 min de sport. Objectif : 1 h par jour en moyenne sur 21 jours.", "Combien de minutes doit-il faire au minimum les 7 jours suivants ?", R(560), "21 × 60 = 1 260 min ; 1 260 − 700 = 560 min (9 h 20 min)."),
+  QA(2022, "amerique-du-nord", "Ex. 4", "Trois motifs sont tirés au hasard (croix ou rectangle) ; les 8 affichages sont équiprobables. On gagne avec trois motifs identiques.", "Quelle est la probabilité de gagner ?", C(["1/4", "1/8", "1/2", "3/8"], 0), "2 affichages gagnants (3 croix ou 3 rectangles) sur 8."),
+  QA(2022, "amerique-du-nord", "Ex. 5", "Programme (nombres entiers) : carré du nombre, plus le nombre.", "Quelle expression donne le résultat ?", C(["x(x + 1)", "2x", "x² + 1", "(x + 1)²"], 0), "x² + x = x(x + 1) : le nombre multiplié par l'entier qui le suit (15 donne 240)."),
+  /* ===== 2022 Asie ===== */
+  QA(2022, "asie", "Ex. 1", "Programme : soustraire 7, multiplier par 5, puis soustraire le double du nombre de départ.", "Quelle expression correspond ?", C(["5(x − 7) − 2x", "x − 7 × 5 − 2x", "5(x − 7) − x", "5x − 7 − 2x"], 0), "Avec 10 : 5 × 3 − 20 = −5."),
+  QA(2022, "asie", "Ex. 1", "La droite d'une fonction linéaire f passe par A(3 ; 6).", "Quelle est l'expression de f(x) ?", C(["f(x) = 2x", "f(x) = 3x", "f(x) = x + 3", "f(x) = 6x"], 0), "f(3) = 6 donc le coefficient vaut 6 ÷ 3 = 2 (et f(−2) = −4)."),
+  QA(2022, "asie", "Ex. 1", "Pyramide de base rectangulaire 30 cm × 40 cm et de hauteur 55 cm. V = base × hauteur ÷ 3.", "Son volume dépasse-t-il 20 L ?", C(["Oui, 22 L", "Non, 18 L", "Non, 6,6 L"], 0), "30 × 40 × 55 ÷ 3 = 22 000 cm³ = 22 L."),
+  QA(2022, "asie", "Ex. 2", "(AB) // (CD), (AD) et (BC) se coupent en E. ED = 3,6 cm ; CD = 6 cm ; EB = 7,2 cm ; AB = 9 cm.", "Le triangle ECD est-il rectangle ?", C(["Oui, en E", "Non", "Oui, en D"], 0), "EC = 4,8 cm (Thalès) ; 3,6² + 4,8² = 36 = 6²."),
+  QA(2022, "asie", "Ex. 3", "Jeux paralympiques 2021 : l'Italie a 69 médailles dont 14 en or et 29 en argent.", "Combien de médailles de bronze l'Italie a-t-elle ?", R(26), "69 − 14 − 29 = 26."),
+  QA(2022, "asie", "Ex. 3", "La prime d'une médaille d'or française est passée de 50 000 € (2016) à 65 000 € (2021).", "Quel est le pourcentage d'augmentation ?", R("30", "30 %", "30%"), "65 000 ÷ 50 000 = 1,3."),
+  QA(2022, "asie", "Ex. 4", "Photos : 0,17 € l'une jusqu'à 100 ; au-delà, 17 € pour les 100 premières puis 0,13 € par photo supplémentaire.", "Combien de photos au maximum avec 10 € ?", R(58), "10 ÷ 0,17 ≈ 58,8 : 58 photos."),
+  QA(2022, "asie", "Ex. 4", "150 photos coûtent 23,50 € ; réduction de 30 % pour toute commande de plus de 20 €.", "Quel prix paie-t-on en soldes, en € ?", R("16.45", "16,45"), "23,50 × 0,7 = 16,45 €."),
+  /* ===== 2020 Métropole (septembre) ===== */
+  QA(2020, "metropole-septembre", "Ex. 1", "Série : 10 ; 6 ; 2 ; 14 ; 25 ; 12 ; 22.", "Quelle est la médiane ?", C(["12", "13", "14"], 0), "Rangée : 2 ; 6 ; 10 ; 12 ; 14 ; 22 ; 25."),
+  QA(2020, "metropole-septembre", "Ex. 1", "Un sac contient 50 billes bleues, 45 rouges, 45 vertes et 60 jaunes.", "Probabilité de tirer une bille jaune ?", C(["0,3", "60", "0,6"], 0), "60 ÷ 200 = 0,3."),
+  QA(2020, "metropole-septembre", "Ex. 1", "", "Quelle est la décomposition en facteurs premiers de 2 020 ?", C(["2 × 2 × 5 × 101", "2 × 10 × 101", "5 × 5 × 101"], 0), "2 020 = 2² × 5 × 101."),
+  QA(2020, "metropole-septembre", "Ex. 1", "", "Une homothétie de rapport −2…", C(["agrandit les longueurs", "réduit les longueurs", "conserve les longueurs"], 0), "Les longueurs sont multipliées par |−2| = 2."),
+  QA(2020, "metropole-septembre", "Ex. 2", "Programme : (nombre + 7) × (nombre − 7) + 50 = x² + 1.", "Quel résultat donne −10 ?", R(101), "(−3) × (−17) + 50 = 51 + 50 = 101."),
+  QA(2020, "metropole-septembre", "Ex. 2", "Le programme donne x² + 1.", "Quels nombres donnent 17 ?", C(["4 et −4", "4 seulement", "16 et −16", "8"], 0), "x² = 16."),
+  QA(2020, "metropole-septembre", "Ex. 3", "Portique : triangle ABC isocèle en A, AB = 342 cm, BC = 290 cm ; H milieu de [BC].", "Quelle est la hauteur AH, au cm près ?", R(310), "AH² = 342² − 145² = 95 939 ; AH ≈ 310 cm."),
+  QA(2020, "metropole-septembre", "Ex. 3", "Le portique coûte au minimum 196,98 € ; il est vendu 20 % plus cher.", "Quel est son prix de vente, au centime ?", R("236.38", "236,38"), "196,98 × 1,2 = 236,376 ≈ 236,38 €."),
+  QA(2020, "metropole-septembre", "Ex. 4", "Tarif A : 8 € la demi-journée. Tarif B : 30 € d'adhésion puis 5 € la demi-journée.", "Pour combien de demi-journées les tarifs sont-ils égaux ?", R(10), "8x = 30 + 5x donne x = 10."),
+  QA(2020, "metropole-septembre", "Ex. 4", "Tarif A : 8 € la demi-journée. Tarif B : 30 € puis 5 € la demi-journée. Budget : 100 €.", "Combien de demi-journées au maximum ?", R(14), "A : 12 (96 €) ; B : (100 − 30) ÷ 5 = 14."),
+  QA(2020, "metropole-septembre", "Ex. 5", "DEC est isocèle en D et l'angle ECD mesure 85°.", "Combien mesure l'angle CDE ?", R(10), "180 − 2 × 85 = 10°.")
+);
+/* ===================== DNB : QUESTIONS DE RÉVISION (programme de 3e) =====================
+   Français, Histoire-Géo-EMC et Sciences. La bonne réponse est la première (les choix sont mélangés à l'affichage). */
+BANQUE_REVISION.push(
+  /* ---------- Histoire : Première Guerre mondiale et totalitarismes ---------- */
+  RV("dnb","hge","Quel événement déclenche la Première Guerre mondiale ?",["L'assassinat de l'archiduc François-Ferdinand à Sarajevo","L'invasion de la Pologne","La révolution russe","Le naufrage du Titanic"],0,"Le 28 juin 1914, l'héritier de l'Autriche-Hongrie est assassiné à Sarajevo."),
+  RV("dnb","hge","Comment appelle-t-on une guerre qui mobilise toutes les forces d'un pays (armée, économie, civils) ?",["Une guerre totale","Une guerre froide","Une guerre civile","Une guerre éclair"],0,"La Première puis la Seconde Guerre mondiale sont des guerres totales."),
+  RV("dnb","hge","Comment appelle-t-on les soldats français de la Première Guerre mondiale ?",["Les poilus","Les grognards","Les maquisards","Les sans-culottes"],0,"Surnom des soldats français dans les tranchées."),
+  RV("dnb","hge","Quel traité impose la paix à l'Allemagne en 1919 ?",["Le traité de Versailles","Le traité de Rome","Le traité de Maastricht","Le traité de Tordesillas"],0,"Signé le 28 juin 1919 : l'Allemagne perd des territoires et doit payer des réparations."),
+  RV("dnb","hge","Quelle bataille de 1916 sur la Somme est l'une des plus meurtrières de la guerre ?",["La bataille de la Somme","La bataille de la Marne","La bataille de Stalingrad","La bataille d'Austerlitz"],0,"Offensive franco-britannique de juillet à novembre 1916 : plus d'un million de victimes."),
+  RV("dnb","hge","Qui dirige l'URSS de la fin des années 1920 à 1953 ?",["Staline","Lénine","Trotski","Khrouchtchev"],0,"Staline met en place un régime totalitaire (culte du chef, terreur, goulag)."),
+  RV("dnb","hge","Comment s'appellent les camps de travail forcé en URSS ?",["Le goulag","Les kolkhozes","Les ghettos","Les soviets"],0,"Le goulag enferme des millions de détenus dans des conditions très dures."),
+  RV("dnb","hge","En quelle année Hitler arrive-t-il au pouvoir en Allemagne ?",["1933","1923","1939","1929"],0,"Nommé chancelier le 30 janvier 1933."),
+  RV("dnb","hge","Quelles lois de 1935 privent les Juifs allemands de leur citoyenneté ?",["Les lois de Nuremberg","Les lois Jules Ferry","Les lois de Vichy","Les lois Auroux"],0,"Elles excluent les Juifs de la nation allemande et interdisent les mariages mixtes."),
+  RV("dnb","hge","Lequel de ces éléments n'est PAS une caractéristique d'un régime totalitaire ?",["Des élections libres avec plusieurs partis","Un parti unique","Le culte du chef","La propagande et la terreur"],0,"Un régime totalitaire supprime les libertés et le pluralisme."),
+  RV("dnb","hge","Quelle crise économique commence en 1929 aux États-Unis ?",["La crise de 1929 (krach de Wall Street)","Le choc pétrolier","La crise des subprimes","La grande peste"],0,"Le krach boursier d'octobre 1929 ouvre une grave crise mondiale."),
+  /* ---------- Seconde Guerre mondiale, Vichy, Résistance ---------- */
+  RV("dnb","hge","Quel événement déclenche la Seconde Guerre mondiale en Europe ?",["L'invasion de la Pologne par l'Allemagne (septembre 1939)","L'attaque de Pearl Harbor","La bataille de France","L'Anschluss"],0,"Le 1er septembre 1939 ; la France et le Royaume-Uni déclarent la guerre le 3."),
+  RV("dnb","hge","Quel événement fait entrer les États-Unis dans la guerre en décembre 1941 ?",["L'attaque japonaise de Pearl Harbor","Le débarquement en Normandie","La chute de Paris","La bataille d'Angleterre"],0,"Le 7 décembre 1941, le Japon attaque la flotte américaine à Hawaï."),
+  RV("dnb","hge","Quelle bataille de 1942-1943 marque le tournant de la guerre à l'Est ?",["Stalingrad","Verdun","El-Alamein","Midway"],0,"La capitulation allemande à Stalingrad en février 1943 marque le recul de l'Allemagne."),
+  RV("dnb","hge","Quand a lieu le débarquement allié en Normandie ?",["Le 6 juin 1944","Le 8 mai 1945","Le 18 juin 1940","Le 11 novembre 1942"],0,"Le « D-Day » ouvre un nouveau front à l'Ouest."),
+  RV("dnb","hge","Quel camp est le plus grand centre de mise à mort nazi ?",["Auschwitz-Birkenau","Dachau","Drancy","Buchenwald"],0,"Plus d'un million de personnes, en grande majorité juives, y sont assassinées."),
+  RV("dnb","hge","Quelle rafle de juillet 1942 à Paris est organisée par la police française ?",["La rafle du Vél' d'Hiv","La rafle de Marseille","La nuit de Cristal","La rafle d'Izieu"],0,"Les 16 et 17 juillet 1942, plus de 13 000 Juifs sont arrêtés."),
+  RV("dnb","hge","Qui unifie les mouvements de Résistance intérieure pour de Gaulle ?",["Jean Moulin","Philippe Pétain","Pierre Laval","Charles de Gaulle lui-même"],0,"Il fonde le Conseil national de la Résistance (CNR) en mai 1943."),
+  RV("dnb","hge","Comment s'appelle le régime de Vichy dirigé par Pétain ?",["L'État français","La IVe République","Le Second Empire","Le Front populaire"],0,"Il remplace la devise « Liberté, Égalité, Fraternité » par « Travail, Famille, Patrie »."),
+  RV("dnb","hge","Quelle entrevue d'octobre 1940 symbolise la collaboration entre Pétain et Hitler ?",["Montoire","Yalta","Munich","Potsdam"],0,"Le 24 octobre 1940, à Montoire-sur-le-Loir."),
+  RV("dnb","hge","Qu'est-ce que le STO ?",["Le Service du travail obligatoire en Allemagne","Une organisation de résistants","Un traité de paix","Une loi sur la laïcité"],0,"Créé en 1943 : de jeunes Français sont envoyés travailler en Allemagne."),
+  RV("dnb","hge","Quel organisme crée la Sécurité sociale en 1945 sur le programme du CNR ?",["Le Gouvernement provisoire de la République française (GPRF)","Le régime de Vichy","La Ve République","L'ONU"],0,"Le GPRF applique le programme du CNR : Sécurité sociale, nationalisations, vote des femmes."),
+  /* ---------- Guerre froide, décolonisation, construction européenne ---------- */
+  RV("dnb","hge","Comment appelle-t-on la frontière qui coupe l'Europe en deux pendant la guerre froide ?",["Le rideau de fer","La ligne Maginot","Le mur de l'Atlantique","La ligne Siegfried"],0,"Expression de Churchill en 1946."),
+  RV("dnb","hge","Quelle alliance militaire réunit les États-Unis et leurs alliés à partir de 1949 ?",["L'OTAN","Le pacte de Varsovie","L'ONU","La CEE"],0,"L'Organisation du traité de l'Atlantique Nord."),
+  RV("dnb","hge","En quelle année le mur de Berlin est-il construit ?",["1961","1945","1949","1989"],0,"Construit en août 1961 par la RDA, il tombe le 9 novembre 1989."),
+  RV("dnb","hge","Quand l'URSS disparaît-elle ?",["En décembre 1991","En 1989","En 1945","En 1956"],0,"La fin de l'URSS clôt la guerre froide."),
+  RV("dnb","hge","Quelle est la première crise de la guerre froide (1948-1949) ?",["Le blocus de Berlin","La crise de Cuba","La guerre du Vietnam","La guerre de Corée"],0,"Les Soviétiques bloquent Berlin-Ouest ; les Américains organisent un pont aérien."),
+  RV("dnb","hge","Qui mène l'Inde à l'indépendance par la non-violence ?",["Gandhi","Nehru","Mandela","Hô Chi Minh"],0,"L'Inde devient indépendante en 1947."),
+  RV("dnb","hge","Quels accords mettent fin à la guerre d'Algérie en 1962 ?",["Les accords d'Évian","Les accords de Genève","Les accords de Munich","Les accords de Camp David"],0,"Signés le 18 mars 1962 ; l'Algérie devient indépendante en juillet."),
+  RV("dnb","hge","Combien de pays fondent la CEE en 1957 ?",["6","12","27","9"],0,"France, RFA, Italie, Belgique, Pays-Bas, Luxembourg."),
+  RV("dnb","hge","Quel traité crée l'Union européenne en 1992 ?",["Le traité de Maastricht","Le traité de Rome","Le traité de Lisbonne","Le traité de Versailles"],0,"Il crée l'Union européenne et prévoit la monnaie unique."),
+  RV("dnb","hge","En quelle année l'euro est-il mis en circulation (pièces et billets) ?",["2002","1999","1992","2007"],0,"Le 1er janvier 2002."),
+  RV("dnb","hge","Quel pays a quitté l'Union européenne en 2020 ?",["Le Royaume-Uni","La Suisse","La Norvège","La Grèce"],0,"Le Brexit est effectif le 31 janvier 2020."),
+  /* ---------- France depuis 1944 ---------- */
+  RV("dnb","hge","Quelle loi de 1975 autorise l'IVG en France ?",["La loi Veil","La loi Neuwirth","La loi Badinter","La loi Ferry"],0,"Portée par Simone Veil, ministre de la Santé."),
+  RV("dnb","hge","En quelle année la peine de mort est-elle abolie en France ?",["1981","1958","1968","1905"],0,"Loi portée par Robert Badinter."),
+  RV("dnb","hge","En quelle année l'âge de la majorité passe-t-il de 21 à 18 ans ?",["1974","1958","1981","1945"],0,"Sous la présidence de Valéry Giscard d'Estaing."),
+  RV("dnb","hge","Quel mouvement de contestation éclate en France en mai 1968 ?",["Une révolte étudiante et une grève générale","La Libération","Le Front populaire","La Commune"],0,"Mai 68 : manifestations étudiantes puis grèves massives."),
+  RV("dnb","hge","Qui est le premier président de la Ve République ?",["Charles de Gaulle","François Mitterrand","Georges Pompidou","Vincent Auriol"],0,"Élu fin 1958, il démissionne en 1969."),
+  RV("dnb","hge","Depuis 1962, comment le président de la République est-il élu ?",["Au suffrage universel direct","Par le Parlement","Par les maires","Par le Conseil constitutionnel"],0,"Réforme adoptée par référendum en 1962."),
+  /* ---------- Géographie ---------- */
+  RV("dnb","hge","Qu'est-ce qu'une aire urbaine (aire d'attraction d'une ville) ?",["Une ville-centre, sa banlieue et sa couronne périurbaine","Seulement le centre-ville","Une zone industrielle","Un parc naturel"],0,"Elle regroupe les communes dont beaucoup d'habitants travaillent dans le pôle urbain."),
+  RV("dnb","hge","Comment appelle-t-on l'extension des villes vers les espaces ruraux proches ?",["La périurbanisation","La désertification","La métropolisation","La littoralisation"],0,"Des ménages s'installent dans des communes rurales autour des villes."),
+  RV("dnb","hge","Quel phénomène désigne la concentration des populations et des activités sur les côtes ?",["La littoralisation","La périurbanisation","L'exode rural","La déprise"],0,"Les littoraux attirent habitants, tourisme et activités portuaires."),
+  RV("dnb","hge","Quelle est la plus grande aire urbaine de France ?",["Paris","Lyon","Marseille","Lille"],0,"Environ 13 millions d'habitants."),
+  RV("dnb","hge","Qu'est-ce qu'un espace de faible densité ?",["Un espace peu peuplé (moins de 30 hab./km² environ)","Une grande métropole","Une zone industrialo-portuaire","Un quartier d'affaires"],0,"Montagnes, campagnes isolées… mais avec des atouts (tourisme, agriculture, patrimoine)."),
+  RV("dnb","hge","Qu'est-ce qu'un parc naturel régional ?",["Un territoire rural protégé qui valorise son patrimoine et son économie","Un jardin public en ville","Une réserve interdite aux habitants","Un parc d'attractions"],0,"Ex. : le Parc naturel régional du Morvan."),
+  RV("dnb","hge","Quel est le premier port de France ?",["Marseille-Fos","Le Havre","Dunkerque","Bordeaux"],0,"Marseille-Fos est le premier port français par le tonnage."),
+  RV("dnb","hge","Que signifie « ZEE » ?",["Zone économique exclusive","Zone d'échanges européens","Zone d'environnement écologique","Zone d'emploi étendue"],0,"Espace maritime de 200 milles marins où l'État exploite les ressources. La France a la 2e ZEE du monde grâce à l'outre-mer."),
+  RV("dnb","hge","Lequel de ces territoires est un département et région d'outre-mer ?",["La Réunion","La Polynésie française","La Nouvelle-Calédonie","Saint-Pierre-et-Miquelon"],0,"Les DROM : Guadeloupe, Martinique, Guyane, La Réunion, Mayotte."),
+  RV("dnb","hge","Qu'est-ce que la mondialisation ?",["La mise en relation des différents territoires du monde par les échanges","La disparition des frontières naturelles","Le réchauffement climatique","La croissance d'une seule ville"],0,"Échanges de marchandises, de capitaux, d'informations et de personnes."),
+  RV("dnb","hge","Qu'est-ce qu'une métropole ?",["Une grande ville qui concentre des fonctions de commandement","Une petite commune rurale","Un territoire d'outre-mer","Une zone agricole"],0,"Elle concentre population, sièges d'entreprises, universités, pouvoirs."),
+  RV("dnb","hge","Quelle politique de l'UE aide les régions les plus en difficulté ?",["La politique de cohésion (fonds européens comme le FEDER)","La PAC uniquement","L'espace Schengen","La BCE"],0,"Le FEDER finance des projets dans les régions moins développées."),
+  RV("dnb","hge","Qu'est-ce que l'espace Schengen ?",["Un espace de libre circulation des personnes","Une zone monétaire","Une alliance militaire","Un parlement"],0,"Les contrôles aux frontières intérieures y sont supprimés."),
+  /* ---------- EMC ---------- */
+  RV("dnb","hge","Quelle est la devise de la République française ?",["Liberté, Égalité, Fraternité","Travail, Famille, Patrie","Unité, Progrès, Justice","Paix, Travail, Patrie"],0,"Inscrite dans la Constitution de 1958."),
+  RV("dnb","hge","Quel est l'hymne national français ?",["La Marseillaise","Le Chant des partisans","L'Internationale","Le Temps des cerises"],0,"Composée en 1792 par Rouget de Lisle."),
+  RV("dnb","hge","Qui vote les lois en France ?",["Le Parlement (Assemblée nationale et Sénat)","Le président de la République","Le Premier ministre","Le Conseil constitutionnel"],0,"C'est le pouvoir législatif."),
+  RV("dnb","hge","Quel pouvoir appartient aux juges ?",["Le pouvoir judiciaire","Le pouvoir législatif","Le pouvoir exécutif","Le pouvoir médiatique"],0,"La séparation des pouvoirs : législatif, exécutif, judiciaire."),
+  RV("dnb","hge","Qu'est-ce que la laïcité ?",["La séparation des Églises et de l'État, qui garantit la liberté de conscience","L'interdiction de toutes les religions","Une religion d'État","Le droit de vote des femmes"],0,"L'État est neutre et garantit le libre exercice des cultes."),
+  RV("dnb","hge","Qu'est-ce que la JDC ?",["La Journée défense et citoyenneté","Le Journal de la citoyenneté","La Justice des collégiens","Un concours de sport"],0,"Obligatoire pour les jeunes Français avant 25 ans, après le recensement à 16 ans."),
+  RV("dnb","hge","À quel âge doit-on se faire recenser ?",["16 ans","18 ans","14 ans","21 ans"],0,"Dans les 3 mois suivant ses 16 ans, à la mairie ou en ligne."),
+  RV("dnb","hge","Comment s'appelle le fait de donner de son temps gratuitement pour une association ?",["Le bénévolat","Le salariat","Le service militaire","L'impôt"],0,"Une forme d'engagement citoyen liée à la fraternité."),
+  RV("dnb","hge","Quel texte de 1948 proclame des droits pour tous les êtres humains ?",["La Déclaration universelle des droits de l'homme","La Déclaration des droits de l'homme et du citoyen","La Constitution de 1958","Le traité de Rome"],0,"Adoptée par l'ONU le 10 décembre 1948."),
+  RV("dnb","hge","Que contrôle le Conseil constitutionnel ?",["Que les lois respectent la Constitution","Les comptes des entreprises","Les résultats scolaires","Les élections municipales uniquement"],0,"Il veille à la conformité des lois à la Constitution."),
+  RV("dnb","hge","Combien de députés siègent à l'Assemblée nationale ?",["577","348","100","1 000"],0,"Élus pour 5 ans au suffrage universel direct."),
+  RV("dnb","hge","Quelle est la mission principale de la Défense nationale ?",["Protéger le territoire et la population","Voter les lois","Rendre la justice","Collecter les impôts"],0,"Armées, mais aussi missions de protection civile et opérations extérieures."),
+  /* ---------- Français : grammaire, conjugaison, orthographe ---------- */
+  RV("dnb","francais","Quelle est la fonction de « très fatigué » dans « Le coureur semble très fatigué » ?",["Attribut du sujet","Complément d'objet direct","Épithète","Complément circonstanciel"],0,"« Sembler » est un verbe d'état : l'adjectif est attribut du sujet."),
+  RV("dnb","francais","Dans « Le chat noir dort », quelle est la fonction de « noir » ?",["Épithète du nom « chat »","Attribut du sujet","COD","Sujet"],0,"L'adjectif est directement placé à côté du nom."),
+  RV("dnb","francais","Quelle est la fonction de « hier soir » dans « Nous sommes sortis hier soir » ?",["Complément circonstanciel de temps","COD","Attribut du sujet","Complément du nom"],0,"Il indique quand l'action a eu lieu."),
+  RV("dnb","francais","Dans « Il parle à sa sœur », quelle est la fonction de « à sa sœur » ?",["Complément d'objet indirect (COI)","COD","Complément circonstanciel de lieu","Attribut du sujet"],0,"Introduit par la préposition « à » et essentiel au verbe « parler à »."),
+  RV("dnb","francais","Dans « La porte du jardin », quelle est la fonction de « du jardin » ?",["Complément du nom","COD","Complément circonstanciel","Attribut"],0,"Il complète le nom « porte »."),
+  RV("dnb","francais","Quelle phrase est à la voix passive ?",["La souris est mangée par le chat.","Le chat mange la souris.","Le chat a mangé.","La souris court."],0,"Le sujet subit l'action ; « par le chat » est le complément d'agent."),
+  RV("dnb","francais","À quel temps est « il avait chanté » ?",["Plus-que-parfait de l'indicatif","Passé composé","Passé antérieur","Imparfait"],0,"Auxiliaire à l'imparfait + participe passé."),
+  RV("dnb","francais","À quel temps est « ils eurent fini » ?",["Passé antérieur","Plus-que-parfait","Passé simple","Futur antérieur"],0,"Auxiliaire au passé simple + participe passé."),
+  RV("dnb","francais","Quelle est la bonne forme : « Si j'… le temps, je viendrais » ?",["avais","aurais","aurai","ai"],0,"Après « si » de condition : imparfait, puis conditionnel."),
+  RV("dnb","francais","Quel est le passé simple de « prendre » à la 3e personne du pluriel ?",["ils prirent","ils prenèrent","ils prendirent","ils prenaient"],0,"Je pris, il prit, ils prirent."),
+  RV("dnb","francais","Quel est le passé simple de « voir » à la 1re personne du singulier ?",["je vis","je voyai","je vus","je voyais"],0,"Je vis, tu vis, il vit."),
+  RV("dnb","francais","Quelle est la bonne orthographe ?",["Les fleurs qu'il a cueillies","Les fleurs qu'il a cueilli","Les fleurs qu'il a cueillis","Les fleurs qu'il a cueillie"],0,"Avec avoir, le participe s'accorde avec le COD placé avant (« les fleurs », féminin pluriel)."),
+  RV("dnb","francais","Quelle est la bonne orthographe ?",["Elles se sont lavé les mains.","Elles se sont lavées les mains.","Elles se sont lavés les mains.","Elles se sont lavée les mains."],0,"Le COD « les mains » est après le verbe : pas d'accord."),
+  RV("dnb","francais","Complète : « Je pense qu'il … venir. » (dire la possibilité)",["pourra","pourrat","pourras","pourrai"],0,"Futur, 3e personne : il pourra."),
+  RV("dnb","francais","Complète avec l'homophone correct : « … livres sont sur la table. »",["Ces","Ses","C'est","S'est"],0,"« Ces » démonstratif (ces livres-là) ; « ses » indiquerait la possession."),
+  RV("dnb","francais","Complète : « Il … trompé de chemin. »",["s'est","c'est","ces","ses"],0,"Verbe pronominal « se tromper » au passé composé."),
+  RV("dnb","francais","Complète : « Je ne sais pas … il viendra. »",["quand","quant","qu'en","camp"],0,"« Quand » indique le temps ; « quant à » signifie « en ce qui concerne »."),
+  RV("dnb","francais","Quelle proposition est subordonnée conjonctive complétive ?",["« que tu viennes » dans « Je veux que tu viennes »","« qui chante » dans « L'oiseau qui chante »","« quand il pleut » dans « Je lis quand il pleut »","« il pleut »"],0,"Introduite par « que », elle est COD du verbe « veux »."),
+  RV("dnb","francais","Dans « Je lis quand il pleut », quelle est la nature de « quand il pleut » ?",["Subordonnée circonstancielle de temps","Subordonnée relative","Subordonnée complétive","Proposition indépendante"],0,"Elle indique le moment de l'action principale."),
+  RV("dnb","francais","Quelle est la classe grammaticale de « dont » ?",["Pronom relatif","Conjonction de coordination","Préposition","Adverbe"],0,"Il introduit une subordonnée relative : « le livre dont je parle »."),
+  RV("dnb","francais","Laquelle est une conjonction de coordination ?",["donc","quand","que","dont"],0,"Mais, ou, et, donc, or, ni, car."),
+  RV("dnb","francais","Quel est le mode de « Viens ici ! » ?",["Impératif","Indicatif","Subjonctif","Conditionnel"],0,"Il exprime un ordre."),
+  RV("dnb","francais","Transforme au discours indirect : Il dit : « Je suis fatigué. »",["Il dit qu'il est fatigué.","Il dit que je suis fatigué.","Il dit : il est fatigué.","Il dit qu'il était fatigué hier."],0,"Les pronoms changent (je → il) et on ajoute « que »."),
+  RV("dnb","francais","Quel mot est formé avec un suffixe ?",["lentement","relire","impossible","défaire"],0,"lent + -ment (suffixe) ; les autres ont un préfixe."),
+  RV("dnb","francais","Quel est le sens du préfixe « anti- » dans « antidouleur » ?",["Contre","Avant","Après","Très"],0,"« Anti- » signifie « contre »."),
+  RV("dnb","francais","Quel mot est un synonyme de « effrayé » ?",["épouvanté","rassuré","joyeux","calme"],0,"Épouvanté = qui a très peur."),
+  RV("dnb","francais","Quel est l'antonyme de « optimiste » ?",["pessimiste","heureux","confiant","réaliste"],0,"L'optimiste voit le bon côté ; le pessimiste, le mauvais."),
+  /* ---------- Français : littérature, figures de style, genres ---------- */
+  RV("dnb","francais","« Ses yeux sont des étoiles » : quelle figure de style ?",["Une métaphore","Une comparaison","Une personnification","Une hyperbole"],0,"Rapprochement sans outil de comparaison."),
+  RV("dnb","francais","« Il est fort comme un lion » : quelle figure de style ?",["Une comparaison","Une métaphore","Un oxymore","Une litote"],0,"Outil de comparaison : « comme »."),
+  RV("dnb","francais","« Cette obscure clarté qui tombe des étoiles » (Corneille) : quelle figure ?",["Un oxymore","Une hyperbole","Une anaphore","Une comparaison"],0,"Deux mots de sens opposés réunis : obscure / clarté."),
+  RV("dnb","francais","« Va, je ne te hais point » (Corneille) pour dire « je t'aime » : quelle figure ?",["Une litote","Une hyperbole","Une métaphore","Une antithèse"],0,"Dire moins pour suggérer plus."),
+  RV("dnb","francais","Répéter un même mot en début de vers ou de phrase s'appelle…",["Une anaphore","Une allitération","Une énumération","Une gradation"],0,"Ex. : « Paris outragé ! Paris brisé ! Paris martyrisé ! »"),
+  RV("dnb","francais","La répétition d'un même son consonne s'appelle…",["Une allitération","Une assonance","Une anaphore","Une rime"],0,"Ex. : « Pour qui sont ces serpents qui sifflent sur vos têtes ? » (son [s])."),
+  RV("dnb","francais","Combien de syllabes compte un alexandrin ?",["12","10","8","14"],0,"Vers classique de la poésie française."),
+  RV("dnb","francais","Qu'est-ce qu'un récit autobiographique ?",["Un récit où l'auteur raconte sa propre vie","Un récit inventé sur un héros","Une pièce de théâtre","Un article de journal"],0,"Auteur = narrateur = personnage principal."),
+  RV("dnb","francais","Qu'est-ce que le registre (ou la tonalité) pathétique ?",["Il cherche à émouvoir, à faire pitié","Il cherche à faire rire","Il fait peur","Il dénonce par l'ironie"],0,"Le pathétique suscite la pitié et la compassion."),
+  RV("dnb","francais","Quel auteur a écrit « Les Misérables » ?",["Victor Hugo","Émile Zola","Guy de Maupassant","Honoré de Balzac"],0,"Roman publié en 1862."),
+  RV("dnb","francais","Quel genre littéraire est destiné à être joué sur scène ?",["Le théâtre","Le roman","La poésie","L'essai"],0,"Il se compose de dialogues et de didascalies."),
+  RV("dnb","francais","Comment appelle-t-on les indications de mise en scène dans une pièce de théâtre ?",["Les didascalies","Les répliques","Les tirades","Les apartés"],0,"Souvent en italique : gestes, ton, décor."),
+  RV("dnb","francais","Quel texte vise à faire rire en se moquant des défauts d'une personne ou d'une société ?",["Un texte satirique","Un texte lyrique","Un texte épique","Un texte tragique"],0,"La satire critique en faisant rire."),
+  RV("dnb","francais","Dans un récit au passé, quel temps sert surtout aux actions de premier plan ?",["Le passé simple","L'imparfait","Le présent de vérité générale","Le futur"],0,"L'imparfait sert plutôt aux descriptions et aux actions d'arrière-plan."),
+  RV("dnb","francais","Quel écrivain a témoigné de la Première Guerre mondiale dans « Le Feu » (1916) ?",["Henri Barbusse","Albert Camus","Jules Verne","Molière"],0,"Prix Goncourt 1916."),
+  /* ---------- Sciences : physique-chimie ---------- */
+  RV("dnb","sciences","Quelle est l'unité de la tension électrique ?",["Le volt (V)","L'ampère (A)","L'ohm (Ω)","Le watt (W)"],0,"Elle se mesure avec un voltmètre branché en dérivation."),
+  RV("dnb","sciences","Comment branche-t-on un ampèremètre ?",["En série","En dérivation","On ne le branche pas","Aux bornes du générateur seulement"],0,"Il mesure l'intensité qui le traverse."),
+  RV("dnb","sciences","Quelle est la loi d'Ohm ?",["U = R × I","P = U × I","E = P × t","v = d ÷ t"],0,"U en volts, R en ohms, I en ampères."),
+  RV("dnb","sciences","Une résistance de 100 Ω est traversée par 0,05 A. Quelle est la tension à ses bornes ?",["5 V","2 000 V","0,0005 V","100 V"],0,"U = R × I = 100 × 0,05 = 5 V."),
+  RV("dnb","sciences","Quelle relation lie puissance, tension et intensité ?",["P = U × I","P = U ÷ I","P = R × I","P = E × t"],0,"P en watts."),
+  RV("dnb","sciences","Un appareil de 2 000 W fonctionne 3 h. Quelle énergie consomme-t-il ?",["6 kWh","667 Wh","2 003 Wh","6 Wh"],0,"E = P × t = 2 kW × 3 h = 6 kWh."),
+  RV("dnb","sciences","Quelle est l'unité de la masse volumique dans le tableau usuel ?",["g/cm³ (ou kg/m³)","g/cm²","kg × m³","N/kg"],0,"ρ = m ÷ V. L'eau : 1 g/cm³."),
+  RV("dnb","sciences","Un objet a une masse de 300 g et un volume de 100 cm³. Flotte-t-il sur l'eau ?",["Non, sa masse volumique (3 g/cm³) est supérieure à celle de l'eau","Oui, car il est léger","Oui, car 300 > 100","On ne peut pas savoir"],0,"Il coule car 3 g/cm³ > 1 g/cm³."),
+  RV("dnb","sciences","Comment calcule-t-on le poids d'un objet ?",["P = m × g","P = m ÷ g","P = m + g","P = g ÷ m"],0,"Sur Terre, g ≈ 9,8 N/kg ; le poids s'exprime en newtons."),
+  RV("dnb","sciences","Sur la Lune, la masse d'un astronaute est…",["La même que sur Terre","Six fois plus petite","Nulle","Six fois plus grande"],0,"La masse ne change pas ; c'est le poids qui est plus faible (g lunaire ≈ 1,6 N/kg)."),
+  RV("dnb","sciences","Quelle est l'unité d'une force ?",["Le newton (N)","Le kilogramme (kg)","Le joule (J)","Le pascal (Pa)"],0,"Mesurée avec un dynamomètre."),
+  RV("dnb","sciences","Un vélo parcourt 30 km en 1 h 30 min. Quelle est sa vitesse moyenne ?",["20 km/h","45 km/h","30 km/h","15 km/h"],0,"v = d ÷ t = 30 ÷ 1,5 = 20 km/h."),
+  RV("dnb","sciences","Un mouvement dont la vitesse diminue est dit…",["Ralenti","Accéléré","Uniforme","Circulaire"],0,"Uniforme : vitesse constante ; accéléré : vitesse qui augmente."),
+  RV("dnb","sciences","Quelle énergie possède un objet en mouvement ?",["L'énergie cinétique","L'énergie chimique","L'énergie nucléaire","L'énergie thermique uniquement"],0,"Ec = ½ × m × v² : elle dépend surtout de la vitesse."),
+  RV("dnb","sciences","Si la vitesse d'une voiture double, son énergie cinétique est…",["Multipliée par 4","Multipliée par 2","Inchangée","Divisée par 2"],0,"Ec dépend de v² : 2² = 4. D'où l'allongement des distances de freinage."),
+  RV("dnb","sciences","Quel gaz trouble l'eau de chaux ?",["Le dioxyde de carbone (CO₂)","Le dioxygène (O₂)","Le diazote (N₂)","Le dihydrogène (H₂)"],0,"Test caractéristique du CO₂."),
+  RV("dnb","sciences","Quel est le produit de la combustion complète du carbone dans le dioxygène ?",["Du dioxyde de carbone","De l'eau seulement","Du monoxyde de carbone","De l'azote"],0,"C + O₂ → CO₂."),
+  RV("dnb","sciences","Lors d'une transformation chimique, la masse totale…",["Se conserve","Augmente toujours","Diminue toujours","Disparaît"],0,"Les atomes se réarrangent : la masse des réactifs est égale à celle des produits."),
+  RV("dnb","sciences","Que met en évidence le sulfate de cuivre anhydre (blanc) qui devient bleu ?",["La présence d'eau","La présence de CO₂","Un acide","Du sel"],0,"Test de l'eau."),
+  RV("dnb","sciences","Une solution de pH 7 est…",["Neutre","Acide","Basique","Toxique"],0,"pH < 7 : acide ; pH > 7 : basique."),
+  RV("dnb","sciences","Quel ion rend une solution acide ?",["L'ion hydrogène H⁺","L'ion hydroxyde HO⁻","L'ion sodium Na⁺","L'ion chlorure Cl⁻"],0,"Plus il y a d'ions H⁺, plus le pH est petit."),
+  RV("dnb","sciences","Où se trouve presque toute la masse d'un atome ?",["Dans le noyau","Dans les électrons","Dans le vide autour du noyau","Elle est répartie également"],0,"Le noyau (protons et neutrons) est environ 2 000 fois plus lourd que les électrons."),
+  RV("dnb","sciences","Un atome est électriquement neutre car…",["Il a autant de protons que d'électrons","Il n'a pas de neutrons","Il n'a pas d'électrons","Ses protons sont neutres"],0,"Les charges + des protons compensent les charges − des électrons."),
+  RV("dnb","sciences","À quelle vitesse se propage le son dans l'air environ ?",["340 m/s","300 000 km/s","3 m/s","34 000 m/s"],0,"La lumière, elle, va à 300 000 km/s."),
+  RV("dnb","sciences","Le son peut-il se propager dans le vide ?",["Non, il a besoin d'un milieu matériel","Oui, plus vite que dans l'air","Oui, à la même vitesse","Seulement s'il est aigu"],0,"Dans l'espace, il n'y a pas de son."),
+  RV("dnb","sciences","Quelle est l'unité de la fréquence d'un son ?",["Le hertz (Hz)","Le décibel (dB)","Le mètre (m)","Le volt (V)"],0,"L'oreille humaine entend environ de 20 Hz à 20 000 Hz."),
+  /* ---------- Sciences : SVT ---------- */
+  RV("dnb","sciences","Où se trouve l'information génétique dans une cellule ?",["Dans le noyau, sur les chromosomes","Dans la membrane","Dans le cytoplasme uniquement","Dans les globules rouges"],0,"Les chromosomes sont faits d'ADN."),
+  RV("dnb","sciences","Comment s'appelle une portion d'ADN qui détermine un caractère ?",["Un gène","Un allèle","Un chromosome","Une cellule"],0,"Les différentes versions d'un gène sont des allèles."),
+  RV("dnb","sciences","Combien de chromosomes contient un spermatozoïde humain ?",["23","46","22","92"],0,"Les gamètes ont un seul chromosome de chaque paire."),
+  RV("dnb","sciences","Quelle paire de chromosomes détermine le sexe chez l'être humain ?",["La 23e paire (XX ou XY)","La 1re paire","La 21e paire","Aucune"],0,"XX : fille ; XY : garçon."),
+  RV("dnb","sciences","Lors de la division cellulaire (mitose), les cellules filles…",["Reçoivent la même information génétique que la cellule mère","Ont deux fois moins de chromosomes","Sont toutes différentes","N'ont pas de noyau"],0,"Les chromosomes sont copiés puis répartis à l'identique."),
+  RV("dnb","sciences","Quel organe produit les spermatozoïdes ?",["Les testicules","La prostate","Les ovaires","La vessie"],0,"Production continue à partir de la puberté."),
+  RV("dnb","sciences","Où a lieu la fécondation chez la femme ?",["Dans une trompe (oviducte)","Dans l'utérus","Dans l'ovaire","Dans le vagin"],0,"L'embryon s'implante ensuite dans l'utérus (nidation)."),
+  RV("dnb","sciences","Quel est le rôle des globules blancs ?",["Défendre l'organisme contre les micro-organismes","Transporter le dioxygène","Coaguler le sang","Digérer les aliments"],0,"Phagocytes, lymphocytes B (anticorps) et T."),
+  RV("dnb","sciences","Que produisent les lymphocytes B ?",["Des anticorps","Des hormones","Des globules rouges","Des antibiotiques"],0,"Les anticorps neutralisent un antigène précis."),
+  RV("dnb","sciences","Comment appelle-t-on la capacité d'une bactérie à ne plus être tuée par un antibiotique ?",["La résistance aux antibiotiques","La vaccination","L'immunité","La sélection artificielle"],0,"L'usage excessif d'antibiotiques favorise les bactéries résistantes."),
+  RV("dnb","sciences","Où se fait l'absorption des nutriments ?",["Dans l'intestin grêle","Dans l'estomac","Dans la bouche","Dans le gros intestin"],0,"Les villosités intestinales offrent une très grande surface d'échange."),
+  RV("dnb","sciences","De quoi les muscles ont-ils besoin pour produire de l'énergie ?",["De dioxygène et de glucose","De dioxyde de carbone","D'azote","Uniquement d'eau"],0,"La respiration cellulaire rejette du CO₂ et de l'eau."),
+  RV("dnb","sciences","Qu'est-ce qui permet l'évolution des espèces selon Darwin ?",["La sélection naturelle","La volonté des animaux","Le hasard seul sans tri","Les vaccins"],0,"Les individus les mieux adaptés survivent et se reproduisent davantage."),
+  RV("dnb","sciences","Quelle est la principale cause du réchauffement climatique actuel ?",["Les gaz à effet de serre émis par les activités humaines","L'activité volcanique","La couche d'ozone","Les marées"],0,"Combustion des énergies fossiles (CO₂), élevage (méthane)…"),
+  RV("dnb","sciences","Comment appelle-t-on les mouvements des grandes plaques qui forment la surface terrestre ?",["La tectonique des plaques","L'érosion","La photosynthèse","Le cycle de l'eau"],0,"Leur déplacement explique séismes, volcans et formation des montagnes."),
+  RV("dnb","sciences","Quelle énergie n'est PAS renouvelable ?",["Le charbon","Le vent","Le soleil","L'eau des barrages"],0,"Le charbon, le pétrole, le gaz et l'uranium sont des ressources épuisables."),
+  RV("dnb","sciences","Qu'est-ce qu'un écosystème ?",["Un milieu de vie et l'ensemble des êtres vivants qui y vivent","Un seul animal","Une chaîne de montagnes","Un nuage"],0,"Ex. : une forêt, une mare, un récif corallien."),
+  RV("dnb","sciences","Dans une chaîne alimentaire, que signifie la flèche « herbe → lapin » ?",["Le lapin mange l'herbe","L'herbe mange le lapin","Le lapin vit dans l'herbe","L'herbe pousse grâce au lapin"],0,"La flèche se lit « est mangé par »."),
+  /* ---------- Sciences : technologie ---------- */
+  RV("dnb","sciences","Quel composant transforme l'énergie électrique en énergie mécanique ?",["Un moteur","Une lampe","Une pile","Un capteur"],0,"Le moteur convertit l'énergie électrique en mouvement."),
+  RV("dnb","sciences","Quel est le rôle d'un capteur dans un système automatisé ?",["Acquérir une information","Produire du mouvement","Stocker l'énergie","Afficher un message"],0,"Ex. : capteur de température, de présence, de luminosité."),
+  RV("dnb","sciences","Dans un programme, que fait une boucle « répéter 10 fois » ?",["Elle exécute 10 fois les instructions qu'elle contient","Elle attend 10 secondes","Elle s'arrête au bout de 10 erreurs","Elle compte jusqu'à 10 sans rien faire"],0,"Structure répétitive d'un algorithme."),
+  RV("dnb","sciences","Que permet une instruction « si … alors … sinon » ?",["De faire un choix selon une condition","De répéter des actions","De créer une variable","D'arrêter le programme"],0,"Structure conditionnelle."),
+  RV("dnb","sciences","Que signifie « 1 octet » ?",["8 bits","10 bits","1 000 bits","2 bits"],0,"Unité de quantité d'information numérique."),
+  RV("dnb","sciences","Quel matériau est un bon conducteur électrique ?",["Le cuivre","Le bois","Le plastique","Le verre"],0,"Les métaux conduisent le courant ; plastique et verre sont isolants.")
+);
 
 /* ===================== OUTILS ===================== */
 const $ = s => document.querySelector(s);
@@ -4869,7 +5368,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.64";
+const VERSION_SITE = "1.65";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5230,7 +5729,7 @@ VUES.brevet = function vueBrevet(){
   const vues = (prog && prog.vuesB) || {}, total = pool.length + rev.length;
   const dejaVues = [...pool, ...rev].filter(q => vues[cleQuestion(q)]).length;
   const nbSerie = genMats.length ? 50 : Math.min(50, total);
-  const sujets = Object.entries(SUJETS).filter(([k]) => k.startsWith(ex + "-") && (choixBrevet.an === "tous" || k.includes("-" + choixBrevet.an)));
+  const sujets = Object.entries(SUJETS).filter(([k, v]) => !v.heberge && k.startsWith(ex + "-") && (choixBrevet.an === "tous" || k.includes("-" + choixBrevet.an)));
   const record = (prog.brevet || {})[ex === "bia" ? "bia" : "serie"];
   zone().innerHTML = entete("Exercices Brevet", ex === "bia" ? "Brevet d'initiation aéronautique" : "Diplôme national du brevet") + segment("examen", [["dnb","Brevet (DNB)"],["bia","BIA"]], ex) + `
     <div class="bloc">
@@ -5243,11 +5742,11 @@ VUES.brevet = function vueBrevet(){
       <p class="doux" style="font-size:.88rem">${total || genMats.length ? `<strong>${pool.length}</strong> question${pool.length > 1 ? "s" : ""} des sujets officiels${choixBrevet.entrainement ? `, <strong>${rev.length}</strong> de révision${genMats.length ? ` et des questions <strong>générées à l'infini</strong> (${genMats.map(m => listeMatieres(ex).find(x => x[0] === m)[1]).join(", ")}), avec des valeurs différentes à chaque série` : ""}` : ""}. Déjà vues : ${dejaVues} / ${total}. Les questions jamais vues passent en premier, puis celles que tu as ratées.` : "Aucune question pour ce choix : sélectionne au moins une matière."}${record ? ` Record : ${record} %.` : ""}</p>
       <div class="rangee"><button class="btn" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>Lancer une série de ${nbSerie || 50} questions</button>${dejaVues ? `<button class="btn sec" type="button" id="raz-vues">Oublier les questions vues</button>` : ""}</div>
     </div>
-    ${ex === "dnb" ? blocLangues() : ""}
+    ${ex === "dnb" ? blocLangues() + blocSujetsDnb() : ""}
     <div class="bloc">
-      <span class="mono">Sujets complets et sources</span>
+      <span class="mono">${ex === "dnb" ? "Sources des questions" : "Sujets complets et sources"}</span>
       <div class="sources">${sujets.map(([, s]) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">📄 ${esc(s.titre)} ↗</a>`).join("") || `<span class="doux">Aucun sujet pour cette année.</span>`}</div>
-      <p class="doux" style="font-size:.82rem;max-width:75ch">${ex === "bia" ? "Questions reformulées d'après les sujets officiels du BIA, réponses selon leurs corrigés." : "Questions rédigées à partir des sujets officiels du brevet (série générale, Métropole) et de leurs corrigés. « Inspiré » signale une question qui reprend la situation du sujet avec d'autres valeurs."} Pendant la série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir en entier.</p>
+      <p class="doux" style="font-size:.82rem;max-width:75ch">${ex === "bia" ? "Questions reformulées d'après les sujets officiels du BIA, réponses selon leurs corrigés." : "Questions rédigées à partir des sujets officiels du brevet (série générale) et de leurs corrigés. « Inspiré » signale une question qui reprend la situation du sujet avec d'autres valeurs."} Pendant la série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir en entier.</p>
     </div>`;
   zone().querySelectorAll("#examen button").forEach(b => b.onclick = () => { choixBrevet.ex = b.dataset.v; choixBrevet.an = "tous"; vueBrevet(); });
   zone().querySelectorAll("#an-brevet button").forEach(b => b.onclick = () => { choixBrevet.an = b.dataset.v; vueBrevet(); });
@@ -5256,6 +5755,7 @@ VUES.brevet = function vueBrevet(){
     choixBrevet.mats[ex] = m.includes(v) ? m.filter(x => x !== v) : [...m, v]; vueBrevet();
   });
   zone().querySelectorAll("#entr-brevet button").forEach(b => b.onclick = () => { choixBrevet.entrainement = b.dataset.v === "oui"; vueBrevet(); });
+  if (ex === "dnb") brancherSujetsDnb(vueBrevet);
   if ($("#raz-vues")) deuxClics($("#raz-vues"), () => { prog.vuesB = {}; sauver(); vueBrevet(); });
   zone().querySelectorAll("#lv-brevet button").forEach(b => b.onclick = () => { choixBrevet.lv = b.dataset.v; vueBrevet(); });
   if ($("#lancer-langues")) $("#lancer-langues").onclick = () => {
@@ -12302,6 +12802,72 @@ function brancherDictees(redessiner){
 }
 // une autre dictée (au hasard, sauf celle qu'on vient de faire)
 function autreDictee(d){ const ls = dicteesVisibles().filter(x => x.id !== d.id); return ls.length ? {...choisir(ls), manuel: true} : null; }
+/* ===================== SUJETS DU DNB (Éducation nationale, depuis 2018) =====================
+   Une ligne par épreuve ; on l'ouvre pour lire le sujet et le corrigé (PDF hébergés sur Helper, affichés avec pdf.js).
+   srcSujet / srcCorrige : d'où vient le fichier (Éduscol / Tout mon exam pour les sujets, APMEP pour les corrigés de maths…). */
+const MATIERES_DNB = [["francais", "Français"], ["maths", "Mathématiques"], ["hge", "Histoire-Géo-EMC"], ["sciences", "Sciences"]];
+const nomMatDnb = m => (MATIERES_DNB.find(x => x[0] === m) || [, m])[1];
+let choixSujetsDnb = {an: "tous", mat: "tous"};
+function blocSujetsDnb(){
+  const ans = [...new Set(SUJETS_DNB.map(s => s.an))].sort((a, b) => b - a), mats = MATIERES_DNB.filter(([m]) => SUJETS_DNB.some(s => s.mat === m));
+  const ls = SUJETS_DNB.filter(s => (choixSujetsDnb.an === "tous" || s.an === +choixSujetsDnb.an) && (choixSujetsDnb.mat === "tous" || s.mat === choixSujetsDnb.mat))
+    .sort((a, b) => b.an - a.an || String(b.date).localeCompare(String(a.date)) || MATIERES_DNB.findIndex(m => m[0] === a.mat) - MATIERES_DNB.findIndex(m => m[0] === b.mat));
+  return `<div class="bloc" id="bloc-sujets-dnb">
+    <span class="mono">Sujets du DNB · Éducation nationale</span>
+    <p class="doux" style="font-size:.88rem;max-width:75ch">Les vrais sujets du brevet depuis 2018, avec leur corrigé. Ouvre une épreuve pour la lire en entier.</p>
+    ${ans.length ? segment("sd-an", [["tous", "Toutes"], ...ans.map(a => [String(a), String(a)])], String(choixSujetsDnb.an))
+      + (mats.length > 1 ? segment("sd-mat", [["tous", "Toutes les matières"], ...mats], choixSujetsDnb.mat) : "") : ""}
+    ${ls.length ? `<div class="liste">${ls.map(s => `<button type="button" data-sujet-dnb="${esc(s.id)}">
+        <span class="titre"><strong>${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}</strong>
+          <span class="doux" style="font-size:.85rem">${s.date ? dateLongueDnb(s.date) : s.an}${s.serie ? " · " + esc(s.serie) : ""}</span></span>
+        <span class="rangee" style="gap:10px;flex-wrap:nowrap"><span class="etat ${s.corrige ? "fait" : ""}">${s.corrige ? "Sujet + corrigé" : "Sujet"}</span><span class="sd-go">Ouvrir ›</span></span>
+      </button>`).join("")}</div>` : `<div class="vide">Aucun sujet pour ce choix.</div>`}
+  </div>`;
+}
+const dateLongueDnb = iso => { const d = new Date(iso + "T12:00:00"); return isNaN(d) ? iso : d.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long", year: "numeric"}).replace(/^./, c => c.toUpperCase()); };
+function brancherSujetsDnb(redessiner){
+  zone().querySelectorAll("#sd-an button").forEach(b => b.onclick = () => { choixSujetsDnb.an = b.dataset.v; redessiner(); });
+  zone().querySelectorAll("#sd-mat button").forEach(b => b.onclick = () => { choixSujetsDnb.mat = b.dataset.v; redessiner(); });
+  zone().querySelectorAll("[data-sujet-dnb]").forEach(b => b.onclick = () => { const s = SUJETS_DNB.find(x => x.id === b.dataset.sujetDnb); if (s) ouvrirSujetDnb(s, "sujet"); });
+}
+// Page d'une épreuve : onglets Sujet / Corrigé, pages du PDF dessinées une par une
+let rendusDnb = 0;
+function ouvrirSujetDnb(s, quoi){
+  const url = quoi === "corrige" ? s.corrige : s.sujet, origine = quoi === "corrige" ? s.srcCorrige : s.srcSujet;
+  zone().innerHTML = `<button type="button" class="retour" id="retour">← Exercices Brevet</button>`
+    + entete("Sujet du DNB · " + esc(s.session) + " " + s.an, esc(nomMatDnb(s.mat)), `<span class="doux">${s.date ? dateLongueDnb(s.date) : ""}</span>`) + `
+    <div class="bloc sd-page">
+      <div class="rangee" style="justify-content:space-between;gap:10px">
+        ${segment("sd-quoi", [["sujet", "Sujet"], ["corrige", "Corrigé"]], quoi)}
+        ${url ? `<span class="rangee" style="gap:8px"><a class="mini-btn" href="${esc(url)}" target="_blank" rel="noopener">Plein écran ↗</a><a class="mini-btn" href="${esc(url)}" download>Télécharger</a></span>` : ""}
+      </div>
+      ${origine ? `<p class="doux" style="font-size:.8rem;margin:0">Source : ${esc(origine.replace(/^https?:\/\/(www\.)?/, "").split("/")[0])}</p>` : ""}
+      <div class="sd-pages" id="sd-pages">${url ? `<p class="doux">Chargement du ${quoi === "corrige" ? "corrigé" : "sujet"}…</p>` : `<div class="vide">Pas de corrigé disponible pour cette épreuve.</div>`}</div>
+    </div>`;
+  $("#retour").onclick = () => changerVue("brevet");
+  zone().querySelectorAll("#sd-quoi button").forEach(b => b.onclick = () => { if (b.dataset.v !== quoi) ouvrirSujetDnb(s, b.dataset.v); });
+  scrollTo(0, 0);
+  if (url) dessinerPdfDnb(url, $("#sd-pages"));
+}
+async function dessinerPdfDnb(url, boite){
+  const moi = ++rendusDnb;
+  try {
+    await chargerScript(LIBS.pdf);
+    const L = window.pdfjsLib; L.GlobalWorkerOptions.workerSrc = LIBS.pdfWorker;
+    const doc = await L.getDocument(url).promise;
+    if (moi !== rendusDnb || !boite.isConnected) return doc.destroy();
+    boite.innerHTML = "";
+    const largeur = Math.min(boite.clientWidth || 800, 1000), ratio = Math.min(2, window.devicePixelRatio || 1);
+    for (let i = 1; i <= doc.numPages; i++){
+      const page = await doc.getPage(i), vp0 = page.getViewport({scale: 1}), vp = page.getViewport({scale: largeur / vp0.width * ratio});
+      const cv = document.createElement("canvas"); cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height); cv.className = "sd-feuille";
+      cv.setAttribute("aria-label", `Page ${i} sur ${doc.numPages}`);
+      boite.appendChild(cv);
+      await page.render({canvasContext: cv.getContext("2d"), viewport: vp}).promise;
+      if (moi !== rendusDnb || !boite.isConnected) return doc.destroy();
+    }
+  } catch { if (boite.isConnected) boite.innerHTML = `<div class="vide">Impossible d'afficher le PDF ici. <a class="lien" href="${esc(url)}" target="_blank" rel="noopener">Ouvre-le dans un nouvel onglet ↗</a></div>`; }
+}
 /* ===================== EXERCICES TYPES (« exos précis ») =====================
    Deux sortes d'exercices :
    - les exercices en chaîne (type "chaine", par défaut) : une suite de questions différentes, une par une ;
