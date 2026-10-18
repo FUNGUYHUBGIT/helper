@@ -1984,11 +1984,13 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .sd-nom:hover{background:var(--surface-2)}
 .sd-nom .sd-fl{width:12px;height:12px;flex:none;transition:transform .15s ease}.sd-item.ouvert .sd-fl{transform:rotate(90deg)}
 .sd-info{font-weight:400;font-size:.85rem;margin-left:4px}
-.sd-casier{display:flex;flex-direction:column;gap:2px;margin:2px 0 8px 9px;padding-left:16px;border-left:1.5px solid var(--ligne)}
-.sd-casier[hidden]{display:none}
+.sd-casier{display:grid;grid-template-rows:0fr;opacity:0;margin:0 0 0 9px;transition:grid-template-rows .26s ease,opacity .2s ease,margin .26s ease}
+.sd-item.ouvert .sd-casier{grid-template-rows:1fr;opacity:1;margin:2px 0 8px 9px}
+.sd-casier-in{display:flex;flex-direction:column;gap:2px;min-height:0;overflow:hidden;padding-left:16px;border-left:1.5px solid var(--ligne)}
+@media (prefers-reduced-motion:reduce){.sd-casier,.sd-nom .sd-fl{transition:none}}
 .sd-doc{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:5px 8px;background:none;border:0;border-radius:6px;color:var(--texte);font:inherit;text-align:left;text-decoration:none;cursor:pointer}
 .sd-doc:hover{background:var(--surface-2);color:var(--accent)}
-.sd-doc .doux{font-size:.8rem}
+.sd-doc b{font-weight:600}.sd-doc span{color:var(--doux)}.sd-doc .doux{font-size:.8rem}.sd-doc:hover span{color:inherit}
 .sd-pages{display:flex;flex-direction:column;align-items:center;gap:14px}
 .sd-feuille{width:100%;max-width:1000px;height:auto;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.45)}
 </style>
@@ -4071,7 +4073,8 @@ const SUJETS_DNB = [
    ["dnb-2024-francais", "francais", 2024], ["dnb-2024-sciences", "sciences", 2024], ["dnb-2023-francais", "francais", 2023], ["dnb-2023-hge", "hge", 2023]].forEach(([k, mat, an]) => {
     const v = SUJETS[k]; if (!v) return; v.heberge = true;
     const corrige = /corrig|correction/i.test(v.titre), metro = /Métropole/.test(v.titre);
-    SUJETS_DNB.push({id: k.replace(/^dnb-/, ""), an, session: metro ? "Métropole" : "France", mat, externe: v.url, nature: corrige ? "Corrigé" : "Sujet"});
+    const nomDoc = decodeURIComponent(v.url.split("/").pop()) || v.titre;
+    SUJETS_DNB.push({id: k.replace(/^dnb-/, ""), an, session: metro ? "Métropole" : "France", mat, ...(corrige ? {corrige: v.url, corrigeExterne: v.url, nomCorrige: nomDoc} : {sujet: v.url, sujetExterne: v.url, nomSujet: nomDoc})});
   });
   SUJETS_DNB.forEach(s => { SUJETS["dnb-" + s.an + "-" + s.id.replace(/^\d+-/, "").replace(/-maths$/, "") + "-maths"] = {titre: `DNB ${s.an} ${s.session} · Mathématiques`, url: s.sujet, heberge: true}; });
 })();
@@ -5387,7 +5390,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.67";
+const VERSION_SITE = "1.68";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5764,7 +5767,7 @@ VUES.brevet = function vueBrevet(){
     ${ex === "dnb" ? blocLangues() + blocSujetsDnb() : ""}
     ${ex === "bia" ? `<div class="bloc">
       <span class="mono">Sujets du BIA</span>
-      ${sujets.length ? `<div class="sd-arbre">${sujets.map(([k, s]) => ligneCasier(k, esc(s.titre), "", [["Sujet", s.url, true]])).join("")}</div>` : `<div class="vide">Aucun sujet pour cette année.</div>`}
+      ${sujets.length ? `<div class="sd-arbre">${sujets.map(([k, s]) => ligneCasier(k, esc(s.titre), "", [["Sujet", s.url, true, s.url.split("/").pop()]])).join("")}</div>` : `<div class="vide">Aucun sujet pour cette année.</div>`}
       <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Questions reformulées d'après les sujets officiels du BIA, réponses selon leurs corrigés. Pendant la série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir en entier.</p>
     </div>` : ""}`;
   zone().querySelectorAll("#examen button").forEach(b => b.onclick = () => { choixBrevet.ex = b.dataset.v; choixBrevet.an = "tous"; vueBrevet(); });
@@ -12837,7 +12840,8 @@ function blocSujetsDnb(){
     ${ans.length ? segment("sd-an", [["tous", "Toutes"], ...ans.map(a => [String(a), String(a)])], String(choixSujetsDnb.an))
       + (mats.length > 1 ? segment("sd-mat", [["tous", "Toutes les matières"], ...mats], choixSujetsDnb.mat) : "") : ""}
     ${ls.length ? `<div class="sd-arbre">${ls.map(s => ligneCasier(s.id, `${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}`, s.date ? dateLongueDnb(s.date) : "",
-        s.externe ? [[s.nature, s.externe, true]] : [["Sujet", s.sujet], ...(s.corrige ? [["Corrigé", s.corrige]] : [])])).join("")}</div>` : `<div class="vide">Aucun sujet pour ce choix.</div>`}
+        [...(s.sujet ? [["Sujet", s.sujetExterne || s.sujet, !!s.sujetExterne, s.sujetExterne ? s.nomSujet : nomDocDnb(s, "sujet")]] : []),
+         ...(s.corrige ? [["Corrigé", s.corrigeExterne || s.corrige, !!s.corrigeExterne, s.corrigeExterne ? s.nomCorrige : nomDocDnb(s, "corrige")]] : [])])).join("")}</div>` : `<div class="vide">Aucun sujet pour ce choix.</div>`}
     <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Les questions des séries sont rédigées à partir de ces sujets et de leurs corrigés. Pendant une série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir.</p>
   </div>`;
 }
@@ -12846,13 +12850,16 @@ const casiersOuverts = new Set();
 const FLECHE_CASIER = `<svg class="sd-fl" viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2 6.5 5 3.5 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ligneCasier = (id, nom, info, docs) => { const ouvert = casiersOuverts.has(id);
   return `<div class="sd-item${ouvert ? " ouvert" : ""}"><button type="button" class="sd-nom" data-casier="${esc(id)}" aria-expanded="${ouvert}">${FLECHE_CASIER}<span>${nom}</span>${info ? `<span class="doux sd-info">${esc(info)}</span>` : ""}</button>
-    <div class="sd-casier"${ouvert ? "" : " hidden"}>${docs.map(([t, url, ext]) => ext
-      ? `<a class="sd-doc" href="${esc(url)}" target="_blank" rel="noopener">${t} ↗ <span class="doux">${esc(domaineDnb(url))}</span></a>`
-      : `<button type="button" class="sd-doc" data-doc-dnb="${esc(id)}" data-quoi="${t === "Corrigé" ? "corrige" : "sujet"}">${t}</button>`).join("")}</div></div>`; };
+    <div class="sd-casier"><div class="sd-casier-in">${docs.map(([t, url, ext, nomDoc]) => ext
+      ? `<a class="sd-doc" href="${esc(url)}" target="_blank" rel="noopener"${ouvert ? "" : ' tabindex="-1"'}><b>${t} :</b> <span>${esc(nomDoc || url.split("/").pop())}</span> <span class="doux">↗ ${esc(domaineDnb(url))}</span></a>`
+      : `<button type="button" class="sd-doc" data-doc-dnb="${esc(id)}" data-quoi="${t === "Corrigé" ? "corrige" : "sujet"}"${ouvert ? "" : ' tabindex="-1"'}><b>${t} :</b> <span>${esc(nomDoc || "")}</span></button>`).join("")}</div></div></div>`; };
+// nom lisible d'un document (affiché dans le casier et utilisé pour le téléchargement)
+const nomDocDnb = (s, quoi) => `DNB ${s.an} ${s.session} - ${nomMatDnb(s.mat)} - ${quoi === "corrige" ? "Corrigé" : "Sujet"}.pdf`;
 function brancherCasiers(){
   zone().querySelectorAll("[data-casier]").forEach(b => b.onclick = () => {
     const id = b.dataset.casier, item = b.parentElement, ouvert = !item.classList.contains("ouvert");
-    item.classList.toggle("ouvert", ouvert); b.setAttribute("aria-expanded", ouvert); item.querySelector(".sd-casier").hidden = !ouvert;
+    item.classList.toggle("ouvert", ouvert); b.setAttribute("aria-expanded", ouvert);
+    item.querySelectorAll(".sd-doc").forEach(d => ouvert ? d.removeAttribute("tabindex") : d.setAttribute("tabindex", "-1"));
     ouvert ? casiersOuverts.add(id) : casiersOuverts.delete(id);
   });
 }
@@ -12873,7 +12880,7 @@ function ouvrirSujetDnb(s, quoi){
     <div class="bloc sd-page">
       <div class="rangee" style="justify-content:space-between;gap:10px">
         ${segment("sd-quoi", [["sujet", "Sujet"], ["corrige", "Corrigé"]], quoi)}
-        ${url ? `<span class="rangee" style="gap:8px"><a class="mini-btn" href="${esc(url)}" target="_blank" rel="noopener">Plein écran ↗</a><a class="mini-btn" href="${esc(url)}" download>Télécharger</a></span>` : ""}
+        ${url ? `<span class="rangee" style="gap:8px"><a class="mini-btn" href="${esc(url)}" target="_blank" rel="noopener">Plein écran ↗</a><a class="mini-btn" href="${esc(url)}" download="${esc(nomDocDnb(s, quoi))}">Télécharger</a></span>` : ""}
       </div>
       ${origine ? `<p class="doux" style="font-size:.8rem;margin:0">Source : ${esc(origine.replace(/^https?:\/\/(www\.)?/, "").split("/")[0])}</p>` : ""}
       <div class="sd-pages" id="sd-pages">${url ? `<p class="doux">Chargement du ${quoi === "corrige" ? "corrigé" : "sujet"}…</p>` : `<div class="vide">Pas de corrigé disponible pour cette épreuve.</div>`}</div>
