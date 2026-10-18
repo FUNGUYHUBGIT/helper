@@ -1979,6 +1979,7 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 /* sujets du DNB */
 #bloc-sujets-dnb .segment{flex-wrap:wrap}
 .sd-go{font-weight:700;font-size:.88rem;color:var(--accent)}
+.liste > a.sd-ligne{background:var(--surface);border-bottom:1px solid var(--ligne);padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px;color:inherit;text-decoration:none}.liste > a.sd-ligne:last-child{border-bottom:0}.liste > a.sd-ligne:hover{background:var(--surface-2)}
 .sd-pages{display:flex;flex-direction:column;align-items:center;gap:14px}
 .sd-feuille{width:100%;max-width:1000px;height:auto;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.45)}
 </style>
@@ -4054,6 +4055,15 @@ const SUJETS_DNB = [
 /* ===================== DNB · MATHS : QUESTIONS TIRÉES DES SUJETS 2018 → 2026 =====================
    Chaque question renvoie à son sujet (PDF hébergé sur Helper, liste SUJETS_DNB). Réponses vérifiées sur les corrigés de l'APMEP. */
 (() => {
+  // anciens sujets de maths (questions déjà en place) : on pointe vers le PDF hébergé
+  [2025, 2024, 2023, 2022].forEach(an => { const h = SUJETS_DNB.find(x => x.id === an + "-metropole-maths"); if (h && SUJETS["dnb-" + an + "-maths"]) Object.assign(SUJETS["dnb-" + an + "-maths"], {url: h.sujet, heberge: true}); });
+  // autres matières : sujets ou corrigés en ligne (ouverts dans un nouvel onglet), affichés dans la même liste
+  [["dnb-2025-francais", "francais", 2025], ["dnb-2025-hge", "hge", 2025], ["dnb-2025-sciences", "sciences", 2025],
+   ["dnb-2024-francais", "francais", 2024], ["dnb-2024-sciences", "sciences", 2024], ["dnb-2023-francais", "francais", 2023], ["dnb-2023-hge", "hge", 2023]].forEach(([k, mat, an]) => {
+    const v = SUJETS[k]; if (!v) return; v.heberge = true;
+    const corrige = /corrig|correction/i.test(v.titre), metro = /Métropole/.test(v.titre);
+    SUJETS_DNB.push({id: k.replace(/^dnb-/, ""), an, session: metro ? "Métropole" : "France", mat, externe: v.url, nature: corrige ? "Corrigé" : "Sujet"});
+  });
   SUJETS_DNB.forEach(s => { SUJETS["dnb-" + s.an + "-" + s.id.replace(/^\d+-/, "").replace(/-maths$/, "") + "-maths"] = {titre: `DNB ${s.an} ${s.session} · Mathématiques`, url: s.sujet, heberge: true}; });
 })();
 const cleSujetDnb = (an, ses) => "dnb-" + an + "-" + ses + "-maths";
@@ -5368,7 +5378,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.65";
+const VERSION_SITE = "1.66";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5743,11 +5753,13 @@ VUES.brevet = function vueBrevet(){
       <div class="rangee"><button class="btn" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>Lancer une série de ${nbSerie || 50} questions</button>${dejaVues ? `<button class="btn sec" type="button" id="raz-vues">Oublier les questions vues</button>` : ""}</div>
     </div>
     ${ex === "dnb" ? blocLangues() + blocSujetsDnb() : ""}
-    <div class="bloc">
-      <span class="mono">${ex === "dnb" ? "Sources des questions" : "Sujets complets et sources"}</span>
-      <div class="sources">${sujets.map(([, s]) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">📄 ${esc(s.titre)} ↗</a>`).join("") || `<span class="doux">Aucun sujet pour cette année.</span>`}</div>
-      <p class="doux" style="font-size:.82rem;max-width:75ch">${ex === "bia" ? "Questions reformulées d'après les sujets officiels du BIA, réponses selon leurs corrigés." : "Questions rédigées à partir des sujets officiels du brevet (série générale) et de leurs corrigés. « Inspiré » signale une question qui reprend la situation du sujet avec d'autres valeurs."} Pendant la série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir en entier.</p>
-    </div>`;
+    ${ex === "bia" ? `<div class="bloc">
+      <span class="mono">Sujets du BIA</span>
+      ${sujets.length ? `<div class="liste">${sujets.map(([, s]) => `<a class="sd-ligne" href="${esc(s.url)}" target="_blank" rel="noopener">
+        <span class="titre"><strong>${esc(s.titre)}</strong><span class="doux" style="font-size:.85rem">${esc(domaineDnb(s.url))}</span></span>
+        <span class="rangee" style="gap:10px;flex-wrap:nowrap"><span class="etat">Sujet</span><span class="sd-go">Ouvrir ↗</span></span></a>`).join("")}</div>` : `<div class="vide">Aucun sujet pour cette année.</div>`}
+      <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Questions reformulées d'après les sujets officiels du BIA, réponses selon leurs corrigés. Pendant la série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir en entier.</p>
+    </div>` : ""}`;
   zone().querySelectorAll("#examen button").forEach(b => b.onclick = () => { choixBrevet.ex = b.dataset.v; choixBrevet.an = "tous"; vueBrevet(); });
   zone().querySelectorAll("#an-brevet button").forEach(b => b.onclick = () => { choixBrevet.an = b.dataset.v; vueBrevet(); });
   zone().querySelectorAll("#mat-brevet button").forEach(b => b.onclick = () => {
@@ -12819,16 +12831,18 @@ function blocSujetsDnb(){
       + (mats.length > 1 ? segment("sd-mat", [["tous", "Toutes les matières"], ...mats], choixSujetsDnb.mat) : "") : ""}
     ${ls.length ? `<div class="liste">${ls.map(s => `<button type="button" data-sujet-dnb="${esc(s.id)}">
         <span class="titre"><strong>${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}</strong>
-          <span class="doux" style="font-size:.85rem">${s.date ? dateLongueDnb(s.date) : s.an}${s.serie ? " · " + esc(s.serie) : ""}</span></span>
-        <span class="rangee" style="gap:10px;flex-wrap:nowrap"><span class="etat ${s.corrige ? "fait" : ""}">${s.corrige ? "Sujet + corrigé" : "Sujet"}</span><span class="sd-go">Ouvrir ›</span></span>
+          <span class="doux" style="font-size:.85rem">${s.date ? dateLongueDnb(s.date) : "Session " + s.an}${s.externe ? " · " + esc(domaineDnb(s.externe)) : ""}</span></span>
+        <span class="rangee" style="gap:10px;flex-wrap:nowrap"><span class="etat ${s.corrige || s.nature === "Corrigé" ? "fait" : ""}">${s.externe ? s.nature : s.corrige ? "Sujet + corrigé" : "Sujet"}</span><span class="sd-go">${s.externe ? "Ouvrir ↗" : "Ouvrir ›"}</span></span>
       </button>`).join("")}</div>` : `<div class="vide">Aucun sujet pour ce choix.</div>`}
+    <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Les questions des séries sont rédigées à partir de ces sujets et de leurs corrigés. Pendant une série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir.</p>
   </div>`;
 }
+const domaineDnb = u => String(u).replace(/^https?:\/\/(www\.)?/, "").split("/")[0];
 const dateLongueDnb = iso => { const d = new Date(iso + "T12:00:00"); return isNaN(d) ? iso : d.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long", year: "numeric"}).replace(/^./, c => c.toUpperCase()); };
 function brancherSujetsDnb(redessiner){
   zone().querySelectorAll("#sd-an button").forEach(b => b.onclick = () => { choixSujetsDnb.an = b.dataset.v; redessiner(); });
   zone().querySelectorAll("#sd-mat button").forEach(b => b.onclick = () => { choixSujetsDnb.mat = b.dataset.v; redessiner(); });
-  zone().querySelectorAll("[data-sujet-dnb]").forEach(b => b.onclick = () => { const s = SUJETS_DNB.find(x => x.id === b.dataset.sujetDnb); if (s) ouvrirSujetDnb(s, "sujet"); });
+  zone().querySelectorAll("[data-sujet-dnb]").forEach(b => b.onclick = () => { const s = SUJETS_DNB.find(x => x.id === b.dataset.sujetDnb); if (!s) return; if (s.externe) window.open(s.externe, "_blank", "noopener"); else ouvrirSujetDnb(s, "sujet"); });
 }
 // Page d'une épreuve : onglets Sujet / Corrigé, pages du PDF dessinées une par une
 let rendusDnb = 0;
