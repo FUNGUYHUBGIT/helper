@@ -1979,7 +1979,16 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 /* sujets du DNB */
 #bloc-sujets-dnb .segment{flex-wrap:wrap}
 .sd-go{font-weight:700;font-size:.88rem;color:var(--accent)}
-.liste > a.sd-ligne{background:var(--surface);border-bottom:1px solid var(--ligne);padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px;color:inherit;text-decoration:none}.liste > a.sd-ligne:last-child{border-bottom:0}.liste > a.sd-ligne:hover{background:var(--surface-2)}
+.sd-arbre{display:flex;flex-direction:column;gap:2px}
+.sd-nom{display:flex;align-items:center;gap:8px;width:100%;padding:6px 4px;background:none;border:0;border-radius:6px;color:var(--accent);font:inherit;font-weight:600;text-align:left;cursor:pointer}
+.sd-nom:hover{background:var(--surface-2)}
+.sd-nom .sd-fl{width:12px;height:12px;flex:none;transition:transform .15s ease}.sd-item.ouvert .sd-fl{transform:rotate(90deg)}
+.sd-info{font-weight:400;font-size:.85rem;margin-left:4px}
+.sd-casier{display:flex;flex-direction:column;gap:2px;margin:2px 0 8px 9px;padding-left:16px;border-left:1.5px solid var(--ligne)}
+.sd-casier[hidden]{display:none}
+.sd-doc{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:5px 8px;background:none;border:0;border-radius:6px;color:var(--texte);font:inherit;text-align:left;text-decoration:none;cursor:pointer}
+.sd-doc:hover{background:var(--surface-2);color:var(--accent)}
+.sd-doc .doux{font-size:.8rem}
 .sd-pages{display:flex;flex-direction:column;align-items:center;gap:14px}
 .sd-feuille{width:100%;max-width:1000px;height:auto;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.45)}
 </style>
@@ -5378,7 +5387,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.66";
+const VERSION_SITE = "1.67";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -5755,9 +5764,7 @@ VUES.brevet = function vueBrevet(){
     ${ex === "dnb" ? blocLangues() + blocSujetsDnb() : ""}
     ${ex === "bia" ? `<div class="bloc">
       <span class="mono">Sujets du BIA</span>
-      ${sujets.length ? `<div class="liste">${sujets.map(([, s]) => `<a class="sd-ligne" href="${esc(s.url)}" target="_blank" rel="noopener">
-        <span class="titre"><strong>${esc(s.titre)}</strong><span class="doux" style="font-size:.85rem">${esc(domaineDnb(s.url))}</span></span>
-        <span class="rangee" style="gap:10px;flex-wrap:nowrap"><span class="etat">Sujet</span><span class="sd-go">Ouvrir ↗</span></span></a>`).join("")}</div>` : `<div class="vide">Aucun sujet pour cette année.</div>`}
+      ${sujets.length ? `<div class="sd-arbre">${sujets.map(([k, s]) => ligneCasier(k, esc(s.titre), "", [["Sujet", s.url, true]])).join("")}</div>` : `<div class="vide">Aucun sujet pour cette année.</div>`}
       <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Questions reformulées d'après les sujets officiels du BIA, réponses selon leurs corrigés. Pendant la série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir en entier.</p>
     </div>` : ""}`;
   zone().querySelectorAll("#examen button").forEach(b => b.onclick = () => { choixBrevet.ex = b.dataset.v; choixBrevet.an = "tous"; vueBrevet(); });
@@ -5767,7 +5774,7 @@ VUES.brevet = function vueBrevet(){
     choixBrevet.mats[ex] = m.includes(v) ? m.filter(x => x !== v) : [...m, v]; vueBrevet();
   });
   zone().querySelectorAll("#entr-brevet button").forEach(b => b.onclick = () => { choixBrevet.entrainement = b.dataset.v === "oui"; vueBrevet(); });
-  if (ex === "dnb") brancherSujetsDnb(vueBrevet);
+  if (ex === "dnb") brancherSujetsDnb(vueBrevet); else brancherCasiers();
   if ($("#raz-vues")) deuxClics($("#raz-vues"), () => { prog.vuesB = {}; sauver(); vueBrevet(); });
   zone().querySelectorAll("#lv-brevet button").forEach(b => b.onclick = () => { choixBrevet.lv = b.dataset.v; vueBrevet(); });
   if ($("#lancer-langues")) $("#lancer-langues").onclick = () => {
@@ -12829,20 +12836,33 @@ function blocSujetsDnb(){
     <p class="doux" style="font-size:.88rem;max-width:75ch">Les vrais sujets du brevet depuis 2018, avec leur corrigé. Ouvre une épreuve pour la lire en entier.</p>
     ${ans.length ? segment("sd-an", [["tous", "Toutes"], ...ans.map(a => [String(a), String(a)])], String(choixSujetsDnb.an))
       + (mats.length > 1 ? segment("sd-mat", [["tous", "Toutes les matières"], ...mats], choixSujetsDnb.mat) : "") : ""}
-    ${ls.length ? `<div class="liste">${ls.map(s => `<button type="button" data-sujet-dnb="${esc(s.id)}">
-        <span class="titre"><strong>${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}</strong>
-          <span class="doux" style="font-size:.85rem">${s.date ? dateLongueDnb(s.date) : "Session " + s.an}${s.externe ? " · " + esc(domaineDnb(s.externe)) : ""}</span></span>
-        <span class="rangee" style="gap:10px;flex-wrap:nowrap"><span class="etat ${s.corrige || s.nature === "Corrigé" ? "fait" : ""}">${s.externe ? s.nature : s.corrige ? "Sujet + corrigé" : "Sujet"}</span><span class="sd-go">${s.externe ? "Ouvrir ↗" : "Ouvrir ›"}</span></span>
-      </button>`).join("")}</div>` : `<div class="vide">Aucun sujet pour ce choix.</div>`}
+    ${ls.length ? `<div class="sd-arbre">${ls.map(s => ligneCasier(s.id, `${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}`, s.date ? dateLongueDnb(s.date) : "",
+        s.externe ? [[s.nature, s.externe, true]] : [["Sujet", s.sujet], ...(s.corrige ? [["Corrigé", s.corrige]] : [])])).join("")}</div>` : `<div class="vide">Aucun sujet pour ce choix.</div>`}
     <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Les questions des séries sont rédigées à partir de ces sujets et de leurs corrigés. Pendant une série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir.</p>
   </div>`;
+}
+// Une ligne « nom du sujet ▸ » qui s'ouvre comme un casier sur ses documents (Sujet, Corrigé)
+const casiersOuverts = new Set();
+const FLECHE_CASIER = `<svg class="sd-fl" viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2 6.5 5 3.5 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ligneCasier = (id, nom, info, docs) => { const ouvert = casiersOuverts.has(id);
+  return `<div class="sd-item${ouvert ? " ouvert" : ""}"><button type="button" class="sd-nom" data-casier="${esc(id)}" aria-expanded="${ouvert}">${FLECHE_CASIER}<span>${nom}</span>${info ? `<span class="doux sd-info">${esc(info)}</span>` : ""}</button>
+    <div class="sd-casier"${ouvert ? "" : " hidden"}>${docs.map(([t, url, ext]) => ext
+      ? `<a class="sd-doc" href="${esc(url)}" target="_blank" rel="noopener">${t} ↗ <span class="doux">${esc(domaineDnb(url))}</span></a>`
+      : `<button type="button" class="sd-doc" data-doc-dnb="${esc(id)}" data-quoi="${t === "Corrigé" ? "corrige" : "sujet"}">${t}</button>`).join("")}</div></div>`; };
+function brancherCasiers(){
+  zone().querySelectorAll("[data-casier]").forEach(b => b.onclick = () => {
+    const id = b.dataset.casier, item = b.parentElement, ouvert = !item.classList.contains("ouvert");
+    item.classList.toggle("ouvert", ouvert); b.setAttribute("aria-expanded", ouvert); item.querySelector(".sd-casier").hidden = !ouvert;
+    ouvert ? casiersOuverts.add(id) : casiersOuverts.delete(id);
+  });
 }
 const domaineDnb = u => String(u).replace(/^https?:\/\/(www\.)?/, "").split("/")[0];
 const dateLongueDnb = iso => { const d = new Date(iso + "T12:00:00"); return isNaN(d) ? iso : d.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long", year: "numeric"}).replace(/^./, c => c.toUpperCase()); };
 function brancherSujetsDnb(redessiner){
   zone().querySelectorAll("#sd-an button").forEach(b => b.onclick = () => { choixSujetsDnb.an = b.dataset.v; redessiner(); });
   zone().querySelectorAll("#sd-mat button").forEach(b => b.onclick = () => { choixSujetsDnb.mat = b.dataset.v; redessiner(); });
-  zone().querySelectorAll("[data-sujet-dnb]").forEach(b => b.onclick = () => { const s = SUJETS_DNB.find(x => x.id === b.dataset.sujetDnb); if (!s) return; if (s.externe) window.open(s.externe, "_blank", "noopener"); else ouvrirSujetDnb(s, "sujet"); });
+  brancherCasiers();
+  zone().querySelectorAll("[data-doc-dnb]").forEach(b => b.onclick = () => { const s = SUJETS_DNB.find(x => x.id === b.dataset.docDnb); if (s) ouvrirSujetDnb(s, b.dataset.quoi); });
 }
 // Page d'une épreuve : onglets Sujet / Corrigé, pages du PDF dessinées une par une
 let rendusDnb = 0;
