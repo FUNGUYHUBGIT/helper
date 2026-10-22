@@ -5545,7 +5545,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.76";
+const VERSION_SITE = "1.77";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6340,7 +6340,7 @@ VUES.devoirs = function vueDevoirs(){
   const dv = dvDevoirVu && l.find(x => x.id === dvDevoirVu);
   if (dv){
     zone().innerHTML = pageDevoir(dv, l);
-    const cv = zone().querySelector(".dv-canvas"); if (cv){ if (estFaitDv(dv)) animerVagues(cv); else animerEntete(cv, dv.interrogation ? "#e5484d" : couleurCours(matiereDevoir(dv.matiere)), !!dv.interrogation); }
+    const cv = zone().querySelector(".dv-canvas"); if (cv){ if (estFaitDv(dv)) animerVagues(cv, !!dv.interrogation); else animerEntete(cv, dv.interrogation ? "#e5484d" : couleurCours(matiereDevoir(dv.matiere)), !!dv.interrogation); }
     brancherCochesDv(vueDevoirs);
     $("#dv-retour").onclick = () => { dvDevoirVu = null; if (!dvDepuisJour) dvJourVu = null; vueDevoirs(); };
     zone().querySelectorAll("[data-aller]").forEach(b => b.onclick = () => ouvrir(b.dataset.aller));
@@ -6611,18 +6611,44 @@ function dessinerVagues(ctx, W, H, t, opt = {}){
       for (let yy = y, n = 0; yy < H + pas && n < 40; yy += pas * k + 2, n++){
         const fond = n / 12, a = Math.max(0, (.75 - fond) * (.35 + prof * .5)) * (opt.alpha ?? 1), rayon = Math.max(.5, (1.6 - fond * .6) * (.7 + prof * .6));
         if (a <= .02) break;
-        ctx.fillStyle = `rgba(${r},${g},${b},${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(x + Math.sin(t * .0004 + yy * .05) * .8, yy, rayon, 0, 6.283); ctx.fill();
+        const rouge = opt.rouge ? opt.rouge(x, n, c) : 0;   // contrôle fait : des points « désynchronisés » passent au rouge
+        ctx.fillStyle = rouge ? `rgba(255,${60 - rouge * 30 | 0},${70 - rouge * 30 | 0},${Math.min(.95, a * (2.2 + rouge * 2)).toFixed(3)})` : `rgba(${r},${g},${b},${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(x + Math.sin(t * .0004 + yy * .05) * .8, yy, rayon, 0, 6.283); ctx.fill();
       }
       // la crête : un point plus clair
       ctx.fillStyle = `rgba(220,255,235,${((.25 + prof * .5) * (opt.alpha ?? 1)).toFixed(2)})`; ctx.beginPath(); ctx.arc(x, y, 1.1 + prof * .9, 0, 6.283); ctx.fill();
     }
   }
 }
-function animerVagues(cv){
-  const jeton = ++dvAnim, ctx = cv.getContext("2d"); let W = 0, H = 0;
-  const taille = () => { const r = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+function animerVagues(cv, controle){
+  const jeton = ++dvAnim, ctx = cv.getContext("2d"); let W = 0, H = 0, dpr = 1;
+  const taille = () => { const r = cv.getBoundingClientRect(); dpr = Math.min(2, devicePixelRatio || 1); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
   taille(); addEventListener("resize", taille);
-  const image = t => { if (!cv.isConnected || jeton !== dvAnim){ removeEventListener("resize", taille); return; } dessinerVagues(ctx, W, H, t, {pas: 8, couches: 5, y0: .42, dy: .42, alpha: .16}); requestAnimationFrame(image); };
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // contrôle fait : la mer « se désynchronise » comme une mort dans AC4 — elle se fige, saute, se découpe en bandes, des points passent au rouge
+  let tv = 0, prec = 0, fige = 0, glitch = 0, phase = 0;
+  const bruit = (a, b, c, d) => { const v = Math.sin(a * 127.1 + b * 311.7 + c * 74.7 + d * 19.3) * 43758.5453; return v - Math.floor(v); };
+  const rouge = (x, n, c) => { const cx = Math.floor(x / 34), z = bruit(cx, Math.floor(n / 3), c, phase);
+    return z > .9 ? (z - .9) * 10 : (glitch && bruit(Math.floor(x / 9), n, c, tv | 0) > .93 ? 1 : 0); };
+  const image = t => {
+    if (!cv.isConnected || jeton !== dvAnim){ removeEventListener("resize", taille); return; }
+    const dt = Math.min(64, t - (prec || t)); prec = t;
+    if (!controle){ tv += dt; dessinerVagues(ctx, W, H, tv, {pas: 8, couches: 5, y0: .42, dy: .42, alpha: .16}); }
+    else {
+      if (fige) fige--; else { tv += dt; if (Math.random() < .006) fige = 25 + Math.random() * 90 | 0; if (Math.random() < .004) tv += 2500 + Math.random() * 6000; }
+      if (Math.random() < .02) phase++;                       // les zones rouges se déplacent par à-coups
+      if (!glitch && Math.random() < .018) glitch = 5 + Math.random() * 14 | 0;
+      if (!fige || Math.random() < .25) dessinerVagues(ctx, W, H, tv, {pas: 8, couches: 5, y0: .42, dy: .42, alpha: .2, rouge});
+      if (glitch){ glitch--;
+        for (let k = 0, nb = 2 + Math.random() * 5 | 0; k < nb; k++){   // bandes décalées
+          const y = Math.random() * H, hb = 2 + Math.random() * 14, dx = (Math.random() - .5) * 46;
+          ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(cv, 0, y * dpr, W * dpr, hb * dpr, dx * dpr, y * dpr, W * dpr, hb * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        if (Math.random() < .35){ ctx.fillStyle = `rgba(255,50,60,${.05 + Math.random() * .08})`; ctx.fillRect(0, Math.random() * H, W, 1 + Math.random() * 2); }
+        if (Math.random() < .08){ ctx.fillStyle = "rgba(255,40,50,.05)"; ctx.fillRect(0, 0, W, H); }   // bref voile rouge
+      }
+    }
+    if (!reduit) requestAnimationFrame(image);
+  };
   requestAnimationFrame(image);
 }
 /* ===================== Correcteur d'orthographe de l'éditeur (clic droit sur un mot) =====================
