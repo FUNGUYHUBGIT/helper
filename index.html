@@ -2039,6 +2039,26 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .qc-date{font:700 .8rem var(--f-mono)}.qc-case.ok .qc-date{color:var(--ok)}.qc-case.ko .qc-date{color:var(--erreur)}
 .qc-frise.fige .qc-carte{cursor:default}
 @media (max-width:640px){.qc-cases{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* devoirs faits : coche, vert, vagues en points */
+.dv-ligne-b{position:relative;display:flex;align-items:stretch}
+.dv-ligne-b .dv-ligne{padding-left:54px}
+.dv-coche{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:3;display:grid;place-items:center;width:28px;height:28px;padding:0;border-radius:8px;border:2px solid color-mix(in srgb,var(--doux) 70%,transparent);background:var(--surface);color:transparent;cursor:pointer;transition:background .2s,border-color .2s,color .2s,transform .15s}
+.dv-coche svg{width:18px;height:18px}
+.dv-coche:hover{border-color:#5cc98a;color:color-mix(in srgb,#5cc98a 45%,transparent)}
+.dv-coche:active{transform:translateY(-50%) scale(.9)}
+.dv-coche[aria-checked="true"]{background:#5cc98a;border-color:#5cc98a;color:#0f1a13}
+.dv-ligne.fait{--c:#5cc98a;border-color:color-mix(in srgb,#5cc98a 55%,transparent) !important;background:color-mix(in srgb,#5cc98a 10%,var(--surface-2)) !important;box-shadow:none !important}
+.dv-ligne.fait::before{background:#5cc98a}
+.dv-ligne.fait > *:not(.dv-vagues){position:relative;z-index:1}
+.dv-ligne.fait b{color:#7fdba5}.dv-ligne.fait .dv-apercu{opacity:.85;text-shadow:0 0 6px #0d1712,0 0 3px #0d1712}.dv-page.fait .dv-page-tete h2,.dv-page.fait .dv-page-quand{text-shadow:0 0 10px #0d1712,0 0 4px #0d1712}
+.dv-vagues{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.9}
+.dv-coche.grand{position:static;transform:none;display:inline-flex;align-items:center;gap:8px;width:auto;height:auto;padding:8px 14px 8px 10px;border-radius:999px;color:var(--texte);font:inherit;font-weight:600;font-size:.9rem}
+.dv-coche.grand svg{width:20px;height:20px;padding:2px;border-radius:6px;border:2px solid color-mix(in srgb,var(--doux) 70%,transparent);color:transparent}
+.dv-coche.grand:active{transform:scale(.96)}
+.dv-coche.grand[aria-checked="true"]{background:#5cc98a;color:#0f1a13}.dv-coche.grand[aria-checked="true"] svg{border-color:#0f1a13;color:#0f1a13}
+.dv-page.fait .dv-page-tete{background:linear-gradient(180deg,#0e1813 0%,#0c1a14 100%) !important;border-bottom-color:color-mix(in srgb,#5cc98a 45%,var(--ligne)) !important}
+.dv-page.fait{--c:#5cc98a}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5523,7 +5543,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.73";
+const VERSION_SITE = "1.74";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6241,12 +6261,29 @@ function animerEntete(cv, couleur, enerve){
   };
   requestAnimationFrame(image);
 }
+/* ----- Devoirs faits (cochés par l'élève, enregistrés dans sa progression) ----- */
+const faitsDv = () => prog ? (prog.devoirsFaits = prog.devoirsFaits || {}) : (() => { try { return JSON.parse(lsGet("helper.dv.faits") || "{}"); } catch { return {}; } })();
+const estFaitDv = d => !!faitsDv()[d.id];
+function basculerFaitDv(id){
+  const f = faitsDv(); if (f[id]) delete f[id]; else f[id] = Date.now();
+  // on oublie les devoirs cochés il y a plus de 60 jours
+  for (const k of Object.keys(f)) if (Date.now() - f[k] > 60 * 864e5) delete f[k];
+  if (prog) sauver(); else lsSet("helper.dv.faits", JSON.stringify(f));
+  return !!f[id];
+}
+const COCHE_DV = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const cocheDv = (d, grand) => `<button type="button" class="dv-coche${grand ? " grand" : ""}" data-fait="${esc(d.id)}" role="checkbox" aria-checked="${estFaitDv(d)}" title="${estFaitDv(d) ? "Fait — clique pour décocher" : "Marquer comme fait"}">${COCHE_DV}${grand ? `<span>${estFaitDv(d) ? "Fait" : "Marquer comme fait"}</span>` : ""}</button>`;
+function brancherCochesDv(apres){
+  zone().querySelectorAll("[data-fait]").forEach(b => b.onclick = ev => { ev.stopPropagation(); const fait = basculerFaitDv(b.dataset.fait);
+    if (fait) toast("Devoir fait ✓"); apres(); });
+}
 function ligneDevoir(d){
   const m = matiereDevoir(d.matiere), nbDocs = (d.documents || []).length;
-  return `<button type="button" class="dv-ligne ${d.interrogation ? "controle" : ""}" data-dv="${esc(d.id)}" style="--c:${esc(couleurCours(m))}" aria-label="${esc(m)} : ouvrir le devoir">
+  const fait = estFaitDv(d);
+  return `<div class="dv-ligne-b${fait ? " fait" : ""}">${cocheDv(d)}<button type="button" class="dv-ligne ${d.interrogation ? "controle" : ""}${fait ? " fait" : ""}" data-dv="${esc(d.id)}" style="--c:${esc(couleurCours(m))}" aria-label="${esc(m)} : ouvrir le devoir">
     <span class="dv-corps"><span class="dv-haut"><span class="dv-pt"></span><b>${esc(m)}</b>${d.manuel ? `<span class="dv-badge">Ajouté à la main</span>` : ""}${nbDocs ? `<span class="dv-pj" title="Pièce(s) jointe(s)">📎 ${nbDocs}</span>` : ""}</span>
       <span class="dv-apercu">${d.contenu ? esc(apercuDevoir(d.contenu)) : `<i>Pas de détail</i>`}</span></span>${d.interrogation ? `<span class="dv-tag-ctrl">${ICO_CTRL}Contrôle</span>` : ""}${FLECHE_DV_D}
-  </button>`;
+  </button></div>`;
 }
 function rangJour(g){
   const j = libJourDevoir(g.date), mats = [];
@@ -6271,11 +6308,12 @@ function pageDevoir(d, l){
   const m = matiereDevoir(d.matiere), j = libJourDevoir(d.date), edit = peutEditerDevoirs() && d.manuel;
   const duJour = l.filter(x => x.date === d.date), i = duJour.findIndex(x => x.id === d.id), prec = duJour[i - 1], suiv = duJour[i + 1];
   return `<button type="button" class="dv-retour" id="dv-retour">${FLECHE_DV_G}${dvDepuisJour ? esc(dateLongueDv(d.date)) : "Devoirs"}</button>
-    <article class="dv-page ${d.interrogation ? "controle" : ""}" style="--c:${esc(couleurCours(m))}">
+    <article class="dv-page ${d.interrogation ? "controle" : ""}${estFaitDv(d) ? " fait" : ""}" style="--c:${esc(couleurCours(m))}">
       <header class="dv-page-tete"><canvas class="dv-canvas" aria-hidden="true"></canvas>
         <div class="dv-tete-g"><h2 class="dv-page-titre"><span class="dv-pt-grand"></span>${esc(m)}</h2>
           <span class="dv-page-quand">${j.n === 0 ? "Pour aujourd'hui" : j.n === 1 ? "Pour demain" : j.n < 0 ? "C'était pour le" : "Pour le"} ${j.n === 0 || j.n === 1 ? nomJourDv(d.date) + " " + courtDate(d.date) : esc(dateLongueDv(d.date).toLowerCase())}</span>
           <div class="rangee" style="gap:6px">${d.manuel ? `<span class="dv-badge grand">Ajouté à la main</span>` : ""}${j.n > 1 || j.n < 0 ? `<span class="dv-badge grand">${relJour(j.n)}</span>` : ""}</div></div>
+        ${cocheDv(d, true)}
         ${d.interrogation ? `<div class="dv-banniere-ctrl">${ICO_CTRL}<span><b>Contrôle</b><small>${j.n === 0 ? "aujourd'hui" : j.n === 1 ? "demain — révise ce soir" : j.n > 1 ? `dans ${j.n} jours` : "passé"}</small></span></div>` : ""}
       </header>
       <div class="dv-page-corps">
@@ -6298,7 +6336,8 @@ VUES.devoirs = function vueDevoirs(){
   const dv = dvDevoirVu && l.find(x => x.id === dvDevoirVu);
   if (dv){
     zone().innerHTML = pageDevoir(dv, l);
-    const cv = zone().querySelector(".dv-canvas"); if (cv) animerEntete(cv, dv.interrogation ? "#e5484d" : couleurCours(matiereDevoir(dv.matiere)), !!dv.interrogation);
+    const cv = zone().querySelector(".dv-canvas"); if (cv){ if (estFaitDv(dv)) animerVagues(cv); else animerEntete(cv, dv.interrogation ? "#e5484d" : couleurCours(matiereDevoir(dv.matiere)), !!dv.interrogation); }
+    brancherCochesDv(vueDevoirs);
     $("#dv-retour").onclick = () => { dvDevoirVu = null; if (!dvDepuisJour) dvJourVu = null; vueDevoirs(); };
     zone().querySelectorAll("[data-aller]").forEach(b => b.onclick = () => ouvrir(b.dataset.aller));
     if (edit && dv.manuel){ $("#dv-modif").onclick = () => fenetreDevoir(devoirsMan.find(x => x.id === dv.id));
@@ -6315,6 +6354,7 @@ VUES.devoirs = function vueDevoirs(){
     $("#dv-retour").onclick = () => { dvJourVu = null; vueDevoirs(); };
     const aj = $("#ajout-devoir"); if (aj) aj.onclick = () => fenetreDevoir(null, g.date);
     zone().querySelectorAll("[data-dv]").forEach(b => b.onclick = () => { dvDepuisJour = true; ouvrir(b.dataset.dv); });
+    brancherCochesDv(vueDevoirs); demarrerVaguesDv();
     return;
   }
   // accueil : aujourd'hui + prochain jour de cours en grand, puis les autres jours
@@ -6336,6 +6376,7 @@ VUES.devoirs = function vueDevoirs(){
   const plus = $("#dv-plus"); if (plus) plus.onclick = () => { dvPassesTout = !dvPassesTout; vueDevoirs(); };
   zone().querySelectorAll("[data-jour]").forEach(b => b.onclick = () => { dvJourVu = b.dataset.jour; vueDevoirs(); window.scrollTo({top: 0}); });
   zone().querySelectorAll("[data-dv]").forEach(b => b.onclick = () => { dvDepuisJour = false; ouvrir(b.dataset.dv); });
+  brancherCochesDv(vueDevoirs); demarrerVaguesDv();
   if (edit) panneauSync();
 };
 async function ecrireDevoirsMan(liste, ok){
@@ -6551,6 +6592,49 @@ function blocSyncFond(bloc){
     window.HelperApp.configSyncFond(JSON.stringify({edId: lsGet("helper.ed.id") || "", edMdp: lsGet("helper.ed.mdp") || "", faCn: fa.cn || "", faCv: fa.cv || "", email, mdp, ua: navigator.userAgent.replace(/\s*HelperApp\/[\d.]+/, "")}));
     toast("Synchronisation automatique activée."); setTimeout(majSync, 300); setTimeout(majSync, 25000);
   };
+}
+
+/* ----- Vagues en points (vues de profil, très lentes) : fond des devoirs faits ----- */
+const VERT_DV = [92, 201, 138];
+// une couche de vagues : rangées de points dont la hauteur suit plusieurs sinusoïdes
+function dessinerVagues(ctx, W, H, t, opt = {}){
+  const pas = opt.pas || 7, couches = opt.couches || 4, [r, g, b] = VERT_DV;
+  ctx.clearRect(0, 0, W, H);
+  for (let c = 0; c < couches; c++){
+    const prof = c / (couches - 1 || 1), base = H * ((opt.y0 ?? .28) + prof * (opt.dy ?? .5)), amp = H * (.07 + prof * .06), vit = .00012 + prof * .00018, k = (1 - prof) * .5 + .5;
+    for (let x = -pas; x < W + pas; x += pas * k + 2){
+      const y = base + Math.sin(x * .018 / k + t * vit * 6 + c * 1.7) * amp + Math.sin(x * .041 / k - t * vit * 4 + c) * amp * .35;
+      for (let yy = y, n = 0; yy < H + pas && n < 40; yy += pas * k + 2, n++){
+        const fond = n / 12, a = Math.max(0, (.75 - fond) * (.35 + prof * .5)), rayon = Math.max(.5, (1.6 - fond * .6) * (.7 + prof * .6));
+        if (a <= .02) break;
+        ctx.fillStyle = `rgba(${r},${g},${b},${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(x + Math.sin(t * .0004 + yy * .05) * .8, yy, rayon, 0, 6.283); ctx.fill();
+      }
+      // la crête : un point plus clair
+      ctx.fillStyle = `rgba(220,255,235,${(.25 + prof * .5).toFixed(2)})`; ctx.beginPath(); ctx.arc(x, y, 1.1 + prof * .9, 0, 6.283); ctx.fill();
+    }
+  }
+}
+function animerVagues(cv){
+  const ctx = cv.getContext("2d"); let W = 0, H = 0;
+  const taille = () => { const r = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  taille(); addEventListener("resize", taille);
+  const image = t => { if (!cv.isConnected){ removeEventListener("resize", taille); return; } dessinerVagues(ctx, W, H, t, {pas: 8, couches: 5, y0: .42, dy: .42}); requestAnimationFrame(image); };
+  requestAnimationFrame(image);
+}
+// les lignes « faites » partagent une seule animation (une petite toile par ligne, dessinée ensemble)
+let vaguesDvActif = false;
+function demarrerVaguesDv(){
+  zone().querySelectorAll(".dv-ligne.fait").forEach(b => { if (!b.querySelector(".dv-vagues")) b.insertAdjacentHTML("afterbegin", `<canvas class="dv-vagues" aria-hidden="true"></canvas>`); });
+  if (vaguesDvActif) return; vaguesDvActif = true;
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const image = t => {
+    const toiles = [...document.querySelectorAll(".dv-vagues")]; if (!toiles.length){ vaguesDvActif = false; return; }
+    toiles.forEach(cv => { const r = cv.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return; const dpr = Math.min(2, devicePixelRatio || 1);
+      if (cv.width !== Math.round(r.width * dpr)){ cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr); }
+      const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); dessinerVagues(ctx, r.width, r.height, reduit ? 0 : t + r.top * 3, {pas: 6, couches: 3, y0: .52, dy: .3}); });
+    requestAnimationFrame(image);
+  };
+  requestAnimationFrame(image);
 }
 /* ===================== Correcteur d'orthographe de l'éditeur (clic droit sur un mot) =====================
    Dictionnaire : ~336 000 mots français (donnees/mots-fr.txt, chargé au premier besoin) + mots ajoutés par l'utilisateur. */
