@@ -50,7 +50,7 @@ public class AppActivity extends Activity {
   @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
   @Override protected void onCreate(Bundle etat) {
     super.onCreate(etat);
-    if (!SyncDevoirs.prefs(this).getString("edId", "").isEmpty()) SyncDevoirs.planifier(this, false);
+    if (!SyncDevoirs.prefs(this).getString("edId", "").isEmpty()) SyncDevoirs.planifier(this, true);   // met à jour le rythme (2 fois par jour)
     web = new WebView(this);
     web.setBackgroundColor(Color.parseColor("#0E0E0F"));
     setContentView(web);
@@ -151,7 +151,7 @@ public class AppActivity extends Activity {
     @JavascriptInterface public void arreterSyncFond() { SyncDevoirs.arreter(AppActivity.this); }
     @JavascriptInterface public String etatSyncFond() {
       android.content.SharedPreferences p = SyncDevoirs.prefs(AppActivity.this); JSONObject o = new JSONObject();
-      try { o.put("actif", !p.getString("edId", "").isEmpty()); o.put("compte", p.getString("edId", "")); o.put("dernier", p.getString("dernier", "")); o.put("ok", p.getBoolean("ok", false)); o.put("message", p.getString("message", "")); } catch (Exception x) {}
+      try { o.put("actif", !p.getString("edId", "").isEmpty()); o.put("compte", p.getString("edId", "")); o.put("dernier", p.getString("dernier", "")); o.put("ok", p.getBoolean("ok", false)); o.put("message", p.getString("message", "")); o.put("rythme", "2/jour"); } catch (Exception x) {}
       return o.toString();
     }
     // Requête vers EcoleDirecte faite par le téléphone lui-même (même adresse IP que l'appli EcoleDirecte) ; seulement api.ecoledirecte.com

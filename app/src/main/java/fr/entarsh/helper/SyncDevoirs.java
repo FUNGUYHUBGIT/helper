@@ -6,6 +6,7 @@ import android.text.Html;
 import android.util.Base64;
 import androidx.annotation.NonNull;
 import androidx.work.Constraints;
+import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
@@ -36,7 +37,8 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/* Synchronisation des devoirs EcoleDirecte en arrière-plan (toutes les 3 h, même appli fermée).
+/* Synchronisation des devoirs EcoleDirecte en arrière-plan, même appli fermée : 2 fois par jour (vers 17 h 30 et 20 h 30).
+   Le téléphone vérifie toutes les heures si un créneau est passé ; il ne se connecte que si ce créneau n'a pas encore été fait.
    La connexion part du téléphone : même adresse IP que d'habitude, donc pas de blocage d'EcoleDirecte. */
 public class SyncDevoirs extends Worker {
   static final String SB_URL = "https://hltchrwrefrrfhtzimkn.supabase.co";
@@ -49,11 +51,11 @@ public class SyncDevoirs extends Worker {
   static SharedPreferences prefs(Context c) { return c.getSharedPreferences(PREFS, Context.MODE_PRIVATE); }
   static Constraints contraintes() { return new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build(); }
   static void planifier(Context c, boolean remplacer) {
-    PeriodicWorkRequest r = new PeriodicWorkRequest.Builder(SyncDevoirs.class, 3, TimeUnit.HOURS).setConstraints(contraintes()).build();
+    PeriodicWorkRequest r = new PeriodicWorkRequest.Builder(SyncDevoirs.class, 1, TimeUnit.HOURS).setConstraints(contraintes()).build();
     WorkManager.getInstance(c).enqueueUniquePeriodicWork("sync-devoirs", remplacer ? ExistingPeriodicWorkPolicy.UPDATE : ExistingPeriodicWorkPolicy.KEEP, r);
   }
   static void maintenant(Context c) {
-    WorkManager.getInstance(c).enqueueUniqueWork("sync-devoirs-maintenant", ExistingWorkPolicy.REPLACE, new OneTimeWorkRequest.Builder(SyncDevoirs.class).setConstraints(contraintes()).build());
+    WorkManager.getInstance(c).enqueueUniqueWork("sync-devoirs-maintenant", ExistingWorkPolicy.REPLACE, new OneTimeWorkRequest.Builder(SyncDevoirs.class).setConstraints(contraintes()).setInputData(new Data.Builder().putBoolean("force", true).build()).build());
   }
   static void arreter(Context c) { WorkManager.getInstance(c).cancelUniqueWork("sync-devoirs"); prefs(c).edit().clear().apply(); }
 
@@ -109,9 +111,23 @@ public class SyncDevoirs extends Worker {
     return t.replace(' ', ' ').replaceAll("[ \t]+\n", "\n").replaceAll("\n{3,}", "\n\n").trim();
   }
 
+  /* Créneaux de synchronisation (heure de Paris) : 17 h 30 et 20 h 30 */
+  static final int[][] CRENEAUX = {{17, 30}, {20, 30}};
+  static boolean creneauAFaire(SharedPreferences p) {
+    TimeZone tz = TimeZone.getTimeZone("Europe/Paris"); Calendar now = Calendar.getInstance(tz); long dernierCreneau = 0;
+    for (int j = 0; j <= 1; j++) for (int[] h : CRENEAUX) {
+      Calendar c = (Calendar) now.clone(); c.add(Calendar.DAY_OF_MONTH, -j); c.set(Calendar.HOUR_OF_DAY, h[0]); c.set(Calendar.MINUTE, h[1]); c.set(Calendar.SECOND, 0); c.set(Calendar.MILLISECOND, 0);
+      if (c.getTimeInMillis() <= now.getTimeInMillis()) dernierCreneau = Math.max(dernierCreneau, c.getTimeInMillis());
+    }
+    long dernier = 0;
+    try { SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US); iso.setTimeZone(TimeZone.getTimeZone("UTC")); String d = p.getString("dernier", ""); if (!d.isEmpty()) dernier = iso.parse(d).getTime(); } catch (Exception e) {}
+    return dernier < dernierCreneau;
+  }
+
   @NonNull @Override public Result doWork() {
     Context c = getApplicationContext(); SharedPreferences p = prefs(c);
     if (p.getString("edId", "").isEmpty()) return Result.success();
+    if (!getInputData().getBoolean("force", false) && !creneauAFaire(p)) return Result.success();   // pas encore l'heure
     ua = p.getString("ua", "Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36");
     try {
       SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE); f.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
@@ -152,7 +168,7 @@ public class SyncDevoirs extends Worker {
           JSONObject m = mats.getJSONObject(i), af = m.optJSONObject("aFaire"); if (af == null) continue;
           JSONObject d = new JSONObject();
           d.put("id", "ed-" + (af.has("idDevoir") ? af.opt("idDevoir") : m.opt("id"))); d.put("date", date); d.put("matiere", m.optString("matiere", ""));
-          d.put("prof", m.optString("nomProf", "").trim()); d.put("groupe", "G".equals(m.optString("entityType")) ? m.optString("entityLibelle", "") : "");
+          d.put("groupe", "G".equals(m.optString("entityType")) ? m.optString("entityLibelle", "") : "");
           d.put("interrogation", m.optBoolean("interrogation", false)); d.put("donneLe", af.optString("donneLe", ""));
           String t = texte(b64(af.optString("contenu", ""))); d.put("contenu", t.length() > 4000 ? t.substring(0, 4000) : t);
           JSONArray docs = new JSONArray(), src = af.optJSONArray("documents");
