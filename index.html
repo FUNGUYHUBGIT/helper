@@ -5862,7 +5862,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.90";
+const VERSION_SITE = "1.91";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6471,7 +6471,8 @@ VUES.actu = function vueActu(){
   chargerImages();
 };
 
-/* ----- Devoirs : cahier de texte récupéré sur EcoleDirecte (robot GitHub Actions) + devoirs ajoutés à la main ----- */
+/* ----- Devoirs : cahier de texte récupéré sur EcoleDirecte (par l'application Android) + devoirs ajoutés à la main.
+   Réservé à la classe de 3C (aussi côté serveur : supabase/7-devoirs-3c.sql). Le nom des professeurs n'est jamais enregistré. ----- */
 let devoirsED = {devoirs: [], majLe: null, existe: false}, devoirsMan = [];
 const peutEditerDevoirs = () => modeGerant || estGerantCompte() || estAdminCompte();
 // nom EcoleDirecte (« ED.PHYSIQUE & SPORT. ») → nom de l'emploi du temps (« EPS »)
@@ -6650,7 +6651,7 @@ function pageDevoir(d, l){
       <div class="dv-page-corps">
         <div class="dv-texte">${d.contenu ? texteDevoir(d.contenu) : `<span class="doux">Pas de détail.</span>`}</div>
         ${(d.documents || []).length ? `<div class="dv-docs"><span class="mono">Pièces jointes</span>${d.documents.map(x => `<span class="dv-doc">📎 ${esc(x)}</span>`).join("")}<small class="doux">À télécharger sur EcoleDirecte.</small></div>` : ""}
-        <dl class="dv-infos">${d.prof ? `<div><dt>Professeur</dt><dd>${esc(d.prof)}</dd></div>` : ""}${d.donneLe ? `<div><dt>Donné le</dt><dd>${esc(dateLongueDv(d.donneLe))}</dd></div>` : ""}${d.groupe ? `<div><dt>Groupe</dt><dd>${esc(d.groupe)}</dd></div>` : ""}</dl>
+        <dl class="dv-infos">${d.donneLe ? `<div><dt>Donné le</dt><dd>${esc(dateLongueDv(d.donneLe))}</dd></div>` : ""}${d.groupe ? `<div><dt>Groupe</dt><dd>${esc(d.groupe)}</dd></div>` : ""}</dl>
         ${edit ? `<div class="rangee"><button type="button" class="mini-btn" id="dv-modif">Modifier</button><button type="button" class="mini-btn danger" id="dv-suppr">Supprimer</button></div>` : ""}
       </div>
     </article>
@@ -6823,7 +6824,7 @@ async function syncED(ident, mdp, demanderQcm, etape){
     const j = await appel(`/Eleves/${eleve}/cahierdetexte/${date}.awp?verbe=get`, {});
     if (j.code !== 200 || !j.data) continue;
     for (const m of j.data.matieres || []){ const af = m.aFaire; if (!af) continue;
-      devoirs.push({id: "ed-" + (af.idDevoir || m.id), date, matiere: m.matiere || "", prof: String(m.nomProf || "").trim(), groupe: m.entityType === "G" ? m.entityLibelle || "" : "",
+      devoirs.push({id: "ed-" + (af.idDevoir || m.id), date, matiere: m.matiere || "", groupe: m.entityType === "G" ? m.entityLibelle || "" : "",
         interrogation: !!m.interrogation, donneLe: af.donneLe || "", contenu: htmlEnTexte(b64Txt(af.contenu)).slice(0, 4000), documents: (af.documents || []).map(d => d.libelle).filter(Boolean).slice(0, 10)}); }
   }
   return {devoirs, dates};
