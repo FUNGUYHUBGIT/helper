@@ -4776,6 +4776,153 @@ BANQUE_REVISION.push(
   RV("dnb","sciences","Que signifie « 1 octet » ?",["8 bits","10 bits","1 000 bits","2 bits"],0,"Unité de quantité d'information numérique."),
   RV("dnb","sciences","Quel matériau est un bon conducteur électrique ?",["Le cuivre","Le bois","Le plastique","Le verre"],0,"Les métaux conduisent le courant ; plastique et verre sont isolants.")
 );
+/* ===================== FIGURES DES SUJETS DNB (annales 2018 → 2026) =====================
+   Comme dans le vrai sujet, les exercices de géométrie sont accompagnés de leur figure.
+   Les figures sont tracées avec les vraies mesures (sauf mention « pas à l'échelle »),
+   et ne montrent jamais la longueur ou l'angle demandé (marqués « ? »). */
+(() => {
+  const PAS = FG_PAS_ECHELLE;
+  // points d'un arc de cercle (pour les secteurs, demi-cercles…)
+  const arc = (pts, pref, cx, cy, r, a0, a1, n = 24) => { const l = [];
+    for (let i = 0; i <= n; i++){ const a = (a0 + (a1 - a0) * i / n) * Math.PI / 180, k = pref + i; pts[k] = [cx + r * Math.cos(a), cy + r * Math.sin(a)]; l.push(k); }
+    return l; };
+
+  // 2026 Métropole : papillon, (BD) et (CE) se coupent en A, (BC) // (DE)
+  const papillon26 = ae => ({type: "plan", alt: "Deux triangles opposés par le sommet A", pts: {A: [0, 0], B: [-6.4, 0], C: [0, 4.8], D: [4.8, 0], E: [0, -3.6]},
+    seg: [["B", "D", ""], ["C", "E", ""], ["B", "C", "8 cm"], ["D", "E", ""], ["A", "B", "6,4 cm", "n"], ["A", "C", "4,8 cm", "n"], ["A", "D", "4,8 cm", "ni"], ...(ae ? [["A", "E", "3,6 cm", "ni"]] : [])],
+    legende: "(BC) // (DE)."});
+  // 2026 Amérique du Nord : B, A, E alignés ; C, A, D alignés ; ABC rectangle en B
+  const an26 = ang => ({type: "plan", alt: "Deux triangles opposés par le sommet A", pts: {A: [0, 0], B: [-8.25, 0], C: [-8.25, 7.2], E: [5.5, 0], D: [5.5, -4.8]},
+    seg: [["B", "E", ""], ["C", "D", ""], ["B", "C", "7,2 cm"], ["E", "D", "4,8 cm"], ["A", "E", "5,5 cm", "ni"], ["A", "D", "7,3 cm", "ni"]], droit: ["ABC"],
+    ...(ang ? {angle: [["ACB", "49°"], ["ADE", "?"]]} : {})});
+  // 2026 Asie : coupe du gobelet (tronc de cône)
+  const cone26 = {type: "plan", alt: "Coupe du grand cône et du petit cône", pts: {O: [0, 10], A: [0, 6], B: [0, 0], D: [2.7, 6], C: [6.75, 0], _C2: [-6.75, 0]},
+    ell: [["A", 2.7, .5, "b"], ["B", 6.75, 1.2, "b"]], seg: [["O", "B", "", "p"], ["O", "C", ""], ["O", "_C2", ""], ["O", "D", "8,2 cm", "n"]], txt: [[3.4, -1.9, "4,5 cm"]],
+    droit: ["OAD", "OBC"], legende: "AD = 1,8 cm. Le gobelet est la partie entre les deux disques. " + PAS};
+  // 2026 Centres étrangers : A, B, M alignés ; A, C, N alignés
+  const ce26 = tout => ({type: "plan", alt: "Deux triangles rectangles emboîtés", pts: {A: [0, 0], B: [6.4, 0], M: [9.6, 0], C: [6.4, 4.8], N: [9.6, 7.2]},
+    seg: [["A", "M", ""], ["A", "N", ""], ["B", "C", tout ? "4,8 cm" : ""], ["M", "N", tout ? "7,2 cm" : ""], ["A", "B", "6,4 cm", "n"], ["B", "M", "3,2 cm", "n"], ["A", "C", "8 cm", "n"]],
+    droit: ["ABC", "AMN"], legende: tout ? "AN = 12 cm." : ""});
+  // 2026 Centres étrangers : bonbon en forme de gélule
+  const gelule = (() => { const pts = {_L: [0, -4.2], _R: [15, -4.2], _o: [12.5, 0], _r: [12.5 + 1.77, 1.77], _h1: [2.5, 2.5], _b1: [2.5, -2.5], _h2: [12.5, 2.5], _b2: [12.5, -2.5]};
+    const droite = arc(pts, "_d", 12.5, 0, 2.5, 90, -90), gauche = arc(pts, "_g", 2.5, 0, 2.5, 270, 90);
+    return {type: "plan", alt: "Bonbon en forme de gélule", pts, poly: [[[...droite, ...gauche], "plein"]],
+      seg: [["_h1", "_b1", "", "p"], ["_h2", "_b2", "", "p"], ["_L", "_R", "15 mm", "c"], ["_o", "_r", "2,5 mm", "c"]], legende: "Un cylindre et deux demi-boules. " + PAS}; })();
+  // 2025 Amérique du Nord
+  const an25 = droits => ({type: "plan", alt: "Deux triangles emboîtés", pts: {A: [0, 0], B: [40, 0], E: [56, 0], M: [66, 0], C: [40, 30], D: [56, 42]},
+    seg: [["A", "M", ""], ["A", "D", ""], ["B", "C", "30 m"], ["E", "D", ""], ["A", "C", "50 m", "n"]],
+    ...(droits ? {droit: ["ABC", "AED"], legende: "AD = 70 m."} : {legende: "AD = 70 m et (DE) // (BC)."})});
+  // 2021 : la Gyrotour et l'ombre de Marie
+  const gyro = {type: "plan", alt: "La tour, Marie et leurs ombres", pts: {A: [0, 0], D: [8, 0], C: [30, 0], E: [8, 6.4], B: [30, 24]},
+    seg: [["A", "C", ""], ["A", "B", "", "p"], ["D", "E", "1,60 m", "i"], ["C", "B", "?"], ["A", "D", "2 m", "n"], ["D", "C", "54,25 m", "n"]], droit: ["ADE", "ACB"],
+    legende: "[DE] représente Marie, [CB] la tour. Le rayon de soleil passe par A, E et B. " + PAS};
+  // 2025 Asie : rectangle et carré
+  const rectCarre = {type: "plan", alt: "Un rectangle et un carré", pts: {_a: [0, 0], _b: [3, 0], _c: [3, 10], _d: [0, 10], _e: [6, 0], _f: [12, 0], _g: [12, 6], _h: [6, 6]},
+    poly: [[["_a", "_b", "_c", "_d"], "plein"], [["_e", "_f", "_g", "_h"], "plein"]], seg: [["_a", "_b", "x", "n"], ["_a", "_d", "16 − 2x", "n"], ["_e", "_f", "2x", "n"], ["_f", "_g", "2x", "n"]],
+    legende: "Le rectangle (à gauche) et le carré (à droite). " + PAS};
+  // triangles rectangles simples
+  const triR = (pts, droit, seg, o = {}) => ({type: "plan", alt: "Triangle rectangle", pts, poly: [[Object.keys(pts).filter(k => !k.startsWith("_")).slice(0, 3), "plein"]], droit: [droit], seg, ...o});
+  // 2024 Amérique du Nord : E, A, F alignés ; E, B, D alignés
+  const thales24 = {type: "plan", alt: "Configuration de Thalès", pts: {E: [0, 0], B: [3.3, 0], D: [9.9, 0], A: [0, 4.4], F: [0, 13.2]},
+    seg: [["E", "D", ""], ["E", "F", ""], ["A", "B", "5,5 cm", "i"], ["F", "D", "?"], ["E", "A", "4,4 cm", "n"], ["E", "B", "3,3 cm", "n"], ["B", "D", "6,6 cm", "n"]], legende: "(FD) // (AB)."};
+  // 2024 : C milieu de [AB], (AB) ⟂ (CG)
+  const tri24b = {type: "plan", alt: "Triangle ABG", pts: {A: [-17.32, 0], C: [0, 0], B: [17.32, 0], G: [0, 10]}, poly: [["ABG", "plein"]],
+    seg: [["C", "G", "10 cm", "i"], ["B", "G", "20 cm", "n"]], droit: ["ACG"], angle: [["CGB", "?"]], legende: "C est le milieu de [AB]."};
+  // 2024 : secteur de disque
+  const secteur = (() => { const pts = {O: [0, 0]}, l = arc(pts, "_s", 0, 0, 20, 30, 150);
+    return {type: "plan", alt: "Secteur de disque", pts, poly: [[["O", ...l], "plein"]], seg: [["O", "_s0", "20 cm"]], angle: [[["_s0", "O", "_s24"], "120°"]]}; })();
+  // 2024 : trapèze rectangle (terrasse)
+  const trapeze = {type: "plan", alt: "Terrasse en trapèze rectangle", pts: {_A: [0, 0], _B: [10, 0], _C: [6, 3], _D: [0, 3]}, poly: [[["_A", "_B", "_C", "_D"], "plein"]],
+    seg: [["_A", "_B", "10 m", "n"], ["_D", "_C", "6 m", "n"], ["_A", "_D", "3 m", "n"]], droit: [["_B", "_A", "_D"], ["_A", "_D", "_C"]], legende: "Vue de dessus. Épaisseur de la dalle : 15 cm."};
+  // 2024 : cône
+  const cone24 = {type: "plan", alt: "Cône de révolution", pts: {S: [0, 16], O: [0, 0], M: [9, 0], _M2: [-9, 0]}, ell: [["O", 9, 2.4, "b"]],
+    seg: [["S", "M", "?"], ["S", "_M2", ""], ["O", "M", "", "p"], ["S", "O", "30 cm", "pc"]], txt: [[4.5, -4, "9 cm"]], droit: ["SOM"], legende: "La génératrice est le segment [SM]. " + PAS};
+  // 2023 : LNA et ONH
+  const lna = haut => ({type: "plan", alt: "Triangle LNA", pts: haut ? {L: [0, 0], N: [10, 0], A: [0, 12], O: [4, 0], H: [4, 7.2]} : {L: [0, 0], N: [5, 0], A: [0, 12]}, poly: [["LNA", "plein"]],
+    seg: haut ? [["O", "H", ""], ["O", "N", "3 cm", "n"]] : [["L", "N", "5 cm", "n"], ["A", "L", "12 cm", "n"], ["A", "N", "13 cm", "n"]],
+    droit: haut ? ["NLA", "NOH"] : ["NLA"], ...(haut ? {txt: [[5.9, 2.6, "7,2 cm"]], legende: PAS} : {angle: [["LNA", "?"]]})});
+  // 2023 : C, E, D alignés ; C, F, G alignés (le jardin)
+  const jardin = zones => ({type: "plan", alt: "Le terrain CDG", pts: {C: [0, 0], E: [30, 0], D: [40, 0], G: [40, 24], F: [30, 18]},
+    poly: zones ? [[["C", "E", "F"], "plein"], [["E", "D", "G", "F"], "trait"]] : [["CDG", "plein"]],
+    seg: zones ? [["C", "D", "40 m", "n"], ["D", "G", "24 m", "n"]] : [["E", "F", ""], ["C", "E", "30 m", "n"], ["E", "D", "10 m", "n"], ["D", "G", "24 m", "n"], ["C", "G", "?", "n"]],
+    droit: ["CDG"], ...(zones ? {txt: [[22, 5, "jeux"], [35, 7, "potager"]]} : {legende: "(EF) // (DG)."})});
+  // 2023 : MHS et MAT
+  const mhs = thal => ({type: "plan", alt: thal ? "Configuration de Thalès" : "Triangle rectangle MHS", pts: thal ? {M: [0, 0], H: [15, 0], S: [15, 12], T: [21, 0], A: [21, 16.8]} : {M: [0, 0], H: [5, 0], S: [5, 12]},
+    seg: thal ? [["M", "T", ""], ["M", "A", ""], ["H", "S", ""], ["T", "A", "?"], ["M", "H", "5 cm", "n"]] : [["M", "S", "13 cm", "n"], ["M", "H", "5 cm", "n"]],
+    poly: thal ? [] : [["MHS", "plein"]], droit: ["MHS"], ...(thal ? {txt: [[18, 6, "12 cm"]], legende: "MT = 7 cm et (HS) // (TA). " + PAS} : {})});
+  // 2022 : papillon (AB) // (CD)
+  const papillon22 = {type: "plan", alt: "Deux triangles opposés par le sommet E", pts: {E: [0, 0], D: [3.6, 0], C: [0, 4.8], A: [-5.4, 0], B: [0, -7.2]},
+    seg: [["A", "D", ""], ["B", "C", ""], ["C", "D", "6 cm"], ["A", "B", "9 cm"], ["E", "B", "7,2 cm", "n"]], legende: "ED = 3,6 cm et (AB) // (CD)."};
+  // 2022 : pyramide à base rectangulaire
+  const pyramide = {type: "plan", alt: "Pyramide à base rectangulaire", pts: {_A: [0, 0], _B: [4, 0], _C: [5.2, 1.2], _D: [1.2, 1.2], _O: [2.6, .6], _S: [2.6, 6.1]},
+    poly: [[["_A", "_B", "_S"], "plein"], [["_B", "_C", "_S"], "trait"]], seg: [["_A", "_D", "", "p"], ["_D", "_C", "", "p"], ["_D", "_S", "", "p"], ["_O", "_S", "", "pc"], ["_A", "_B", "40 cm", "n"], ["_B", "_C", "30 cm", "n"]],
+    droit: [["_B", "_O", "_S"]], legende: "Hauteur (en pointillés roses) : 55 cm."};
+  // 2022 : droite d'une fonction linéaire passant par A(3 ; 6)
+  const lineaire = (() => { const pts = {O: [0, 0], A: [3, 6], _x0: [-1.5, 0], _x1: [5, 0], _y0: [0, -1.5], _y1: [0, 9], _f0: [-.6, -1.2], _f1: [4.2, 8.4], _a: [3, 0], _b: [0, 6]};
+    return {type: "plan", alt: "Droite passant par l'origine et par A", pts, seg: [["_x0", "_x1", ""], ["_y0", "_y1", ""], ["_f0", "_f1", "", "c"], ["A", "_a", "", "p"], ["A", "_b", "", "p"]],
+      txt: [[3, -.8, "3"], [-.5, 6, "6"], [4.9, -.6, "x"], [-.4, 8.8, "y"]]}; })();
+  // 2020 : portique (triangle isocèle)
+  const portique = {type: "plan", alt: "Triangle isocèle ABC", pts: {B: [-145, 0], H: [0, 0], C: [145, 0], A: [0, 309.7]}, poly: [["ABC", "plein"]],
+    seg: [["A", "H", "?", "p"], ["A", "B", "342 cm", "n"]], txt: [[0, -62, "290 cm"]], droit: ["CHA"], legende: "H est le milieu de [BC]."};
+  // 2020 : triangle isocèle en D
+  const isoD = {type: "plan", alt: "Triangle isocèle DEC", pts: {E: [-1, 0], C: [1, 0], D: [0, 2.6]}, poly: [["EDC", "plein"]], angle: [["DCE", "85°"], ["EDC", "?"]], legende: "DE = DC. " + PAS};
+  // 2018 : globe de cristal
+  const globe = {type: "plan", alt: "Boule posée sur un cylindre", pts: {_O: [0, 0], _H: [0, 23], _K: [0, 34.5], _g: [-3, 0], _d: [3, 0], _G: [-3, 23], _D: [3, 23], _k1: [-11.5, 34.5], _k2: [11.5, 34.5]},
+    ell: [["_O", 3, .9, "b"]], cercle: [["_K", 11.5]], seg: [["_g", "_G", ""], ["_d", "_D", "23 cm"], ["_g", "_d", "6 cm", "c"], ["_k1", "_k2", "23 cm", "c"]], legende: PAS};
+  // 2023 : piste d'athlétisme
+  const piste = (() => { const pts = {_c: [9, 0], _r: [9 + 1.6, 1.2]}, dr = arc(pts, "_d", 9, 0, 2, -90, 90), ga = arc(pts, "_g", 0, 0, 2, 90, 270);
+    return {type: "plan", alt: "Piste : deux lignes droites et deux demi-cercles", pts, poly: [[[...dr, ...ga], "trait"]], seg: [["_d24", "_g0", "850 m", "n"], ["_c", "_r", "40 m", "ci"]], legende: PAS}; })();
+  // 2026 Asie : carré ABCD et triangle équilatéral ABF
+  const carreTri = {type: "plan", alt: "Carré ABCD et triangle équilatéral ABF", pts: {A: [0, 0], B: [4, 0], C: [4, 4], D: [0, 4], F: [2, -3.46], E: [-2.4, 4.16]},
+    poly: [["ABCD", "plein"], ["ABF", "plein"]], seg: [["F", "E", ""]], angle: [["DAE", "?"]], legende: "F, A et E sont alignés."};
+
+  const F = [
+    [CTX2.m26_tri + " On a trouvé AE", papillon26(true)], [CTX2.m26_tri, papillon26(false)],
+    [CTX2.an26_tri + " L'angle ACB", an26(true)], [CTX2.an26_tri, an26(false)],
+    [CTX2.as26_cone, cone26],
+    [CTX2.ce26_tri + " BC =", ce26(true)], [CTX2.ce26_tri, ce26(false)],
+    [CTX2.ce26_bon, gelule],
+    ["ABC est rectangle en A, BC = 5 cm et l'angle ABC mesure 60°", triR({A: [0, 0], B: [2.5, 0], C: [0, 4.33]}, "BAC", [["B", "C", "5 cm", "n"]], {angle: [["ABC", "60°"]]})],
+    ["ABCD est un carré, ABF un triangle équilatéral", carreTri],
+    ["A, B, E, M alignés ; A, C, D alignés ; ADE rectangle", an25(true)], ["A, B, E, M alignés ; A, C, D alignés ; (DE) // (BC)", an25(false)],
+    ["CDE rectangle en D, CD = 21,6 cm et DE = 19,5 cm", triR({D: [0, 0], C: [21.6, 0], E: [0, 19.5]}, "CDE", [["C", "D", "21,6 cm", "n"], ["D", "E", "19,5 cm", "n"]])],
+    ["Rectangle de côtés x et 16 − 2x", rectCarre],
+    ["A, E, B alignés ; A, D, C alignés ; (ED) // (BC). Marie", gyro],
+    ["ADM est rectangle en A, AD = 2 m", triR({A: [0, 0], D: [2, 0], M: [0, 3.46]}, "DAM", [["A", "D", "2 m", "n"], ["A", "M", "?", "n"]], {angle: [["ADM", "60°"]]})],
+    ["Le gros globe de cristal", globe], ["Boule ≈ 6 371 cm³", globe],
+    ["BDC est rectangle en B", triR({B: [0, 0], C: [7.5, 0], D: [0, 4]}, "CBD", [["B", "C", "7,5 cm", "n"], ["C", "D", "8,5 cm", "n"], ["B", "D", "?", "n"]])],
+    ["Terrasse : trapèze rectangle", trapeze],
+    ["E, A, F alignés ; E, B, D alignés ; (FD) // (AB)", thales24],
+    ["ABE est rectangle en E ; EB = 3,3 cm", triR({E: [0, 0], B: [3.3, 0], A: [0, 4.4]}, "BEA", [["E", "B", "3,3 cm", "n"], ["A", "B", "5,5 cm", "n"]], {angle: [["ABE", "?"]]})],
+    ["Un cône a pour rayon 9 cm et pour hauteur 30 cm", cone24],
+    ["(AB) ⟂ (CG), C milieu de [AB]", tri24b],
+    ["Chaque pièce est un secteur de disque", secteur],
+    ["LNA est rectangle en L", lna(false)], ["LNA rectangle en L (aire 30 cm²)", lna(true)],
+    ["Piste : deux lignes droites", piste],
+    ["FDE est rectangle en D", triR({D: [0, 0], E: [2.04, 0], F: [0, 1.2]}, "EDF", [["D", "F", "1,2 m", "n"], ["D", "E", "2,04 m", "n"]], {angle: [["DEF", "?"]]})],
+    ["C, E, D alignés ; C, F, G alignés", jardin(false)], ["Triangle CDG (CD = 40 m", jardin(true)],
+    ["Zone de jeux : triangle rectangle de côtés 30 m et 18 m", triR({_C: [0, 0], _E: [30, 0], _F: [30, 18]}, ["_C", "_E", "_F"], [["_C", "_E", "30 m", "n"], ["_E", "_F", "18 m", "n"]])],
+    ["MHS est rectangle en H", mhs(false)], ["M, A, S alignés ; M, T, H alignés", mhs(true)],
+    ["(AB) // (CD), (AD) et (BC) se coupent en E", papillon22],
+    ["Pyramide de base rectangulaire", pyramide],
+    ["La droite d'une fonction linéaire f passe par A(3 ; 6)", lineaire],
+    ["Portique : triangle ABC isocèle", portique],
+    ["DEC est isocèle en D", isoD]
+  ];
+  // le triangle rectangle « zone de jeux » : polygone avec des points cachés
+  const zone = F.find(x => x[0].startsWith("Zone de jeux"))[1]; zone.poly = [[["_C", "_E", "_F"], "plein"]];
+
+  // documents de géographie : la vallée de la batterie
+  const batteries = {type: "module", legende: "Les trois sites des gigafactories.", module: {kind: "module", type: "carte", zone: "france", epoque: "actuelle", noms: false, fleuves: false, exercice: true, couleurs: [],
+    points: [{nom: "Dunkerque", lat: 51.03, lon: 2.38, couleur: "#e5484d"}, {nom: "Douai", lat: 50.37, lon: 3.08, couleur: "#e5484d"}, {nom: "Douvrin", lat: 50.51, lon: 2.83, couleur: "#e5484d"}]}};
+
+  BANQUE_BREVET.forEach(q => {
+    if (q.ex !== "dnb" || !q.ctx || q.ctxFig) return;
+    const t = String(q.ctx), f = F.find(([d]) => t.startsWith(d));
+    if (f) q.ctxFig = f[1];
+    else if (q.mat === "hge" && /gigafactories/.test(t)) q.ctxFig = batteries;
+  });
+})();
 
 /* ===================== OUTILS ===================== */
 const $ = s => document.querySelector(s);
@@ -5664,7 +5811,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.85";
+const VERSION_SITE = "1.86";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -8421,7 +8568,7 @@ function svgPlan(fig){
     svg += `<circle cx="${f(x)}" cy="${f(y)}" r="2.3" fill="var(--texte)"/>`;
     textes += `<text x="${f(x + dx * 13)}" y="${f(y + dy * 13 + 4.5)}" text-anchor="middle" class="fg-txt fort">${esc(n)}</text>`; });
   (fig.txt || []).forEach(([x, y, t]) => { const [sx, sy] = S([x, y]); textes += `<text x="${f(sx)}" y="${f(sy + 4)}" text-anchor="middle" class="geo-cote">${esc(t)}</text>`; });
-  return `<svg viewBox="0 0 ${f(w)} ${f(h)}" class="fig-svg plan-svg" role="img" aria-label="${esc(fig.alt || "Figure géométrique")}">${svg}${textes}</svg>`;
+  return `<svg viewBox="0 0 ${f(w)} ${f(h)}" class="fig-svg plan-svg" style="width:min(${f(w * 1.1)}px,100%)" role="img" aria-label="${esc(fig.alt || "Figure géométrique")}">${svg}${textes}</svg>`;
 }
 function figureHtml(fig){
   if (!fig || !fig.type) return "";
@@ -10528,71 +10675,14 @@ const matDnbQ = q => MAT_DNB_Q[q.mat] || MAT_DNB_Q.maths;
 const bandeauDnbQ = q => { const m = matDnbQ(q);
   return `<span class="qd-mat" style="--mc:${m.c}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${m.ic}</svg>${esc(m.nom)}</span>`; };
 
-/* ---------- Illustrations (SVG simples aux couleurs du site) ---------- */
+/* ---------- Schémas : seulement quand la question en a vraiment besoin ---------- */
 const svgIllu = (corps, vb = "0 0 320 130") => `<svg viewBox="${vb}" class="qd-svg" role="img" aria-hidden="true">${corps}</svg>`;
 const T = (x, y, t, o = "") => `<text x="${x}" y="${y}" ${o}>${esc(t)}</text>`;
-const ILLU = {
-  ph: () => svgIllu(`${[...Array(15)].map((_, i) => `<rect x="${12 + i * 19.7}" y="34" width="19.7" height="30" fill="hsl(${i < 7 ? i * 12 : i === 7 ? 110 : 160 + (i - 7) * 16} 70% ${i === 7 ? 45 : 50}%)"/>`).join("")}
-    ${[0, 7, 14].map(v => T(22 + v * 19.7, 84, String(v), 'text-anchor="middle" class="qd-t"')).join("")}
-    ${T(28, 24, "Acide", 'class="qd-t"')}${T(160, 24, "Neutre", 'text-anchor="middle" class="qd-t"')}${T(296, 24, "Basique", 'text-anchor="end" class="qd-t"')}
-    <path d="M22 100h276" class="qd-trait"/><path d="M22 100l8-4v8zM298 100l-8-4v8z" class="qd-plein"/>${T(160, 120, "pH", 'text-anchor="middle" class="qd-t fort"')}`),
-  atome: () => svgIllu(`<ellipse cx="160" cy="65" rx="120" ry="30" class="qd-trait"/><ellipse cx="160" cy="65" rx="120" ry="30" class="qd-trait" transform="rotate(60 160 65)"/><ellipse cx="160" cy="65" rx="120" ry="30" class="qd-trait" transform="rotate(-60 160 65)"/>
-    ${[[150, 60, 1], [168, 58, 0], [158, 72, 1], [172, 70, 0], [145, 72, 0]].map(([x, y, p]) => `<circle cx="${x}" cy="${y}" r="8" class="${p ? "qd-a" : "qd-b"}"/>${p ? T(x, y + 4, "+", 'text-anchor="middle" class="qd-t blanc"') : ""}`).join("")}
-    ${[[280, 65], [100, 13], [100, 117]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6" class="qd-c"/>${T(x, y + 4, "−", 'text-anchor="middle" class="qd-t blanc"')}`).join("")}`),
-  circuit: () => svgIllu(`<rect x="40" y="20" width="240" height="90" rx="6" class="qd-trait"/>
-    <rect x="30" y="50" width="20" height="30" class="qd-fond"/><path d="M30 55h20M34 63h12" class="qd-trait" style="stroke-width:3"/>${T(18, 70, "+", 'class="qd-t"')}
-    <circle cx="160" cy="20" r="13" class="qd-fond qd-trait"/><path d="M151 11l18 18M169 11l-18 18" class="qd-trait"/>
-    <circle cx="280" cy="65" r="13" class="qd-fond qd-trait"/>${T(280, 70, "A", 'text-anchor="middle" class="qd-t fort"')}
-    <path d="M120 110v-5M200 110v-5" class="qd-trait"/><circle cx="160" cy="110" r="13" class="qd-fond qd-trait"/>${T(160, 115, "R", 'text-anchor="middle" class="qd-t fort"')}`),
-  vitesse: () => svgIllu(`<path d="M70 110a90 90 0 0 1 180 0" class="qd-trait" style="stroke-width:10;stroke:var(--surface-2)"/><path d="M70 110a90 90 0 0 1 150-67" class="qd-trait" style="stroke-width:10;stroke:var(--qc)"/>
-    ${[...Array(9)].map((_, i) => { const a = Math.PI * (1 - i / 8), x1 = 160 + 74 * Math.cos(a), y1 = 110 - 74 * Math.sin(a), x2 = 160 + 64 * Math.cos(a), y2 = 110 - 64 * Math.sin(a); return `<path d="M${x1} ${y1}L${x2} ${y2}" class="qd-trait"/>`; }).join("")}
-    <path d="M160 110L205 62" class="qd-trait" style="stroke-width:3"/><circle cx="160" cy="110" r="6" class="qd-plein"/>${T(160, 92, "km/h", 'text-anchor="middle" class="qd-t"')}`),
-  energie: () => svgIllu(`<rect x="70" y="35" width="150" height="60" rx="8" class="qd-trait"/><rect x="220" y="52" width="12" height="26" rx="3" class="qd-plein"/>
-    <rect x="78" y="43" width="90" height="44" rx="4" class="qd-a" style="opacity:.8"/><path d="M150 30l-22 38h18l-10 34 30-44h-19l12-28z" class="qd-plein" style="fill:#f5c518"/>`),
-  densite: () => svgIllu(`<path d="M100 20v90a8 8 0 0 0 8 8h104a8 8 0 0 0 8-8V20" class="qd-trait"/><path d="M101 55h118v55a8 8 0 0 1-8 8H109a8 8 0 0 1-8-8z" fill="#4fa3f7" opacity=".35"/>
-    <rect x="135" y="38" width="26" height="26" class="qd-b" transform="rotate(8 148 51)"/><circle cx="190" cy="98" r="12" class="qd-a"/>${T(240, 60, "eau", 'class="qd-t"')}`),
-  son: () => svgIllu(`<path d="M80 50h20l25-22v74l-25-22H80z" class="qd-plein"/>${[30, 50, 70].map(r => `<path d="M${135 + r * .3} ${65 - r * .6}a${r} ${r} 0 0 1 0 ${r * 1.2}" class="qd-trait"/>`).join("")}
-    <path d="M200 65c8-30 16 30 24 0s16 30 24 0 16 30 24 0" class="qd-trait" style="stroke:var(--qc);stroke-width:2.5"/>`),
-  lumiere: () => svgIllu(`<circle cx="80" cy="65" r="22" fill="#f5c518"/>${[...Array(8)].map((_, i) => { const a = i * Math.PI / 4; return `<path d="M${80 + 30 * Math.cos(a)} ${65 + 30 * Math.sin(a)}L${80 + 40 * Math.cos(a)} ${65 + 40 * Math.sin(a)}" stroke="#f5c518" stroke-width="3" stroke-linecap="round"/>`; }).join("")}
-    <path d="M125 65h150" class="qd-trait" style="stroke:#f5c518;stroke-width:3"/><path d="M275 65l-10-6v12z" fill="#f5c518"/>`),
-  adn: () => svgIllu(`${[...Array(13)].map((_, i) => { const x = 40 + i * 20, y1 = 65 + 32 * Math.sin(i * .7), y2 = 65 - 32 * Math.sin(i * .7); return `<path d="M${x} ${y1}L${x} ${y2}" stroke="${["#4fa3f7", "#f5a524", "#5cc98a", "#ef6fa6"][i % 4]}" stroke-width="4" stroke-linecap="round"/>`; }).join("")}
-    <path d="${[...Array(121)].map((_, k) => `${k ? "L" : "M"}${40 + k * 2} ${65 + 32 * Math.sin(k * .07)}`).join("")}" class="qd-trait" style="stroke-width:3"/>
-    <path d="${[...Array(121)].map((_, k) => `${k ? "L" : "M"}${40 + k * 2} ${65 - 32 * Math.sin(k * .07)}`).join("")}" class="qd-trait" style="stroke-width:3"/>`),
-  cellule: () => svgIllu(`<ellipse cx="160" cy="65" rx="110" ry="50" class="qd-trait" style="fill:color-mix(in srgb,var(--qc) 12%,transparent)"/><circle cx="175" cy="60" r="20" class="qd-a" style="opacity:.75"/>
-    ${[[100, 50], [120, 85], [230, 80], [220, 40]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="9" ry="5" class="qd-b"/>`).join("")}`),
-  immunite: () => svgIllu(`<ellipse cx="90" cy="65" rx="34" ry="18" class="qd-b" transform="rotate(-20 90 65)"/>${[[60, 50], [62, 82], [120, 48], [118, 80]].map(([x, y]) => `<path d="M${x} ${y}l-8 ${y < 65 ? -6 : 6}" class="qd-trait"/>`).join("")}
-    ${[[200, 40], [250, 75], [190, 95]].map(([x, y]) => `<g transform="translate(${x} ${y})"><path d="M0 22V6M0 6L-12 -8M0 6L12 -8" class="qd-trait" style="stroke:var(--qc);stroke-width:4"/></g>`).join("")}`),
-  terre: () => svgIllu(`<circle cx="160" cy="80" r="38" fill="#4fa3f7" opacity=".55"/><path d="M135 70c10-8 20 4 30-2s12 12 4 18-24 4-34-16z" fill="#5cc98a" opacity=".85"/>
-    <circle cx="160" cy="80" r="52" class="qd-trait" style="stroke-dasharray:4 5"/><circle cx="40" cy="25" r="14" fill="#f5c518"/><path d="M55 32l70 30" stroke="#f5c518" stroke-width="2.5"/><path d="M196 60l50-30" stroke="#e5484d" stroke-width="2.5" stroke-dasharray="6 4"/>`),
-  plaques: () => svgIllu(`<path d="M20 70h130l-10 40H20zM300 70H170l10 40h120z" class="qd-b"/><path d="M150 70l10 -28 10 28" class="qd-a"/><path d="M60 55h50M110 55l-8-5v10zM260 55h-50M210 55l8-5v10z" class="qd-trait" style="stroke-width:2.5"/>`),
-  chaine: () => svgIllu(`<path d="M50 85c-10-30 15-45 25-50 0 20-5 40-25 50z" fill="#5cc98a"/><path d="M50 85l18-35" class="qd-trait"/>
-    <ellipse cx="160" cy="75" rx="22" ry="15" class="qd-b"/><ellipse cx="146" cy="56" rx="4" ry="12" class="qd-b"/><ellipse cx="156" cy="54" rx="4" ry="12" class="qd-b"/>
-    <path d="M250 85l20-30 20 30z" fill="#f5a524"/><path d="M256 62l-6-12 12 6M284 62l6-12-12 6" fill="#f5a524"/>
-    <path d="M90 70h40M200 70h40" class="qd-trait" style="stroke-width:2.5"/><path d="M130 70l-8-5v10zM240 70l-8-5v10z" class="qd-plein"/>`),
-  techno: () => svgIllu(`<rect x="110" y="25" width="100" height="80" rx="8" class="qd-trait"/><rect x="132" y="47" width="56" height="36" rx="4" class="qd-a" style="opacity:.8"/>
-    ${[40, 60, 80, 100].map(y => `<path d="M95 ${y - 10}h15M210 ${y - 10}h15" class="qd-trait"/>`).join("")}${[130, 150, 170, 190].map(x => `<path d="M${x} 10v15M${x} 105v15" class="qd-trait"/>`).join("")}`),
-  flacon: () => svgIllu(`<path d="M145 15h30M150 15v35l-30 55a8 8 0 0 0 7 12h66a8 8 0 0 0 7-12l-30-55V15" class="qd-trait"/><path d="M131 85h58l12 22a4 4 0 0 1-4 6h-74a4 4 0 0 1-4-6z" fill="var(--qc)" opacity=".5"/><circle cx="165" cy="95" r="4" class="qd-plein"/><circle cx="152" cy="102" r="3" class="qd-plein"/>`),
-  vote: () => svgIllu(`<path d="M100 60h120v55H100z" class="qd-fond qd-trait"/><path d="M100 60l15-20h90l15 20" class="qd-trait"/><rect x="140" y="58" width="40" height="5" class="qd-plein"/>
-    <rect x="148" y="18" width="24" height="34" class="qd-fond qd-trait" transform="rotate(-8 160 35)"/>${T(160, 95, "Urne", 'text-anchor="middle" class="qd-t"')}`),
-  hemicycle: () => svgIllu(`${[40, 60, 80, 100].map((r, k) => [...Array(7 + k * 3)].map((_, i, a) => { const t = Math.PI * (i / (a.length - 1)); return `<circle cx="${160 - r * Math.cos(t)}" cy="${115 - r * Math.sin(t)}" r="4.5" fill="${["#4fa3f7", "#5cc98a", "#f5a524", "#e5484d", "#b991ff"][Math.floor(i / a.length * 5)]}"/>`; }).join("")).join("")}<rect x="148" y="104" width="24" height="12" rx="2" class="qd-b"/>`),
-  balance: () => svgIllu(`<path d="M160 20v90M120 115h80M90 40h140" class="qd-trait" style="stroke-width:3"/><circle cx="160" cy="20" r="5" class="qd-plein"/>
-    <path d="M90 40l-25 45h50zM230 40l-25 45h50z" class="qd-trait"/><path d="M65 85a25 8 0 0 0 50 0M205 85a25 8 0 0 0 50 0" class="qd-plein"/>`),
-  republique: () => svgIllu(`<rect x="70" y="30" width="60" height="70" fill="#1f4fa8"/><rect x="130" y="30" width="60" height="70" fill="#f4f4f4"/><rect x="190" y="30" width="60" height="70" fill="#d8323c"/><rect x="70" y="30" width="180" height="70" class="qd-trait"/>`),
-  livre: () => svgIllu(`<path d="M160 30c-25-12-60-12-85 0v80c25-12 60-12 85 0 25-12 60-12 85 0V30c-25-12-60-12-85 0z" class="qd-trait" style="fill:var(--surface-2)"/><path d="M160 30v80" class="qd-trait"/>
-    ${[45, 58, 71, 84].map(y => `<path d="M88 ${y}c20-6 45-6 60 0M172 ${y}c15-6 40-6 60 0" class="qd-trait" style="opacity:.5"/>`).join("")}`),
-  de: () => svgIllu(`<rect x="90" y="30" width="70" height="70" rx="12" class="qd-trait" style="fill:var(--surface-2)"/>${[[110, 50], [140, 80], [125, 65]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6" class="qd-plein"/>`).join("")}
-    <rect x="180" y="40" width="60" height="60" rx="10" class="qd-trait" style="fill:var(--surface-2)" transform="rotate(14 210 70)"/>${[[198, 58], [222, 82], [198, 82], [222, 58]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" class="qd-plein" transform="rotate(14 210 70)"/>`).join("")}`),
-  pourcent: () => svgIllu(`<rect x="40" y="50" width="240" height="30" rx="6" class="qd-trait" style="fill:var(--surface-2)"/><rect x="40" y="50" width="150" height="30" rx="6" fill="var(--qc)"/>${T(160, 112, "%", 'text-anchor="middle" class="qd-t fort" style="font-size:22px"')}`),
-  solide: () => svgIllu(`<path d="M70 50l40-20h70l-40 20zM70 50h70v60H70zM140 50l40-20v60l-40 20z" class="qd-trait" style="fill:color-mix(in srgb,var(--qc) 18%,transparent)"/>
-    <ellipse cx="240" cy="40" rx="30" ry="10" class="qd-trait"/><path d="M210 40v60a30 10 0 0 0 60 0V40" class="qd-trait" style="fill:color-mix(in srgb,var(--qc) 12%,transparent)"/>`),
-  fraction: () => svgIllu(`<circle cx="160" cy="65" r="48" class="qd-trait" style="fill:var(--surface-2)"/><path d="M160 65V17A48 48 0 0 1 201.6 89z" fill="var(--qc)"/><path d="M160 65V17M160 65l41.6 24M160 65l-41.6 24" class="qd-trait"/>`)
-};
-ILLU.poids = () => svgIllu(`<path d="M120 12h80" class="qd-trait" style="stroke-width:4"/><path d="M160 12v10l-9 4 18 6-18 6 18 6-18 6 9 4v8" class="qd-trait" style="stroke-width:2"/>
-  <rect x="138" y="68" width="44" height="34" rx="5" class="qd-a"/><path d="M160 85v34" stroke="#e5484d" stroke-width="3.5" stroke-linecap="round"/><path d="M160 126l-7-11h14z" fill="#e5484d"/>
-  <path d="M30 122a180 40 0 0 1 260 0" class="qd-trait" style="stroke:#4fa3f7;stroke-width:3"/>`);
-ILLU.orbite = () => svgIllu(`<ellipse cx="160" cy="65" rx="130" ry="42" class="qd-trait" style="stroke-dasharray:5 6"/><circle cx="160" cy="65" r="30" fill="#4fa3f7" opacity=".6"/><path d="M142 58c8-6 16 3 24-2s10 10 3 14-20 3-27-12z" fill="#5cc98a" opacity=".85"/>
-  <g transform="translate(272 46) rotate(20)"><rect x="-6" y="-5" width="12" height="10" rx="2" class="qd-plein"/><rect x="-24" y="-3" width="16" height="6" fill="#4fa3f7"/><rect x="8" y="-3" width="16" height="6" fill="#4fa3f7"/></g>
-  <path d="M283 70a130 42 0 0 1-30 18" class="qd-trait" style="stroke:var(--qc);stroke-width:2.5"/><path d="M253 88l12-1-5-8z" fill="var(--qc)"/>`);
+// circuit en série : un générateur et deux lampes (symboles normalisés)
+const circuitSerieIllu = () => { const lampe = (x, y) => `<circle cx="${x}" cy="${y}" r="13" class="qd-fond qd-trait"/><path d="M${x - 9.2} ${y - 9.2}l18.4 18.4M${x + 9.2} ${y - 9.2}l-18.4 18.4" class="qd-trait"/>`;
+  return svgIllu(`<path d="M60 25H107M133 25H187M213 25H260V105H60V72M60 58V25" class="qd-trait"/>${lampe(120, 25)}${lampe(200, 25)}
+    <path d="M44 58h32" class="qd-trait" style="stroke-width:2.4"/><path d="M52 72h16" class="qd-trait" style="stroke-width:4"/>${T(84, 60, "+", 'class="qd-t fort"')}
+    ${T(120, 56, "L1", 'text-anchor="middle" class="qd-t"')}${T(200, 56, "L2", 'text-anchor="middle" class="qd-t"')}${T(20, 69, "G", 'class="qd-t fort"')}`, "0 0 300 120"); };
 // repère avec la droite d'une fonction (points lus dans l'énoncé : f(-1) = -2 …)
 function grapheFonction(q){
   const nb = x => parseFloat(String(x).replace("−", "-").replace(",", "."));
@@ -10614,13 +10704,6 @@ function masquerIlluDnb(racine, q){
   racine.querySelectorAll(".qd-illu text, .qd-illu tspan").forEach(el => { if (el.children.length) return; const L = normaliserEtiquette(el.textContent);
     if (L && rep.some(A => A === L || (L.length >= 4 && (" " + A + " ").includes(" " + L + " ")))) el.textContent = "?"; });
 }
-// frise du XXe siècle (repères neutres : on ne place pas la réponse)
-const friseIllu = () => svgIllu(`<path d="M20 70h280" class="qd-trait" style="stroke-width:3"/><path d="M300 70l-10-6v12z" class="qd-plein"/>
-  ${[1900, 1920, 1940, 1960, 1980, 2000, 2020].map((a, i) => { const x = 25 + i * 43; return `<path d="M${x} 62v16" class="qd-trait"/>${T(x, 98, String(a), 'text-anchor="middle" class="qd-t"')}`; }).join("")}
-  <path d="M25 40h270" class="qd-trait" style="stroke:var(--qc);stroke-dasharray:3 6;stroke-width:2"/><circle cx="160" cy="40" r="15" fill="var(--qc)"/>${T(160, 46, "?", 'text-anchor="middle" class="qd-t blanc fort" style="font-size:17px"')}`);
-// carte (module « carte » du site)
-const carteIllu = (zone, o = {}) => figureHtml({type: "module", module: {kind: "module", type: "carte", zone, epoque: "actuelle", noms: false, fleuves: false, exercice: true, couleurs: [], points: [], ...o}});
-
 // Français : la phrase citée, avec le mot ou le groupe étudié surligné
 const questionCourteDnb = q => { const frag = [...String(q.q).matchAll(/«\s*([^»]+?)\s*»/g)]; if (q.mat !== "francais" || frag.length < 2) return q.q;
   const der = frag[frag.length - 1]; return String(q.q).slice(0, der.index).replace(/\s+$/, " ") + "cette phrase" + String(q.q).slice(der.index + der[0].length); };
@@ -10638,38 +10721,11 @@ function citationIllu(q){
 function illustrationDnb(q){
   if (q.fig || q.genre) return "";
   const t = (q.q + " " + (q.ctx || "")).toLowerCase(), m = q.mat;
-  const svg = cle => `<div class="qd-illu fig-exo">${ILLU[cle]()}</div>`;
-  if (m === "francais") return citationIllu(q);   // seulement quand la question cite une phrase
-  if (m === "sciences"){
-    const r = [[/\bph\b|acide|basique|neutre/, "ph"], [/atome|électron|proton|noyau|\bion\b|ions\b/, "atome"], [/tension|intensité|ampèremètre|voltmètre|circuit|lampe|résistance|\bohm/, "circuit"],
-      [/vitesse|km\/h|m\/s|mouvement|ralenti|accéléré/, "vitesse"], [/énergie|puissance|kwh|\bwatt|\bjoule|charbon|renouvelable/, "energie"], [/poids|newton|dynamomètre|pesanteur|n\/kg/, "poids"], [/masse volumique|flotte|coule|g\/cm/, "densite"], [/\biss\b|orbite|satellite|station spatiale|lune|planète/, "orbite"],
-      [/\bson\b|fréquence|hz\b|décibel/, "son"], [/lumière/, "lumiere"], [/chromosome|adn|gène|allèle|spermatozoïde|ovule|fécondation|sexe/, "adn"], [/cellule|mitose/, "cellule"],
-      [/globule|anticorps|vaccin|bactérie|antibiotique|lymphocyte|micro-organisme/, "immunite"], [/climat|effet de serre|réchauffement|co₂|dioxyde de carbone|eau de chaux/, "terre"],
-      [/séisme|plaque|volcan|tectonique/, "plaques"], [/écosystème|chaîne alimentaire|sélection naturelle|darwin|espèce/, "chaine"], [/moteur|capteur|programme|boucle|octet|algorithme|instruction|matériau|conducteur/, "techno"]];
-    const f = r.find(([re]) => re.test(t)); return f ? svg(f[1]) : "";   // pas d'image « au hasard »
-  }
-  if (m === "hge"){
-    const date = /en quelle année|quand |en quel siècle/.test(t);
-    if (date) return `<div class="qd-illu fig-exo">${friseIllu()}</div>`;
-    if (/\bvote|électi|suffrage|urne|recens/.test(t)) return svg("vote");
-    if (/assemblée|députés|parlement|sénat|vote les lois/.test(t)) return svg("hemicycle");
-    if (/juge|judiciaire|conseil constitutionnel|justice|déclaration|droits/.test(t)) return svg("balance");
-    if (/devise|hymne|laïcité|république|jdc|défense|bénévol|citoyen|président/.test(t) && !date) return svg("republique");
-    if (/union européenne|\bue\b|schengen|euro\b|cee|maastricht|brexit|europe/.test(t) && !date) return `<div class="qd-illu qd-carte">${carteIllu("europe")}</div>`;
-    if (/drom|outre-mer|zee/.test(t)) return `<div class="qd-illu qd-carte">${carteIllu("monde")}</div>`;
-    if (/géograph|région|port|métropole|aire urbaine|littoral|périurbain|densité|parc naturel|faible densité|ville/.test(t)) return `<div class="qd-illu qd-carte">${carteIllu("france")}</div>`;
-    if (/mondialisation|guerre froide|rideau de fer|otan|décolonisation|indépendance|urss|onu/.test(t) && !date) return `<div class="qd-illu qd-carte">${carteIllu("monde")}</div>`;
-    return "";
-  }
-  if (m === "maths" && !q.ctx){
-    if (/fonction|affine|linéaire|image de|antécédent/.test(t)) return `<div class="qd-illu fig-exo">${grapheFonction(q)}</div>`;
-    if (/probabilit|urne|\bdé\b|hasard/.test(t)) return svg("de");
-    if (/%|pourcentage|réduction|augment|remise/.test(t)) return svg("pourcent");
-    if (/volume|pavé|cylindre|cône|boule|pyramide|cube/.test(t)) return svg("solide");
-    if (/fraction|\d+\/\d+/.test(t)) return svg("fraction");
-    if (/vitesse|km\/h|m\/s/.test(t)) return svg("vitesse");
-  }
-  return "";
+  if (m === "francais") return citationIllu(q);   // la phrase étudiée, avec le mot surligné
+  if (m === "sciences" && /circuit en série/.test(t)) return `<div class="qd-illu fig-exo">${circuitSerieIllu()}</div>`;
+  // fonction donnée par deux de ses valeurs : on trace la droite qui passe par les deux points
+  if (m === "maths" && !q.ctx && /fonction/.test(t) && [...String(q.q).matchAll(/f\s*\(\s*[−-]?\d/g)].length >= 2) return `<div class="qd-illu fig-exo">${grapheFonction(q)}</div>`;
+  return "";   // pas de dessin décoratif
 }
 
 /* ---------- Module « frise » : placer les événements dans l'ordre sur une frise ---------- */
