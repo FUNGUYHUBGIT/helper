@@ -2192,6 +2192,29 @@ body.ambiance-dnb .lateral .nav-groupe{color:#8ca6d6}
 .dt-tableau .mono{color:#cfe6d8}.dt-tableau p{margin:0}.dt-tableau .doux{color:#b9d3c4;font-size:.86rem}
 .dt-craie{font-family:"Comic Sans MS","Segoe Print",cursive;font-size:1.15rem;color:#f4f4ee;line-height:1.5;letter-spacing:.02em}
 .dictee-page.dnb .cp-accents button{border-color:#2c4677;background:#17223a;color:#cfe0ff}.dictee-page.dnb .cp-accents button:hover{border-color:#5d93ff;color:#fff}
+
+/* Dictée : panneau des caractères spéciaux qui suit le défilement */
+.dictee-page{position:relative}
+.dt-pave-in{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--ligne));background:color-mix(in srgb,var(--accent) 7%,var(--surface));box-shadow:0 10px 30px -18px #000}
+.dt-pave-gr{display:flex;flex-direction:column;gap:4px}.dt-pave-gr small{font-size:.72rem;color:var(--doux);margin-top:2px}
+.dt-pave-l{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.dt-pave-l button{height:38px;min-width:0;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--ligne));border-radius:8px;background:var(--surface-2);color:var(--texte);font:600 1.05rem var(--f-texte);cursor:pointer}
+.dt-pave-l button:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--surface-2))}
+.dt-pave-l button:active{transform:scale(.94)}
+.dt-pave-aide{font-size:.74rem;line-height:1.35}
+.dictee-page .et-feuille .cp-accents{display:none}
+@media (min-width:1380px){
+  .dt-pave{position:absolute;top:0;bottom:0;left:calc(100% + 26px);width:230px}
+  .dt-pave-in{position:sticky;top:24px}
+}
+@media (max-width:1379px){
+  .dt-pave{position:sticky;top:8px;z-index:5}
+  .dt-pave-in{flex-direction:row;flex-wrap:wrap;align-items:center;padding:8px}
+  .dt-pave-in > .mono,.dt-pave-aide,.dt-pave-gr small{display:none}
+  .dt-pave-gr{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:5px;width:100%;scrollbar-width:thin}
+  .dt-pave-l{display:flex;gap:5px}.dt-pave-l button{width:38px;flex:none}
+}
+@media (max-width:820px){.dt-pave{top:66px}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5838,7 +5861,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.88";
+const VERSION_SITE = "1.89";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6191,6 +6214,15 @@ const listeMatieres = ex => ex === "bia" ? MODULES_BIA : MATIERES_BREVET;
 const anneesDe = ex => [...new Set(BANQUE_BREVET.filter(q => q.ex === ex).map(q => q.an))].sort((a, b) => b - a);
 const poolBrevet = () => BANQUE_BREVET.filter(q => q.ex === choixBrevet.ex && (choixBrevet.an === "tous" || q.an === +choixBrevet.an) && choixBrevet.mats[choixBrevet.ex].includes(q.mat));
 VUES.brevet = function vueBrevet(){
+  const ongletsBrevet = ex => segment("examen", [["dnb","Brevet (DNB)"],["bia","BIA"],["lv","Langues vivantes"]], ex);
+  if (choixBrevet.ex === "lv"){
+    zone().innerHTML = entete("Exercices Brevet", "Langues vivantes") + ongletsBrevet("lv") + blocLangues();
+    zone().querySelectorAll("#examen button").forEach(b => b.onclick = () => { choixBrevet.ex = b.dataset.v; choixBrevet.an = "tous"; vueBrevet(); });
+    zone().querySelectorAll("#lv-brevet button").forEach(b => b.onclick = () => { choixBrevet.lv = b.dataset.v; vueBrevet(); });
+    $("#lancer-langues").onclick = () => { const serie = construireSerieLangues(choixBrevet.lv);
+      if (serie.length) lancerQuiz(serie, {titre: "Série Langues · " + ({en: "Anglais", es: "Espagnol"}[choixBrevet.lv] || "Anglais et espagnol"), sur: "Exercices Brevet · Langues vivantes", brevet: "langues"}); };
+    return;
+  }
   const ex = choixBrevet.ex, pool = poolBrevet();
   const parMat = m => BANQUE_BREVET.filter(q => q.ex === ex && (choixBrevet.an === "tous" || q.an === +choixBrevet.an) && q.mat === m).length
     + (choixBrevet.entrainement ? BANQUE_REVISION.filter(q => q.ex === ex && q.mat === m).length : 0);
@@ -6201,7 +6233,7 @@ VUES.brevet = function vueBrevet(){
   const nbSerie = genMats.length ? 50 : Math.min(50, total);
   const sujets = Object.entries(SUJETS).filter(([k, v]) => !v.heberge && k.startsWith(ex + "-") && (choixBrevet.an === "tous" || k.includes("-" + choixBrevet.an)));
   const record = (prog.brevet || {})[ex === "bia" ? "bia" : "serie"];
-  zone().innerHTML = entete("Exercices Brevet", ex === "bia" ? "Brevet d'initiation aéronautique" : "Diplôme national du brevet") + segment("examen", [["dnb","Brevet (DNB)"],["bia","BIA"]], ex) + `
+  zone().innerHTML = entete("Exercices Brevet", ex === "bia" ? "Brevet d'initiation aéronautique" : "Diplôme national du brevet") + ongletsBrevet(ex) + `
     <div class="bloc">
       <span class="mono">Année</span>
       ${segment("an-brevet", [["tous","Toutes"], ...anneesDe(ex).map(a => [String(a), String(a)])], String(choixBrevet.an))}
@@ -6212,7 +6244,7 @@ VUES.brevet = function vueBrevet(){
       <p class="doux" style="font-size:.88rem">${total || genMats.length ? `<strong>${pool.length}</strong> question${pool.length > 1 ? "s" : ""} des sujets officiels${choixBrevet.entrainement ? `, <strong>${rev.length}</strong> de révision${genMats.length ? ` et des questions <strong>générées à l'infini</strong> (${genMats.map(m => listeMatieres(ex).find(x => x[0] === m)[1]).join(", ")}), avec des valeurs différentes à chaque série` : ""}` : ""}. Déjà vues : ${dejaVues} / ${total}. Les questions jamais vues passent en premier, puis celles que tu as ratées.` : "Aucune question pour ce choix : sélectionne au moins une matière."}${record ? ` Record : ${record} %.` : ""}</p>
       <div class="rangee"><button class="btn" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>Lancer une série de ${nbSerie || 50} questions</button>${dejaVues ? `<button class="btn sec" type="button" id="raz-vues">Oublier les questions vues</button>` : ""}</div>
     </div>
-    ${ex === "dnb" ? blocDicteesDnb() + blocLangues() + blocSujetsDnb() : ""}
+    ${ex === "dnb" ? blocDicteesDnb() + blocSujetsDnb() : ""}
     ${ex === "bia" ? `<div class="bloc">
       <span class="mono">Sujets du BIA</span>
       ${sujets.length ? `<div class="sd-arbre">${sujets.map(([k, s]) => ligneCasier(k, esc(s.titre), "", [["Sujet", s.url, true, s.url.split("/").pop()]])).join("")}</div>` : `<div class="vide">Aucun sujet pour cette année.</div>`}
@@ -12499,6 +12531,7 @@ function brancherEditeurSerie(){
     } catch (err){ statut(erreurEcriture(err)); btn.disabled = false; }
   };
 }
+const CARS_COPIE = ["é", "è", "ê", "ë", "à", "â", "ù", "û", "ü", "ç", "î", "ï", "ô", "œ", "æ", "É", "È", "Ê", "À", "Ç", "Œ", "«", "»", "—", "’", "…"];
 /* ===================== COPIE À LIGNES (exercices types de rédaction) =====================
    Une page de copie à lignes : on clique sur une ligne pour écrire, en écriture manuscrite (Playwrite FR Moderne).
    La correction cherche la réponse dans toute la copie, la vérifie au mot près et contrôle son sens :
@@ -12517,7 +12550,7 @@ function htmlCopie(o = {}){
   return `<div class="cp-copie" data-cp="1">
     <div class="cp-tete"><b>${esc(o.titre || "Ma copie")}</b><span class="doux">${esc(o.aide || "Clique sur une ligne pour écrire. Commence chaque réponse par son numéro : 1. 2. 3. …")}</span></div>
     <div class="cp-page${o.sauter ? " cp-sauter" : ""}" style="--lh:${CP_LH}px" ${o.sauter ? `data-sauter="1"` : ""}>${Array.from({length: n}, () => (o.sauter ? `<div class="cp-corr" aria-hidden="true"></div>` : "") + cpLigneHtml()).join("")}</div>
-    <div class="cp-accents" role="toolbar" aria-label="Lettres accentuées">${["é", "è", "ê", "ë", "à", "â", "ù", "û", "ç", "î", "ï", "ô", "œ", "É", "À", "Ç", "«", "»", "—"].map(x => `<button type="button" data-cp-car="${x}" title="Insérer ${x}">${x}</button>`).join("")}</div>
+    <div class="cp-accents" role="toolbar" aria-label="Lettres accentuées">${CARS_COPIE.map(x => `<button type="button" data-cp-car="${x}" title="Insérer ${x}">${x}</button>`).join("")}</div>
     <div class="fm-pied"><button type="button" class="mini-btn" data-cp-ajout>+ Ajouter des lignes</button><button type="button" class="mini-btn" data-cp-vider>↺ Tout effacer</button>
       <span class="fm-aide"><b>Entrée</b> = ligne suivante · <b>↑ ↓</b> pour changer de ligne · le texte passe tout seul à la ligne quand elle est pleine.</span></div></div>`;
 }
@@ -13035,11 +13068,17 @@ function lancerDictee(opts = choixDictee, deja = null){
         <p class="dt-craie">${esc(d.auteur)}, <i>${esc(d.oeuvre)}</i>, ${esc(d.date)}${d.tableau.length ? `<br>${d.tableau.map(esc).join(" · ")}` : ""}</p>
         ${d.consignes ? `<p class="doux">${esc(d.consignes)}</p>` : ""}<p class="doux dt-bareme">Au brevet, la dictée est notée sur 10 points et dure 20 minutes. Le niveau « Difficile » la lit comme le surveillant.</p></div>` : ""}
       <p class="et-mode-emploi">Écris sur les lignes ${d.dnb ? "bleues" : "violettes"} : le texte saute une ligne à chaque fois, pour laisser la place à la correction. La correction automatique du navigateur est désactivée : c'est ton orthographe qui compte.</p>
+      <aside class="dt-pave" aria-label="Caractères spéciaux"><div class="dt-pave-in"><span class="mono">Caractères spéciaux</span>
+        <div class="dt-pave-gr">${[["Minuscules", ["é", "è", "ê", "ë", "à", "â", "ù", "û", "ü", "ç", "î", "ï", "ô", "œ", "æ"]], ["Majuscules", ["É", "È", "Ê", "À", "Ç", "Œ"]], ["Ponctuation", ["«", "»", "—", "’", "…"]]].map(([t, l]) => `<small>${t}</small><div class="dt-pave-l">${l.map(x => `<button type="button" data-pave="${x}" title="Insérer ${x}">${x}</button>`).join("")}</div>`).join("")}</div>
+        <small class="doux dt-pave-aide">Clique sur un caractère : il s'écrit là où se trouve ton curseur.</small></div></aside>
       <div class="et-feuille">${htmlCopie({titre: "Ma dictée", lignes: Math.max(10, Math.ceil(d.texte.length / 55) + 4), sauter: true, aide: "Clique sur une ligne pour écrire."})}</div>
       <div class="rangee"><button class="btn" type="button" id="dt-corriger">Corriger ma dictée</button><button class="btn sec" type="button" id="dt-retour">Autres exercices</button></div>
       <div id="dt-bilan"></div>
     </div>`;
   brancherCopie(zone());
+  zone().querySelectorAll("[data-pave]").forEach(b => { b.onmousedown = ev => ev.preventDefault();
+    b.onclick = () => { const v = zone().querySelector(`.et-feuille [data-cp-car="${b.dataset.pave}"]`); if (v) v.click(); }; });
+  enHaut();   // on commence tout en haut, sur les informations de la dictée
   let g = -1, restantsTout = 2; const repet = {};
   const vitesse = () => +($("#dt-vitesse") || {value: .9}).value;
   const etat = t => { const e = $("#dt-etat"); if (e) e.textContent = t; };
