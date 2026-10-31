@@ -2159,6 +2159,7 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .dm-ecrit-nom{font-size:.8rem}
 .dm-btn-envoi{display:inline-flex;align-items:center;gap:8px}.dm-btn-envoi .dm-ic{width:18px;height:18px}
 .dm-note{margin:0;font-size:.82rem}
+.dm-gerant-outils{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin:-4px 0 -6px;font-size:.82rem}
 @media (max-width:700px){
   .dm-intro{flex-direction:column;align-items:stretch}.dm-grand-btn{justify-content:center}
   .dm-types{grid-template-columns:1fr}
@@ -5656,7 +5657,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.83";
+const VERSION_SITE = "1.84";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -13560,7 +13561,9 @@ function filsDm(){
     return {...r, messages: l, dernier: l[l.length - 1], activite: [l[l.length - 1].le, r.majLe || ""].sort().pop()}; })
     .sort((a, b) => String(b.activite).localeCompare(String(a.activite)));
 }
-const pourMoiDm = f => f.a === moiDm() || (f.a === "equipe" && estEquipeDm()) || (f.deId === moiDm() && f.messages.some(m => m.deId !== moiDm()));
+const jeSuisGerantDm = () => modeGerant || estGerantCompte();
+const estViseDm = (f, m) => f.a !== "equipe" && (m.deId === f.a || (f.a === "gerant" && m.deRang === "gerant"));
+const pourMoiDm = f => f.a === moiDm() || (f.a === "gerant" && jeSuisGerantDm()) || (f.a === "equipe" && estEquipeDm()) || (f.deId === moiDm() && f.messages.some(m => m.deId !== moiDm()));
 const deMoiDm = f => f.deId === moiDm() || f.messages.some(m => m.deId === moiDm());
 const vusDm = () => { try { return JSON.parse(lsGet("helper.dm.vus") || "{}"); } catch { return {}; } };
 const nonLuDm = f => { const v = vusDm()[f.id]; return f.dernier.deId !== moiDm() && (!v || v < f.activite) && pourMoiDm(f); };
@@ -13596,7 +13599,7 @@ function couleurOpposeeDm(){
   } catch { return "#4f8cff"; }
 }
 const styleDm = () => `style="--dm-oppose:${couleurOpposeeDm()}"`;
-const viseDm = f => `<span class="dm-vise">${f.a !== "equipe" ? avatarDm(f.aNom, "", f.a, "mini") : ""}${esc(nomDestDm(f))}</span>`;
+const viseDm = f => `<span class="dm-vise">${f.a === "gerant" ? avatarDm("Gérant", "gerant", "", "mini") : f.a !== "equipe" ? avatarDm(f.aNom, "", f.a, "mini") : ""}${esc(nomDestDm(f))}</span>`;
 const peutRepondreDm = f => f.deId === moiDm() || f.a === moiDm() || modeGerant || estGerantCompte() || (f.a === "equipe" && estEquipeDm());
 const nomDestDm = f => f.a === "equipe" ? "toute l'équipe" : f.aNom || f.a;
 const etatDm1 = f => f.type === "question" ? null : ETATS_DM[f.statut] || ETATS_DM.attente;
@@ -13644,21 +13647,22 @@ function lectureDm(f){
   return `<div class="dm-page" ${styleDm()}>
     <button type="button" class="dm-retour" id="dm-retour">${icoDm("retour")}Retour aux demandes</button>
     <article class="dm-fil">
+      ${jeSuisGerantDm() ? `<div class="dm-gerant-outils"><span class="doux">Gérant :</span><button type="button" class="mini-btn danger" data-suppr-msg="${esc(f.id)}">Supprimer toute la conversation</button></div>` : ""}
       <header class="dm-fil-tete">
         <span class="dm-carte-ic">${icoDm(f.type)}</span>
         <div><h3>${esc(f.objet || nomTypeDm(f.type))}</h3>
           <span class="doux">${nomTypeDm(f.type)}${f.matiere ? " · " + esc(nomMatiere(f.matiere)) : ""}${f.pour ? " · pour le " + dateFr(f.pour) : ""} </span>
           <span class="dm-pour">Pour ${viseDm(f)}</span></div>
       </header>
-      ${e ? `<div class="dm-etat-ligne"><span class="dm-etat ${e[1]}">${e[0]}</span><span>${PHRASE_ETAT_DM[f.statut] || PHRASE_ETAT_DM.attente}</span></div>` : ""}
+      ${e ? `<div class="dm-etat-ligne"><span class="dm-etat ${e[1]}">${e[0]}</span><span>${(PHRASE_ETAT_DM[f.statut] || PHRASE_ETAT_DM.attente).replace("ta demande", f.deId === moiDm() ? "ta demande" : "la demande")}</span></div>` : ""}
       <div class="dm-messages">${f.messages.map(m => `
-        <div class="dm-msg${m.deId === moiDm() ? " moi" : ""}${f.a !== "equipe" && m.deId === f.a ? " vise" : ""}">
+        <div class="dm-msg${m.deId === moiDm() ? " moi" : ""}${estViseDm(f, m) ? " vise" : ""}">
           ${avatarDm(m.deNom, m.deRang, m.deId)}
           <div class="dm-msg-corps">
-            <div class="dm-msg-tete"><b>${m.deId === moiDm() ? "Toi" : esc(m.deNom || "?")}</b>${m.deRang && m.deRang !== "eleve" ? `<span class="dm-rang ${m.deRang}">${libRangDm(m.deRang)}</span>` : ""}${f.a !== "equipe" && m.deId === f.a ? `<span class="dm-tag-vise">Personne visée</span>` : ""}<span class="doux">${quandDm(m.le)}</span></div>
+            <div class="dm-msg-tete"><b>${m.deId === moiDm() ? "Toi" : esc(m.deNom || "?")}</b>${m.deRang && m.deRang !== "eleve" ? `<span class="dm-rang ${m.deRang}">${libRangDm(m.deRang)}</span>` : ""}${estViseDm(f, m) ? `<span class="dm-tag-vise">Personne visée</span>` : ""}<span class="doux">${quandDm(m.le)}</span></div>
             ${m === f.messages[0] && f.passage ? `<blockquote class="dm-cite">« ${esc(f.passage)} »</blockquote>` : ""}
             <p>${esc(m.corps || "")}</p>
-            ${m.deId === moiDm() || modeGerant || estGerantCompte() ? `<button type="button" class="dm-suppr" data-suppr-msg="${esc(m.id)}">${m === f.messages[0] ? "Supprimer la demande" : "Supprimer"}</button>` : ""}
+            ${m.deId === moiDm() || jeSuisGerantDm() ? `<button type="button" class="dm-suppr" data-suppr-msg="${esc(m.id)}">${m === f.messages[0] ? "Supprimer la demande" : "Supprimer ce message"}</button>` : ""}
           </div>
         </div>`).join("")}<div id="dm-ecrit" data-fil="${esc(f.id)}" aria-live="polite"></div></div>
       ${quiRepondDm(f)}
@@ -13674,7 +13678,7 @@ function lectureDm(f){
 function quiRepondDm(f){
   const lst = [`<li>${avatarDm(f.deNom, f.deRang, f.deId, "mini")}<b>${f.deId === moiDm() ? "Toi" : esc(f.deNom || "?")}</b>, qui a fait la demande</li>`,
     f.a === "equipe" ? `<li><b class="dm-vise">Tous les admins</b>, car la demande est pour toute l'équipe</li>` : `<li>${viseDm(f)}, la personne visée</li>`,
-    `<li><b>Le gérant</b> de Helper</li>`];
+    ...(f.a === "gerant" ? [] : [`<li><b>Le gérant</b> de Helper</li>`])];
   return `<details class="dm-qui"${peutRepondreDm(f) ? "" : " open"}><summary>${icoDm("question")}Qui peut répondre ?</summary>
     <p>Tout le monde peut <b>lire</b> cette demande, mais seules ces personnes peuvent <b>répondre</b> :</p><ul>${lst.join("")}</ul></details>`;
 }
@@ -13685,7 +13689,7 @@ async function composerDm(){
   const equipe = await chargerEquipeDm(); if (!etatDm.ecrire) return;
   const mats = MATIERES, mat = b.matiere || "";
   const refs = !mat ? [] : t === "exo" ? seriesDe(mat).map(x => ({id: x.id, nom: estPrecis(x) ? nomExoType(x) : x.titre || "Exercices"})) : leconsDe(mat).map(l => ({id: l.id, nom: l.titre}));
-  const autres = equipe.filter(x => x.id !== moiDm()), aPers = b.a && b.a !== "equipe";
+  const autres = [...(jeSuisGerantDm() ? [] : [{id: "gerant", pseudo: "Le gérant", rang: "gerant"}]), ...equipe.filter(x => x.id !== moiDm() && x.rang !== "gerant")], aPers = b.a && b.a !== "equipe";
   const etape = (n, titre, html, actif = true) => `<section class="dm-etape${actif ? "" : " grise"}"><h3><span class="dm-num">${n}</span>${titre}</h3>${actif ? html : ""}</section>`;
   const labRef = t === "modif" ? "Quelle leçon a une erreur ?" : t === "exo" ? "Sur quel chapitre ? (facultatif)" : t === "lecon" ? "Une leçon proche existe déjà ? (facultatif)" : "C'est à propos d'une leçon ? (facultatif)";
   const aideCorps = {lecon: "Ex. : Je voudrais une leçon sur la Guerre froide pour le contrôle de vendredi.", exo: "Ex. : Je voudrais plus d'exercices sur le théorème de Thalès.", modif: "Ex. : Dans la partie 2, la date de la bataille de Verdun est fausse.", question: "Ex. : Je ne comprends pas la différence entre un nom et un adjectif."}[t] || "";
@@ -13701,8 +13705,8 @@ async function composerDm(){
         ${etape(3, "Explique ta demande", `<textarea id="dm-corps" rows="5" maxlength="1500" placeholder="${esc(aideCorps)}">${esc(b.corps || "")}</textarea>`, !!t && !!mat)}
         ${etape(4, "À qui l'envoyer ?", `<div class="dm-dest">
             <label class="dm-choix"><input type="radio" name="dm-qui" value="equipe"${aPers ? "" : " checked"}><span><b>À toute l'équipe</b><small class="doux">Le plus simple : le premier admin disponible te répondra.</small></span></label>
-            ${autres.length ? `<label class="dm-choix"><input type="radio" name="dm-qui" value="perso"${aPers ? " checked" : ""}><span><b>À une personne précise</b><small class="doux">Un admin que tu connais.</small></span></label>
-            ${aPers ? `<select id="dm-a" aria-label="Personne">${autres.map(x => `<option value="${esc(x.id)}"${b.a === x.id ? " selected" : ""}>${esc(x.pseudo)} (${libRangDm(x.rang)})</option>`).join("")}</select>` : ""}` : ""}
+            ${autres.length ? `<label class="dm-choix"><input type="radio" name="dm-qui" value="perso"${aPers ? " checked" : ""}><span><b>À une personne précise</b><small class="doux">Le gérant ou un admin que tu connais.</small></span></label>
+            ${aPers ? `<select id="dm-a" aria-label="Personne">${autres.map(x => `<option value="${esc(x.id)}"${b.a === x.id ? " selected" : ""}>${x.id === "gerant" ? "Le gérant de Helper" : esc(x.pseudo) + " (" + libRangDm(x.rang) + ")"}</option>`).join("")}</select>` : ""}` : ""}
           </div>
           <div class="dm-prevenir">${icoDm("public")}<div><b>Attention : ta demande sera visible par tout le monde.</b><br>Même si tu l'envoies à une seule personne, tous les élèves et tous les admins pourront la lire. N'écris rien de personnel.</div></div>
           <p class="doux dm-note">Pour répondre : seulement toi, ${aPers ? "la personne choisie" : "les admins"} et le gérant.</p>
@@ -13728,7 +13732,7 @@ async function composerDm(){
     if (t === "modif" && !b.ref) return statut("Choisis la leçon qui a une erreur (étape 2).");
     if (corps.length < 3) return statut("Explique ta demande en quelques mots (étape 3).");
     if (!b.compris) return statut("Coche « J'ai compris » (étape 4).");
-    const dest = b.a || "equipe", destNom = dest === "equipe" ? "Toute l'équipe" : (equipe.find(x => x.id === dest) || {}).pseudo || dest;
+    const dest = b.a || "equipe", destNom = dest === "equipe" ? "Toute l'équipe" : dest === "gerant" ? "Le gérant" : (equipe.find(x => x.id === dest) || {}).pseudo || dest;
     const refNom = b.ref ? (refs.find(r => r.id === b.ref) || {}).nom || "" : "", nm = nomMatiere(mat);
     const objet = t === "modif" ? "Erreur dans « " + refNom + " »" : t === "lecon" ? "Leçon de " + nm + (refNom ? " (comme « " + refNom + " »)" : "") : t === "exo" ? "Exercices de " + nm + (refNom ? " : " + refNom : "") : "Question de " + nm + (refNom ? " sur « " + refNom + " »" : "");
     const m = {de: monNomDm(), deNom: monNomDm(), deId: moiDm(), deRang: monRangDm(), classe: (profil && profil.classe) || "", a: dest, aNom: destNom, type: t, objet: objet.slice(0, 100), corps: corps.slice(0, 1500),
