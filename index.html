@@ -2061,6 +2061,37 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 
 .dv-ligne.fait .dv-tag-ctrl{background:transparent !important;color:#7fdba5 !important;border:1px solid color-mix(in srgb,#5cc98a 50%,transparent) !important;box-shadow:none !important;animation:none !important}
 .dv-page.fait .dv-banniere-ctrl{background:color-mix(in srgb,#5cc98a 16%,#0e1813);color:#cdeedb;border:1px solid color-mix(in srgb,#5cc98a 45%,transparent);box-shadow:none;animation:none}
+
+/* onglet Demandes : icône bulle « + » */
+.nav button[data-vue="demandes"]::before,.nav button[data-vue="g-demandes"]::before{width:14px;height:14px;border-radius:0;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-8l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm7 3v3H8v2h3v3h2v-3h3v-2h-3V7z' fill-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-8l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm7 3v3H8v2h3v3h2v-3h3v-2h-3V7z' fill-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat}
+.nav button[data-vue="demandes"][aria-selected="true"]::before,.nav button[data-vue="g-demandes"][aria-selected="true"]::before{background:var(--accent)}
+.rq-types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.rq-type{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid var(--ligne);border-radius:12px;background:var(--surface-2);color:var(--texte);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+.rq-type:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--ligne))}
+.rq-type.actif{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface-2))}
+.rq-type span{display:flex;flex-direction:column;gap:3px}.rq-type small{color:var(--doux);font-size:.8rem;line-height:1.3}
+.rq-ico{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.rq-ico svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rq-form textarea,.rq-rep-form textarea{width:100%;resize:vertical;font:inherit;padding:10px 12px;border:1px solid var(--ligne);border-radius:var(--r);background:var(--surface-2);color:var(--texte)}
+.rq-rep-form textarea:focus,.rq-form textarea:focus{outline:none;border-color:var(--accent)}
+.rq-motif{align-self:flex-start}
+.champ .lab{font-size:.85rem;font-weight:600}
+.rq-liste{display:flex;flex-direction:column;gap:10px}
+.rq-carte{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border:1px solid var(--ligne);border-left:3px solid var(--doux);border-radius:12px;background:var(--surface)}
+.rq-carte.encours{border-left-color:#4fa3f7}.rq-carte.fait{border-left-color:#5cc98a}.rq-carte.refuse{border-left-color:#e5484d}.rq-carte.annulee{opacity:.55}
+.rq-carte.neuf{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 55%,transparent)}
+.rq-tete{display:flex;align-items:center;gap:12px}
+.rq-titres{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.rq-titres b{overflow-wrap:anywhere}
+.rq-type-lib{font:600 .72rem var(--f-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--doux)}
+.rq-etat{flex:none;padding:3px 10px;border-radius:999px;border:1px solid var(--ligne);font-size:.76rem;font-weight:600;color:var(--doux)}
+.rq-etat.encours{color:#4fa3f7;border-color:color-mix(in srgb,#4fa3f7 50%,transparent)}.rq-etat.fait{color:#5cc98a;border-color:color-mix(in srgb,#5cc98a 50%,transparent)}.rq-etat.refuse{color:#ff8a8d;border-color:color-mix(in srgb,#e5484d 50%,transparent)}
+.rq-msg,.rq-passage{margin:0;overflow-wrap:anywhere}.rq-passage{font-style:italic;color:var(--doux)}
+.rq-meta{font-size:.8rem}
+.rq-reponse{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--accent) 8%,var(--surface-2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}.rq-reponse p{margin:4px 0 0}
+.rq-outils{display:flex;flex-direction:column;gap:8px;padding-top:8px;border-top:1px solid var(--ligne)}
+.rq-outils .mini-btn.actif{border-color:var(--accent);color:var(--accent)}
+.rq-rep-form{display:flex;gap:8px;align-items:flex-end}
+@media (max-width:760px){.rq-types{grid-template-columns:1fr}.rq-rep-form{flex-direction:column;align-items:stretch}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5472,10 +5503,10 @@ function notifierEnDirect(type, docs){
 }
 
 /* ===================== NAVIGATION ===================== */
-const ONGLETS_ELEVE = [["profil","Profil"],["prefs","Préférences"],["edt","Emploi du temps"],["lecons","Leçons"],["exos","Exercices"],["brevet","Exercices Brevet"],["devoirs","Devoirs"],["actu","Actualité"],["cloud","Cloud"]];
+const ONGLETS_ELEVE = [["profil","Profil"],["prefs","Préférences"],["edt","Emploi du temps"],["lecons","Leçons"],["exos","Exercices"],["brevet","Exercices Brevet"],["devoirs","Devoirs"],["actu","Actualité"],["cloud","Cloud"],["demandes","Demandes"]];
 const ONGLETS_ADMIN = [["g-lecons","Leçons"],["g-exos","Exercices"],["g-dictees","Dictées"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"]];
 const espaceNom = () => modeGerant || estGerantCompte() ? "Gérant" : "Administration";
-const ONGLETS_GERANT = [["g-site","Mise à jour du site"],["g-eleves","Élèves et codes"],["g-lecons","Leçons"],["g-exos","Exercices"],["g-dictees","Dictées"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"],["a-actus","Actus"],["g-cloud","Cloud"],["g-signal","Signalements"]];
+const ONGLETS_GERANT = [["g-site","Mise à jour du site"],["g-eleves","Élèves et codes"],["g-lecons","Leçons"],["g-exos","Exercices"],["g-dictees","Dictées"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"],["a-actus","Actus"],["g-cloud","Cloud"],["g-demandes","Demandes"],["g-signal","Signalements"]];
 const zone = () => $("#vue");
 function initiale(p){ return esc(((p && (p.pseudo || p.nom)) || "?").slice(0, 1).toUpperCase()); }
 function majIdentite(){
@@ -5490,7 +5521,7 @@ function ouvrirApp(){
   else if (estAdminCompte()) groupes.push(["Administration", ONGLETS_ADMIN]);
   $("#nav").innerHTML = groupes.map(([g, ongs]) => `<span class="nav-groupe">${g}</span>` + ongs.map(([v, t]) => `<button type="button" role="tab" data-vue="${v}" aria-selected="false"${EN_CHANTIER.includes(v) ? ` title="${t} : onglet en construction"` : ""}>${t}${EN_CHANTIER.includes(v) ? `<span class="nav-chantier" aria-label="en construction">En travaux</span>` : ""}</button>`).join("")).join("");
   $("#nav").querySelectorAll("button").forEach(b => b.onclick = () => changerVue(b.dataset.vue));
-  majIdentite(); majBadgeSignal();
+  majIdentite(); majBadgeSignal(); suivreRequetes(); majBadgeRequetes();
   montrer("app"); changerVue(modeGerant ? "g-eleves" : "edt");
 }
 let vueActive = "";
@@ -5545,7 +5576,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.78";
+const VERSION_SITE = "1.79";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -13362,6 +13393,135 @@ async function dessinerPdfDnb(url, boite){
     }
   } catch { if (boite.isConnected) boite.innerHTML = `<div class="vide">Impossible d'afficher le PDF ici. <a class="lien" href="${esc(url)}" target="_blank" rel="noopener">Ouvre-le dans un nouvel onglet ↗</a></div>`; }
 }
+/* ===================== DEMANDES DES ÉLÈVES : leçons, exercices, corrections de leçons =====================
+   Enregistrées dans la collection « signalements » (genre: "demande") : l'élève peut y écrire et relire les siennes,
+   le gérant les voit toutes, change leur état et répond. */
+let requetes = [], requetesSuivies = false;
+const TYPES_REQ = [["lecon", "Une leçon", "Une leçon qui n'existe pas encore sur Helper"], ["exo", "Des exercices", "Des exercices pour t'entraîner sur un chapitre"], ["modif", "Corriger une leçon", "Une erreur, un oubli ou un passage pas clair"]];
+const ETATS_REQ = {attente: ["En attente", ""], encours: ["En cours", "encours"], fait: ["Fait", "fait"], refuse: ["Refusé", "refuse"], annulee: ["Annulée", "annulee"]};
+const MOTIFS_MODIF = [["faute", "Une faute"], ["manque", "Il manque quelque chose"], ["clarte", "Pas clair"], ["autre", "Autre"]];
+const nomTypeReq = t => (TYPES_REQ.find(x => x[0] === t) || [, "Demande"])[1];
+// icônes (même famille que le reste du site)
+const ICO_REQ = {
+  lecon: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 5.5 14.5 4 17.5 4 20 5.5V19c-2.5-1.5-5.5-1.5-8 0-2.5-1.5-5.5-1.5-8 0z"/><path d="M12 5.5V19"/></svg>`,
+  exo: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8M9 4v3H6a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-3V4"/><path d="M8.5 13.5l2 2 4.5-4.5"/></svg>`,
+  modif: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>`
+};
+const icoReq = t => `<span class="rq-ico">${ICO_REQ[t] || ICO_REQ.lecon}</span>`;
+
+// l'élève suit ses demandes (les règles d'accès ne lui renvoient que les siennes)
+function suivreRequetes(){
+  if (requetesSuivies || !db || modeGerant || estGerantCompte()) return; requetesSuivies = true;
+  db.collection("signalements").onSnapshot(s => { requetes = s.docs.map(d => ({...d.data(), id: d.id})).filter(x => x.genre === "demande"); majBadgeRequetes(); majVue(); }, () => {});
+}
+const mesRequetes = () => requetes.filter(x => x.compte === moi).sort((a, b) => String(b.le).localeCompare(String(a.le)));
+// réponses du gérant pas encore lues (badge de l'onglet)
+const vuesReq = () => { try { return JSON.parse(lsGet("helper.req.vues") || "{}"); } catch { return {}; } };
+function majBadgeRequetes(){
+  const b = document.querySelector('#nav button[data-vue="demandes"]'), v = vuesReq();
+  if (b){ const n = mesRequetes().filter(x => x.majLe && x.majLe !== v[x.id]).length; b.dataset.n = n ? String(n) : ""; }
+  const g = document.querySelector('#nav button[data-vue="g-demandes"]');
+  if (g){ const n = requetes.filter(x => x.statut === "attente").length; g.dataset.n = n ? String(n) : ""; }
+}
+
+/* ---------- Élève ---------- */
+let choixReq = {type: "lecon"};
+VUES.demandes = function vueDemandes(){
+  rafraichir = vueDemandes; suivreRequetes();
+  const t = choixReq.type, mats = MATIERES, lecons = typeof toutesLecons === "function" ? toutesLecons() : [];
+  const miennes = mesRequetes(), v = vuesReq();
+  zone().innerHTML = entete("Demandes", "Demander au gérant") + `
+    <form class="bloc rq-form" id="rq-form" novalidate>
+      <span class="mono">Nouvelle demande</span>
+      <div class="rq-types">${TYPES_REQ.map(([v2, nom, aide]) => `<button type="button" class="rq-type${v2 === t ? " actif" : ""}" data-type="${v2}" aria-pressed="${v2 === t}">${icoReq(v2)}<span><b>${nom}</b><small>${aide}</small></span></button>`).join("")}</div>
+      ${t === "modif" ? `
+        <div class="grille-form">
+          <div class="champ"><label for="rq-mat">Matière</label><select id="rq-mat">${mats.map(m => `<option value="${m.id}"${m.id === choixReq.mat ? " selected" : ""}>${esc(m.nom)}</option>`).join("")}</select></div>
+          <div class="champ" style="grid-column:span 2"><label for="rq-lecon">Leçon</label><select id="rq-lecon">${(lecons.filter(l => l.matiere === (choixReq.mat || mats[0].id))).map(l => `<option value="${esc(l.id)}">${esc(l.titre)}</option>`).join("") || `<option value="">Aucune leçon dans cette matière</option>`}</select></div>
+        </div>
+        <div class="champ"><span class="lab">Ce qui ne va pas</span>${segment("rq-motif", MOTIFS_MODIF, choixReq.motif || "faute")}</div>
+        <div class="champ"><label for="rq-passage">Passage concerné (facultatif)</label><input id="rq-passage" type="text" maxlength="200" placeholder="Recopie quelques mots du passage"></div>`
+      : `
+        <div class="grille-form">
+          <div class="champ"><label for="rq-mat">Matière</label><select id="rq-mat">${mats.map(m => `<option value="${m.id}"${m.id === choixReq.mat ? " selected" : ""}>${esc(m.nom)}</option>`).join("")}</select></div>
+          <div class="champ" style="grid-column:span 2"><label for="rq-titre">${t === "exo" ? "Chapitre ou notion" : "Titre ou chapitre de la leçon"}</label><input id="rq-titre" type="text" maxlength="100" placeholder="${t === "exo" ? "ex. Théorème de Thalès" : "ex. La Guerre froide"}"></div>
+        </div>
+        <div class="champ"><label for="rq-pour">Pour quand ? (facultatif)</label><input id="rq-pour" type="date" min="${auj()}" style="max-width:220px"><small class="doux">Par exemple la date d'un contrôle.</small></div>`}
+      <div class="champ"><label for="rq-msg">${t === "modif" ? "Explique ce qu'il faut corriger" : "Précisions (facultatif)"}</label><textarea id="rq-msg" rows="3" maxlength="800" placeholder="${t === "modif" ? "ex. Dans la partie 2, la date de l'armistice est fausse." : t === "exo" ? "ex. Des exercices de calcul, niveau brevet." : "ex. Ce qu'on a vu en classe, les mots importants…"}"></textarea></div>
+      <p id="statut" class="statut" role="status"></p>
+      <div><button class="btn" type="submit">Envoyer la demande</button></div>
+    </form>
+    <div class="bloc">
+      <span class="mono">Mes demandes</span>
+      ${miennes.length ? `<div class="rq-liste">${miennes.map(x => carteReq(x, false, v)).join("")}</div>` : `<div class="vide">Aucune demande pour le moment.</div>`}
+    </div>`;
+  zone().querySelectorAll("[data-type]").forEach(b => b.onclick = () => { choixReq.type = b.dataset.type; vueDemandes(); });
+  $("#rq-mat").onchange = () => { choixReq.mat = $("#rq-mat").value; if (choixReq.type === "modif") vueDemandes(); };
+  zone().querySelectorAll("#rq-motif button").forEach(b => b.onclick = () => { choixReq.motif = b.dataset.v; zone().querySelectorAll("#rq-motif button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  zone().querySelectorAll("[data-annuler]").forEach(b => deuxClics(b, async () => { try { await db.doc("signalements/" + b.dataset.annuler).update({statut: "annulee", majLe: new Date().toISOString()}); } catch (err){ statut(erreurEcriture(err)); } }));
+  // les réponses affichées sont marquées comme lues
+  const lues = vuesReq(); let change = false; miennes.forEach(x => { if (x.majLe && lues[x.id] !== x.majLe){ lues[x.id] = x.majLe; change = true; } });
+  if (change){ lsSet("helper.req.vues", JSON.stringify(lues)); setTimeout(majBadgeRequetes, 50); }
+  $("#rq-form").onsubmit = async ev => {
+    ev.preventDefault();
+    const mat = $("#rq-mat").value, msg = $("#rq-msg").value.trim(), btn = ev.target.querySelector("[type=submit]");
+    const d = {genre: "demande", type: t, matiere: mat, message: msg.slice(0, 800), statut: "attente", compte: moi, par: (profil && profil.pseudo) || "?", classe: (profil && profil.classe) || "", le: new Date().toISOString(), traite: false};
+    if (t === "modif"){ const l = lecons.find(x => x.id === $("#rq-lecon").value); if (!l) return statut("Choisis la leçon à corriger.");
+      if (msg.length < 5) return statut("Explique en quelques mots ce qu'il faut corriger.");
+      Object.assign(d, {lecon: l.id, titre: l.titre, motif: choixReq.motif || "faute", passage: $("#rq-passage").value.trim().slice(0, 200)}); }
+    else { const ti = $("#rq-titre").value.trim(); if (ti.length < 3) return statut(t === "exo" ? "Indique le chapitre ou la notion." : "Indique le titre ou le chapitre de la leçon.");
+      Object.assign(d, {titre: ti.slice(0, 100), pour: $("#rq-pour").value || ""}); }
+    btn.disabled = true;
+    try { await db.doc("signalements/" + nouvelId("d")).set(d); choixReq = {type: t, mat}; Formes.succes(); toast("Demande envoyée au gérant."); vueDemandes(); }
+    catch (err){ btn.disabled = false; statut("L'envoi a échoué, réessaie dans un instant."); }
+  };
+};
+function carteReq(x, gerant, vues = {}){
+  const e = ETATS_REQ[x.statut] || ETATS_REQ.attente, neuf = !gerant && x.majLe && vues[x.id] !== x.majLe;
+  const mat = nomMatiere(x.matiere), motif = (MOTIFS_MODIF.find(m => m[0] === x.motif) || [, ""])[1];
+  return `<article class="rq-carte ${e[1]}${neuf ? " neuf" : ""}" data-req="${esc(x.id)}">
+    <div class="rq-tete">${icoReq(x.type)}<div class="rq-titres"><span class="rq-type-lib">${esc(nomTypeReq(x.type))} · ${esc(mat)}</span><b>${esc(x.titre || "")}</b></div>
+      <span class="rq-etat ${e[1]}">${e[0]}</span></div>
+    ${x.type === "modif" && motif ? `<span class="badge rq-motif">${esc(motif)}</span>` : ""}
+    ${x.passage ? `<p class="rq-passage">« ${esc(x.passage)} »</p>` : ""}
+    ${x.message ? `<p class="rq-msg">${esc(x.message)}</p>` : ""}
+    <span class="doux rq-meta">${gerant ? `${esc(x.par || "?")}${x.classe ? " (" + esc(x.classe) + ")" : ""} · ` : ""}Envoyée le ${dateFr(String(x.le || "").slice(0, 10))}${x.pour ? ` · pour le ${dateFr(x.pour)}` : ""}</span>
+    ${x.reponse ? `<div class="rq-reponse"><span class="mono">Réponse du gérant</span><p>${esc(x.reponse)}</p></div>` : ""}
+    ${gerant ? outilsReqGerant(x) : x.statut === "attente" ? `<div><button type="button" class="mini-btn danger" data-annuler="${esc(x.id)}">Annuler la demande</button></div>` : ""}
+  </article>`;
+}
+
+/* ---------- Gérant ---------- */
+let filtreReq = "ouvertes";
+function outilsReqGerant(x){
+  const l = x.type === "modif" && typeof toutesLecons === "function" && toutesLecons().find(y => y.id === x.lecon);
+  return `<div class="rq-outils">
+    <div class="rangee" style="gap:6px">${Object.entries(ETATS_REQ).filter(([k]) => k !== "annulee").map(([k, [nom]]) => `<button type="button" class="mini-btn${x.statut === k ? " actif" : ""}" data-etat="${k}" data-id="${esc(x.id)}" aria-pressed="${x.statut === k}">${nom}</button>`).join("")}
+      ${x.type === "modif" ? (l ? `<button type="button" class="mini-btn" data-ouvrir="${esc(x.lecon)}">Ouvrir la leçon</button>` : `<span class="doux" style="font-size:.8rem">Leçon introuvable</span>`)
+        : x.type === "lecon" ? `<button type="button" class="mini-btn" data-creer="${esc(x.matiere)}">Créer la leçon</button>` : `<button type="button" class="mini-btn" data-exos="${esc(x.matiere)}">Aller aux exercices</button>`}
+      <button type="button" class="mini-btn danger" data-suppr-req="${esc(x.id)}">Supprimer</button></div>
+    <div class="rq-rep-form"><textarea rows="2" maxlength="600" placeholder="Réponse à l'élève (facultatif)" data-rep="${esc(x.id)}">${esc(x.reponse || "")}</textarea><button type="button" class="mini-btn" data-envoyer-rep="${esc(x.id)}">Envoyer</button></div>
+  </div>`;
+}
+VUES["g-demandes"] = function vueGDemandes(){
+  rafraichir = vueGDemandes;
+  const ouvertes = requetes.filter(x => x.statut === "attente" || x.statut === "encours");
+  const liste = (filtreReq === "ouvertes" ? ouvertes : requetes).slice().sort((a, b) => String(b.le).localeCompare(String(a.le)));
+  zone().innerHTML = entete(espaceNom(), "Demandes des élèves") + `
+    <div class="bloc">
+      ${segment("rq-filtre", [["ouvertes", `À traiter (${ouvertes.length})`], ["toutes", `Toutes (${requetes.length})`]], filtreReq)}
+      <p id="statut" class="statut" role="status"></p>
+      ${liste.length ? `<div class="rq-liste">${liste.map(x => carteReq(x, true)).join("")}</div>` : `<div class="vide">${filtreReq === "ouvertes" ? "Aucune demande à traiter." : "Aucune demande."}</div>`}
+    </div>`;
+  const maj = async (id, champs) => { try { await db.doc("signalements/" + id).update({...champs, majLe: new Date().toISOString()}); } catch (err){ statut(erreurEcriture(err)); } };
+  zone().querySelectorAll("#rq-filtre button").forEach(b => b.onclick = () => { filtreReq = b.dataset.v; vueGDemandes(); });
+  zone().querySelectorAll("[data-etat]").forEach(b => b.onclick = () => maj(b.dataset.id, {statut: b.dataset.etat, traite: b.dataset.etat === "fait" || b.dataset.etat === "refuse"}));
+  zone().querySelectorAll("[data-envoyer-rep]").forEach(b => b.onclick = async () => { const t = zone().querySelector(`[data-rep="${b.dataset.envoyerRep}"]`).value.trim(); await maj(b.dataset.envoyerRep, {reponse: t.slice(0, 600)}); toast(t ? "Réponse envoyée à l'élève." : "Réponse effacée."); });
+  zone().querySelectorAll("[data-suppr-req]").forEach(b => deuxClics(b, async () => { try { await db.doc("signalements/" + b.dataset.supprReq).delete(); } catch (err){ statut(erreurEcriture(err)); } }));
+  zone().querySelectorAll("[data-ouvrir]").forEach(b => b.onclick = () => { const l = toutesLecons().find(x => x.id === b.dataset.ouvrir); if (!l) return; matiereActive = l.matiere; marquerNav("g-lecons"); vueActive = "g-lecons"; ouvrirEditeur(l); });
+  zone().querySelectorAll("[data-creer]").forEach(b => b.onclick = () => { if (MATIERES.some(m => m.id === b.dataset.creer)) matiereActive = b.dataset.creer; marquerNav("g-lecons"); vueActive = "g-lecons"; ouvrirEditeur(null); });
+  zone().querySelectorAll("[data-exos]").forEach(b => b.onclick = () => { if (MATIERES.some(m => m.id === b.dataset.exos)) matiereActive = b.dataset.exos; changerVue("g-exos"); });
+};
 /* ===================== EXERCICES TYPES (« exos précis ») =====================
    Deux sortes d'exercices :
    - les exercices en chaîne (type "chaine", par défaut) : une suite de questions différentes, une par une ;
@@ -15849,7 +16009,7 @@ function suivreGestion(){
   suivre("comptes", l => comptes = l);
   suivre("demandes", recevoirDemandes);
   suivre("signalements", l => {
-signalements = l; majBadgeSignal(); });
+signalements = l.filter(x => x.genre !== "demande"); requetes = l.filter(x => x.genre === "demande"); majBadgeSignal(); majBadgeRequetes(); });
   suivre("progres", l => progresTous = Object.fromEntries(l.map(p => [p.id, p])));
   if (uid) db.doc("data/users/" + uid + "/codes").onSnapshot(async s => {
     codesClairs = s.exists && s.data().liste ? {...s.data().liste} : {};
