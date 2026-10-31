@@ -5590,7 +5590,7 @@ const CLASSES = ["3A", "3B", "3C", "3D", "3E", "3F", "Hors-élèves"];
 const optionsClasses = actuelle => { const a = String(actuelle || ""), connue = CLASSES.some(c => normClasse(c) === normClasse(a));
   return (connue || !a ? "" : `<option value="${esc(a)}" selected>${esc(a)}</option>`) + CLASSES.map(c => `<option value="${c}" ${normClasse(c) === normClasse(a) ? "selected" : ""}>${c === "Hors-élèves" ? "Hors-élèves" : "Classe " + c}</option>`).join(""); };
 const ACCENTS = [["Or","#f2ae02"],["Orange","#f5a524"],["Corail","#ff6b3d"],["Bleu","#4fa3f7"],["Vert","#5cc98a"],["Rose","#ef6fa6"],["Violet","#a585f2"]];
-const PREFS_DEFAUT = {accent: "#f2ae02", formes: null, notifs: {actus: true, chg: true}};
+const PREFS_DEFAUT = {accent: "#f2ae02", formes: null, notifs: {actus: true, chg: true, devoirs: true, demandes: true}};
 function appliquerPrefs(p){
   const accent = ACCENTS.some(([, c]) => c === String(p && p.accent || "").toLowerCase()) ? String(p.accent).toLowerCase() : PREFS_DEFAUT.accent;   // seulement les couleurs de la palette
   document.documentElement.style.setProperty("--accent", accent);
@@ -5735,12 +5735,14 @@ async function connecter(id){
   apresConnexionMaj();
   annoncerNouveautes();
   setTimeout(() => { if (typeof syncAutoED === "function") syncAutoED(); }, 4000);
+  setTimeout(configurerNotifsAppli, 2500);
 }
 $("#entrer-gerant").addEventListener("click", () => {
   if (!estGerant || !db) return;
   modeGerant = true; moi = null; profil = null; prog = null; Formes.succes(); connecteLe = Date.now(); ouvrirApp();
 });
 $("#deconnexion").addEventListener("click", () => {
+  try { if (window.HelperApp && window.HelperApp.configNotifs) window.HelperApp.configNotifs("{}"); } catch {}   // plus de notifications pour ce compte sur ce téléphone
   if (sb) sb.auth.signOut().catch(() => {});
   assets = null; uid = null;
   moi = null; profil = null; prog = null; modeGerant = false; rafraichir = null;
@@ -5766,6 +5768,42 @@ async function renommerCompte(ancienId, nouveau, extra = {}){
   const r = await sb.rpc("renommer_compte", {ancien: ancienId, nouveau, extra});
   if (r.error){ throw new Error(messageSb(r.error) || "Le serveur ne répond pas. Réessaie dans un instant."); }
   return r.data;
+}
+
+/* Notifications sur le téléphone (appli Android 1.6) : le site donne à l'appli le compte et sa « clé de notification »
+   (rangée dans le compte, lisible par lui seul) ; l'appli demande ensuite à Helper toutes les heures s'il y a du nouveau (supabase/9-notifications.sql). */
+async function configurerNotifsAppli(){
+  try {
+    if (!window.HelperApp || typeof window.HelperApp.configNotifs !== "function" || !profil || !moi || modeGerant) return;
+    const n = profil.prefs.notifs || {};
+    if (n.devoirs === false && n.demandes === false){ window.HelperApp.configNotifs("{}"); return; }
+    const s = await db.doc("comptes/" + moi).get(); let cle = s.exists ? s.data().cleNotif : "";
+    if (!cle || String(cle).length < 20){ cle = Array.from(crypto.getRandomValues(new Uint8Array(24)), b => b.toString(16).padStart(2, "0")).join(""); await majCompte({cleNotif: cle}); }
+    window.HelperApp.configNotifs(JSON.stringify({compte: moi, cle, devoirs: n.devoirs !== false, demandes: n.demandes !== false}));
+  } catch {}
+}
+// dans Helper : les devoirs pour demain, une fois par jour à l'ouverture
+function annoncerDevoirsDemain(){
+  try {
+    if (!profil || !est3C() || (profil.prefs.notifs || {}).devoirs === false) return;
+    const cle = "helper.dv.notif." + moi; if (lsGet(cle) === auj()) return;
+    const demain = decalerJour(auj(), 1), n = listeDevoirs().filter(d => d.date === demain && !estFaitDv(d)).length;
+    lsSet(cle, auj()); if (n) toast(`📚 ${n} devoir${n > 1 ? "s" : ""} à faire pour demain.`);
+  } catch {}
+}
+// dans Helper : une nouvelle demande (ou réponse) adressée à cette personne, pendant que la page est ouverte
+let msgsConnus = null;
+function annoncerMessagesDm(){
+  const ids = new Set(messagesDm.map(m => m.id));
+  if (!msgsConnus){ msgsConnus = ids; return; }
+  const neufs = messagesDm.filter(m => !msgsConnus.has(m.id)); msgsConnus = ids;
+  if (profil && (profil.prefs.notifs || {}).demandes === false) return;
+  const depuis = new Date(connecteLe || Date.now()).toISOString();
+  neufs.forEach(m => {
+    if (m.deId === moiDm() || String(m.le) < depuis) return;
+    const r = m.fil ? messagesDm.find(x => x.id === m.fil) : m; if (!r) return;
+    if (r.a === moiDm() || (r.a === "gerant" && jeSuisGerantDm())) toast(`${m.fil ? "💬 Réponse" : "✉️ Demande"} de ${m.deNom || "quelqu'un"} : ${r.objet || ""}`);
+  });
 }
 
 /* Notifications : nouveautés depuis la dernière visite, puis en direct */
@@ -5808,24 +5846,27 @@ function ouvrirApp(){
   $("#nav").innerHTML = groupes.map(([g, ongs]) => `<span class="nav-groupe">${g}</span>` + ongs.map(([v, t]) => `<button type="button" role="tab" data-vue="${v}" aria-selected="false"${EN_CHANTIER.includes(v) ? ` title="${t} : onglet en construction"` : ""}>${t}${EN_CHANTIER.includes(v) ? `<span class="nav-chantier" aria-label="en construction">En travaux</span>` : ""}</button>`).join("")).join("");
   $("#nav").querySelectorAll("button").forEach(b => b.onclick = () => changerVue(b.dataset.vue));
   majIdentite(); majBadgeSignal(); suivreRequetes(); majBadgeRequetes();
-  montrer("app"); changerVue(modeGerant ? "g-eleves" : "edt");
+  montrer("app");
+  let vueDemandee = ""; try { vueDemandee = new URLSearchParams(location.search).get("vue") || ""; } catch {}
+  changerVue(VUES[vueDemandee] ? vueDemandee : modeGerant ? "g-eleves" : "edt");
 }
+window.helperOuvrirVue = v => { if (VUES[v] && document.getElementById("app") && !document.getElementById("app").hidden) changerVue(v); };
 let vueActive = "";
 function marquerNav(v){ document.querySelectorAll("#nav button").forEach(b => b.setAttribute("aria-selected", b.dataset.vue === v)); }
 const VUES = {};
 // ambiance violette de la dictée : formes du fond, menu de côté et couleur d'accent
 // ----- Application Android (téléchargée sur Entarsh Catalogue) -----
-const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.4";
+const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.6";
 const enModeApp = () => { try { if (new URLSearchParams(location.search).get("app")) sessionStorage.setItem("helper.app", "1"); } catch {}
   let s = false; try { s = sessionStorage.getItem("helper.app") === "1"; } catch {}
   return s || matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; };
 if (enModeApp()) document.body.classList.add("mode-app");
 if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 const APPLI_NATIVE = (/HelperApp\/([\d.]+)/.exec(navigator.userAgent) || [])[1] || "";
-const DERNIERE_APPLI = "1.4";
+const DERNIERE_APPLI = "1.6";
 const VIEILLE_APPLI = enModeApp() && /android/i.test(navigator.userAgent) && (!APPLI_NATIVE || parseFloat(APPLI_NATIVE) < parseFloat(DERNIERE_APPLI));   // appli Android à mettre à jour
 { const b = document.getElementById("btn-installer"); if (b){ b.hidden = (enModeApp() && !VIEILLE_APPLI) || !/android/i.test(navigator.userAgent);
-  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : devoirs automatiques" : "Nouvelle version : couleurs corrigées";
+  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : notifications" : "Nouvelle version : couleurs corrigées";
     let vu = false; try { vu = sessionStorage.getItem("helper.majAppli") === "1"; sessionStorage.setItem("helper.majAppli", "1"); } catch {}
     if (!vu) addEventListener("load", () => setTimeout(() => b.click(), 1200)); } } }
 document.getElementById("btn-installer")?.addEventListener("click", () => { fermerMenuMobile();
@@ -5862,7 +5903,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.93";
+const VERSION_SITE = "1.94";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6039,7 +6080,9 @@ VUES.prefs = function vuePrefs(){
       <span class="mono">Notifications</span>
       <label class="interrupteur"><span><strong>Nouvelles actualités</strong><small>Helper et classe.</small></span><input type="checkbox" data-n="actus" ${p.notifs.actus ? "checked" : ""}></label>
       <label class="interrupteur"><span><strong>Changements de cours</strong><small>Cours annulé, déplacé, changement de salle…</small></span><input type="checkbox" data-n="chg" ${p.notifs.chg ? "checked" : ""}></label>
-      <p class="doux" style="font-size:.85rem">Les notifications s'affichent dans Helper, à l'ouverture et pendant que la page est ouverte.</p>
+      <label class="interrupteur"><span><strong>Devoirs pour demain</strong><small>Le nombre de devoirs à faire pour le lendemain (élèves de 3C).</small></span><input type="checkbox" data-n="devoirs" ${p.notifs.devoirs !== false ? "checked" : ""}></label>
+      <label class="interrupteur"><span><strong>Demandes qui me sont adressées</strong><small>Quand quelqu'un t'envoie une demande, ou répond dans une demande qui t'est adressée.</small></span><input type="checkbox" data-n="demandes" ${p.notifs.demandes !== false ? "checked" : ""}></label>
+      <p class="doux" style="font-size:.85rem">${window.HelperApp && typeof window.HelperApp.configNotifs === "function" ? "Sur ce téléphone, les devoirs et les demandes arrivent aussi en notification, même appli fermée (les devoirs : le soir, à partir de 18 h)." : "Les notifications s'affichent dans Helper, à l'ouverture et pendant que la page est ouverte. Avec l'application Android (1.6), les devoirs et les demandes arrivent aussi sur le téléphone, même appli fermée."}</p>
     </div>
     <p id="statut" class="statut" role="status"></p>`;
   zone().querySelectorAll(".nuancier button").forEach(b => b.onclick = () => { p.accent = b.dataset.c; enregistrerPrefs(); vuePrefs(); });
@@ -6047,7 +6090,7 @@ VUES.prefs = function vuePrefs(){
   const ic = $("#icone-couleur"); if (ic) ic.onchange = () => { lsSet("helper.iconeCouleur", ic.checked ? "1" : "0"); appliquerPrefs(p); };
   $("#formes-auto").onclick = () => { p.formes = null; $("#nb-formes-val").textContent = "Auto"; enregistrerPrefs(); };
   $("#auto").onchange = () => { const on = $("#auto").checked; lsSet("helper.auto", on ? "1" : "0"); statut(on ? "Connexion automatique activée sur cet appareil." : "Connexion automatique désactivée.", true); };
-  zone().querySelectorAll("[data-n]").forEach(i => i.onchange = () => { p.notifs[i.dataset.n] = i.checked; enregistrerPrefs(); });
+  zone().querySelectorAll("[data-n]").forEach(i => i.onchange = () => { p.notifs[i.dataset.n] = i.checked; enregistrerPrefs(); configurerNotifsAppli(); });
 };
 
 /* ----- Emploi du temps : semaine, D.S., changements ----- */
@@ -13728,7 +13771,7 @@ const libRangDm = r => r === "gerant" ? "Gérant" : r === "administrateur" ? "Ad
 // tout le monde suit les messages (ils sont publics)
 function suivreRequetes(){
   if (messagesSuivis || !db) return; messagesSuivis = true;
-  db.collection("messages").onSnapshot(s => { messagesDm = s.docs.map(d => ({...d.data(), id: d.id})); majBadgeRequetes(); chargerAvatarsDm(); majVue(); }, () => { messagerieOk = false; });
+  db.collection("messages").onSnapshot(s => { messagesDm = s.docs.map(d => ({...d.data(), id: d.id})); annoncerMessagesDm(); majBadgeRequetes(); chargerAvatarsDm(); majVue(); }, () => { messagerieOk = false; });
   suivreEcritureDm();
 }
 /* photos de profil des personnes qui écrivent */
@@ -16528,7 +16571,7 @@ function basculerBrouillon(q){
   fetch("donnees/monde.json", {cache: "no-cache"}).then(r => r.ok ? r.json() : []).then(l => { mondeAuto = (Array.isArray(l) ? l : []).filter(a => a && a.id && a.titre).map(a => ({...a, auto: true})); fusionMonde(); }).catch(() => {});
   db.collection("monde").onSnapshot(s => { mondeDb = s.docs.map(d => ({...d.data(), id: d.id})); fusionMonde(); }, () => {});
   db.doc("edt/semaine").onSnapshot(s => { const d = s.exists ? s.data() : null; edt = {creneaux: d && Array.isArray(d.creneaux) ? d.creneaux : [], couleurs: d && d.couleurs && typeof d.couleurs === "object" ? d.couleurs : {}}; majVue(); }, () => {});
-  db.doc("edt/devoirs").onSnapshot(s => { const d = s.exists ? s.data() : null; devoirsED = {devoirs: d && Array.isArray(d.devoirs) ? d.devoirs : [], majLe: d ? d.majLe || null : null, existe: !!d}; majVue(); }, () => {});
+  db.doc("edt/devoirs").onSnapshot(s => { const d = s.exists ? s.data() : null; devoirsED = {devoirs: d && Array.isArray(d.devoirs) ? d.devoirs : [], majLe: d ? d.majLe || null : null, existe: !!d}; majVue(); setTimeout(annoncerDevoirsDemain, 1500); }, () => {});
   db.doc("edt/ordre-lecons").onSnapshot(s => { const d = s.exists ? s.data() : null; ordreLecons = d && d.groupes && typeof d.groupes === "object" ? d.groupes : {}; majVue(); }, () => {});
   db.doc("edt/dictees").onSnapshot(s => { const d = s.exists ? s.data() : null; dicteesDb = d && Array.isArray(d.dictees) ? d.dictees : []; majVue(); }, () => {});
   db.doc("edt/devoirs-manuels").onSnapshot(s => { const d = s.exists ? s.data() : null; devoirsMan = d && Array.isArray(d.devoirs) ? d.devoirs : []; majVue(); }, () => {});
