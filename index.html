@@ -2135,6 +2135,30 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .dm-choix input{margin-top:3px;accent-color:var(--accent)}.dm-choix > span{display:flex;flex-direction:column;gap:2px}.dm-choix small{font-size:.8rem}
 .dm-prevenir{display:flex;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid color-mix(in srgb,#4fa3f7 45%,transparent);background:color-mix(in srgb,#4fa3f7 9%,var(--surface));font-size:.88rem;line-height:1.45}.dm-prevenir .dm-ic{width:22px;height:22px;color:#4fa3f7;margin-top:1px}
 .dm-compris{display:flex;align-items:center;gap:8px;font-weight:600;cursor:pointer}.dm-compris input{width:18px;height:18px;accent-color:var(--accent)}
+.dm-av{overflow:hidden}.dm-av img{width:100%;height:100%;object-fit:cover;display:block}
+.dm-av.mini{width:20px;height:20px;font-size:.62rem;display:inline-grid;vertical-align:middle;margin-right:5px}
+.dm-carte-qui{display:flex;align-items:center;flex-wrap:wrap;gap:2px 4px}
+.dm-vise{display:inline-flex;align-items:center;padding:1px 9px 1px 3px;border-radius:999px;border:1px solid color-mix(in srgb,var(--dm-oppose) 60%,transparent);background:color-mix(in srgb,var(--dm-oppose) 14%,transparent);color:var(--dm-oppose);font-weight:600}
+.dm-vise:not(:has(.dm-av)){padding-left:9px}
+.dm-pour{display:flex;align-items:center;gap:6px;font-size:.85rem;margin-top:2px}
+.dm-msg.vise .dm-msg-corps{border-color:color-mix(in srgb,var(--dm-oppose) 55%,var(--ligne));box-shadow:inset 3px 0 0 var(--dm-oppose)}
+.dm-msg.vise .dm-av{box-shadow:0 0 0 2px var(--dm-oppose)}
+.dm-tag-vise{padding:0 8px;border-radius:999px;font-size:.7rem;font-weight:700;color:var(--dm-oppose);border:1px solid color-mix(in srgb,var(--dm-oppose) 55%,transparent)}
+.dm-qui{border:1px solid var(--ligne);border-radius:10px;background:var(--surface-2);font-size:.88rem}
+.dm-qui summary{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;font-weight:600;list-style:none}.dm-qui summary::-webkit-details-marker{display:none}
+.dm-qui summary::after{content:"";margin-left:auto;width:7px;height:7px;border-right:2px solid var(--doux);border-bottom:2px solid var(--doux);transform:rotate(45deg);transition:transform .2s}
+.dm-qui[open] summary::after{transform:rotate(-135deg)}
+.dm-qui summary .dm-ic{width:18px;height:18px;color:var(--accent)}
+.dm-qui p{margin:0 12px 6px}.dm-qui ul{margin:0 12px 12px;padding-left:18px;display:flex;flex-direction:column;gap:5px}.dm-qui li{line-height:1.5}
+.dm-ecrit-msg{align-items:center}
+.dm-bulle-ecrit{display:inline-flex;gap:4px;padding:11px 14px;border:1px solid var(--ligne);border-radius:14px;background:var(--surface-2)}
+.dm-bulle-ecrit i{width:7px;height:7px;border-radius:50%;background:var(--doux);animation:dmPoint 1.2s infinite ease-in-out}
+.dm-bulle-ecrit i:nth-child(2){animation-delay:.15s}.dm-bulle-ecrit i:nth-child(3){animation-delay:.3s}
+@keyframes dmPoint{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-4px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.dm-bulle-ecrit i{animation:none}}
+.dm-ecrit-nom{font-size:.8rem}
+.dm-btn-envoi{display:inline-flex;align-items:center;gap:8px}.dm-btn-envoi .dm-ic{width:18px;height:18px}
+.dm-note{margin:0;font-size:.82rem}
 @media (max-width:700px){
   .dm-intro{flex-direction:column;align-items:stretch}.dm-grand-btn{justify-content:center}
   .dm-types{grid-template-columns:1fr}
@@ -5632,7 +5656,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.82";
+const VERSION_SITE = "1.83";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -13481,7 +13505,45 @@ const libRangDm = r => r === "gerant" ? "Gérant" : r === "administrateur" ? "Ad
 // tout le monde suit les messages (ils sont publics)
 function suivreRequetes(){
   if (messagesSuivis || !db) return; messagesSuivis = true;
-  db.collection("messages").onSnapshot(s => { messagesDm = s.docs.map(d => ({...d.data(), id: d.id})); majBadgeRequetes(); majVue(); }, () => { messagerieOk = false; });
+  db.collection("messages").onSnapshot(s => { messagesDm = s.docs.map(d => ({...d.data(), id: d.id})); majBadgeRequetes(); chargerAvatarsDm(); majVue(); }, () => { messagerieOk = false; });
+  suivreEcritureDm();
+}
+/* photos de profil des personnes qui écrivent */
+const avatarsDm = {}; let avatarsDemandes = new Set();
+async function chargerAvatarsDm(){
+  const ids = [...new Set(messagesDm.flatMap(m => [m.deId, m.a]))].filter(x => x && x !== "gerant" && x !== "equipe" && !avatarsDemandes.has(x));
+  if (!ids.length) return; ids.forEach(x => avatarsDemandes.add(x));
+  let neufs = {};
+  try { const r = await sb.rpc("avatars_helper", {p_ids: ids}); if (r.error) throw r.error; neufs = r.data || {}; }
+  catch { (typeof comptes !== "undefined" ? comptes : []).forEach(c => { if (ids.includes(c.id) && c.avatar) neufs[c.id] = c.avatar; }); }
+  if (Object.keys(neufs).length){ Object.assign(avatarsDm, neufs); if (vueActive === "demandes" || vueActive === "g-demandes") majVue(); }
+}
+const photoDm = id => id === moiDm() && !modeGerant && profil && profil.avatar ? profil.avatar : avatarsDm[id] || "";
+/* « … est en train d'écrire » : message éphémère en direct (rien n'est enregistré) */
+let canalEcritDm = null; const ecritDm = {}; let dernierEnvoiEcritDm = 0, minuterieEcritDm = null;
+function suivreEcritureDm(){
+  try {
+    if (canalEcritDm || typeof sb === "undefined" || !sb || !sb.channel) return;
+    canalEcritDm = sb.channel("helper-ecrit", {config: {broadcast: {self: false}}});
+    if (!canalEcritDm || !canalEcritDm.on) { canalEcritDm = null; return; }
+    canalEcritDm.on("broadcast", {event: "ecrit"}, ({payload: p}) => recevoirEcritDm(p)).subscribe();
+  } catch { canalEcritDm = null; }
+}
+function recevoirEcritDm(p){
+  if (!p || !p.fil || !p.id || p.id === moiDm()) return;
+  (ecritDm[p.fil] = ecritDm[p.fil] || {})[p.id] = p.stop ? 0 : {nom: p.nom, rang: p.rang, t: Date.now()};
+  majBulleDm();
+}
+function signalerEcritDm(fil, stop = false){
+  if (!canalEcritDm || !canalEcritDm.send) return;
+  const n = Date.now(); if (!stop && n - dernierEnvoiEcritDm < 2000) return; dernierEnvoiEcritDm = stop ? 0 : n;
+  try { canalEcritDm.send({type: "broadcast", event: "ecrit", payload: {fil, id: moiDm(), nom: monNomDm(), rang: monRangDm(), stop}}); } catch {}
+}
+function majBulleDm(){
+  const z = document.getElementById("dm-ecrit"); if (!z) return;
+  const l = Object.entries(ecritDm[z.dataset.fil] || {}).filter(([, v]) => v && Date.now() - v.t < 4500);
+  z.innerHTML = l.map(([id, v]) => `<div class="dm-msg dm-ecrit-msg">${avatarDm(v.nom, v.rang, id)}<div class="dm-bulle-ecrit" title="${esc(v.nom)} écrit…"><i></i><i></i><i></i></div><span class="doux dm-ecrit-nom">${esc(v.nom)} écrit…</span></div>`).join("");
+  clearTimeout(minuterieEcritDm); if (l.length) minuterieEcritDm = setTimeout(majBulleDm, 1000);
 }
 async function chargerEquipeDm(){
   if (equipeDm) return equipeDm;
@@ -13521,7 +13583,21 @@ function filsDeOnglet(o){
 }
 const quandDm = iso => { if (!iso) return ""; const d = new Date(iso), j = iso.slice(0, 10);
   return j === auj() ? "aujourd'hui à " + d.toLocaleTimeString("fr-FR", {hour: "2-digit", minute: "2-digit"}) : j === decalerJour(auj(), -1) ? "hier" : "le " + d.toLocaleDateString("fr-FR", {day: "numeric", month: "long"}); };
-const avatarDm = (nom, rang) => `<span class="dm-av ${rang || ""}" aria-hidden="true">${esc(String(nom || "?").slice(0, 1).toUpperCase())}</span>`;
+const avatarDm = (nom, rang, id, cl = "") => { const ph = id ? photoDm(id) : "";
+  return `<span class="dm-av ${rang || ""} ${cl}" aria-hidden="true">${ph ? `<img src="${esc(ph)}" alt="">` : esc(String(nom || "?").slice(0, 1).toUpperCase())}</span>`; };
+// couleur opposée à la couleur du thème (vert → rouge…) pour montrer la personne visée
+function couleurOpposeeDm(){
+  try { const c = document.createElement("canvas").getContext("2d"); c.fillStyle = getComputedStyle(document.body).getPropertyValue("--accent").trim() || "#f0b400";
+    const h = c.fillStyle; if (!/^#[0-9a-f]{6}$/i.test(h)) return "#4f8cff";
+    let [r, g, b] = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn; let hu = 0, sa = 0;
+    if (d){ sa = d / (1 - Math.abs(2 * l - 1)); hu = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; hu *= 60; }
+    return `hsl(${Math.round((hu + 180 + 360) % 360)} ${Math.round(Math.max(sa, .55) * 100)}% ${Math.round(Math.min(Math.max(l, .62), .7) * 100)}%)`;
+  } catch { return "#4f8cff"; }
+}
+const styleDm = () => `style="--dm-oppose:${couleurOpposeeDm()}"`;
+const viseDm = f => `<span class="dm-vise">${f.a !== "equipe" ? avatarDm(f.aNom, "", f.a, "mini") : ""}${esc(nomDestDm(f))}</span>`;
+const peutRepondreDm = f => f.deId === moiDm() || f.a === moiDm() || modeGerant || estGerantCompte() || (f.a === "equipe" && estEquipeDm());
 const nomDestDm = f => f.a === "equipe" ? "toute l'équipe" : f.aNom || f.a;
 const etatDm1 = f => f.type === "question" ? null : ETATS_DM[f.statut] || ETATS_DM.attente;
 const PUBLIC_DM = `<p class="dm-public">${icoDm("public")}<span><b>À savoir :</b> les demandes ne sont pas privées. Tous les élèves et tous les admins de Helper peuvent les lire.</span></p>`;
@@ -13536,7 +13612,7 @@ VUES.demandes = function vueDemandes(){
 
   const o = etatDm.onglet, liste = filsDeOnglet(o);
   zone().innerHTML = entete("Demandes", "Demandes") + `
-    <div class="dm-page">
+    <div class="dm-page" ${styleDm()}>
       <section class="dm-intro">
         <div class="dm-intro-texte"><b>Il te manque quelque chose sur Helper ?</b><span class="doux">Demande une leçon, des exercices, signale une erreur ou pose une question. L'équipe te répondra ici.</span></div>
         <button type="button" class="btn dm-grand-btn" data-ecrire>${icoDm("ecrire")}Faire une demande</button>
@@ -13556,47 +13632,56 @@ function carteDm(f){
     <span class="dm-carte-ic">${icoDm(f.type)}</span>
     <span class="dm-carte-corps">
       <span class="dm-carte-titre">${nl ? `<i class="dm-pastille">Nouveau</i>` : ""}<b>${esc(f.objet || nomTypeDm(f.type))}</b></span>
-      <span class="doux dm-carte-qui">${f.deId === moiDm() ? "Toi" : esc(f.deNom || "?")} → ${esc(nomDestDm(f))} · ${quandDm(f.le)}</span>
+      <span class="doux dm-carte-qui">${avatarDm(f.deNom, f.deRang, f.deId, "mini")}${f.deId === moiDm() ? "Toi" : esc(f.deNom || "?")} → ${viseDm(f)} · ${quandDm(f.le)}</span>
       <span class="dm-carte-pied">${e ? `<span class="dm-etat ${e[1]}">${e[0]}</span>` : ""}<span class="doux">${nr ? nr + " réponse" + (nr > 1 ? "s" : "") : "Pas encore de réponse"}</span></span>
     </span>
   </button>`;
 }
 function lectureDm(f){
-  const e = etatDm1(f), peutRepondre = f.deId === moiDm() || f.a === moiDm() || estEquipeDm();
+  const e = etatDm1(f), peutRepondre = peutRepondreDm(f);
   const ref = f.ref && (f.type === "exo" ? toutesSeries().find(s => s.id === f.ref) : toutesLecons().find(l => l.id === f.ref));
   const v = vusDm(); if (v[f.id] !== f.activite){ v[f.id] = f.activite; lsSet("helper.dm.vus", JSON.stringify(v)); setTimeout(majBadgeRequetes, 30); }   // lu
-  return `<div class="dm-page">
+  return `<div class="dm-page" ${styleDm()}>
     <button type="button" class="dm-retour" id="dm-retour">${icoDm("retour")}Retour aux demandes</button>
     <article class="dm-fil">
       <header class="dm-fil-tete">
         <span class="dm-carte-ic">${icoDm(f.type)}</span>
         <div><h3>${esc(f.objet || nomTypeDm(f.type))}</h3>
-          <span class="doux">${nomTypeDm(f.type)}${f.matiere ? " · " + esc(nomMatiere(f.matiere)) : ""}${f.pour ? " · pour le " + dateFr(f.pour) : ""} · envoyé à ${esc(nomDestDm(f))}</span></div>
+          <span class="doux">${nomTypeDm(f.type)}${f.matiere ? " · " + esc(nomMatiere(f.matiere)) : ""}${f.pour ? " · pour le " + dateFr(f.pour) : ""} </span>
+          <span class="dm-pour">Pour ${viseDm(f)}</span></div>
       </header>
       ${e ? `<div class="dm-etat-ligne"><span class="dm-etat ${e[1]}">${e[0]}</span><span>${PHRASE_ETAT_DM[f.statut] || PHRASE_ETAT_DM.attente}</span></div>` : ""}
       <div class="dm-messages">${f.messages.map(m => `
-        <div class="dm-msg${m.deId === moiDm() ? " moi" : ""}">
-          ${avatarDm(m.deNom, m.deRang)}
+        <div class="dm-msg${m.deId === moiDm() ? " moi" : ""}${f.a !== "equipe" && m.deId === f.a ? " vise" : ""}">
+          ${avatarDm(m.deNom, m.deRang, m.deId)}
           <div class="dm-msg-corps">
-            <div class="dm-msg-tete"><b>${m.deId === moiDm() ? "Toi" : esc(m.deNom || "?")}</b>${m.deRang && m.deRang !== "eleve" ? `<span class="dm-rang ${m.deRang}">${libRangDm(m.deRang)}</span>` : ""}<span class="doux">${quandDm(m.le)}</span></div>
+            <div class="dm-msg-tete"><b>${m.deId === moiDm() ? "Toi" : esc(m.deNom || "?")}</b>${m.deRang && m.deRang !== "eleve" ? `<span class="dm-rang ${m.deRang}">${libRangDm(m.deRang)}</span>` : ""}${f.a !== "equipe" && m.deId === f.a ? `<span class="dm-tag-vise">Personne visée</span>` : ""}<span class="doux">${quandDm(m.le)}</span></div>
             ${m === f.messages[0] && f.passage ? `<blockquote class="dm-cite">« ${esc(f.passage)} »</blockquote>` : ""}
             <p>${esc(m.corps || "")}</p>
             ${m.deId === moiDm() || modeGerant || estGerantCompte() ? `<button type="button" class="dm-suppr" data-suppr-msg="${esc(m.id)}">${m === f.messages[0] ? "Supprimer la demande" : "Supprimer"}</button>` : ""}
           </div>
-        </div>`).join("")}</div>
-      ${estEquipeDm() && f.type !== "question" ? `<div class="dm-actions"><span class="doux">Changer l'état :</span>${Object.entries(ETATS_DM).map(([k, [nom]]) => `<button type="button" class="mini-btn${f.statut === k ? " actif" : ""}" data-etat="${k}" aria-pressed="${f.statut === k}">${nom}</button>`).join("")}
+        </div>`).join("")}<div id="dm-ecrit" data-fil="${esc(f.id)}" aria-live="polite"></div></div>
+      ${quiRepondDm(f)}
+      ${estEquipeDm() && peutRepondre && f.type !== "question" ? `<div class="dm-actions"><span class="doux">Changer l'état :</span>${Object.entries(ETATS_DM).map(([k, [nom]]) => `<button type="button" class="mini-btn${f.statut === k ? " actif" : ""}" data-etat="${k}" aria-pressed="${f.statut === k}">${nom}</button>`).join("")}
         ${f.type === "modif" && ref ? `<button type="button" class="mini-btn" data-ouvrir-lecon="${esc(f.ref)}">Ouvrir la leçon</button>` : f.type === "lecon" ? `<button type="button" class="mini-btn" data-creer-lecon="${esc(f.matiere || "")}">Créer la leçon</button>` : f.type === "exo" ? `<button type="button" class="mini-btn" data-aller-exos="${esc(f.matiere || "")}">Aller aux exercices</button>` : ""}</div>` : ""}
       ${peutRepondre ? `<form class="dm-repondre" id="dm-repondre" novalidate>
           <label for="dm-rep"><b>Répondre</b></label>
           <textarea id="dm-rep" rows="3" maxlength="1000" placeholder="Écris ta réponse…"></textarea>
-          <div class="dm-envoi"><span class="dm-avert">${icoDm("public")}Tout le monde pourra lire ta réponse.</span><button class="btn" type="submit">Envoyer</button></div>
-        </form>` : `<p class="doux dm-lecture-seule">Seuls ${esc(f.deNom || "l'auteur")} et l'équipe peuvent répondre à cette demande.</p>`}
+          <div class="dm-envoi"><span class="dm-avert">${icoDm("public")}Tout le monde pourra lire ta réponse.</span><button class="btn dm-btn-envoi" type="submit">${icoDm("envoyes")}Envoyer</button></div>
+        </form>` : `<p class="doux dm-lecture-seule">Tu peux lire cette demande, mais tu ne peux pas y répondre.</p>`}
     </article></div>`;
+}
+function quiRepondDm(f){
+  const lst = [`<li>${avatarDm(f.deNom, f.deRang, f.deId, "mini")}<b>${f.deId === moiDm() ? "Toi" : esc(f.deNom || "?")}</b>, qui a fait la demande</li>`,
+    f.a === "equipe" ? `<li><b class="dm-vise">Tous les admins</b>, car la demande est pour toute l'équipe</li>` : `<li>${viseDm(f)}, la personne visée</li>`,
+    `<li><b>Le gérant</b> de Helper</li>`];
+  return `<details class="dm-qui"${peutRepondreDm(f) ? "" : " open"}><summary>${icoDm("question")}Qui peut répondre ?</summary>
+    <p>Tout le monde peut <b>lire</b> cette demande, mais seules ces personnes peuvent <b>répondre</b> :</p><ul>${lst.join("")}</ul></details>`;
 }
 /* ---------- Nouvelle demande : 4 étapes simples ---------- */
 async function composerDm(){
   const b = etatDm.brouillon, t = b.type || "";
-  if (!zone().querySelector("#dm-form")) zone().innerHTML = entete("Demandes", "Nouvelle demande") + `<div class="dm-page"><p class="doux">Chargement…</p></div>`;
+  if (!zone().querySelector("#dm-form")) zone().innerHTML = entete("Demandes", "Nouvelle demande") + `<div class="dm-page" ${styleDm()}><p class="doux">Chargement…</p></div>`;
   const equipe = await chargerEquipeDm(); if (!etatDm.ecrire) return;
   const mats = MATIERES, mat = b.matiere || "";
   const refs = !mat ? [] : t === "exo" ? seriesDe(mat).map(x => ({id: x.id, nom: estPrecis(x) ? nomExoType(x) : x.titre || "Exercices"})) : leconsDe(mat).map(l => ({id: l.id, nom: l.titre}));
@@ -13605,7 +13690,7 @@ async function composerDm(){
   const labRef = t === "modif" ? "Quelle leçon a une erreur ?" : t === "exo" ? "Sur quel chapitre ? (facultatif)" : t === "lecon" ? "Une leçon proche existe déjà ? (facultatif)" : "C'est à propos d'une leçon ? (facultatif)";
   const aideCorps = {lecon: "Ex. : Je voudrais une leçon sur la Guerre froide pour le contrôle de vendredi.", exo: "Ex. : Je voudrais plus d'exercices sur le théorème de Thalès.", modif: "Ex. : Dans la partie 2, la date de la bataille de Verdun est fausse.", question: "Ex. : Je ne comprends pas la différence entre un nom et un adjectif."}[t] || "";
   zone().innerHTML = entete("Demandes", "Nouvelle demande") + `
-    <div class="dm-page">
+    <div class="dm-page" ${styleDm()}>
       <button type="button" class="dm-retour" id="dm-retour">${icoDm("retour")}Annuler et revenir</button>
       <form class="dm-form" id="dm-form" novalidate>
         ${etape(1, "Que veux-tu demander ?", `<div class="dm-types">${TYPES_DM.map(([v, nom]) => `<button type="button" class="dm-type${v === t ? " actif" : ""}" data-type="${v}" aria-pressed="${v === t}"><span class="dm-carte-ic">${icoDm(v)}</span><span><b>${nom}</b><small class="doux">${AIDE_TYPES_DM[v]}</small></span></button>`).join("")}</div>`)}
@@ -13620,9 +13705,10 @@ async function composerDm(){
             ${aPers ? `<select id="dm-a" aria-label="Personne">${autres.map(x => `<option value="${esc(x.id)}"${b.a === x.id ? " selected" : ""}>${esc(x.pseudo)} (${libRangDm(x.rang)})</option>`).join("")}</select>` : ""}` : ""}
           </div>
           <div class="dm-prevenir">${icoDm("public")}<div><b>Attention : ta demande sera visible par tout le monde.</b><br>Même si tu l'envoies à une seule personne, tous les élèves et tous les admins pourront la lire. N'écris rien de personnel.</div></div>
+          <p class="doux dm-note">Pour répondre : seulement toi, ${aPers ? "la personne choisie" : "les admins"} et le gérant.</p>
           <label class="dm-compris"><input type="checkbox" id="dm-compris"${b.compris ? " checked" : ""}> J'ai compris</label>`, !!t && !!mat)}
         <p id="statut" class="statut" role="status"></p>
-        <div class="dm-envoi"><button class="btn" type="submit" id="dm-envoyer"${t && mat && b.compris ? "" : " disabled"}>Envoyer ma demande</button></div>
+        <div class="dm-envoi"><button class="btn dm-btn-envoi" type="submit" id="dm-envoyer"${t && mat && b.compris ? "" : " disabled"}>${icoDm("envoyes")}Envoyer ma demande</button></div>
       </form>
     </div>`;
   const z = zone(), q = s => z.querySelector(s);
@@ -13669,9 +13755,11 @@ function brancherDm(f){
   z.querySelectorAll("[data-ouvrir-lecon]").forEach(b => b.onclick = () => { const l = toutesLecons().find(x => x.id === b.dataset.ouvrirLecon); if (!l) return; matiereActive = l.matiere; marquerNav("g-lecons"); vueActive = "g-lecons"; ouvrirEditeur(l); });
   z.querySelectorAll("[data-creer-lecon]").forEach(b => b.onclick = () => { if (MATIERES.some(m => m.id === b.dataset.creerLecon)) matiereActive = b.dataset.creerLecon; marquerNav("g-lecons"); vueActive = "g-lecons"; ouvrirEditeur(null); });
   z.querySelectorAll("[data-aller-exos]").forEach(b => b.onclick = () => { if (MATIERES.some(m => m.id === b.dataset.allerExos)) matiereActive = b.dataset.allerExos; changerVue("g-exos"); });
+  const ta = z.querySelector("#dm-rep"); if (ta) ta.oninput = () => signalerEcritDm(f.id, !ta.value.trim());
+  majBulleDm();
   const fr = z.querySelector("#dm-repondre"); if (fr) fr.onsubmit = async ev => {
     ev.preventDefault(); const t = z.querySelector("#dm-rep").value.trim(); if (!t) return;
-    const bt = fr.querySelector("[type=submit]"); bt.disabled = true; z.querySelector("#dm-rep").value = "";
+    const bt = fr.querySelector("[type=submit]"); bt.disabled = true; z.querySelector("#dm-rep").value = ""; signalerEcritDm(f.id, true);
     try { await db.doc("messages/" + nouvelId("m")).set({fil: f.id, deNom: monNomDm(), de: monNomDm(), deId: moiDm(), deRang: monRangDm(), corps: t.slice(0, 1000), le: new Date().toISOString()}); toast("Réponse envoyée."); }
     catch { bt.disabled = false; const ta = zone().querySelector("#dm-rep"); if (ta) ta.value = t; toast("L'envoi a échoué, réessaie."); }
   };
