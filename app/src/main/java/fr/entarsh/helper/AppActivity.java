@@ -118,8 +118,14 @@ public class AppActivity extends Activity {
     web.setDownloadListener((url, ua, cd, mime, len) -> ouvrir(Uri.parse(url)));
 
     if (etat != null) web.restoreState(etat);
-    else web.loadUrl(ACCUEIL);
+    else { String v = getIntent() != null ? getIntent().getStringExtra("vue") : null; web.loadUrl(ACCUEIL + (v != null && v.matches("[a-z-]+") ? "&vue=" + v : "")); }
   }
+  // appui sur une notification alors que l'appli est déjà ouverte : on va sur le bon onglet
+  @Override protected void onNewIntent(Intent i) {
+    super.onNewIntent(i); String v = i.getStringExtra("vue");
+    if (v != null && v.matches("[a-z-]+") && web != null) web.evaluateJavascript("window.helperOuvrirVue&&helperOuvrirVue('" + v + "')", null);
+  }
+  @Override public void onRequestPermissionsResult(int req, String[] perms, int[] res) { super.onRequestPermissionsResult(req, perms, res); }
 
   boolean externe(Uri u) {
     String h = u.getHost() == null ? "" : u.getHost(), p = u.getPath() == null ? "" : u.getPath();
@@ -140,6 +146,16 @@ public class AppActivity extends Activity {
     while ((n = in.read(b)) > 0) o.write(b, 0, n); in.close(); return o.toString("UTF-8");
   }
   class PontAppli {
+    // Notifications (devoirs pour demain, demandes) : le site donne le compte et sa clé de notification
+    @JavascriptInterface public void configNotifs(String json) {
+      Notifs.configurer(AppActivity.this, json);
+      if (Build.VERSION.SDK_INT >= 33 && json != null && json.contains("\"cle\"") && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED)
+        runOnUiThread(() -> requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 11));
+    }
+    @JavascriptInterface public String etatNotifs() {
+      boolean ok = Build.VERSION.SDK_INT < 33 || checkSelfPermission("android.permission.POST_NOTIFICATIONS") == PackageManager.PERMISSION_GRANTED;
+      return "{\"autorise\":" + ok + ",\"actif\":" + !Notifs.prefs(AppActivity.this).getString("compte", "").isEmpty() + "}";
+    }
     // Synchronisation automatique des devoirs en arrière-plan
     @JavascriptInterface public void configSyncFond(String json) {
       try { JSONObject o = new JSONObject(json); android.content.SharedPreferences.Editor e = SyncDevoirs.prefs(AppActivity.this).edit();
