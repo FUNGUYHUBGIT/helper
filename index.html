@@ -749,7 +749,8 @@ a.lien{color:var(--accent)}
 .pop-grille button{background:var(--surface-2);border:1px solid transparent;border-radius:6px;color:var(--texte);font-size:1.05rem;padding:6px 0;cursor:pointer;white-space:nowrap}
 .pop-grille button:hover{border-color:var(--accent)}
 .pop-tableau{width:auto}
-.pt-grille{display:grid;grid-template-columns:repeat(8,22px);gap:3px}
+.pt-grille{display:grid;grid-template-columns:repeat(8,22px);gap:3px;touch-action:none;user-select:none;-webkit-user-select:none}
+@media (pointer:coarse){.pt-grille{grid-template-columns:repeat(8,32px);gap:4px}.pt-grille button{width:32px!important;height:32px!important}}
 .pt-grille button{width:22px;height:22px;border:1px solid var(--ligne);border-radius:3px;background:var(--surface-2);cursor:pointer;padding:0}
 .pt-grille button.on{background:color-mix(in srgb,var(--accent) 55%,transparent);border-color:var(--accent)}
 .tab-saisie{border-collapse:collapse}
@@ -5861,7 +5862,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.89";
+const VERSION_SITE = "1.90";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7790,18 +7791,25 @@ function dessinerEditeur(){
       <label class="rangee doux" style="gap:6px;font-size:.82rem"><input type="checkbox" id="pt-entete" checked> Première ligne en en-tête</label>`;
     document.body.appendChild(p);
     const r = $("#o-tableau").getBoundingClientRect(); p.style.left = Math.min(innerWidth - p.offsetWidth - 8, r.left) + "px"; p.style.top = r.bottom + 6 + "px";
-    p.querySelectorAll("button").forEach(b => {
-      b.onmousedown = ev => ev.preventDefault();
-      b.onmouseenter = () => { p.querySelectorAll("button").forEach(x => x.classList.toggle("on", +x.dataset.r <= +b.dataset.r && +x.dataset.c <= +b.dataset.c)); $("#pt-taille").textContent = `${b.dataset.r} ligne(s) × ${b.dataset.c} colonne(s)`; };
-      b.onclick = () => {
-        const R = +b.dataset.r, C = +b.dataset.c, ent = $("#pt-entete").checked;
-        const html = `<table class="tab-doc" data-nouveau="1"><tbody>${Array.from({length: R}, (_, i) => `<tr>${Array.from({length: C}, () => i === 0 && ent ? "<th><br></th>" : "<td><br></td>").join("")}</tr>`).join("")}</tbody></table><p><br></p>`;
-        p.remove(); insererHtml(html);
-        const t = doc.querySelector("table[data-nouveau]"); if (t){ t.removeAttribute("data-nouveau"); placerDans(t.querySelector("th, td")); }
-        majTableau();
-      };
-    });
-    setTimeout(() => { const dehors = ev => { if (!p.contains(ev.target) && ev.target !== $("#o-tableau")){ p.remove(); document.removeEventListener("mousedown", dehors); } }; document.addEventListener("mousedown", dehors); });
+    // choix de la taille : survol à la souris, ou glisser du doigt sur la grille (on relâche pour insérer)
+    const grille = p.querySelector(".pt-grille"); let taille = null, appui = false;
+    const montrer = b => { taille = b ? [+b.dataset.r, +b.dataset.c] : null;
+      p.querySelectorAll(".pt-grille button").forEach(x => x.classList.toggle("on", !!taille && +x.dataset.r <= taille[0] && +x.dataset.c <= taille[1]));
+      $("#pt-taille").textContent = taille ? `${taille[0]} ligne(s) × ${taille[1]} colonne(s)` : "Taille du tableau"; };
+    const sous = ev => { const e = document.elementFromPoint(ev.clientX, ev.clientY); return e && grille.contains(e) && e.dataset.r ? e : null; };
+    const inserer = () => {
+      if (!taille) return; const [R, C] = taille, ent = $("#pt-entete").checked;
+      const html = `<table class="tab-doc" data-nouveau="1"><tbody>${Array.from({length: R}, (_, i) => `<tr>${Array.from({length: C}, () => i === 0 && ent ? "<th><br></th>" : "<td><br></td>").join("")}</tr>`).join("")}</tbody></table><p><br></p>`;
+      p.remove(); insererHtml(html);
+      const t = doc.querySelector("table[data-nouveau]"); if (t){ t.removeAttribute("data-nouveau"); placerDans(t.querySelector("th, td")); }
+      majTableau();
+    };
+    grille.addEventListener("pointerdown", ev => { ev.preventDefault(); appui = true; try { grille.setPointerCapture(ev.pointerId); } catch {} montrer(sous(ev)); });
+    grille.addEventListener("pointermove", ev => { if (appui || ev.pointerType === "mouse"){ const b = sous(ev); if (b || appui) montrer(b || null); } });
+    grille.addEventListener("pointerup", ev => { if (!appui) return; appui = false; const b = sous(ev); if (b) montrer(b); if (taille) inserer(); });
+    grille.addEventListener("pointercancel", () => { appui = false; });
+    grille.addEventListener("mousedown", ev => ev.preventDefault());
+    setTimeout(() => { const dehors = ev => { if (!p.isConnected || (!p.contains(ev.target) && !$("#o-tableau").contains(ev.target))){ p.remove(); document.removeEventListener("pointerdown", dehors); } }; document.addEventListener("pointerdown", dehors); });
   };
   const placerDans = c => { if (!c) return; const r = document.createRange(); r.selectNodeContents(c); r.collapse(true); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); doc.focus({preventScroll: true}); garder(); caseActive = c; };
   // Tab / Maj+Tab : case suivante / précédente (nouvelle ligne à la fin)
