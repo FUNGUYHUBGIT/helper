@@ -5862,7 +5862,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.92";
+const VERSION_SITE = "1.93";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6859,11 +6859,18 @@ async function lancerSyncED(auto){
     syncEtat = {ok: false, texte: auto && /annulée/.test(err.message) ? "EcoleDirecte pose une question de sécurité : appuie sur « Synchroniser » pour y répondre." : err.message};
   } finally { syncEnCours = false; majSync(); }
 }
-// synchronisation automatique : au plus toutes les 3 heures, quand le gérant ouvre l'application
+// synchronisation automatique : 2 fois par jour (vers 17 h 30 et 20 h 30, heure de Paris), quand le gérant ouvre l'application
+// (moins de connexions = l'utilisation ressemble à celle d'un élève normal)
+const CRENEAUX_ED = [[17, 30], [20, 30]];
+function dernierCreneauED(){
+  const h = new Date(), paris = new Date(h.toLocaleString("en-US", {timeZone: "Europe/Paris"})), ecart = h - paris; let m = 0;
+  for (let j = 0; j <= 1; j++) for (const [hh, mm] of CRENEAUX_ED){ const c = new Date(paris); c.setDate(c.getDate() - j); c.setHours(hh, mm, 0, 0); if (c <= paris) m = Math.max(m, c.getTime() + ecart); }
+  return m;
+}
 function syncAutoED(){
   if (!appliPeutSync() || !peutEditerDevoirs() || !lsGet("helper.ed.id")) return;
   const der = Date.parse(lsGet("helper.ed.dernier") || "") || 0;
-  if (Date.now() - der > 3 * 3600e3) lancerSyncED(true);
+  if (der < dernierCreneauED()) lancerSyncED(true);
 }
 function majSync(){ if (vueActive === "devoirs") panneauSync(); }
 function panneauSync(){
@@ -6877,7 +6884,7 @@ function panneauSync(){
     <div class="rangee" style="justify-content:space-between"><span class="mono">Synchronisation EcoleDirecte</span>
       ${enreg ? `<button type="button" class="btn" id="sync-go" ${syncEnCours ? "disabled" : ""}>${syncEnCours ? "Synchronisation…" : "Synchroniser"}</button>` : ""}</div>
     ${syncEtat ? `<p style="margin:0">${syncEnCours ? "⏳" : syncEtat.ok ? "✅" : "⚠️"} ${esc(syncEtat.texte)}</p>` : ""}
-    ${enreg ? `<p class="doux" style="margin:0;font-size:.85rem">Compte ${esc(id)} · synchronisation automatique toutes les 3 h quand tu ouvres l'appli. <button type="button" class="lien" id="sync-oubli">Changer de compte</button></p>`
+    ${enreg ? `<p class="doux" style="margin:0;font-size:.85rem">Compte ${esc(id)} · synchronisation automatique 2 fois par jour (vers 17 h 30 et 20 h 30) quand tu ouvres l'appli. <button type="button" class="lien" id="sync-oubli">Changer de compte</button></p>`
       : `<p class="doux" style="margin:0;font-size:.88rem">Entre ton identifiant et ton mot de passe EcoleDirecte. Ils restent <b>uniquement sur ce téléphone</b> : le téléphone se connecte lui-même à EcoleDirecte puis envoie les devoirs à Helper pour toute la classe.</p>
       <form id="sync-form" class="grille-form" novalidate><div class="champ"><label for="ed-id">Identifiant EcoleDirecte</label><input id="ed-id" autocomplete="username" autocapitalize="none" value="${esc(id)}"></div>
         <div class="champ"><label for="ed-mdp">Mot de passe</label><input id="ed-mdp" type="password" autocomplete="current-password"></div>
@@ -6889,20 +6896,21 @@ function panneauSync(){
   const f = $("#sync-form"); if (f) f.onsubmit = ev => { ev.preventDefault(); const i = $("#ed-id").value.trim(), m = $("#ed-mdp").value;
     if (!i || !m) return; lsSet("helper.ed.id", i); lsSet("helper.ed.mdp", m); lancerSyncED(false); };
 }
-/* Synchronisation automatique en arrière-plan (appli 1.4) : le téléphone récupère les devoirs toutes les 3 h, même appli fermée */
+/* Synchronisation automatique en arrière-plan (appli 1.5) : le téléphone récupère les devoirs 2 fois par jour, même appli fermée */
 function blocSyncFond(bloc){
   if (!bloc || !window.HelperApp || typeof window.HelperApp.etatSyncFond !== "function"){
-    if (bloc) bloc.insertAdjacentHTML("beforeend", `<p class="doux" style="margin:0;font-size:.85rem">Mets l'appli à jour (version 1.4) pour que les devoirs se récupèrent tout seuls, même appli fermée.</p>`);
+    if (bloc) bloc.insertAdjacentHTML("beforeend", `<p class="doux" style="margin:0;font-size:.85rem">Mets l'appli à jour (version 1.5) pour que les devoirs se récupèrent tout seuls, même appli fermée.</p>`);
     return;
   }
   let st = {}; try { st = JSON.parse(window.HelperApp.etatSyncFond()) || {}; } catch {}
   const d = document.createElement("div"); d.className = "sync-fond";
+  if (st.actif && st.rythme !== "2/jour") bloc.insertAdjacentHTML("beforeend", `<p class="statut erreur" style="margin:0">Ton appli synchronise encore toutes les 3 h : installe la version 1.5 pour passer à 2 fois par jour.</p>`);
   if (st.actif){
-    d.innerHTML = `<div class="rangee" style="justify-content:space-between"><span><b>🔄 Automatique</b> <span class="doux">· toutes les 3 h, même appli fermée</span></span>
+    d.innerHTML = `<div class="rangee" style="justify-content:space-between"><span><b>🔄 Automatique</b> <span class="doux">· 2 fois par jour (17 h 30 et 20 h 30), même appli fermée</span></span>
         <span class="rangee"><button type="button" class="mini-btn" id="fond-go">Lancer maintenant</button><button type="button" class="mini-btn danger" id="fond-stop">Désactiver</button></span></div>
       <p style="margin:0;font-size:.88rem">${st.dernier ? `${st.ok ? "✅" : "⚠️"} ${esc(st.message || "")} <span class="doux">· ${quandMaj(st.dernier)}</span>` : `<span class="doux">Premier passage en cours…</span>`}</p>`;
   } else {
-    d.innerHTML = `<p style="margin:0"><b>🔄 Synchronisation automatique</b><br><span class="doux" style="font-size:.88rem">Ton téléphone récupère les devoirs <b>tout seul toutes les 3 heures</b>, même appli fermée. Pour enregistrer les devoirs dans Helper sans toi, il a besoin de ton mot de passe Helper (gardé uniquement sur ce téléphone).</span></p>
+    d.innerHTML = `<p style="margin:0"><b>🔄 Synchronisation automatique</b><br><span class="doux" style="font-size:.88rem">Ton téléphone récupère les devoirs <b>tout seul 2 fois par jour (vers 17 h 30 et 20 h 30)</b>, même appli fermée. Pour enregistrer les devoirs dans Helper sans toi, il a besoin de ton mot de passe Helper (gardé uniquement sur ce téléphone).</span></p>
       <form id="fond-form" class="rangee" novalidate style="align-items:flex-end"><div class="champ" style="flex:1;min-width:180px;margin:0"><label for="fond-mdp">Mot de passe Helper</label><input id="fond-mdp" type="password" autocomplete="current-password"></div><button class="btn" type="submit">Activer</button></form>
       <p id="fond-msg" class="statut" role="status" style="margin:0"></p>`;
   }
