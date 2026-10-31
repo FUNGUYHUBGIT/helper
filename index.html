@@ -3081,21 +3081,28 @@ const GENERATEURS = [
     return qcm({q: `Un planeur descend à ${fr(vz)} m/s en air calme. En combien de temps perd-il ${h} m ?`, exp: `${h} ÷ ${fr(vz)} = ${Math.round(h / vz)} s, soit ${fr(h / vz / 60, 1)} min.`}, fr(h / vz / 60, 1) + " min", [fr(h * vz / 60, 1) + " min", fr(h / vz, 0) + " min", fr(h / vz / 3600, 2) + " min"]); }],
   /* ===== BIA · Aéronefs ===== */
   ["bia","aeronefs", () => { const tr = prendre([1800, 2100, 2400, 2700, 3000]);
-    return qcm({q: `Une hélice en prise directe tourne à ${tr} tr/min. Combien de tours fait-elle par seconde ?`, exp: `${tr} ÷ 60 = ${tr / 60} tr/s.`}, tr / 60 + " tr/s", [tr / 100 + " tr/s", tr * 60 + " tr/s", tr / 3600 + " tr/s"]); }],
+    return qcm({q: `Une hélice en prise directe tourne à ${tr} tr/min. Combien de tours fait-elle par seconde ?`, exp: `${tr} ÷ 60 = ${tr / 60} tr/s.`}, tr / 60 + " tr/s", [tr / 100 + " tr/s", fr(tr * 60) + " tr/s", fr(tr / 3600, 2) + " tr/s"]); }],
   ["bia","aeronefs", () => { const m1 = prendre([600, 700, 800]), d1 = prendre([2, 2.2, 2.4]), m2 = prendre([80, 100, 150]), d2 = prendre([2.6, 3, 3.4]), x = (m1 * d1 + m2 * d2) / (m1 + m2);
-    return qcm({q: `Masse à vide ${m1} kg (bras ${fr(d1)} m) et pilote + passager ${m2} kg (bras ${fr(d2)} m). Où est le centre de gravité ? (Σ m × bras ÷ Σ m)`, exp: `(${m1} × ${fr(d1)} + ${m2} × ${fr(d2)}) ÷ ${m1 + m2} ≈ ${fr(x)} m.`}, fr(x) + " m", [fr((d1 + d2) / 2) + " m", fr(d1) + " m", fr(x + .3) + " m"]); }],
+    return qcm({q: `Centrage : l'avion vide pèse ${m1} kg, et son poids s'applique à ${fr(d1)} m du point de référence. Le pilote et le passager pèsent ensemble ${m2} kg, assis à ${fr(d2)} m. À quelle distance du point de référence se trouve le centre de gravité de l'avion chargé ? Formule : (masse 1 × distance 1 + masse 2 × distance 2) ÷ (masse 1 + masse 2).`,
+      exp: `On multiplie chaque masse par sa distance : ${m1} × ${fr(d1)} = ${fr(m1 * d1)} et ${m2} × ${fr(d2)} = ${fr(m2 * d2)}. On additionne : ${fr(m1 * d1 + m2 * d2)}. On divise par la masse totale (${m1} + ${m2} = ${m1 + m2} kg) : ${fr(m1 * d1 + m2 * d2)} ÷ ${m1 + m2} ≈ ${fr(x)} m. Le centre de gravité est plus près de ${fr(d1)} m, car l'avion vide est bien plus lourd.`}, fr(x) + " m", [fr((d1 + d2) / 2) + " m", fr(d1) + " m", fr(x + .3) + " m"]); }],
+  ["bia","aeronefs", () => { const c = prendre([20, 25, 30, 35]), v = prendre([60, 75, 90, 105, 120]), h = v / c;
+    return qcm({q: `Un avion consomme ${c} L d'essence par heure. Ses réservoirs contiennent ${v} L utilisables. Combien de temps peut-il voler (sans compter la réserve) ?`, exp: `Temps = carburant ÷ consommation = ${v} ÷ ${c} = ${fr(h)} h, soit ${Math.floor(h)} h ${Math.round((h % 1) * 60)} min.`}, fr(h) + " h", [fr(c / v) + " h", fr(v - c) + " h", fr(h * 2) + " h"]); }],
+  ["bia","aeronefs", () => { const mtow = prendre([900, 1000, 1100, 1150]), mv = prendre([600, 650, 700]), p = prendre([150, 170, 190, 220]), r = mtow - mv - p;
+    return qcm({q: `Masse maximale au décollage : ${mtow} kg. L'avion vide pèse ${mv} kg et les passagers ${p} kg. Quelle masse de carburant peut-on encore emporter au maximum ?`, exp: `${mtow} − ${mv} − ${p} = ${r} kg. Au-delà, l'avion serait trop lourd pour décoller en sécurité.`}, r + " kg", [mtow - mv + " kg", mtow - p + " kg", r + 100 + " kg"]); }],
+  ["bia","aeronefs", () => { const ch = prendre([80, 100, 115, 160, 180]), kw = ch * .736;
+    return qcm({q: `Un moteur d'avion léger développe ${ch} ch (chevaux). Combien cela fait-il en kilowatts ? (1 ch ≈ 0,736 kW)`, exp: `${ch} × 0,736 ≈ ${fr(kw, 1)} kW.`}, fr(kw, 1) + " kW", [fr(ch / .736, 1) + " kW", ch + " kW", fr(ch * .736 * 10, 0) + " kW"]); }],
   ["bia","aeronefs", () => { const l = prendre([40, 60, 80, 100, 120]);
     return qcm({q: `Densité de l'AVGAS : environ 0,72 kg/L. Quelle masse représentent ${l} L ?`, exp: `${l} × 0,72 = ${fr(l * .72, 1)} kg.`}, fr(l * .72, 1) + " kg", [fr(l / .72, 1) + " kg", l + " kg", fr(l * .9, 1) + " kg"]); }]
 ];
 const MODULES_GENERES = ex => [...new Set(GENERATEURS.filter(g => g[0] === ex).map(g => g[1]))];
 function genererQuestions(ex, mats, n){
   const gens = GENERATEURS.filter(g => g[0] === ex && mats.includes(g[1])); if (!gens.length) return [];
-  const sortie = [], vus = new Set();
+  const sortie = [], vus = new Set(), usages = [];   // un même modèle de question : au plus 2 fois par série
   // tour à tour sur les modèles, dans un ordre mélangé : un même modèle revient le moins possible
   const ordre = gens.slice().sort(() => Math.random() - .5);
   for (let essai = 0; sortie.length < n && essai < n * 8; essai++){
-    const [, mat, f] = ordre[essai % ordre.length];
-    try { const q = f(), cle = q && q.q + "|" + JSON.stringify(q.fig || "") + "|" + q.choix?.[0]; if (!q || vus.has(cle)) continue; vus.add(cle); sortie.push({...q, ex, mat, an: 0, src: "Question générée", genere: true}); } catch {}
+    const k = essai % ordre.length, [, mat, f] = ordre[k]; if ((usages[k] = (usages[k] || 0)) >= 2) continue;
+    try { const q = f(), cle = q && q.q + "|" + JSON.stringify(q.fig || "") + "|" + q.choix?.[0]; if (!q || vus.has(cle)) continue; vus.add(cle); usages[k]++; sortie.push({...q, ex, mat, an: 0, src: "Question générée", genere: true}); } catch {}
   }
   return sortie;
 }
@@ -5657,7 +5664,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.84";
+const VERSION_SITE = "1.85";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6094,8 +6101,9 @@ function construireSerieBrevet(){
     return 2 + (tMax > tMin ? (t - tMin) / (tMax - tMin) : 0) + Math.random() * .2; };
   const genMats = choixBrevet.entrainement ? MODULES_GENERES(ex).filter(m => mats.includes(m)) : [];
   const nBanque = Math.min(banque.length, genMats.length ? (ex === "bia" ? 25 : 32) : N);
-  const choisies = banque.map(q => [score(q), q]).sort((a, b) => a[0] - b[0]).slice(0, nBanque).map(x => x[1]);
-  const generees = genMats.length ? genererQuestions(ex, genMats, N - choisies.length) : [];
+  const generees = genMats.length ? genererQuestions(ex, genMats, N - nBanque) : [];
+  // s'il y a peu de modèles de calcul, on complète avec plus de questions de la banque (plutôt que de répéter les mêmes calculs)
+  const choisies = banque.map(q => [score(q), q]).sort((a, b) => a[0] - b[0]).slice(0, Math.max(nBanque, N - generees.length)).map(x => x[1]);
   const l = [...choisies, ...generees];
   for (let i = l.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [l[i], l[j]] = [l[j], l[i]]; }
   return l.map(q => ({...q, n: 0, matiere: nomMat(q) + " · " + (q.genere ? (q.brouillon ? "Calcul avec brouillon" : "Entraînement") : q.an ? q.an : "Révision")}));
