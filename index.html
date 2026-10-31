@@ -2066,12 +2066,30 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 .nav button[data-vue="demandes"]::before,.nav button[data-vue="g-demandes"]::before{width:14px;height:14px;border-radius:0;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-8l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm7 3v3H8v2h3v3h2v-3h3v-2h-3V7z' fill-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-8l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm7 3v3H8v2h3v3h2v-3h3v-2h-3V7z' fill-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat}
 .nav button[data-vue="demandes"][aria-selected="true"]::before,.nav button[data-vue="g-demandes"][aria-selected="true"]::before{background:var(--accent)}
 .rq-types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.rq-type{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid var(--ligne);border-radius:12px;background:var(--surface-2);color:var(--texte);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+.rq-type{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--ligne);border-radius:12px;background:var(--surface-2);color:var(--texte);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
 .rq-type:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--ligne))}
-.rq-type.actif{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface-2))}
-.rq-type span{display:flex;flex-direction:column;gap:3px}.rq-type small{color:var(--doux);font-size:.8rem;line-height:1.3}
-.rq-ico{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
-.rq-ico svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rq-type.actif{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface-2))}
+.rq-type > span:last-child{display:flex;flex-direction:column;gap:3px}.rq-type small{color:var(--doux);font-size:.8rem;line-height:1.3}
+.rq-ico{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--surface);border:1px solid var(--ligne);color:var(--doux);transition:color .15s,border-color .15s,background .15s}
+.rq-ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.rq-type.actif .rq-ico,.rq-carte .rq-ico{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+.rq-corps{display:grid;grid-template-columns:minmax(0,1fr) 300px;grid-template-areas:"mat cote" "champs cote";gap:14px 20px;align-items:start}
+.rq-zmat{grid-area:mat;max-width:320px}.rq-zchamps{grid-area:champs;display:flex;flex-direction:column;gap:14px;min-width:0}
+.rq-cote{grid-area:cote;display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid var(--ligne);border-radius:12px;background:var(--surface-2);max-height:440px;min-height:0}
+.rq-cote-tete{display:flex;justify-content:space-between;align-items:center}
+.rq-cherche{width:100%;padding:7px 10px;border:1px solid var(--ligne);border-radius:8px;background:var(--surface);color:var(--texte);font:inherit;font-size:.88rem}
+.rq-items{display:flex;flex-direction:column;gap:4px;overflow-y:auto;min-height:0;margin:0 -4px;padding:0 4px}
+.rq-item{display:flex;align-items:center;gap:10px;width:100%;padding:7px 8px;border:1px solid transparent;border-radius:9px;background:none;color:var(--texte);font:inherit;font-size:.88rem;text-align:left;cursor:pointer}
+.rq-item:hover{background:var(--surface)}
+.rq-item.choisi{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+.rq-item .rq-ico{width:30px;height:30px;border-radius:8px}.rq-item .rq-ico svg{width:17px;height:17px}
+.rq-item.choisi .rq-ico{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.rq-item span:last-child{display:flex;flex-direction:column;min-width:0;overflow-wrap:anywhere}.rq-item small{color:var(--doux);font-size:.74rem}
+.rq-vide,.rq-cote-aide{margin:0;font-size:.8rem}
+.rq-choisie{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--ligne));border-radius:10px;background:color-mix(in srgb,var(--accent) 6%,var(--surface-2))}
+.rq-choisie.vide{border-style:dashed;border-color:var(--ligne);background:none}
+.rq-choisie span:last-child{display:flex;flex-direction:column}.rq-choisie small{color:var(--doux);font-size:.75rem}
+@media (max-width:900px){.rq-corps{grid-template-columns:1fr;grid-template-areas:"mat" "cote" "champs"}.rq-zmat{max-width:none}.rq-cote{max-height:300px}}
 .rq-form textarea,.rq-rep-form textarea{width:100%;resize:vertical;font:inherit;padding:10px 12px;border:1px solid var(--ligne);border-radius:var(--r);background:var(--surface-2);color:var(--texte)}
 .rq-rep-form textarea:focus,.rq-form textarea:focus{outline:none;border-color:var(--accent)}
 .rq-motif{align-self:flex-start}
@@ -4794,6 +4812,14 @@ ouverture.addEventListener("click", fermerOuverture);
 setTimeout(fermerOuverture, reduit ? 600 : 2400);
 
 
+// remonte tout en haut de la page (fenêtre et zones qui défilent), sans animation
+function enHaut(){
+  const go = () => { try { window.scrollTo({top: 0, left: 0, behavior: "instant"}); } catch { window.scrollTo(0, 0); }
+    if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
+    for (let e = document.getElementById("vue"); e && e !== document.body; e = e.parentElement) if (e.scrollTop) e.scrollTop = 0; };
+  go(); requestAnimationFrame(go); setTimeout(go, 120);
+}
+
 /* ===================== SERVEUR : Supabase (comptes, base de données en direct, fichiers) ===================== */
 /* Toutes les données sont des « documents » (chemin → JSON) dans la table docs ; les règles d'accès sont dans supabase/schema.sql.
    La clé ci-dessous est la clé publique (anon) : elle peut être visible, les règles protègent les données. */
@@ -5576,7 +5602,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.79";
+const VERSION_SITE = "1.80";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7073,6 +7099,7 @@ function lireLecon(l){
       ${serie ? `<button class="btn sec" type="button" id="vers-exos">Exercices sur ce thème</button>` : ""}
     </div>`;
   remplirImages(zone()); remplirObjets(zone()); brancherPj(zone());
+  enHaut();
   $("#retour").onclick = VUES.lecons;
   // le texte sélectionné dans la leçon est repris dans le signalement
   $("#prevenir-lecon").onmousedown = ev => ev.preventDefault();
@@ -13403,9 +13430,9 @@ const MOTIFS_MODIF = [["faute", "Une faute"], ["manque", "Il manque quelque chos
 const nomTypeReq = t => (TYPES_REQ.find(x => x[0] === t) || [, "Demande"])[1];
 // icônes (même famille que le reste du site)
 const ICO_REQ = {
-  lecon: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 5.5 14.5 4 17.5 4 20 5.5V19c-2.5-1.5-5.5-1.5-8 0-2.5-1.5-5.5-1.5-8 0z"/><path d="M12 5.5V19"/></svg>`,
-  exo: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8M9 4v3H6a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-3V4"/><path d="M8.5 13.5l2 2 4.5-4.5"/></svg>`,
-  modif: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>`
+  lecon: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.3 5.2 7.6 4.6 4 4.8v12.6c3.6-.2 6.3.4 8 1.7 1.7-1.3 4.4-1.9 8-1.7V4.8c-3.6-.2-6.3.4-8 1.7z"/><path d="M12 6.5v12.6"/></svg>`,
+  exo: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="4" width="15" height="16.5" rx="2.5"/><path d="M8 9.5l1.6 1.6L12.5 8M8 15l1.6 1.6 2.9-3.1M14.5 9.6h2.5M14.5 15.2h2.5"/></svg>`,
+  modif: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 4H7a2.5 2.5 0 0 0-2.5 2.5v11A2.5 2.5 0 0 0 7 20h10a2.5 2.5 0 0 0 2.5-2.5V11"/><path d="M17.6 3.6a1.9 1.9 0 0 1 2.8 2.8L13 13.8l-3.6.8.8-3.6z"/></svg>`
 };
 const icoReq = t => `<span class="rq-ico">${ICO_REQ[t] || ICO_REQ.lecon}</span>`;
 
@@ -13429,25 +13456,35 @@ let choixReq = {type: "lecon"};
 VUES.demandes = function vueDemandes(){
   rafraichir = vueDemandes; suivreRequetes();
   const t = choixReq.type, mats = MATIERES, lecons = typeof toutesLecons === "function" ? toutesLecons() : [];
+  const mat = choixReq.mat || (mats.find(m => (t === "exo" ? seriesDe(m.id) : leconsDe(m.id)).length) || mats[0]).id; choixReq.mat = mat;
+  const elements = t === "exo" ? seriesDe(mat).map(x => ({id: x.id, nom: estPrecis(x) ? nomExoType(x) : x.titre || "Exercices"}))
+    : leconsDe(mat).map(l => ({id: l.id, nom: l.titre, groupe: l.groupe || ""}));
+  const choisi = elements.find(e => e.id === choixReq.sel);
   const miennes = mesRequetes(), v = vuesReq();
   zone().innerHTML = entete("Demandes", "Demander au gérant") + `
     <form class="bloc rq-form" id="rq-form" novalidate>
       <span class="mono">Nouvelle demande</span>
       <div class="rq-types">${TYPES_REQ.map(([v2, nom, aide]) => `<button type="button" class="rq-type${v2 === t ? " actif" : ""}" data-type="${v2}" aria-pressed="${v2 === t}">${icoReq(v2)}<span><b>${nom}</b><small>${aide}</small></span></button>`).join("")}</div>
-      ${t === "modif" ? `
-        <div class="grille-form">
-          <div class="champ"><label for="rq-mat">Matière</label><select id="rq-mat">${mats.map(m => `<option value="${m.id}"${m.id === choixReq.mat ? " selected" : ""}>${esc(m.nom)}</option>`).join("")}</select></div>
-          <div class="champ" style="grid-column:span 2"><label for="rq-lecon">Leçon</label><select id="rq-lecon">${(lecons.filter(l => l.matiere === (choixReq.mat || mats[0].id))).map(l => `<option value="${esc(l.id)}">${esc(l.titre)}</option>`).join("") || `<option value="">Aucune leçon dans cette matière</option>`}</select></div>
+      <div class="rq-corps">
+        <div class="champ rq-zmat"><label for="rq-mat">Matière</label><select id="rq-mat">${mats.map(m => `<option value="${m.id}"${m.id === mat ? " selected" : ""}>${esc(m.nom)}</option>`).join("")}</select></div>
+        <aside class="rq-cote">
+          <div class="rq-cote-tete"><span class="mono">${t === "exo" ? "Exercices" : "Leçons"} · ${esc(nomMatiere(mat))}</span><span class="doux">${elements.length}</span></div>
+          ${elements.length > 6 ? `<input type="search" id="rq-cherche" class="rq-cherche" placeholder="Rechercher…" autocomplete="off">` : ""}
+          <div class="rq-items" id="rq-items">${elements.length ? elements.map(e => `<button type="button" class="rq-item${e.id === choixReq.sel ? " choisi" : ""}" data-sel="${esc(e.id)}" data-nom="${esc(e.nom)}">${icoReq(t === "exo" ? "exo" : "lecon")}<span>${esc(e.nom)}${e.groupe ? `<small>${esc(e.groupe)}</small>` : ""}</span></button>`).join("")
+            : `<p class="doux rq-vide">${t === "exo" ? "Pas encore d'exercices" : "Pas encore de leçon"} en ${esc(nomMatiere(mat))}.</p>`}</div>
+          <p class="doux rq-cote-aide">${t === "modif" ? "Choisis la leçon à corriger." : t === "exo" ? "Choisis un exercice pour en demander d'autres du même genre, ou écris un chapitre." : "Vérifie qu'elle n'existe pas déjà, ou choisis-en une pour demander la suite."}</p>
+        </aside>
+        <div class="rq-zchamps">
+        ${t === "modif" ? `
+          <div class="rq-choisie${choisi ? "" : " vide"}">${choisi ? `${icoReq("lecon")}<span><small>Leçon à corriger</small><b>${esc(choisi.nom)}</b></span>` : `<span class="doux">Aucune leçon choisie : clique sur une leçon dans la liste.</span>`}</div>
+          <div class="champ"><span class="lab">Ce qui ne va pas</span>${segment("rq-motif", MOTIFS_MODIF, choixReq.motif || "faute")}</div>
+          <div class="champ"><label for="rq-passage">Passage concerné (facultatif)</label><input id="rq-passage" type="text" maxlength="200" placeholder="Recopie quelques mots du passage"></div>`
+        : `
+          <div class="champ"><label for="rq-titre">${t === "exo" ? "Chapitre ou notion" : "Titre ou chapitre de la leçon"}</label><input id="rq-titre" type="text" maxlength="100" value="${esc(choixReq.titre || "")}" placeholder="${t === "exo" ? "ex. Théorème de Thalès" : "ex. La Guerre froide"}"></div>
+          <div class="champ"><label for="rq-pour">Pour quand ? (facultatif)</label><input id="rq-pour" type="date" min="${auj()}" style="max-width:220px"><small class="doux">Par exemple la date d'un contrôle.</small></div>`}
+          <div class="champ"><label for="rq-msg">${t === "modif" ? "Explique ce qu'il faut corriger" : "Précisions (facultatif)"}</label><textarea id="rq-msg" rows="3" maxlength="800" placeholder="${t === "modif" ? "ex. Dans la partie 2, la date de l'armistice est fausse." : t === "exo" ? "ex. Des exercices de calcul, niveau brevet." : "ex. Ce qu'on a vu en classe, les mots importants…"}"></textarea></div>
         </div>
-        <div class="champ"><span class="lab">Ce qui ne va pas</span>${segment("rq-motif", MOTIFS_MODIF, choixReq.motif || "faute")}</div>
-        <div class="champ"><label for="rq-passage">Passage concerné (facultatif)</label><input id="rq-passage" type="text" maxlength="200" placeholder="Recopie quelques mots du passage"></div>`
-      : `
-        <div class="grille-form">
-          <div class="champ"><label for="rq-mat">Matière</label><select id="rq-mat">${mats.map(m => `<option value="${m.id}"${m.id === choixReq.mat ? " selected" : ""}>${esc(m.nom)}</option>`).join("")}</select></div>
-          <div class="champ" style="grid-column:span 2"><label for="rq-titre">${t === "exo" ? "Chapitre ou notion" : "Titre ou chapitre de la leçon"}</label><input id="rq-titre" type="text" maxlength="100" placeholder="${t === "exo" ? "ex. Théorème de Thalès" : "ex. La Guerre froide"}"></div>
-        </div>
-        <div class="champ"><label for="rq-pour">Pour quand ? (facultatif)</label><input id="rq-pour" type="date" min="${auj()}" style="max-width:220px"><small class="doux">Par exemple la date d'un contrôle.</small></div>`}
-      <div class="champ"><label for="rq-msg">${t === "modif" ? "Explique ce qu'il faut corriger" : "Précisions (facultatif)"}</label><textarea id="rq-msg" rows="3" maxlength="800" placeholder="${t === "modif" ? "ex. Dans la partie 2, la date de l'armistice est fausse." : t === "exo" ? "ex. Des exercices de calcul, niveau brevet." : "ex. Ce qu'on a vu en classe, les mots importants…"}"></textarea></div>
+      </div>
       <p id="statut" class="statut" role="status"></p>
       <div><button class="btn" type="submit">Envoyer la demande</button></div>
     </form>
@@ -13455,8 +13492,15 @@ VUES.demandes = function vueDemandes(){
       <span class="mono">Mes demandes</span>
       ${miennes.length ? `<div class="rq-liste">${miennes.map(x => carteReq(x, false, v)).join("")}</div>` : `<div class="vide">Aucune demande pour le moment.</div>`}
     </div>`;
-  zone().querySelectorAll("[data-type]").forEach(b => b.onclick = () => { choixReq.type = b.dataset.type; vueDemandes(); });
-  $("#rq-mat").onchange = () => { choixReq.mat = $("#rq-mat").value; if (choixReq.type === "modif") vueDemandes(); };
+  zone().querySelectorAll("[data-type]").forEach(b => b.onclick = () => { if (choixReq.type !== b.dataset.type){ choixReq.type = b.dataset.type; choixReq.sel = null; choixReq.titre = ""; } vueDemandes(); });
+  $("#rq-mat").onchange = () => { choixReq.mat = $("#rq-mat").value; choixReq.sel = null; vueDemandes(); };
+  zone().querySelectorAll("[data-sel]").forEach(b => b.onclick = () => {
+    const ti = $("#rq-titre"); choixReq.sel = choixReq.sel === b.dataset.sel ? null : b.dataset.sel;
+    if (ti){ choixReq.titre = choixReq.sel ? b.dataset.nom : ""; }
+    const garde = {msg: $("#rq-msg").value, pass: $("#rq-passage") ? $("#rq-passage").value : ""};
+    vueDemandes(); $("#rq-msg").value = garde.msg; if ($("#rq-passage")) $("#rq-passage").value = garde.pass;
+  });
+  const ch = $("#rq-cherche"); if (ch) ch.oninput = () => { const q = normaliser(ch.value); zone().querySelectorAll(".rq-item").forEach(b => b.hidden = q && !normaliser(b.dataset.nom).includes(q)); };
   zone().querySelectorAll("#rq-motif button").forEach(b => b.onclick = () => { choixReq.motif = b.dataset.v; zone().querySelectorAll("#rq-motif button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
   zone().querySelectorAll("[data-annuler]").forEach(b => deuxClics(b, async () => { try { await db.doc("signalements/" + b.dataset.annuler).update({statut: "annulee", majLe: new Date().toISOString()}); } catch (err){ statut(erreurEcriture(err)); } }));
   // les réponses affichées sont marquées comme lues
@@ -13466,11 +13510,11 @@ VUES.demandes = function vueDemandes(){
     ev.preventDefault();
     const mat = $("#rq-mat").value, msg = $("#rq-msg").value.trim(), btn = ev.target.querySelector("[type=submit]");
     const d = {genre: "demande", type: t, matiere: mat, message: msg.slice(0, 800), statut: "attente", compte: moi, par: (profil && profil.pseudo) || "?", classe: (profil && profil.classe) || "", le: new Date().toISOString(), traite: false};
-    if (t === "modif"){ const l = lecons.find(x => x.id === $("#rq-lecon").value); if (!l) return statut("Choisis la leçon à corriger.");
+    if (t === "modif"){ const l = lecons.find(x => x.id === choixReq.sel); if (!l) return statut("Choisis la leçon à corriger dans la liste.");
       if (msg.length < 5) return statut("Explique en quelques mots ce qu'il faut corriger.");
       Object.assign(d, {lecon: l.id, titre: l.titre, motif: choixReq.motif || "faute", passage: $("#rq-passage").value.trim().slice(0, 200)}); }
     else { const ti = $("#rq-titre").value.trim(); if (ti.length < 3) return statut(t === "exo" ? "Indique le chapitre ou la notion." : "Indique le titre ou le chapitre de la leçon.");
-      Object.assign(d, {titre: ti.slice(0, 100), pour: $("#rq-pour").value || ""}); }
+      Object.assign(d, {titre: ti.slice(0, 100), pour: $("#rq-pour").value || "", ...(choixReq.sel ? {ref: choixReq.sel} : {})}); }
     btn.disabled = true;
     try { await db.doc("signalements/" + nouvelId("d")).set(d); choixReq = {type: t, mat}; Formes.succes(); toast("Demande envoyée au gérant."); vueDemandes(); }
     catch (err){ btn.disabled = false; statut("L'envoi a échoué, réessaie dans un instant."); }
