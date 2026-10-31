@@ -2065,51 +2065,81 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
 /* onglet Demandes : icône bulle « + » */
 .nav button[data-vue="demandes"]::before,.nav button[data-vue="g-demandes"]::before{width:14px;height:14px;border-radius:0;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-8l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm7 3v3H8v2h3v3h2v-3h3v-2h-3V7z' fill-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-8l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm7 3v3H8v2h3v3h2v-3h3v-2h-3V7z' fill-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat}
 .nav button[data-vue="demandes"][aria-selected="true"]::before,.nav button[data-vue="g-demandes"][aria-selected="true"]::before{background:var(--accent)}
-.rq-types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.rq-type{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--ligne);border-radius:12px;background:var(--surface-2);color:var(--texte);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
-.rq-type:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--ligne))}
-.rq-type.actif{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface-2))}
-.rq-type > span:last-child{display:flex;flex-direction:column;gap:3px}.rq-type small{color:var(--doux);font-size:.8rem;line-height:1.3}
-.rq-ico{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--surface);border:1px solid var(--ligne);color:var(--doux);transition:color .15s,border-color .15s,background .15s}
-.rq-ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.rq-type.actif .rq-ico,.rq-carte .rq-ico{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
-.rq-corps{display:grid;grid-template-columns:minmax(0,1fr) 300px;grid-template-areas:"mat cote" "champs cote";gap:14px 20px;align-items:start}
-.rq-zmat{grid-area:mat;max-width:320px}.rq-zchamps{grid-area:champs;display:flex;flex-direction:column;gap:14px;min-width:0}
-.rq-cote{grid-area:cote;display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid var(--ligne);border-radius:12px;background:var(--surface-2);max-height:440px;min-height:0}
-.rq-cote-tete{display:flex;justify-content:space-between;align-items:center}
-.rq-cherche{width:100%;padding:7px 10px;border:1px solid var(--ligne);border-radius:8px;background:var(--surface);color:var(--texte);font:inherit;font-size:.88rem}
-.rq-items{display:flex;flex-direction:column;gap:4px;overflow-y:auto;min-height:0;margin:0 -4px;padding:0 4px}
-.rq-item{display:flex;align-items:center;gap:10px;width:100%;padding:7px 8px;border:1px solid transparent;border-radius:9px;background:none;color:var(--texte);font:inherit;font-size:.88rem;text-align:left;cursor:pointer}
-.rq-item:hover{background:var(--surface)}
-.rq-item.choisi{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
-.rq-item .rq-ico{width:30px;height:30px;border-radius:8px}.rq-item .rq-ico svg{width:17px;height:17px}
-.rq-item.choisi .rq-ico{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
-.rq-item span:last-child{display:flex;flex-direction:column;min-width:0;overflow-wrap:anywhere}.rq-item small{color:var(--doux);font-size:.74rem}
-.rq-vide,.rq-cote-aide{margin:0;font-size:.8rem}
-.rq-choisie{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--ligne));border-radius:10px;background:color-mix(in srgb,var(--accent) 6%,var(--surface-2))}
-.rq-choisie.vide{border-style:dashed;border-color:var(--ligne);background:none}
-.rq-choisie span:last-child{display:flex;flex-direction:column}.rq-choisie small{color:var(--doux);font-size:.75rem}
-@media (max-width:900px){.rq-corps{grid-template-columns:1fr;grid-template-areas:"mat" "cote" "champs"}.rq-zmat{max-width:none}.rq-cote{max-height:300px}}
-.rq-form textarea,.rq-rep-form textarea{width:100%;resize:vertical;font:inherit;padding:10px 12px;border:1px solid var(--ligne);border-radius:var(--r);background:var(--surface-2);color:var(--texte)}
-.rq-rep-form textarea:focus,.rq-form textarea:focus{outline:none;border-color:var(--accent)}
-.rq-motif{align-self:flex-start}
 .champ .lab{font-size:.85rem;font-weight:600}
-.rq-liste{display:flex;flex-direction:column;gap:10px}
-.rq-carte{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border:1px solid var(--ligne);border-left:3px solid var(--doux);border-radius:12px;background:var(--surface)}
-.rq-carte.encours{border-left-color:#4fa3f7}.rq-carte.fait{border-left-color:#5cc98a}.rq-carte.refuse{border-left-color:#e5484d}.rq-carte.annulee{opacity:.55}
-.rq-carte.neuf{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 55%,transparent)}
-.rq-tete{display:flex;align-items:center;gap:12px}
-.rq-titres{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.rq-titres b{overflow-wrap:anywhere}
-.rq-type-lib{font:600 .72rem var(--f-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--doux)}
-.rq-etat{flex:none;padding:3px 10px;border-radius:999px;border:1px solid var(--ligne);font-size:.76rem;font-weight:600;color:var(--doux)}
-.rq-etat.encours{color:#4fa3f7;border-color:color-mix(in srgb,#4fa3f7 50%,transparent)}.rq-etat.fait{color:#5cc98a;border-color:color-mix(in srgb,#5cc98a 50%,transparent)}.rq-etat.refuse{color:#ff8a8d;border-color:color-mix(in srgb,#e5484d 50%,transparent)}
-.rq-msg,.rq-passage{margin:0;overflow-wrap:anywhere}.rq-passage{font-style:italic;color:var(--doux)}
-.rq-meta{font-size:.8rem}
-.rq-reponse{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--accent) 8%,var(--surface-2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}.rq-reponse p{margin:4px 0 0}
-.rq-outils{display:flex;flex-direction:column;gap:8px;padding-top:8px;border-top:1px solid var(--ligne)}
-.rq-outils .mini-btn.actif{border-color:var(--accent);color:var(--accent)}
-.rq-rep-form{display:flex;gap:8px;align-items:flex-end}
-@media (max-width:760px){.rq-types{grid-template-columns:1fr}.rq-rep-form{flex-direction:column;align-items:stretch}}
+
+/* ===== Demandes : messagerie façon Outlook ===== */
+.dm-app{display:grid;grid-template-columns:190px minmax(240px,300px) minmax(0,1fr);height:min(78vh,820px);min-height:520px;border:1px solid var(--ligne);border-radius:14px;overflow:hidden;background:var(--surface)}
+.dm-ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.dm-ic.petit{width:15px;height:15px}.dm-ic.grand{width:44px;height:44px;stroke-width:1.2;color:var(--doux)}
+.dm-dossiers{display:flex;flex-direction:column;gap:3px;padding:14px 10px;background:var(--surface-2);border-right:1px solid var(--ligne);overflow-y:auto}
+.dm-nouveau{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;white-space:nowrap;padding-left:10px;padding-right:10px}
+.dm-dossier{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:0;border-radius:8px;background:none;color:var(--texte);font:inherit;font-size:.9rem;text-align:left;cursor:pointer}
+.dm-dossier span{flex:1}.dm-dossier b{font:600 .74rem var(--f-mono);color:var(--accent)}
+.dm-dossier:hover{background:var(--surface)}.dm-dossier.actif{background:color-mix(in srgb,var(--accent) 13%,var(--surface))}.dm-dossier.actif .dm-ic{color:var(--accent)}
+.dm-public-mini{display:flex;gap:8px;margin:auto 0 0;padding:10px;border-radius:10px;background:var(--surface);border:1px solid var(--ligne);font-size:.76rem;color:var(--doux);line-height:1.35}.dm-public-mini .dm-ic{width:16px;height:16px;color:#4fa3f7}
+.dm-liste{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--ligne)}
+.dm-liste-tete{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:14px 16px 10px;border-bottom:1px solid var(--ligne)}
+.dm-items{flex:1;overflow-y:auto;min-height:0}
+.dm-item{display:flex;gap:11px;width:100%;padding:12px 14px;border:0;border-bottom:1px solid var(--ligne);border-left:3px solid transparent;background:none;color:var(--texte);font:inherit;text-align:left;cursor:pointer}
+.dm-item:hover{background:var(--surface-2)}.dm-item.actif{background:color-mix(in srgb,var(--accent) 9%,var(--surface-2));border-left-color:var(--accent)}
+.dm-item-corps{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.dm-item-l1{display:flex;align-items:baseline;gap:6px;min-width:0}.dm-item-l1 b{white-space:nowrap;font-weight:600}.dm-a{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.8rem}
+.dm-item-l1 time{flex:none;font-size:.75rem;color:var(--doux)}
+.dm-item-objet{display:flex;align-items:center;gap:6px;font-size:.88rem;min-width:0}.dm-item-objet span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dm-item-objet .dm-ic{color:var(--doux)}
+.dm-item-l3{display:flex;align-items:center;gap:8px;min-width:0;font-size:.8rem}.dm-item-l3 > span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-item-l3 i{font-style:normal;font:600 .7rem var(--f-mono);padding:0 5px;border-radius:5px;background:var(--surface-2)}
+.dm-item.nonlu b,.dm-item.nonlu .dm-item-objet{font-weight:700}.dm-item.nonlu{border-left-color:color-mix(in srgb,var(--accent) 60%,transparent)}
+.dm-item.nonlu .dm-item-l1 time{color:var(--accent);font-weight:600}
+.dm-av{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--ligne);font-weight:700;font-size:.85rem}
+.dm-av.gerant{background:color-mix(in srgb,var(--accent) 20%,var(--surface));border-color:color-mix(in srgb,var(--accent) 50%,transparent);color:var(--accent)}.dm-av.administrateur{background:color-mix(in srgb,#4fa3f7 18%,var(--surface));border-color:color-mix(in srgb,#4fa3f7 50%,transparent);color:#4fa3f7}
+.dm-etat{flex:none;padding:1px 8px;border-radius:999px;border:1px solid var(--ligne);font-size:.7rem;font-weight:600;color:var(--doux)}
+.dm-etat.encours{color:#4fa3f7;border-color:color-mix(in srgb,#4fa3f7 50%,transparent)}.dm-etat.fait{color:#3fb26f;border-color:color-mix(in srgb,#3fb26f 50%,transparent)}.dm-etat.refuse{color:#e5484d;border-color:color-mix(in srgb,#e5484d 50%,transparent)}
+.dm-vide{display:flex;flex-direction:column;align-items:center;gap:10px;padding:30px 16px;text-align:center;color:var(--doux);font-size:.88rem}
+.dm-alerte{margin:10px;padding:10px 12px;border-radius:10px;border:1px solid color-mix(in srgb,#f5a524 50%,transparent);background:color-mix(in srgb,#f5a524 9%,transparent);font-size:.84rem}
+.dm-lecture{min-width:0;min-height:0;overflow-y:auto;background:var(--surface)}
+.dm-accueil{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:30px;text-align:center}.dm-accueil .doux{max-width:34ch;font-size:.88rem}
+.dm-retour{display:none;align-items:center;gap:6px;margin:12px 16px 0;padding:6px 12px 6px 8px;border:1px solid var(--ligne);border-radius:999px;background:none;color:var(--texte);font:inherit;font-size:.88rem;cursor:pointer}
+.dm-fil{display:flex;flex-direction:column;gap:14px;padding:20px 22px}
+.dm-fil h3{margin:0;font-size:1.25rem;line-height:1.25;overflow-wrap:anywhere}
+.dm-fil-tete{display:flex;flex-direction:column;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--ligne)}
+.dm-puces{display:flex;flex-wrap:wrap;gap:6px}.dm-puce{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--ligne);font-size:.78rem}
+.dm-public{display:flex;align-items:center;gap:8px;margin:0;font-size:.8rem;color:#4fa3f7}.dm-public .dm-ic{width:15px;height:15px}
+.dm-messages{display:flex;flex-direction:column;gap:12px}
+.dm-msg{display:flex;gap:12px}.dm-msg-corps{flex:1;min-width:0;padding:12px 14px;border:1px solid var(--ligne);border-radius:12px;background:var(--surface-2)}
+.dm-msg.moi .dm-msg-corps{background:color-mix(in srgb,var(--accent) 6%,var(--surface-2));border-color:color-mix(in srgb,var(--accent) 25%,var(--ligne))}
+.dm-msg-tete{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;font-size:.85rem}.dm-msg-tete time{margin-left:auto;font-size:.76rem}
+.dm-msg-corps p{margin:6px 0 0;overflow-wrap:anywhere;line-height:1.5;white-space:pre-wrap}
+.dm-rang{padding:0 7px;border-radius:999px;font:600 .66rem var(--f-mono);letter-spacing:.04em;text-transform:uppercase;background:var(--surface);color:var(--doux)}.dm-rang.gerant{color:var(--accent)}.dm-rang.administrateur{color:#4fa3f7}
+.dm-suppr{border:0;background:none;padding:0;color:var(--doux);font:inherit;font-size:.74rem;cursor:pointer;text-decoration:underline}.dm-suppr:hover{color:#e5484d}
+.dm-cite{margin:8px 0 0;padding:6px 10px;border-left:3px solid var(--accent);color:var(--doux);font-style:italic}
+.dm-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 12px;border-radius:10px;border:1px dashed var(--ligne)}.dm-actions .mini-btn.actif{border-color:var(--accent);color:var(--accent)}
+.dm-repondre{display:flex;flex-direction:column;gap:8px}
+.dm-repondre textarea,.dm-ecrire textarea{width:100%;resize:vertical;padding:10px 12px;border:1px solid var(--ligne);border-radius:var(--r);background:var(--surface-2);color:var(--texte);font:inherit}
+.dm-repondre textarea:focus,.dm-ecrire textarea:focus{outline:none;border-color:var(--accent)}
+.dm-envoi{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.dm-avert{display:flex;align-items:center;gap:6px;margin-right:auto;font-size:.78rem;color:#4fa3f7}.dm-avert .dm-ic{width:14px;height:14px}
+.dm-lecture-seule{margin:0;font-size:.84rem}
+.dm-ecrire{display:flex;flex-direction:column;gap:12px;padding:20px 22px}
+.dm-ligne-champ{display:grid;grid-template-columns:110px minmax(0,1fr);align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--ligne)}
+.dm-ligne-champ > label,.dm-ligne-champ > .lab{font-size:.85rem;color:var(--doux);font-weight:600}
+.dm-ligne-champ input,.dm-ligne-champ select{width:100%;padding:8px 10px;background:var(--surface-2);border:1px solid var(--ligne);border-radius:8px;color:var(--texte);font:inherit;font-size:.9rem}.dm-ligne-champ input:focus,.dm-ligne-champ select:focus{outline:none;border-color:var(--accent)}
+.dm-types{display:flex;flex-wrap:wrap;gap:6px}
+.dm-type{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border:1px solid var(--ligne);border-radius:999px;background:var(--surface-2);color:var(--texte);font:inherit;font-size:.84rem;cursor:pointer}
+.dm-type.actif{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface-2))}.dm-type.actif .dm-ic{color:var(--accent)}
+.dm-prevenir{display:flex;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid color-mix(in srgb,#4fa3f7 45%,transparent);background:color-mix(in srgb,#4fa3f7 9%,var(--surface));font-size:.86rem;line-height:1.45}.dm-prevenir .dm-ic{width:22px;height:22px;color:#4fa3f7;margin-top:1px}
+.dm-compris{display:flex;align-items:center;gap:8px;font-size:.86rem;cursor:pointer}
+@media (max-width:1100px){.dm-app{grid-template-columns:170px minmax(220px,270px) minmax(0,1fr)}}
+@media (max-width:900px){
+  .dm-app{display:block;height:auto;min-height:0;border:0;background:none;overflow:visible}
+  .dm-dossiers{flex-direction:row;flex-wrap:wrap;gap:6px;padding:0 0 12px;border:0;background:none}
+  .dm-nouveau{width:100%;margin:0 0 4px}.dm-dossier{width:auto;padding:7px 11px;border:1px solid var(--ligne);border-radius:999px;background:var(--surface)}
+  .dm-public-mini{width:100%;margin-top:6px}
+  .dm-liste{border:1px solid var(--ligne);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .dm-lecture{border:1px solid var(--ligne);border-radius:12px;overflow:visible}
+  .dm-app[data-mobile="liste"] .dm-lecture{display:none}
+  .dm-app[data-mobile="lecture"] .dm-dossiers,.dm-app[data-mobile="lecture"] .dm-liste{display:none}
+  .dm-retour{display:inline-flex}.dm-fil,.dm-ecrire{padding:16px}
+  .dm-ligne-champ{grid-template-columns:1fr;gap:6px}
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5543,7 +5573,7 @@ function majIdentite(){
 function ouvrirApp(){
   const groupes = [];
   if (!modeGerant) groupes.push(["Élève", ONGLETS_ELEVE]);
-  if (modeGerant || estGerantCompte()){ groupes.push(["Gérant", ONGLETS_GERANT]); suivreGestion(); }
+  if (modeGerant || estGerantCompte()){ groupes.push(["Gérant", ONGLETS_GERANT.filter(o => modeGerant || o[0] !== "g-demandes")]); suivreGestion(); }
   else if (estAdminCompte()) groupes.push(["Administration", ONGLETS_ADMIN]);
   $("#nav").innerHTML = groupes.map(([g, ongs]) => `<span class="nav-groupe">${g}</span>` + ongs.map(([v, t]) => `<button type="button" role="tab" data-vue="${v}" aria-selected="false"${EN_CHANTIER.includes(v) ? ` title="${t} : onglet en construction"` : ""}>${t}${EN_CHANTIER.includes(v) ? `<span class="nav-chantier" aria-label="en construction">En travaux</span>` : ""}</button>`).join("")).join("");
   $("#nav").querySelectorAll("button").forEach(b => b.onclick = () => changerVue(b.dataset.vue));
@@ -5602,7 +5632,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.80";
+const VERSION_SITE = "1.81";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -13420,152 +13450,214 @@ async function dessinerPdfDnb(url, boite){
     }
   } catch { if (boite.isConnected) boite.innerHTML = `<div class="vide">Impossible d'afficher le PDF ici. <a class="lien" href="${esc(url)}" target="_blank" rel="noopener">Ouvre-le dans un nouvel onglet ↗</a></div>`; }
 }
-/* ===================== DEMANDES DES ÉLÈVES : leçons, exercices, corrections de leçons =====================
-   Enregistrées dans la collection « signalements » (genre: "demande") : l'élève peut y écrire et relire les siennes,
-   le gérant les voit toutes, change leur état et répond. */
-let requetes = [], requetesSuivies = false;
-const TYPES_REQ = [["lecon", "Une leçon", "Une leçon qui n'existe pas encore sur Helper"], ["exo", "Des exercices", "Des exercices pour t'entraîner sur un chapitre"], ["modif", "Corriger une leçon", "Une erreur, un oubli ou un passage pas clair"]];
-const ETATS_REQ = {attente: ["En attente", ""], encours: ["En cours", "encours"], fait: ["Fait", "fait"], refuse: ["Refusé", "refuse"], annulee: ["Annulée", "annulee"]};
-const MOTIFS_MODIF = [["faute", "Une faute"], ["manque", "Il manque quelque chose"], ["clarte", "Pas clair"], ["autre", "Autre"]];
-const nomTypeReq = t => (TYPES_REQ.find(x => x[0] === t) || [, "Demande"])[1];
-// icônes (même famille que le reste du site)
-const ICO_REQ = {
-  lecon: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.3 5.2 7.6 4.6 4 4.8v12.6c3.6-.2 6.3.4 8 1.7 1.7-1.3 4.4-1.9 8-1.7V4.8c-3.6-.2-6.3.4-8 1.7z"/><path d="M12 6.5v12.6"/></svg>`,
-  exo: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="4" width="15" height="16.5" rx="2.5"/><path d="M8 9.5l1.6 1.6L12.5 8M8 15l1.6 1.6 2.9-3.1M14.5 9.6h2.5M14.5 15.2h2.5"/></svg>`,
-  modif: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 4H7a2.5 2.5 0 0 0-2.5 2.5v11A2.5 2.5 0 0 0 7 20h10a2.5 2.5 0 0 0 2.5-2.5V11"/><path d="M17.6 3.6a1.9 1.9 0 0 1 2.8 2.8L13 13.8l-3.6.8.8-3.6z"/></svg>`
+/* ===================== DEMANDES : messagerie publique façon Outlook =====================
+   Un élève écrit à un admin précis (ou à toute l'équipe) pour demander une leçon, des exercices ou une correction.
+   Tous les messages sont publics dans Helper : chaque élève et chaque admin peut les lire (collection « messages »).
+   Une réponse est un message dont « fil » vaut l'identifiant du premier message. */
+let requetes = [], messagesDm = [], messagesSuivis = false, messagerieOk = true, equipeDm = null;
+const TYPES_DM = [["lecon", "Une leçon"], ["exo", "Des exercices"], ["modif", "Corriger une leçon"], ["question", "Une question"]];
+const ETATS_DM = {attente: ["En attente", "attente"], encours: ["En cours", "encours"], fait: ["Fait", "fait"], refuse: ["Refusé", "refuse"]};
+const nomTypeDm = t => (TYPES_DM.find(x => x[0] === t) || [, "Message"])[1];
+const ICO_DM = {
+  lecon: `<path d="M12 6.5C10.3 5.2 7.6 4.6 4 4.8v12.6c3.6-.2 6.3.4 8 1.7 1.7-1.3 4.4-1.9 8-1.7V4.8c-3.6-.2-6.3.4-8 1.7z"/><path d="M12 6.5v12.6"/>`,
+  exo: `<rect x="4.5" y="4" width="15" height="16.5" rx="2.5"/><path d="M8 9.5l1.6 1.6L12.5 8M8 15l1.6 1.6 2.9-3.1M14.5 9.6h2.5M14.5 15.2h2.5"/>`,
+  modif: `<path d="M13 4H7a2.5 2.5 0 0 0-2.5 2.5v11A2.5 2.5 0 0 0 7 20h10a2.5 2.5 0 0 0 2.5-2.5V11"/><path d="M17.6 3.6a1.9 1.9 0 0 1 2.8 2.8L13 13.8l-3.6.8.8-3.6z"/>`,
+  question: `<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2-2.4 3.4M12 16.6v.2"/>`,
+  boite: `<path d="M4 13h4l1.5 2.5h5L16 13h4"/><path d="M5.5 6h13L20 13v5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18v-5z"/>`,
+  envoyes: `<path d="M4 12L20 4l-4 16-4.5-6.5z"/><path d="M11.5 13.5L20 4"/>`,
+  tous: `<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/>`,
+  traiter: `<path d="M6 4h12v16l-6-4-6 4z"/>`,
+  ecrire: `<path d="M12 5v14M5 12h14"/>`,
+  retour: `<path d="M15 6l-6 6 6 6"/>`,
+  public: `<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/>`
 };
-const icoReq = t => `<span class="rq-ico">${ICO_REQ[t] || ICO_REQ.lecon}</span>`;
+const icoDm = (k, cl = "") => `<svg class="dm-ic ${cl}" viewBox="0 0 24 24" aria-hidden="true">${ICO_DM[k] || ICO_DM.question}</svg>`;
+const estEquipeDm = () => modeGerant || estGerantCompte() || estAdminCompte();
+const moiDm = () => modeGerant ? "gerant" : moi;
+const monNomDm = () => modeGerant ? "Gérant" : (profil && profil.pseudo) || "?";
+const monRangDm = () => modeGerant ? "gerant" : profil ? rangDe(profil.rang) : "eleve";
+const libRangDm = r => r === "gerant" ? "Gérant" : r === "administrateur" ? "Admin" : "Élève";
 
-// l'élève suit ses demandes (les règles d'accès ne lui renvoient que les siennes)
+// tout le monde suit les messages (ils sont publics)
 function suivreRequetes(){
-  if (requetesSuivies || !db || modeGerant || estGerantCompte()) return; requetesSuivies = true;
-  db.collection("signalements").onSnapshot(s => { requetes = s.docs.map(d => ({...d.data(), id: d.id})).filter(x => x.genre === "demande"); majBadgeRequetes(); majVue(); }, () => {});
+  if (messagesSuivis || !db) return; messagesSuivis = true;
+  db.collection("messages").onSnapshot(s => { messagesDm = s.docs.map(d => ({...d.data(), id: d.id})); majBadgeRequetes(); majVue(); }, () => { messagerieOk = false; });
 }
-const mesRequetes = () => requetes.filter(x => x.compte === moi).sort((a, b) => String(b.le).localeCompare(String(a.le)));
-// réponses du gérant pas encore lues (badge de l'onglet)
-const vuesReq = () => { try { return JSON.parse(lsGet("helper.req.vues") || "{}"); } catch { return {}; } };
+async function chargerEquipeDm(){
+  if (equipeDm) return equipeDm;
+  try { const r = await sb.rpc("equipe_helper"); if (r.error) throw r.error; equipeDm = (r.data || []).map(x => ({...x, rang: rangDe(x.rang)})); }
+  catch { // messagerie pas encore activée : liste tirée des comptes (visible du gérant seulement)
+    equipeDm = (typeof comptes !== "undefined" ? comptes : []).filter(c => c.codeHash).map(c => { const k = (typeof codes !== "undefined" ? codes : []).find(x => x.id === c.codeHash); return k ? {id: c.id, pseudo: c.pseudo || c.id, rang: rangDe(k.rang), nom: k.nom || ""} : null; }).filter(x => x && x.rang !== "eleve"); }
+  return equipeDm;
+}
+// fils de discussion : premier message + réponses
+function filsDm(){
+  const racines = messagesDm.filter(m => !m.fil), rep = {};
+  messagesDm.filter(m => m.fil).forEach(m => (rep[m.fil] = rep[m.fil] || []).push(m));
+  return racines.map(r => { const l = [r, ...(rep[r.id] || []).sort((a, b) => String(a.le).localeCompare(String(b.le)))];
+    return {...r, messages: l, dernier: l[l.length - 1], activite: [l[l.length - 1].le, r.majLe || ""].sort().pop()}; })
+    .sort((a, b) => String(b.activite).localeCompare(String(a.activite)));
+}
+const pourMoiDm = f => f.a === moiDm() || (f.a === "equipe" && estEquipeDm()) || (f.deId === moiDm() && f.messages.some(m => m.deId !== moiDm()));
+const deMoiDm = f => f.deId === moiDm() || f.messages.some(m => m.deId === moiDm());
+const vusDm = () => { try { return JSON.parse(lsGet("helper.dm.vus") || "{}"); } catch { return {}; } };
+const nonLuDm = f => { const v = vusDm()[f.id]; return f.dernier.deId !== moiDm() && (!v || v < f.activite) && pourMoiDm(f); };
 function majBadgeRequetes(){
-  const b = document.querySelector('#nav button[data-vue="demandes"]'), v = vuesReq();
-  if (b){ const n = mesRequetes().filter(x => x.majLe && x.majLe !== v[x.id]).length; b.dataset.n = n ? String(n) : ""; }
-  const g = document.querySelector('#nav button[data-vue="g-demandes"]');
-  if (g){ const n = requetes.filter(x => x.statut === "attente").length; g.dataset.n = n ? String(n) : ""; }
+  const n = filsDm().filter(nonLuDm).length;
+  ["demandes", "g-demandes"].forEach(v => { const b = document.querySelector(`#nav button[data-vue="${v}"]`); if (b) b.dataset.n = n ? String(n) : ""; });
 }
 
-/* ---------- Élève ---------- */
-let choixReq = {type: "lecon"};
+/* ---------- La vue (3 volets : dossiers · liste · lecture) ---------- */
+let etatDm = {dossier: "boite", fil: null, ecrire: false, brouillon: {}};
+const DOSSIERS_DM = () => [["boite", "Boîte de réception", "boite"], ["envoyes", "Envoyés", "envoyes"], ...(estEquipeDm() ? [["traiter", "À traiter", "traiter"]] : []), ["tous", "Tous les messages", "tous"]];
+function filsDuDossier(d){
+  const l = filsDm();
+  if (d === "boite") return l.filter(pourMoiDm);
+  if (d === "envoyes") return l.filter(deMoiDm);
+  if (d === "traiter") return l.filter(f => f.statut === "attente" || f.statut === "encours");
+  return l;
+}
+const quandDm = iso => { if (!iso) return ""; const d = new Date(iso), j = iso.slice(0, 10);
+  return j === auj() ? d.toLocaleTimeString("fr-FR", {hour: "2-digit", minute: "2-digit"}) : j === decalerJour(auj(), -1) ? "Hier" : d.toLocaleDateString("fr-FR", {day: "numeric", month: "short"}); };
+const avatarDm = (nom, rang) => `<span class="dm-av ${rang || ""}" aria-hidden="true">${esc(String(nom || "?").slice(0, 1).toUpperCase())}</span>`;
+const nomDestDm = f => f.a === "equipe" ? "Toute l'équipe" : f.aNom || f.a;
+
 VUES.demandes = function vueDemandes(){
   rafraichir = vueDemandes; suivreRequetes();
-  const t = choixReq.type, mats = MATIERES, lecons = typeof toutesLecons === "function" ? toutesLecons() : [];
-  const mat = choixReq.mat || (mats.find(m => (t === "exo" ? seriesDe(m.id) : leconsDe(m.id)).length) || mats[0]).id; choixReq.mat = mat;
-  const elements = t === "exo" ? seriesDe(mat).map(x => ({id: x.id, nom: estPrecis(x) ? nomExoType(x) : x.titre || "Exercices"}))
-    : leconsDe(mat).map(l => ({id: l.id, nom: l.titre, groupe: l.groupe || ""}));
-  const choisi = elements.find(e => e.id === choixReq.sel);
-  const miennes = mesRequetes(), v = vuesReq();
-  zone().innerHTML = entete("Demandes", "Demander au gérant") + `
-    <form class="bloc rq-form" id="rq-form" novalidate>
-      <span class="mono">Nouvelle demande</span>
-      <div class="rq-types">${TYPES_REQ.map(([v2, nom, aide]) => `<button type="button" class="rq-type${v2 === t ? " actif" : ""}" data-type="${v2}" aria-pressed="${v2 === t}">${icoReq(v2)}<span><b>${nom}</b><small>${aide}</small></span></button>`).join("")}</div>
-      <div class="rq-corps">
-        <div class="champ rq-zmat"><label for="rq-mat">Matière</label><select id="rq-mat">${mats.map(m => `<option value="${m.id}"${m.id === mat ? " selected" : ""}>${esc(m.nom)}</option>`).join("")}</select></div>
-        <aside class="rq-cote">
-          <div class="rq-cote-tete"><span class="mono">${t === "exo" ? "Exercices" : "Leçons"} · ${esc(nomMatiere(mat))}</span><span class="doux">${elements.length}</span></div>
-          ${elements.length > 6 ? `<input type="search" id="rq-cherche" class="rq-cherche" placeholder="Rechercher…" autocomplete="off">` : ""}
-          <div class="rq-items" id="rq-items">${elements.length ? elements.map(e => `<button type="button" class="rq-item${e.id === choixReq.sel ? " choisi" : ""}" data-sel="${esc(e.id)}" data-nom="${esc(e.nom)}">${icoReq(t === "exo" ? "exo" : "lecon")}<span>${esc(e.nom)}${e.groupe ? `<small>${esc(e.groupe)}</small>` : ""}</span></button>`).join("")
-            : `<p class="doux rq-vide">${t === "exo" ? "Pas encore d'exercices" : "Pas encore de leçon"} en ${esc(nomMatiere(mat))}.</p>`}</div>
-          <p class="doux rq-cote-aide">${t === "modif" ? "Choisis la leçon à corriger." : t === "exo" ? "Choisis un exercice pour en demander d'autres du même genre, ou écris un chapitre." : "Vérifie qu'elle n'existe pas déjà, ou choisis-en une pour demander la suite."}</p>
-        </aside>
-        <div class="rq-zchamps">
-        ${t === "modif" ? `
-          <div class="rq-choisie${choisi ? "" : " vide"}">${choisi ? `${icoReq("lecon")}<span><small>Leçon à corriger</small><b>${esc(choisi.nom)}</b></span>` : `<span class="doux">Aucune leçon choisie : clique sur une leçon dans la liste.</span>`}</div>
-          <div class="champ"><span class="lab">Ce qui ne va pas</span>${segment("rq-motif", MOTIFS_MODIF, choixReq.motif || "faute")}</div>
-          <div class="champ"><label for="rq-passage">Passage concerné (facultatif)</label><input id="rq-passage" type="text" maxlength="200" placeholder="Recopie quelques mots du passage"></div>`
-        : `
-          <div class="champ"><label for="rq-titre">${t === "exo" ? "Chapitre ou notion" : "Titre ou chapitre de la leçon"}</label><input id="rq-titre" type="text" maxlength="100" value="${esc(choixReq.titre || "")}" placeholder="${t === "exo" ? "ex. Théorème de Thalès" : "ex. La Guerre froide"}"></div>
-          <div class="champ"><label for="rq-pour">Pour quand ? (facultatif)</label><input id="rq-pour" type="date" min="${auj()}" style="max-width:220px"><small class="doux">Par exemple la date d'un contrôle.</small></div>`}
-          <div class="champ"><label for="rq-msg">${t === "modif" ? "Explique ce qu'il faut corriger" : "Précisions (facultatif)"}</label><textarea id="rq-msg" rows="3" maxlength="800" placeholder="${t === "modif" ? "ex. Dans la partie 2, la date de l'armistice est fausse." : t === "exo" ? "ex. Des exercices de calcul, niveau brevet." : "ex. Ce qu'on a vu en classe, les mots importants…"}"></textarea></div>
-        </div>
-      </div>
-      <p id="statut" class="statut" role="status"></p>
-      <div><button class="btn" type="submit">Envoyer la demande</button></div>
-    </form>
-    <div class="bloc">
-      <span class="mono">Mes demandes</span>
-      ${miennes.length ? `<div class="rq-liste">${miennes.map(x => carteReq(x, false, v)).join("")}</div>` : `<div class="vide">Aucune demande pour le moment.</div>`}
+  const d = etatDm.dossier, liste = filsDuDossier(d), fil = etatDm.fil && filsDm().find(f => f.id === etatDm.fil);
+  const mobileVue = etatDm.ecrire || fil ? "lecture" : "liste";
+  // pendant l'écriture, on ne redessine pas (le brouillon serait perdu)
+  if (etatDm.ecrire && zone().querySelector("#dm-form")) return;
+  zone().innerHTML = entete("Demandes", "Messagerie") + `
+    <div class="dm-app" data-mobile="${mobileVue}">
+      <nav class="dm-dossiers" aria-label="Dossiers">
+        <button type="button" class="btn dm-nouveau" id="dm-nouveau">${icoDm("ecrire")}Nouveau message</button>
+        ${DOSSIERS_DM().map(([v, nom, ic]) => { const n = v === "boite" ? filsDuDossier(v).filter(nonLuDm).length : v === "traiter" ? filsDuDossier(v).length : 0;
+          return `<button type="button" class="dm-dossier${v === d ? " actif" : ""}" data-dossier="${v}">${icoDm(ic)}<span>${nom}</span>${n ? `<b>${n}</b>` : ""}</button>`; }).join("")}
+        <p class="dm-public-mini">${icoDm("public")}<span>Les messages sont <b>publics</b> : tous les élèves et tous les admins peuvent les lire.</span></p>
+      </nav>
+      <section class="dm-liste" aria-label="Messages">
+        <header class="dm-liste-tete"><b>${esc((DOSSIERS_DM().find(x => x[0] === d) || [, ""])[1])}</b><span class="doux">${liste.length}</span></header>
+        ${!messagerieOk ? `<div class="dm-alerte">La messagerie n'est pas encore activée sur le serveur. Le gérant doit lancer le fichier <b>6-messagerie.sql</b> dans Supabase.</div>` : ""}
+        <div class="dm-items">${liste.length ? liste.map(ligneDm).join("") : `<div class="dm-vide">${d === "boite" ? "Rien dans ta boîte de réception." : d === "envoyes" ? "Tu n'as encore rien envoyé." : "Aucun message."}<button type="button" class="mini-btn" data-ecrire>Écrire un message</button></div>`}</div>
+      </section>
+      <section class="dm-lecture" aria-label="Lecture">${etatDm.ecrire ? "" : fil ? lectureDm(fil) : `<div class="dm-accueil">${icoDm("boite", "grand")}<b>Choisis un message à lire</b><span class="doux">ou écris une nouvelle demande : une leçon, des exercices, une correction ou une question.</span><button type="button" class="btn" data-ecrire>Nouveau message</button></div>`}</section>
     </div>`;
-  zone().querySelectorAll("[data-type]").forEach(b => b.onclick = () => { if (choixReq.type !== b.dataset.type){ choixReq.type = b.dataset.type; choixReq.sel = null; choixReq.titre = ""; } vueDemandes(); });
-  $("#rq-mat").onchange = () => { choixReq.mat = $("#rq-mat").value; choixReq.sel = null; vueDemandes(); };
-  zone().querySelectorAll("[data-sel]").forEach(b => b.onclick = () => {
-    const ti = $("#rq-titre"); choixReq.sel = choixReq.sel === b.dataset.sel ? null : b.dataset.sel;
-    if (ti){ choixReq.titre = choixReq.sel ? b.dataset.nom : ""; }
-    const garde = {msg: $("#rq-msg").value, pass: $("#rq-passage") ? $("#rq-passage").value : ""};
-    vueDemandes(); $("#rq-msg").value = garde.msg; if ($("#rq-passage")) $("#rq-passage").value = garde.pass;
-  });
-  const ch = $("#rq-cherche"); if (ch) ch.oninput = () => { const q = normaliser(ch.value); zone().querySelectorAll(".rq-item").forEach(b => b.hidden = q && !normaliser(b.dataset.nom).includes(q)); };
-  zone().querySelectorAll("#rq-motif button").forEach(b => b.onclick = () => { choixReq.motif = b.dataset.v; zone().querySelectorAll("#rq-motif button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
-  zone().querySelectorAll("[data-annuler]").forEach(b => deuxClics(b, async () => { try { await db.doc("signalements/" + b.dataset.annuler).update({statut: "annulee", majLe: new Date().toISOString()}); } catch (err){ statut(erreurEcriture(err)); } }));
-  // les réponses affichées sont marquées comme lues
-  const lues = vuesReq(); let change = false; miennes.forEach(x => { if (x.majLe && lues[x.id] !== x.majLe){ lues[x.id] = x.majLe; change = true; } });
-  if (change){ lsSet("helper.req.vues", JSON.stringify(lues)); setTimeout(majBadgeRequetes, 50); }
-  $("#rq-form").onsubmit = async ev => {
-    ev.preventDefault();
-    const mat = $("#rq-mat").value, msg = $("#rq-msg").value.trim(), btn = ev.target.querySelector("[type=submit]");
-    const d = {genre: "demande", type: t, matiere: mat, message: msg.slice(0, 800), statut: "attente", compte: moi, par: (profil && profil.pseudo) || "?", classe: (profil && profil.classe) || "", le: new Date().toISOString(), traite: false};
-    if (t === "modif"){ const l = lecons.find(x => x.id === choixReq.sel); if (!l) return statut("Choisis la leçon à corriger dans la liste.");
-      if (msg.length < 5) return statut("Explique en quelques mots ce qu'il faut corriger.");
-      Object.assign(d, {lecon: l.id, titre: l.titre, motif: choixReq.motif || "faute", passage: $("#rq-passage").value.trim().slice(0, 200)}); }
-    else { const ti = $("#rq-titre").value.trim(); if (ti.length < 3) return statut(t === "exo" ? "Indique le chapitre ou la notion." : "Indique le titre ou le chapitre de la leçon.");
-      Object.assign(d, {titre: ti.slice(0, 100), pour: $("#rq-pour").value || "", ...(choixReq.sel ? {ref: choixReq.sel} : {})}); }
-    btn.disabled = true;
-    try { await db.doc("signalements/" + nouvelId("d")).set(d); choixReq = {type: t, mat}; Formes.succes(); toast("Demande envoyée au gérant."); vueDemandes(); }
-    catch (err){ btn.disabled = false; statut("L'envoi a échoué, réessaie dans un instant."); }
+  if (etatDm.ecrire) composerDm(zone().querySelector(".dm-lecture"));
+  brancherDm();
+};
+VUES["g-demandes"] = () => VUES.demandes();
+function ligneDm(f){
+  const e = ETATS_DM[f.statut], nl = nonLuDm(f), apercu = String(f.dernier.corps || "").replace(/\s+/g, " ").slice(0, 90);
+  return `<button type="button" class="dm-item${f.id === etatDm.fil ? " actif" : ""}${nl ? " nonlu" : ""}" data-fil="${esc(f.id)}">
+    ${avatarDm(f.deNom, f.deRang)}
+    <span class="dm-item-corps">
+      <span class="dm-item-l1"><b>${esc(f.deNom || "?")}</b><span class="doux dm-a">→ ${esc(nomDestDm(f))}</span><time>${quandDm(f.activite)}</time></span>
+      <span class="dm-item-objet">${icoDm(f.type, "petit")}<span>${esc(f.objet || nomTypeDm(f.type))}</span></span>
+      <span class="dm-item-l3"><span class="doux">${f.messages.length > 1 ? `<i>${f.messages.length}</i> ` : ""}${esc(apercu)}</span>${e && f.type !== "question" ? `<span class="dm-etat ${e[1]}">${e[0]}</span>` : ""}</span>
+    </span>
+  </button>`;
+}
+function lectureDm(f){
+  const e = ETATS_DM[f.statut], peutRepondre = f.deId === moiDm() || f.a === moiDm() || estEquipeDm();
+  const ref = f.ref && (f.type === "exo" ? toutesSeries().find(s => s.id === f.ref) : toutesLecons().find(l => l.id === f.ref));
+  const v = vusDm(); if (v[f.id] !== f.activite){ v[f.id] = f.activite; lsSet("helper.dm.vus", JSON.stringify(v)); setTimeout(majBadgeRequetes, 30); }   // lu
+  return `<button type="button" class="dm-retour" id="dm-retour">${icoDm("retour")}Retour</button>
+    <article class="dm-fil">
+      <header class="dm-fil-tete">
+        <h3>${esc(f.objet || nomTypeDm(f.type))}</h3>
+        <div class="dm-puces"><span class="dm-puce">${icoDm(f.type, "petit")}${nomTypeDm(f.type)}</span>${f.matiere ? `<span class="dm-puce">${esc(nomMatiere(f.matiere))}</span>` : ""}${f.refNom ? `<span class="dm-puce">${esc(f.refNom)}</span>` : ""}${f.pour ? `<span class="dm-puce">Pour le ${dateFr(f.pour)}</span>` : ""}${e && f.type !== "question" ? `<span class="dm-etat ${e[1]}">${e[0]}</span>` : ""}</div>
+        <p class="dm-public">${icoDm("public")}Message public : tous les élèves et tous les admins de Helper peuvent le lire.</p>
+      </header>
+      <div class="dm-messages">${f.messages.map(m => `
+        <div class="dm-msg${m.deId === moiDm() ? " moi" : ""}">
+          ${avatarDm(m.deNom, m.deRang)}
+          <div class="dm-msg-corps">
+            <div class="dm-msg-tete"><b>${esc(m.deNom || "?")}</b><span class="dm-rang ${m.deRang || ""}">${libRangDm(m.deRang)}</span>${m === f.messages[0] ? `<span class="doux">à ${esc(nomDestDm(f))}</span>` : ""}<time class="doux">${new Date(m.le).toLocaleString("fr-FR", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})}</time>
+              ${m.deId === moiDm() || modeGerant || estGerantCompte() ? `<button type="button" class="dm-suppr" data-suppr-msg="${esc(m.id)}" title="${m === f.messages[0] ? "Supprimer toute la conversation" : "Supprimer ce message"}">Supprimer</button>` : ""}</div>
+            ${m === f.messages[0] && f.passage ? `<blockquote class="dm-cite">« ${esc(f.passage)} »</blockquote>` : ""}
+            <p>${esc(m.corps || "").replace(/\n/g, "<br>")}</p>
+          </div>
+        </div>`).join("")}</div>
+      ${estEquipeDm() && f.type !== "question" ? `<div class="dm-actions"><span class="mono">État</span>${Object.entries(ETATS_DM).map(([k, [nom]]) => `<button type="button" class="mini-btn${f.statut === k ? " actif" : ""}" data-etat="${k}" aria-pressed="${f.statut === k}">${nom}</button>`).join("")}
+        ${f.type === "modif" && ref ? `<button type="button" class="mini-btn" data-ouvrir-lecon="${esc(f.ref)}">Ouvrir la leçon</button>` : f.type === "lecon" ? `<button type="button" class="mini-btn" data-creer-lecon="${esc(f.matiere || "")}">Créer la leçon</button>` : f.type === "exo" ? `<button type="button" class="mini-btn" data-aller-exos="${esc(f.matiere || "")}">Aller aux exercices</button>` : ""}</div>` : ""}
+      ${peutRepondre ? `<form class="dm-repondre" id="dm-repondre" novalidate>
+          <textarea id="dm-rep" rows="3" maxlength="1000" placeholder="Écrire une réponse…"></textarea>
+          <div class="dm-envoi"><span class="dm-avert">${icoDm("public")}Ta réponse sera visible par tout le monde.</span><button class="btn" type="submit">Répondre</button></div>
+        </form>` : `<p class="doux dm-lecture-seule">Tu peux lire cette conversation, mais seuls ${esc(f.deNom || "l'auteur")}, ${esc(nomDestDm(f))} et l'équipe peuvent y répondre.</p>`}
+    </article>`;
+}
+/* ---------- Nouveau message ---------- */
+async function composerDm(boite){
+  const b = etatDm.brouillon, t = b.type || "lecon";
+  boite.innerHTML = `<div class="dm-fil"><p class="doux">Chargement…</p></div>`;
+  const equipe = await chargerEquipeDm(); if (!boite.isConnected) return;
+  const mats = MATIERES, mat = b.matiere || mats[0].id;
+  const refs = t === "exo" ? seriesDe(mat).map(x => ({id: x.id, nom: estPrecis(x) ? nomExoType(x) : x.titre || "Exercices"})) : leconsDe(mat).map(l => ({id: l.id, nom: l.titre}));
+  boite.innerHTML = `<button type="button" class="dm-retour" id="dm-retour">${icoDm("retour")}Retour</button>
+    <form class="dm-fil dm-ecrire" id="dm-form" novalidate>
+      <h3>Nouveau message</h3>
+      <div class="dm-ligne-champ"><label for="dm-a">À</label><select id="dm-a">
+        <option value="equipe"${b.a === "equipe" || !b.a ? " selected" : ""}>Toute l'équipe (tous les admins)</option>
+        ${equipe.filter(x => x.id !== moiDm()).map(x => `<option value="${esc(x.id)}"${b.a === x.id ? " selected" : ""}>${esc(x.pseudo)} — ${libRangDm(x.rang)}${x.nom && x.nom !== x.pseudo ? " (" + esc(x.nom) + ")" : ""}</option>`).join("")}</select></div>
+      <div class="dm-ligne-champ"><span class="lab">Je demande</span><div class="dm-types">${TYPES_DM.map(([v, nom]) => `<button type="button" class="dm-type${v === t ? " actif" : ""}" data-type="${v}" aria-pressed="${v === t}">${icoDm(v, "petit")}${nom}</button>`).join("")}</div></div>
+      ${t !== "question" ? `<div class="dm-ligne-champ"><label for="dm-mat">Matière</label><select id="dm-mat">${mats.map(m => `<option value="${m.id}"${m.id === mat ? " selected" : ""}>${esc(m.nom)}</option>`).join("")}</select></div>
+      <div class="dm-ligne-champ"><label for="dm-ref">${t === "modif" ? "Leçon à corriger" : t === "exo" ? "À partir de" : "Leçon liée"}</label><select id="dm-ref">
+        <option value="">${t === "modif" ? (refs.length ? "— Choisis la leçon —" : "Aucune leçon dans cette matière") : "— Aucune (facultatif) —"}</option>${refs.map(r => `<option value="${esc(r.id)}"${b.ref === r.id ? " selected" : ""}>${esc(r.nom)}</option>`).join("")}</select></div>` : ""}
+      ${t === "modif" ? `<div class="dm-ligne-champ"><label for="dm-passage">Passage</label><input id="dm-passage" type="text" maxlength="200" placeholder="Recopie quelques mots du passage (facultatif)" value="${esc(b.passage || "")}"></div>` : ""}
+      ${t === "lecon" || t === "exo" ? `<div class="dm-ligne-champ"><label for="dm-pour">Pour le</label><div class="rangee" style="gap:8px"><input id="dm-pour" type="date" min="${auj()}" value="${esc(b.pour || "")}" style="max-width:200px"><small class="doux">facultatif (ex. date d'un contrôle)</small></div></div>` : ""}
+      <div class="dm-ligne-champ"><label for="dm-objet">Objet</label><input id="dm-objet" type="text" maxlength="100" value="${esc(b.objet || "")}" placeholder="${t === "lecon" ? "ex. Leçon sur la Guerre froide" : t === "exo" ? "ex. Exercices sur Thalès" : t === "modif" ? "ex. Erreur de date dans la partie 2" : "ex. Question sur le cours"}"></div>
+      <textarea id="dm-corps" rows="6" maxlength="1500" placeholder="Ton message…">${esc(b.corps || "")}</textarea>
+      <div class="dm-prevenir">${icoDm("public")}<div><b>Ce message sera public.</b> Même si tu l'envoies à une personne précise, <b>tous les élèves et tous les admins</b> de Helper pourront le lire. N'y écris rien de personnel.</div></div>
+      <label class="dm-compris"><input type="checkbox" id="dm-compris"${b.compris ? " checked" : ""}> J'ai compris que mon message sera visible par tout le monde.</label>
+      <p id="statut" class="statut" role="status"></p>
+      <div class="dm-envoi"><button class="btn sec" type="button" id="dm-annuler">Annuler</button><button class="btn" type="submit" id="dm-envoyer"${b.compris ? "" : " disabled"}>Envoyer</button></div>
+    </form>`;
+  const garder = () => { const v = id => boite.querySelector(id)?.value; Object.assign(b, {a: v("#dm-a"), matiere: v("#dm-mat") || b.matiere, ref: v("#dm-ref") ?? b.ref, passage: v("#dm-passage") ?? b.passage, pour: v("#dm-pour") ?? b.pour, objet: v("#dm-objet"), corps: v("#dm-corps"), compris: boite.querySelector("#dm-compris").checked}); };
+  boite.querySelector("#dm-retour").onclick = boite.querySelector("#dm-annuler").onclick = () => { etatDm.ecrire = false; etatDm.brouillon = {}; VUES.demandes(); };
+  boite.querySelectorAll("[data-type]").forEach(x => x.onclick = () => { garder(); b.type = x.dataset.type; b.ref = ""; composerDm(boite); });
+  const sm = boite.querySelector("#dm-mat"); if (sm) sm.onchange = () => { garder(); b.matiere = sm.value; b.ref = ""; composerDm(boite); };
+  const sr = boite.querySelector("#dm-ref"); if (sr) sr.onchange = () => { const o = boite.querySelector("#dm-objet"); if (!o.value.trim() && sr.value){ const nom = sr.selectedOptions[0].textContent; o.value = t === "modif" ? "Correction : " + nom : t === "exo" ? "Exercices : " + nom : "Leçon : " + nom; } };
+  const ok = boite.querySelector("#dm-compris"), env = boite.querySelector("#dm-envoyer"); ok.onchange = () => env.disabled = !ok.checked;
+  boite.querySelector("#dm-form").onsubmit = async ev => {
+    ev.preventDefault(); garder();
+    const objet = (b.objet || "").trim(), corps = (b.corps || "").trim();
+    if (t === "modif" && !b.ref) return statut("Choisis la leçon à corriger.");
+    if (objet.length < 3) return statut("Écris un objet (quelques mots qui résument ta demande).");
+    if (corps.length < 3) return statut("Écris ton message.");
+    const dest = b.a || "equipe", destNom = dest === "equipe" ? "Toute l'équipe" : (equipe.find(x => x.id === dest) || {}).pseudo || dest;
+    const refNom = b.ref ? (refs.find(r => r.id === b.ref) || {}).nom || "" : "";
+    const m = {de: monNomDm(), deNom: monNomDm(), deId: moiDm(), deRang: monRangDm(), classe: (profil && profil.classe) || "", a: dest, aNom: destNom, type: t, objet: objet.slice(0, 100), corps: corps.slice(0, 1500),
+      matiere: t === "question" ? "" : b.matiere || mat, ref: b.ref || "", refNom, passage: t === "modif" ? (b.passage || "").slice(0, 200) : "", pour: b.pour || "", statut: "attente", fil: "", le: new Date().toISOString()};
+    env.disabled = true;
+    try { const id = nouvelId("m"); await db.doc("messages/" + id).set(m); etatDm = {dossier: "envoyes", fil: id, ecrire: false, brouillon: {}}; Formes.succes(); toast("Message envoyé."); VUES.demandes(); }
+    catch { env.disabled = false; statut(messagerieOk ? "L'envoi a échoué. Si ça continue, le gérant doit activer la messagerie (6-messagerie.sql)." : "La messagerie n'est pas encore activée : le gérant doit lancer 6-messagerie.sql dans Supabase."); }
   };
-};
-function carteReq(x, gerant, vues = {}){
-  const e = ETATS_REQ[x.statut] || ETATS_REQ.attente, neuf = !gerant && x.majLe && vues[x.id] !== x.majLe;
-  const mat = nomMatiere(x.matiere), motif = (MOTIFS_MODIF.find(m => m[0] === x.motif) || [, ""])[1];
-  return `<article class="rq-carte ${e[1]}${neuf ? " neuf" : ""}" data-req="${esc(x.id)}">
-    <div class="rq-tete">${icoReq(x.type)}<div class="rq-titres"><span class="rq-type-lib">${esc(nomTypeReq(x.type))} · ${esc(mat)}</span><b>${esc(x.titre || "")}</b></div>
-      <span class="rq-etat ${e[1]}">${e[0]}</span></div>
-    ${x.type === "modif" && motif ? `<span class="badge rq-motif">${esc(motif)}</span>` : ""}
-    ${x.passage ? `<p class="rq-passage">« ${esc(x.passage)} »</p>` : ""}
-    ${x.message ? `<p class="rq-msg">${esc(x.message)}</p>` : ""}
-    <span class="doux rq-meta">${gerant ? `${esc(x.par || "?")}${x.classe ? " (" + esc(x.classe) + ")" : ""} · ` : ""}Envoyée le ${dateFr(String(x.le || "").slice(0, 10))}${x.pour ? ` · pour le ${dateFr(x.pour)}` : ""}</span>
-    ${x.reponse ? `<div class="rq-reponse"><span class="mono">Réponse du gérant</span><p>${esc(x.reponse)}</p></div>` : ""}
-    ${gerant ? outilsReqGerant(x) : x.statut === "attente" ? `<div><button type="button" class="mini-btn danger" data-annuler="${esc(x.id)}">Annuler la demande</button></div>` : ""}
-  </article>`;
 }
-
-/* ---------- Gérant ---------- */
-let filtreReq = "ouvertes";
-function outilsReqGerant(x){
-  const l = x.type === "modif" && typeof toutesLecons === "function" && toutesLecons().find(y => y.id === x.lecon);
-  return `<div class="rq-outils">
-    <div class="rangee" style="gap:6px">${Object.entries(ETATS_REQ).filter(([k]) => k !== "annulee").map(([k, [nom]]) => `<button type="button" class="mini-btn${x.statut === k ? " actif" : ""}" data-etat="${k}" data-id="${esc(x.id)}" aria-pressed="${x.statut === k}">${nom}</button>`).join("")}
-      ${x.type === "modif" ? (l ? `<button type="button" class="mini-btn" data-ouvrir="${esc(x.lecon)}">Ouvrir la leçon</button>` : `<span class="doux" style="font-size:.8rem">Leçon introuvable</span>`)
-        : x.type === "lecon" ? `<button type="button" class="mini-btn" data-creer="${esc(x.matiere)}">Créer la leçon</button>` : `<button type="button" class="mini-btn" data-exos="${esc(x.matiere)}">Aller aux exercices</button>`}
-      <button type="button" class="mini-btn danger" data-suppr-req="${esc(x.id)}">Supprimer</button></div>
-    <div class="rq-rep-form"><textarea rows="2" maxlength="600" placeholder="Réponse à l'élève (facultatif)" data-rep="${esc(x.id)}">${esc(x.reponse || "")}</textarea><button type="button" class="mini-btn" data-envoyer-rep="${esc(x.id)}">Envoyer</button></div>
-  </div>`;
+function brancherDm(){
+  const z = zone();
+  z.querySelectorAll("[data-dossier]").forEach(b => b.onclick = () => { etatDm.dossier = b.dataset.dossier; etatDm.fil = null; etatDm.ecrire = false; VUES.demandes(); });
+  z.querySelectorAll("#dm-nouveau, [data-ecrire]").forEach(b => b.onclick = () => { etatDm.ecrire = true; etatDm.fil = null; zone().innerHTML = ""; VUES.demandes(); enHaut(); });
+  z.querySelectorAll("[data-fil]").forEach(b => b.onclick = () => { etatDm.fil = b.dataset.fil; etatDm.ecrire = false; VUES.demandes(); if (innerWidth < 900) enHaut(); });
+  const r = z.querySelector("#dm-retour"); if (r && !etatDm.ecrire) r.onclick = () => { etatDm.fil = null; VUES.demandes(); };
+  const f = etatDm.fil && filsDm().find(x => x.id === etatDm.fil); if (!f) return;
+  z.querySelectorAll("[data-etat]").forEach(b => b.onclick = async () => {
+    try { const res = await sb.rpc("etat_message", {p_id: f.id, p_statut: b.dataset.etat}); if (res.error) await db.doc("messages/" + f.id).update({statut: b.dataset.etat, majLe: new Date().toISOString()}); }
+    catch { toast("Impossible de changer l'état."); } });
+  z.querySelectorAll("[data-suppr-msg]").forEach(b => deuxClics(b, async () => {
+    const id = b.dataset.supprMsg, tout = id === f.id;
+    try { if (tout){ for (const m of f.messages) await db.doc("messages/" + m.id).delete(); etatDm.fil = null; } else await db.doc("messages/" + id).delete(); }
+    catch { toast("Suppression impossible."); } }));
+  z.querySelectorAll("[data-ouvrir-lecon]").forEach(b => b.onclick = () => { const l = toutesLecons().find(x => x.id === b.dataset.ouvrirLecon); if (!l) return; matiereActive = l.matiere; marquerNav("g-lecons"); vueActive = "g-lecons"; ouvrirEditeur(l); });
+  z.querySelectorAll("[data-creer-lecon]").forEach(b => b.onclick = () => { if (MATIERES.some(m => m.id === b.dataset.creerLecon)) matiereActive = b.dataset.creerLecon; marquerNav("g-lecons"); vueActive = "g-lecons"; ouvrirEditeur(null); });
+  z.querySelectorAll("[data-aller-exos]").forEach(b => b.onclick = () => { if (MATIERES.some(m => m.id === b.dataset.allerExos)) matiereActive = b.dataset.allerExos; changerVue("g-exos"); });
+  const fr = z.querySelector("#dm-repondre"); if (fr) fr.onsubmit = async ev => {
+    ev.preventDefault(); const t = z.querySelector("#dm-rep").value.trim(); if (!t) return;
+    const bt = fr.querySelector("[type=submit]"); bt.disabled = true;
+    try { await db.doc("messages/" + nouvelId("m")).set({fil: f.id, deNom: monNomDm(), de: monNomDm(), deId: moiDm(), deRang: monRangDm(), corps: t.slice(0, 1000), le: new Date().toISOString()}); toast("Réponse envoyée."); }
+    catch { bt.disabled = false; toast("L'envoi a échoué, réessaie."); }
+  };
 }
-VUES["g-demandes"] = function vueGDemandes(){
-  rafraichir = vueGDemandes;
-  const ouvertes = requetes.filter(x => x.statut === "attente" || x.statut === "encours");
-  const liste = (filtreReq === "ouvertes" ? ouvertes : requetes).slice().sort((a, b) => String(b.le).localeCompare(String(a.le)));
-  zone().innerHTML = entete(espaceNom(), "Demandes des élèves") + `
-    <div class="bloc">
-      ${segment("rq-filtre", [["ouvertes", `À traiter (${ouvertes.length})`], ["toutes", `Toutes (${requetes.length})`]], filtreReq)}
-      <p id="statut" class="statut" role="status"></p>
-      ${liste.length ? `<div class="rq-liste">${liste.map(x => carteReq(x, true)).join("")}</div>` : `<div class="vide">${filtreReq === "ouvertes" ? "Aucune demande à traiter." : "Aucune demande."}</div>`}
-    </div>`;
-  const maj = async (id, champs) => { try { await db.doc("signalements/" + id).update({...champs, majLe: new Date().toISOString()}); } catch (err){ statut(erreurEcriture(err)); } };
-  zone().querySelectorAll("#rq-filtre button").forEach(b => b.onclick = () => { filtreReq = b.dataset.v; vueGDemandes(); });
-  zone().querySelectorAll("[data-etat]").forEach(b => b.onclick = () => maj(b.dataset.id, {statut: b.dataset.etat, traite: b.dataset.etat === "fait" || b.dataset.etat === "refuse"}));
-  zone().querySelectorAll("[data-envoyer-rep]").forEach(b => b.onclick = async () => { const t = zone().querySelector(`[data-rep="${b.dataset.envoyerRep}"]`).value.trim(); await maj(b.dataset.envoyerRep, {reponse: t.slice(0, 600)}); toast(t ? "Réponse envoyée à l'élève." : "Réponse effacée."); });
-  zone().querySelectorAll("[data-suppr-req]").forEach(b => deuxClics(b, async () => { try { await db.doc("signalements/" + b.dataset.supprReq).delete(); } catch (err){ statut(erreurEcriture(err)); } }));
-  zone().querySelectorAll("[data-ouvrir]").forEach(b => b.onclick = () => { const l = toutesLecons().find(x => x.id === b.dataset.ouvrir); if (!l) return; matiereActive = l.matiere; marquerNav("g-lecons"); vueActive = "g-lecons"; ouvrirEditeur(l); });
-  zone().querySelectorAll("[data-creer]").forEach(b => b.onclick = () => { if (MATIERES.some(m => m.id === b.dataset.creer)) matiereActive = b.dataset.creer; marquerNav("g-lecons"); vueActive = "g-lecons"; ouvrirEditeur(null); });
-  zone().querySelectorAll("[data-exos]").forEach(b => b.onclick = () => { if (MATIERES.some(m => m.id === b.dataset.exos)) matiereActive = b.dataset.exos; changerVue("g-exos"); });
-};
 /* ===================== EXERCICES TYPES (« exos précis ») =====================
    Deux sortes d'exercices :
    - les exercices en chaîne (type "chaine", par défaut) : une suite de questions différentes, une par une ;
