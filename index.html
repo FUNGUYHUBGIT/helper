@@ -2166,14 +2166,32 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
   .dm-fil{padding:14px}.dm-etape{padding:14px}
 }
 
-/* Dictées du brevet */
-.carte-dnb{--accent:#2f6fe0}.carte-dnb .et-theme-nom{color:#7fb0ff}.carte-dnb .exo-type i{color:#7fb0ff}.carte-dnb .ds-go{color:#7fb0ff}
-.ds-choisir{margin:6px 0 0}
-.ds-groupe{display:flex;align-items:center;gap:8px;margin:14px 0 2px;font-size:1rem}.ds-groupe small{font:500 .75rem var(--f-mono);color:var(--doux)}
-.ds-groupe-dnb{color:#9cc2ff}
+/* Dictées du brevet : tout en bleu */
+.dnb-dictees{--v:#3d7bff;border-left:3px solid var(--v)}
+.dd-tete{display:flex;gap:12px;align-items:flex-start}.dd-tete p{margin:4px 0 0;font-size:.88rem;max-width:70ch}
+.dd-label{font-weight:600;font-size:.9rem}
+.dd-select{width:100%;max-width:560px;padding:11px 12px;background:var(--surface-2);border:1px solid color-mix(in srgb,var(--v) 45%,var(--ligne));border-radius:10px;color:var(--texte);font:inherit;font-size:.95rem}
+.dd-select:focus{outline:none;border-color:var(--v);box-shadow:0 0 0 3px color-mix(in srgb,var(--v) 25%,transparent)}
+.dd-apercu{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--v) 9%,var(--surface-2));border:1px solid color-mix(in srgb,var(--v) 30%,var(--ligne));font-size:.9rem;max-width:560px}
+.dd-niveau{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.dd-niveau small{font-size:.8rem}
+.dnb-dictees .segment button[aria-pressed=true]{background:var(--v);color:#fff;border-color:var(--v)}
+.dd-go{display:inline-flex;align-items:center;gap:8px;background:var(--v);border-color:var(--v);color:#fff}.dd-go:disabled{opacity:.5}
+.ds-choisir{margin:6px 0 0;font-size:.86rem}
+body.ambiance-dnb .lateral::before{background:linear-gradient(180deg,rgba(30,60,130,.34),rgba(20,40,90,.22))}
+body.ambiance-dnb .lateral .nav button[aria-selected="true"]{background-color:rgba(61,123,255,.14);color:#d4e2ff}
+body.ambiance-dnb .lateral .nav-groupe{color:#8ca6d6}
+.dictee-page.dnb{--accent:#3d7bff}.dictee-page.dnb .dt-lecteur{border-left-color:#3d7bff}.dictee-page.dnb .dt-avance i{background:#3d7bff}
+.dictee-page.dnb .dt-ref{border-left-color:#3d7bff;background:color-mix(in srgb,#3d7bff 10%,transparent)}
+.dictee-page.dnb .cp-page{background-color:#121b30;border-color:#2c4677;
+  background-image:linear-gradient(90deg,transparent 58px,#5d93ff 58px,#5d93ff 60px,transparent 60px),
+    repeating-linear-gradient(180deg,transparent 0,transparent calc(var(--lh) - 1px),rgba(61,123,255,.42) calc(var(--lh) - 1px),rgba(61,123,255,.42) var(--lh))}
+.dictee-page.dnb .cp-ligne{color:#cfe0ff}.dictee-page.dnb .cp-curseur{background:#5d93ff}
+.dictee-page.dnb .cp-page[tabindex]:focus{box-shadow:0 0 0 2px rgba(61,123,255,.55)}
+.dictee-page.dnb .cp-tete b{color:#8fb4ff}
 .dt-tableau{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;background:#1d3a2c;border:6px solid #6b4a2b;box-shadow:inset 0 0 30px rgba(0,0,0,.35)}
 .dt-tableau .mono{color:#cfe6d8}.dt-tableau p{margin:0}.dt-tableau .doux{color:#b9d3c4;font-size:.86rem}
 .dt-craie{font-family:"Comic Sans MS","Segoe Print",cursive;font-size:1.15rem;color:#f4f4ee;line-height:1.5;letter-spacing:.02em}
+.dictee-page.dnb .cp-accents button{border-color:#2c4677;background:#17223a;color:#cfe0ff}.dictee-page.dnb .cp-accents button:hover{border-color:#5d93ff;color:#fff}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5797,10 +5815,10 @@ function fermerMenuMobile(){ document.body.classList.remove("menu-ouvert"); docu
 document.getElementById("bm-menu")?.addEventListener("click", () => { const o = !document.body.classList.contains("menu-ouvert"); document.body.classList.toggle("menu-ouvert", o); document.getElementById("bm-menu").setAttribute("aria-expanded", o); });
 document.getElementById("voile-menu")?.addEventListener("click", fermerMenuMobile);
 addEventListener("keydown", ev => { if (ev.key === "Escape") fermerMenuMobile(); });
-function ambianceDictee(on){
-  document.body.classList.toggle("ambiance-dictee", !!on);
-  if (on){ document.documentElement.style.setProperty("--accent", "#b06bff"); Formes.ambiance([176,107,255]); }
-  else if (document.documentElement.style.getPropertyValue("--accent") === "#b06bff" || Formes){ appliquerPrefs(profil && profil.prefs ? profil.prefs : PREFS_DEFAUT); Formes.ambiance(null); }
+function ambianceDictee(on, bleu = false){
+  document.body.classList.toggle("ambiance-dictee", !!on); document.body.classList.toggle("ambiance-dnb", !!on && bleu);
+  if (on){ document.documentElement.style.setProperty("--accent", bleu ? "#3d7bff" : "#b06bff"); Formes.ambiance(bleu ? [61,123,255] : [176,107,255]); }
+  else if (["#b06bff", "#3d7bff"].includes(document.documentElement.style.getPropertyValue("--accent")) || Formes){ appliquerPrefs(profil && profil.prefs ? profil.prefs : PREFS_DEFAUT); Formes.ambiance(null); }
 }
 function changerVue(v){
   if (v !== vueActive) try { dvJourVu = null; dvDevoirVu = null; if (v !== "g-dictees") dictEd = null; } catch {}
@@ -5820,7 +5838,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.87";
+const VERSION_SITE = "1.88";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6194,7 +6212,7 @@ VUES.brevet = function vueBrevet(){
       <p class="doux" style="font-size:.88rem">${total || genMats.length ? `<strong>${pool.length}</strong> question${pool.length > 1 ? "s" : ""} des sujets officiels${choixBrevet.entrainement ? `, <strong>${rev.length}</strong> de révision${genMats.length ? ` et des questions <strong>générées à l'infini</strong> (${genMats.map(m => listeMatieres(ex).find(x => x[0] === m)[1]).join(", ")}), avec des valeurs différentes à chaque série` : ""}` : ""}. Déjà vues : ${dejaVues} / ${total}. Les questions jamais vues passent en premier, puis celles que tu as ratées.` : "Aucune question pour ce choix : sélectionne au moins une matière."}${record ? ` Record : ${record} %.` : ""}</p>
       <div class="rangee"><button class="btn" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>Lancer une série de ${nbSerie || 50} questions</button>${dejaVues ? `<button class="btn sec" type="button" id="raz-vues">Oublier les questions vues</button>` : ""}</div>
     </div>
-    ${ex === "dnb" ? blocLangues() + blocSujetsDnb() : ""}
+    ${ex === "dnb" ? blocDicteesDnb() + blocLangues() + blocSujetsDnb() : ""}
     ${ex === "bia" ? `<div class="bloc">
       <span class="mono">Sujets du BIA</span>
       ${sujets.length ? `<div class="sd-arbre">${sujets.map(([k, s]) => ligneCasier(k, esc(s.titre), "", [["Sujet", s.url, true, s.url.split("/").pop()]])).join("")}</div>` : `<div class="vide">Aucun sujet pour cette année.</div>`}
@@ -6207,7 +6225,7 @@ VUES.brevet = function vueBrevet(){
     choixBrevet.mats[ex] = m.includes(v) ? m.filter(x => x !== v) : [...m, v]; vueBrevet();
   });
   zone().querySelectorAll("#entr-brevet button").forEach(b => b.onclick = () => { choixBrevet.entrainement = b.dataset.v === "oui"; vueBrevet(); });
-  if (ex === "dnb") brancherSujetsDnb(vueBrevet); else { brancherCasiers(); zone().querySelectorAll("[data-lien]").forEach(b => b.onclick = () => window.open(b.dataset.lien, "_blank", "noopener")); }
+  if (ex === "dnb"){ brancherSujetsDnb(vueBrevet); brancherDicteesDnb(vueBrevet); } else { brancherCasiers(); zone().querySelectorAll("[data-lien]").forEach(b => b.onclick = () => window.open(b.dataset.lien, "_blank", "noopener")); }
   if ($("#raz-vues")) deuxClics($("#raz-vues"), () => { prog.vuesB = {}; sauver(); vueBrevet(); });
   zone().querySelectorAll("#lv-brevet button").forEach(b => b.onclick = () => { choixBrevet.lv = b.dataset.v; vueBrevet(); });
   if ($("#lancer-langues")) $("#lancer-langues").onclick = () => {
@@ -12991,10 +13009,10 @@ const collerPonct = l => l.replace(/ ([.,;:!?»])/g, "$1").replace(/« /g, "« "
 
 let choixDictee = {phrases: 5, temps: "passe", niveau: "facile", source: "invente"};
 function lancerDictee(opts = choixDictee, deja = null){
-  rafraichir = null; arreterLecture(); ambianceDictee(true);
+  rafraichir = null; arreterLecture(); ambianceDictee(true, !!(deja && deja.dnb));
   const d = deja || (opts.source === "auteur" ? dicteeAuteur() : genererDictee(opts)), ref = d.manuel ? referenceManuelle(d) : referenceDictee(d), groupes = d.manuel ? groupesManuels(d) : groupesDictee(d.texte), audio = "speechSynthesis" in window, niveau = opts.niveau || "facile";
   zone().innerHTML = entete(opts.essai ? "Essai de la dictée" : "Français · Dictée", d.dnb ? "Dictée du brevet " + d.an + " · " + esc(d.session) : d.manuel ? "Dictée : " + esc(d.titre || "") : d.auteur ? "Dictée : texte d'auteur" : "Dictée : " + esc(d.theme)) + `
-    <div class="exo-type-page dictee-page">
+    <div class="exo-type-page dictee-page${d.dnb ? " dnb" : ""}">
       <div class="et-enonce dt-lecteur">
         <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${d.dnb ? iconeDicteeDnb() : iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(/\s+/).filter(w => /\w/.test(w)).length} mots · ${groupes.length} groupes${d.manuel ? (d.auteur ? " · " + esc(d.auteur) : "") : " · " + ({passe: "récit au passé", present: "au présent", futur: "au futur", auteur: "texte d'un écrivain, la référence est donnée à la fin"}[d.temps] || "")}</span></span></span>
           <span class="rangee">${opts.essai ? "" : `<button type="button" class="mini-btn" id="dt-nouvelle" title="Revenir à la liste pour choisir une autre dictée">↻ Choisir une autre dictée</button>`}<button type="button" class="mini-btn dt-quitter" id="dt-quitter" title="${opts.essai ? "Revenir à l'éditeur" : "Revenir à la page des exercices"}">✕ ${opts.essai ? "Revenir à l'éditeur" : "Quitter la dictée"}</button></span></div>
@@ -13016,7 +13034,7 @@ function lancerDictee(opts = choixDictee, deja = null){
       ${d.dnb ? `<div class="dt-tableau"><span class="mono">Au tableau, comme le jour du brevet</span>
         <p class="dt-craie">${esc(d.auteur)}, <i>${esc(d.oeuvre)}</i>, ${esc(d.date)}${d.tableau.length ? `<br>${d.tableau.map(esc).join(" · ")}` : ""}</p>
         ${d.consignes ? `<p class="doux">${esc(d.consignes)}</p>` : ""}<p class="doux dt-bareme">Au brevet, la dictée est notée sur 10 points et dure 20 minutes. Le niveau « Difficile » la lit comme le surveillant.</p></div>` : ""}
-      <p class="et-mode-emploi">Écris sur les lignes violettes : le texte saute une ligne à chaque fois, pour laisser la place à la correction. La correction automatique du navigateur est désactivée : c'est ton orthographe qui compte.</p>
+      <p class="et-mode-emploi">Écris sur les lignes ${d.dnb ? "bleues" : "violettes"} : le texte saute une ligne à chaque fois, pour laisser la place à la correction. La correction automatique du navigateur est désactivée : c'est ton orthographe qui compte.</p>
       <div class="et-feuille">${htmlCopie({titre: "Ma dictée", lignes: Math.max(10, Math.ceil(d.texte.length / 55) + 4), sauter: true, aide: "Clique sur une ligne pour écrire."})}</div>
       <div class="rangee"><button class="btn" type="button" id="dt-corriger">Corriger ma dictée</button><button class="btn sec" type="button" id="dt-retour">Autres exercices</button></div>
       <div id="dt-bilan"></div>
@@ -13075,9 +13093,11 @@ function lancerDictee(opts = choixDictee, deja = null){
     }
   }
   // une autre dictée : on revient à la liste pour la choisir
-  const suivante = () => { arreterLecture(); ambianceDictee(false); matiereActive = "francais"; changerVue("exos"); setTimeout(() => zone().querySelector(".dictees-section")?.scrollIntoView({block: "start"}), 60); };
+  const suivante = () => { arreterLecture(); ambianceDictee(false);
+    if (d.dnb){ choixBrevet.ex = "dnb"; changerVue("brevet"); setTimeout(() => zone().querySelector("#bloc-dictees-dnb")?.scrollIntoView({block: "start"}), 60); return; }
+    matiereActive = "francais"; changerVue("exos"); setTimeout(() => zone().querySelector(".dictees-section")?.scrollIntoView({block: "start"}), 60); };
   if ($("#dt-nouvelle")) deuxClics($("#dt-nouvelle"), suivante);
-  $("#dt-retour").onclick = $("#dt-quitter").onclick = () => { arreterLecture(); if (opts.essai){ ambianceDictee(false); changerVue("g-dictees"); } else changerVue("exos"); };
+  $("#dt-retour").onclick = $("#dt-quitter").onclick = () => { arreterLecture(); if (opts.essai){ ambianceDictee(false); changerVue("g-dictees"); } else if (d.dnb){ choixBrevet.ex = "dnb"; changerVue("brevet"); } else changerVue("exos"); };
   $("#dt-corriger").onclick = () => {
     arreterLecture();
     const lignes = cpLignes(zone());
@@ -13335,7 +13355,7 @@ VUES["g-dictees"] = function vueGDictees(){
   rafraichir = () => { if (!dictEd) vueGDictees(); };
   if (dictEd) return editeurDictee();
   zone().innerHTML = entete(espaceNom(), "Dictées", `<button class="btn" type="button" id="nv-dictee">+ Nouvelle dictée</button>`)
-    + `<p class="doux" style="max-width:75ch">Écris le texte, puis choisis les <b>groupes de lecture</b> : ce sont les morceaux que la voix dicte un par un aux élèves. Repère aussi les verbes conjugués pour que la correction indique les fautes de conjugaison. Les élèves trouvent les dictées dans Exercices → Français. Les <b>dictées du brevet</b> (sujets officiels du DNB) sont déjà intégrées et proposées à tous les élèves.</p>`
+    + `<p class="doux" style="max-width:75ch">Écris le texte, puis choisis les <b>groupes de lecture</b> : ce sont les morceaux que la voix dicte un par un aux élèves. Repère aussi les verbes conjugués pour que la correction indique les fautes de conjugaison. Les élèves trouvent les dictées dans Exercices → Français. Les <b>dictées du brevet</b> (sujets officiels du DNB) sont déjà intégrées : les élèves les trouvent dans Exercices Brevet.</p>`
     + (dicteesDb.length ? `<div class="liste">${dicteesDb.map(d => { const n = groupesManuels(d).length; return `<div class="ligne-liste">
         <span class="exo-tete">${iconeDictee()}<span class="titre"><strong>${esc(d.titre || "Sans titre")}</strong>
           <span class="doux" style="font-size:.85rem">${nbMots(d.texte)} mots · ${n} groupe${n > 1 ? "s" : ""}${d.auteur ? " · " + esc(d.auteur) : ""}</span></span></span>
@@ -13445,28 +13465,19 @@ function sectionDictees(){
       <span class="ds-droite"><span class="etat ds-note ${n === undefined ? "" : n >= 8 ? "fait" : n >= 5 ? "moyen" : "faible"}">${n === undefined ? "Non commencée" : "Record " + String(n).replace(".", ",") + "/10"}</span>
         <span class="ds-go">${n === undefined ? "Commencer" : "Refaire"} ›</span></span>
     </button>`; };
-  const carteDnb = d => { const n = faites[d.id], mots = d.texte.split(/\s+/).filter(w => /\w/.test(w)).length;
-    return `<button type="button" class="carte-dictee carte-dnb" data-dictee="${esc(d.id)}">
-      <span class="exo-tete">${iconeDicteeDnb()}<span class="titre"><strong><span class="et-theme-nom">Dictée du brevet ${d.an}</span> · ${esc(d.session)}</strong>
-        <span class="doux" style="font-size:.85rem">${esc(d.auteur)}, <i>${esc(d.oeuvre)}</i> (${esc(d.date)})</span>
-        <span class="exo-types"><span class="exo-type"><i aria-hidden="true">🔊</i>Lue à voix haute</span><span class="exo-type"><i aria-hidden="true">✎</i>${mots} mots</span><span class="exo-type"><i aria-hidden="true">★</i>Sujet officiel</span></span></span></span>
-      <span class="ds-droite"><span class="etat ds-note ${n === undefined ? "" : n >= 8 ? "fait" : n >= 5 ? "moyen" : "faible"}">${n === undefined ? "Non commencée" : "Record " + String(n).replace(".", ",") + "/10"}</span>
-        <span class="ds-go">${n === undefined ? "Commencer" : "Refaire"} ›</span></span>
-    </button>`; };
   const niv = NIVEAUX_DICTEE.find(x => x[0] === choixDictee.niveau) || NIVEAUX_DICTEE[0];
   return `<div class="exos-section dictees-section">
     <div class="ds-tete"><div class="ds-intro"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3>
         <p class="doux">Le texte est lu à voix haute, groupe par groupe. Tu l'écris, puis la correction souligne chaque faute.</p></div>
       <div class="ds-niveau">${segment("dt-niv", NIVEAUX_DICTEE.map(([v, t]) => [v, t]), choixDictee.niveau)}<small>${niv[2]}</small></div></div>
     <p class="doux ds-choisir">Choisis la dictée que tu veux faire.</p>
-    <h4 class="ds-groupe ds-groupe-dnb">${iconeDicteeDnb(16, 20)} Dictées du brevet <small>${DICTEES_DNB.length} sujets officiels</small></h4>
-    <div class="liste">${DICTEES_DNB.map(carteDnb).join("")}</div>
-    ${ls.length ? `<h4 class="ds-groupe">${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées de la classe <small>${ls.length}</small></h4><div class="liste">${ls.map(carte).join("")}</div>` : ""}
+    ${ls.length ? `<div class="liste">${ls.map(carte).join("")}</div>` : `<div class="vide">Aucune dictée pour le moment.</div>`}
+    <p class="doux ds-choisir">Les dictées du brevet (sujets officiels) sont dans <b>Exercices Brevet</b>.</p>
   </div>`;
 }
 function brancherDictees(redessiner){
   zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; redessiner(); });
-  zone().querySelectorAll("[data-dictee]").forEach(b => b.onclick = () => { const d = dicteesDb.find(x => x.id === b.dataset.dictee) || DICTEES_DNB.find(x => x.id === b.dataset.dictee); if (d) lancerDictee(choixDictee, {...d, manuel: true}); });
+  zone().querySelectorAll("[data-dictee]").forEach(b => b.onclick = () => { const d = dicteesDb.find(x => x.id === b.dataset.dictee); if (d) lancerDictee(choixDictee, {...d, manuel: true}); });
 }
 // une autre dictée (au hasard, sauf celle qu'on vient de faire)
 function autreDictee(d){ const ls = dicteesVisibles().filter(x => x.id !== d.id); return ls.length ? {...choisir(ls), manuel: true} : null; }
@@ -13510,6 +13521,33 @@ function iconeDicteeDnb(w = 36, h = 44){
     <circle cx="25" cy="32" r="4.2" fill="#f5c518"/><path d="M23.2 32l1.3 1.3 2.4-2.6" fill="none" stroke="#1f4fa8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 const referenceDnb = d => `${d.dapres ? "D’après" : "Extrait de"} « ${d.oeuvre} », de ${d.auteur}, ${d.date}.`;
+
+/* ----- Exercices Brevet (DNB) : choisir une dictée dans le menu déroulant ----- */
+let dicteeDnbChoisie = "";
+function blocDicteesDnb(){
+  const faites = (prog && prog.dicteesFaites) || {}, d = DICTEES_DNB.find(x => x.id === dicteeDnbChoisie);
+  const note = x => faites[x.id] === undefined ? "" : ` — record ${String(faites[x.id]).replace(".", ",")}/10`;
+  const niv = NIVEAUX_DICTEE.find(x => x[0] === choixDictee.niveau) || NIVEAUX_DICTEE[0];
+  const mots = x => x.texte.split(/\s+/).filter(w => /\w/.test(w)).length;
+  return `<div class="bloc dnb-dictees" id="bloc-dictees-dnb">
+    <div class="dd-tete">${iconeDicteeDnb(30, 37)}<div><span class="mono">Dictées du brevet</span><p class="doux">Les vraies dictées des sujets de français du DNB, lues à voix haute. Choisis la dictée, puis le niveau.</p></div></div>
+    <label class="dd-label" for="dd-choix">Dictée</label>
+    <select id="dd-choix" class="dd-select">
+      <option value=""${d ? "" : " selected"} disabled>— Sélectionne une dictée —</option>
+      ${DICTEES_DNB.map(x => `<option value="${x.id}"${x.id === dicteeDnbChoisie ? " selected" : ""}>Brevet ${x.an} · ${esc(x.session)} — ${esc(x.auteur)}${note(x)}</option>`).join("")}
+    </select>
+    ${d ? `<div class="dd-apercu"><b>${esc(d.auteur)}</b>, <i>${esc(d.oeuvre)}</i> (${esc(d.date)})<span class="doux"> · ${mots(d)} mots${faites[d.id] === undefined ? " · pas encore faite" : " · record " + String(faites[d.id]).replace(".", ",") + "/10"}</span></div>` : ""}
+    <span class="mono">Niveau</span>
+    <div class="dd-niveau">${segment("dd-niv", NIVEAUX_DICTEE.map(([v, t]) => [v, t]), choixDictee.niveau)}<small class="doux">${niv[2]}</small></div>
+    <div class="rangee"><button class="btn dd-go" type="button" id="dd-lancer"${d ? "" : " disabled"}>${iconeDicteeDnb(14, 17)} Commencer la dictée</button></div>
+  </div>`;
+}
+function brancherDicteesDnb(redessiner){
+  const sel = zone().querySelector("#dd-choix"); if (!sel) return;
+  sel.onchange = () => { dicteeDnbChoisie = sel.value; redessiner(); setTimeout(() => zone().querySelector("#bloc-dictees-dnb")?.scrollIntoView({block: "nearest"}), 30); };
+  zone().querySelectorAll("#dd-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; redessiner(); });
+  const go = zone().querySelector("#dd-lancer"); if (go) go.onclick = () => { const d = DICTEES_DNB.find(x => x.id === dicteeDnbChoisie); if (d) lancerDictee(choixDictee, {...d}); };
+}
 /* ===================== SUJETS DU DNB (Éducation nationale, depuis 2018) =====================
    Une ligne par épreuve ; on l'ouvre pour lire le sujet et le corrigé (PDF hébergés sur Helper, affichés avec pdf.js).
    srcSujet / srcCorrige : d'où vient le fichier (Éduscol / Tout mon exam pour les sujets, APMEP pour les corrigés de maths…). */
