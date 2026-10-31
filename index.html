@@ -2165,6 +2165,15 @@ body.tri-en-cours,body.tri-en-cours *{cursor:grabbing !important;user-select:non
   .dm-types{grid-template-columns:1fr}
   .dm-fil{padding:14px}.dm-etape{padding:14px}
 }
+
+/* Dictées du brevet */
+.carte-dnb{--accent:#2f6fe0}.carte-dnb .et-theme-nom{color:#7fb0ff}.carte-dnb .exo-type i{color:#7fb0ff}.carte-dnb .ds-go{color:#7fb0ff}
+.ds-choisir{margin:6px 0 0}
+.ds-groupe{display:flex;align-items:center;gap:8px;margin:14px 0 2px;font-size:1rem}.ds-groupe small{font:500 .75rem var(--f-mono);color:var(--doux)}
+.ds-groupe-dnb{color:#9cc2ff}
+.dt-tableau{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;background:#1d3a2c;border:6px solid #6b4a2b;box-shadow:inset 0 0 30px rgba(0,0,0,.35)}
+.dt-tableau .mono{color:#cfe6d8}.dt-tableau p{margin:0}.dt-tableau .doux{color:#b9d3c4;font-size:.86rem}
+.dt-craie{font-family:"Comic Sans MS","Segoe Print",cursive;font-size:1.15rem;color:#f4f4ee;line-height:1.5;letter-spacing:.02em}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5811,7 +5820,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.86";
+const VERSION_SITE = "1.87";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -12984,11 +12993,11 @@ let choixDictee = {phrases: 5, temps: "passe", niveau: "facile", source: "invent
 function lancerDictee(opts = choixDictee, deja = null){
   rafraichir = null; arreterLecture(); ambianceDictee(true);
   const d = deja || (opts.source === "auteur" ? dicteeAuteur() : genererDictee(opts)), ref = d.manuel ? referenceManuelle(d) : referenceDictee(d), groupes = d.manuel ? groupesManuels(d) : groupesDictee(d.texte), audio = "speechSynthesis" in window, niveau = opts.niveau || "facile";
-  zone().innerHTML = entete(opts.essai ? "Essai de la dictée" : "Français · Dictée", d.manuel ? "Dictée : " + esc(d.titre || "") : d.auteur ? "Dictée : texte d'auteur" : "Dictée : " + esc(d.theme)) + `
+  zone().innerHTML = entete(opts.essai ? "Essai de la dictée" : "Français · Dictée", d.dnb ? "Dictée du brevet " + d.an + " · " + esc(d.session) : d.manuel ? "Dictée : " + esc(d.titre || "") : d.auteur ? "Dictée : texte d'auteur" : "Dictée : " + esc(d.theme)) + `
     <div class="exo-type-page dictee-page">
       <div class="et-enonce dt-lecteur">
-        <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(/\s+/).filter(w => /\w/.test(w)).length} mots · ${groupes.length} groupes${d.manuel ? (d.auteur ? " · " + esc(d.auteur) : "") : " · " + ({passe: "récit au passé", present: "au présent", futur: "au futur", auteur: "texte d'un écrivain, la référence est donnée à la fin"}[d.temps] || "")}</span></span></span>
-          <span class="rangee">${opts.essai ? "" : `<button type="button" class="mini-btn" id="dt-nouvelle" title="Une autre dictée">↻ Autre dictée</button>`}<button type="button" class="mini-btn dt-quitter" id="dt-quitter" title="${opts.essai ? "Revenir à l'éditeur" : "Revenir à la page des exercices"}">✕ ${opts.essai ? "Revenir à l'éditeur" : "Quitter la dictée"}</button></span></div>
+        <div class="rangee" style="justify-content:space-between"><span class="et-etiquette">${d.dnb ? iconeDicteeDnb() : iconeDictee()}<span><b>Dictée</b><span class="doux"> · ${d.texte.split(/\s+/).filter(w => /\w/.test(w)).length} mots · ${groupes.length} groupes${d.manuel ? (d.auteur ? " · " + esc(d.auteur) : "") : " · " + ({passe: "récit au passé", present: "au présent", futur: "au futur", auteur: "texte d'un écrivain, la référence est donnée à la fin"}[d.temps] || "")}</span></span></span>
+          <span class="rangee">${opts.essai ? "" : `<button type="button" class="mini-btn" id="dt-nouvelle" title="Revenir à la liste pour choisir une autre dictée">↻ Choisir une autre dictée</button>`}<button type="button" class="mini-btn dt-quitter" id="dt-quitter" title="${opts.essai ? "Revenir à l'éditeur" : "Revenir à la page des exercices"}">✕ ${opts.essai ? "Revenir à l'éditeur" : "Quitter la dictée"}</button></span></div>
         ${audio ? `<div class="dt-niveau-info"><span class="dt-badge dt-${niveau}">${{facile: "Facile", moyen: "Moyen", difficile: "Difficile"}[niveau]}</span>
           <span class="doux">${{facile: "Tu peux réécouter chaque groupe autant de fois que tu veux.", moyen: `Tu peux réécouter chaque groupe ${MAX_REPET} fois au maximum, et le texte entier 2 fois.`, difficile: "Comme en classe : la voix lit tout le texte, puis dicte chaque groupe 3 fois et continue toute seule. Écris pendant les répétitions."}[niveau]}</span></div>
           <div class="rangee dt-commandes">${niveau === "difficile"
@@ -13004,6 +13013,9 @@ function lancerDictee(opts = choixDictee, deja = null){
           <div class="dt-avance"><i id="dt-barre" style="width:0"></i></div>`
         : `<p class="statut erreur">La lecture à voix haute n'est pas disponible sur ce navigateur. Demande à quelqu'un de te lire le texte, ou essaie Chrome, Edge ou Safari.</p>`}
       </div>
+      ${d.dnb ? `<div class="dt-tableau"><span class="mono">Au tableau, comme le jour du brevet</span>
+        <p class="dt-craie">${esc(d.auteur)}, <i>${esc(d.oeuvre)}</i>, ${esc(d.date)}${d.tableau.length ? `<br>${d.tableau.map(esc).join(" · ")}` : ""}</p>
+        ${d.consignes ? `<p class="doux">${esc(d.consignes)}</p>` : ""}<p class="doux dt-bareme">Au brevet, la dictée est notée sur 10 points et dure 20 minutes. Le niveau « Difficile » la lit comme le surveillant.</p></div>` : ""}
       <p class="et-mode-emploi">Écris sur les lignes violettes : le texte saute une ligne à chaque fois, pour laisser la place à la correction. La correction automatique du navigateur est désactivée : c'est ton orthographe qui compte.</p>
       <div class="et-feuille">${htmlCopie({titre: "Ma dictée", lignes: Math.max(10, Math.ceil(d.texte.length / 55) + 4), sauter: true, aide: "Clique sur une ligne pour écrire."})}</div>
       <div class="rangee"><button class="btn" type="button" id="dt-corriger">Corriger ma dictée</button><button class="btn sec" type="button" id="dt-retour">Autres exercices</button></div>
@@ -13062,7 +13074,8 @@ function lancerDictee(opts = choixDictee, deja = null){
       };
     }
   }
-  const suivante = () => { const a = d.manuel ? autreDictee(d) : null; if (d.manuel && !a){ toast("Il n'y a pas d'autre dictée pour le moment."); return; } lancerDictee(opts, a); };
+  // une autre dictée : on revient à la liste pour la choisir
+  const suivante = () => { arreterLecture(); ambianceDictee(false); matiereActive = "francais"; changerVue("exos"); setTimeout(() => zone().querySelector(".dictees-section")?.scrollIntoView({block: "start"}), 60); };
   if ($("#dt-nouvelle")) deuxClics($("#dt-nouvelle"), suivante);
   $("#dt-retour").onclick = $("#dt-quitter").onclick = () => { arreterLecture(); if (opts.essai){ ambianceDictee(false); changerVue("g-dictees"); } else changerVue("exos"); };
   $("#dt-corriger").onclick = () => {
@@ -13092,7 +13105,7 @@ function lancerDictee(opts = choixDictee, deja = null){
       <p class="doux">Sur ta copie : les fautes sont soulignées (survole un mot pour voir la bonne forme), les accents manquants sont ajoutés en couleur et chaque ligne est réécrite juste en dessous.</p>
       ${ref ? `<p class="dt-ref">📖 ${esc(ref)}</p>` : ""}
       <details ${ref ? "open" : ""}><summary>Le texte de la dictée</summary><p class="cp-ecrit dt-texte">${esc(d.texte).replace(/\n/g, "<br>")}</p></details>
-      <div class="rangee">${opts.essai ? "" : `<button class="btn" type="button" id="dt-encore">↻ Autre dictée</button>`}</div></div>`;
+      <div class="rangee">${opts.essai ? "" : `<button class="btn" type="button" id="dt-encore">↻ Choisir une autre dictée</button>`}</div></div>`;
     if ($("#dt-encore")) $("#dt-encore").onclick = suivante;
   };
 }
@@ -13308,7 +13321,7 @@ function groupesManuels(d){
   });
   return g;
 }
-const referenceManuelle = d => d.auteur ? (d.oeuvre ? `Extrait de « ${d.oeuvre} », de ${d.auteur}.` : `D'après ${d.auteur}.`) : "";
+const referenceManuelle = d => d.dnb ? referenceDnb(d) : d.auteur ? (d.oeuvre ? `Extrait de « ${d.oeuvre} », de ${d.auteur}.` : `D'après ${d.auteur}.`) : "";
 const dicteesVisibles = () => dicteesDb.filter(d => d.visible !== false && d.texte);
 const nbMots = t => String(t || "").split(/\s+/).filter(w => /[\wÀ-ÿ]/.test(w)).length;
 async function ecrireDictees(liste, ok){
@@ -13322,7 +13335,7 @@ VUES["g-dictees"] = function vueGDictees(){
   rafraichir = () => { if (!dictEd) vueGDictees(); };
   if (dictEd) return editeurDictee();
   zone().innerHTML = entete(espaceNom(), "Dictées", `<button class="btn" type="button" id="nv-dictee">+ Nouvelle dictée</button>`)
-    + `<p class="doux" style="max-width:75ch">Écris le texte, puis choisis les <b>groupes de lecture</b> : ce sont les morceaux que la voix dicte un par un aux élèves. Repère aussi les verbes conjugués pour que la correction indique les fautes de conjugaison. Les élèves trouvent les dictées dans Exercices → Français.</p>`
+    + `<p class="doux" style="max-width:75ch">Écris le texte, puis choisis les <b>groupes de lecture</b> : ce sont les morceaux que la voix dicte un par un aux élèves. Repère aussi les verbes conjugués pour que la correction indique les fautes de conjugaison. Les élèves trouvent les dictées dans Exercices → Français. Les <b>dictées du brevet</b> (sujets officiels du DNB) sont déjà intégrées et proposées à tous les élèves.</p>`
     + (dicteesDb.length ? `<div class="liste">${dicteesDb.map(d => { const n = groupesManuels(d).length; return `<div class="ligne-liste">
         <span class="exo-tete">${iconeDictee()}<span class="titre"><strong>${esc(d.titre || "Sans titre")}</strong>
           <span class="doux" style="font-size:.85rem">${nbMots(d.texte)} mots · ${n} groupe${n > 1 ? "s" : ""}${d.auteur ? " · " + esc(d.auteur) : ""}</span></span></span>
@@ -13432,20 +13445,71 @@ function sectionDictees(){
       <span class="ds-droite"><span class="etat ds-note ${n === undefined ? "" : n >= 8 ? "fait" : n >= 5 ? "moyen" : "faible"}">${n === undefined ? "Non commencée" : "Record " + String(n).replace(".", ",") + "/10"}</span>
         <span class="ds-go">${n === undefined ? "Commencer" : "Refaire"} ›</span></span>
     </button>`; };
+  const carteDnb = d => { const n = faites[d.id], mots = d.texte.split(/\s+/).filter(w => /\w/.test(w)).length;
+    return `<button type="button" class="carte-dictee carte-dnb" data-dictee="${esc(d.id)}">
+      <span class="exo-tete">${iconeDicteeDnb()}<span class="titre"><strong><span class="et-theme-nom">Dictée du brevet ${d.an}</span> · ${esc(d.session)}</strong>
+        <span class="doux" style="font-size:.85rem">${esc(d.auteur)}, <i>${esc(d.oeuvre)}</i> (${esc(d.date)})</span>
+        <span class="exo-types"><span class="exo-type"><i aria-hidden="true">🔊</i>Lue à voix haute</span><span class="exo-type"><i aria-hidden="true">✎</i>${mots} mots</span><span class="exo-type"><i aria-hidden="true">★</i>Sujet officiel</span></span></span></span>
+      <span class="ds-droite"><span class="etat ds-note ${n === undefined ? "" : n >= 8 ? "fait" : n >= 5 ? "moyen" : "faible"}">${n === undefined ? "Non commencée" : "Record " + String(n).replace(".", ",") + "/10"}</span>
+        <span class="ds-go">${n === undefined ? "Commencer" : "Refaire"} ›</span></span>
+    </button>`; };
   const niv = NIVEAUX_DICTEE.find(x => x[0] === choixDictee.niveau) || NIVEAUX_DICTEE[0];
   return `<div class="exos-section dictees-section">
     <div class="ds-tete"><div class="ds-intro"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3>
         <p class="doux">Le texte est lu à voix haute, groupe par groupe. Tu l'écris, puis la correction souligne chaque faute.</p></div>
-      ${ls.length ? `<div class="ds-niveau">${segment("dt-niv", NIVEAUX_DICTEE.map(([v, t]) => [v, t]), choixDictee.niveau)}<small>${niv[2]}</small></div>` : ""}</div>
-    ${ls.length ? `<div class="liste">${ls.map(carte).join("")}</div>` : `<div class="vide">Aucune dictée pour le moment.</div>`}
+      <div class="ds-niveau">${segment("dt-niv", NIVEAUX_DICTEE.map(([v, t]) => [v, t]), choixDictee.niveau)}<small>${niv[2]}</small></div></div>
+    <p class="doux ds-choisir">Choisis la dictée que tu veux faire.</p>
+    <h4 class="ds-groupe ds-groupe-dnb">${iconeDicteeDnb(16, 20)} Dictées du brevet <small>${DICTEES_DNB.length} sujets officiels</small></h4>
+    <div class="liste">${DICTEES_DNB.map(carteDnb).join("")}</div>
+    ${ls.length ? `<h4 class="ds-groupe">${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées de la classe <small>${ls.length}</small></h4><div class="liste">${ls.map(carte).join("")}</div>` : ""}
   </div>`;
 }
 function brancherDictees(redessiner){
   zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; redessiner(); });
-  zone().querySelectorAll("[data-dictee]").forEach(b => b.onclick = () => { const d = dicteesDb.find(x => x.id === b.dataset.dictee); if (d) lancerDictee(choixDictee, {...d, manuel: true}); });
+  zone().querySelectorAll("[data-dictee]").forEach(b => b.onclick = () => { const d = dicteesDb.find(x => x.id === b.dataset.dictee) || DICTEES_DNB.find(x => x.id === b.dataset.dictee); if (d) lancerDictee(choixDictee, {...d, manuel: true}); });
 }
 // une autre dictée (au hasard, sauf celle qu'on vient de faire)
 function autreDictee(d){ const ls = dicteesVisibles().filter(x => x.id !== d.id); return ls.length ? {...choisir(ls), manuel: true} : null; }
+/* ===================== DICTÉES DU BREVET (DNB) =====================
+   Les vraies dictées des sujets de français du DNB (sujets 2018 → 2026 de la liste « Sujets DNB »),
+   recopiées depuis les sujets officiels. Seules les dictées tirées de textes du domaine public sont reprises :
+   les extraits d'auteurs récents (Camus, Aymé, Rufin, Faye…) sont protégés par le droit d'auteur.
+   Avant la dictée, comme le jour de l'examen : les mots écrits au tableau et les précisions du surveillant. */
+const DICTEES_DNB = [
+  {id: "dnb-2019-an", an: 2019, session: "Amérique du Nord", sujet: "2019-amerique-du-nord-francais", auteur: "Victor Hugo", oeuvre: "Les Misérables", date: "1862",
+    tableau: ["la Croix-de-Colbas"], consignes: "Les nombres sont écrits en lettres.",
+    texte: "L’homme baissa la tête, ramassa le sac qu’il avait déposé à terre, et s’en alla.\nIl prit la grande rue. Il marchait devant lui au hasard, rasant de près les maisons comme un homme humilié et triste. Il ne se retourna pas une seule fois. S’il s’était retourné, il aurait vu l’aubergiste de la Croix-de-Colbas sur le seuil de sa porte, entouré de tous les voyageurs de son auberge et de tous les passants de la rue, parlant vivement et le désignant du doigt ; et, aux regards de défiance et d’effroi du groupe, il aurait deviné qu’avant peu son arrivée serait l’événement de toute la ville.\nIl ne vit rien de tout cela. Les gens accablés ne regardent pas derrière eux. Ils ne savent que trop que le mauvais sort les suit."},
+  {id: "dnb-2021-metropole", an: 2021, session: "Métropole", sujet: "2021-metropole-francais", auteur: "François-René de Chateaubriand", oeuvre: "Mémoires d’outre-tombe", date: "1848-1850",
+    tableau: [], consignes: "Le narrateur est un homme.",
+    texte: "La nuit, je n’apercevais qu’un petit morceau du ciel et quelques étoiles. Lorsque la lune brillait et qu’elle s’abaissait à l’occident, j’en étais averti par ses rayons, qui venaient à mon lit au travers des carreaux losangés de la fenêtre. Des chouettes, voletant d’une tour à l’autre, passant et repassant entre la lune et moi, dessinaient sur mes rideaux l’ombre mobile de leurs ailes. Relégué dans l’endroit le plus désert, à l’ouverture des galeries, je ne perdais pas un murmure des ténèbres. Quelquefois, le vent semblait courir à pas légers ; quelquefois il laissait échapper des plaintes ; tout à coup, ma porte était ébranlée avec violence, les souterrains poussaient des mugissements, puis ces bruits expiraient pour recommencer encore."},
+  {id: "dnb-2022-an", an: 2022, session: "Amérique du Nord", sujet: "2022-amerique-du-nord-francais", auteur: "Marivaux", oeuvre: "Le Prince travesti (acte I, scène 5)", date: "1724",
+    tableau: ["Lélio", "Castille", "États", "inclination"], consignes: "Lélio est seul en scène. Il pense que la Princesse est amoureuse de lui et il songe à l’épouser. On apprend aussi qu’il est le fils d’un roi.",
+    texte: "La Princesse cherche à me connaître, et me confirme dans mes soupçons ; les services que je lui ai rendus ont disposé son cœur à me vouloir du bien et mes respects empressés l’ont persuadée que je l’aimais sans oser le dire. Depuis que j’ai quitté les États de mon père, et que je voyage sous ce déguisement pour hâter l’expérience dont j’aurai besoin si je règne un jour, je n’ai fait nulle part un séjour si long qu’ici ; à quoi donc aboutira-t-il ? mon père souhaite que je me marie et me laisse le choix d’une épouse. Ne dois-je pas m’en tenir à cette Princesse ? Elle est aimable, et si je lui plais, rien n’est plus flatteur pour moi que son inclination, car elle ne me connaît pas."},
+  {id: "dnb-2022-asie", an: 2022, session: "Asie", sujet: "2022-asie-francais", auteur: "Alexandre Dumas", oeuvre: "Les Trois Mousquetaires (chapitre XII)", date: "1844",
+    tableau: ["émaillé"], consignes: "Le duc de Buckingham parle à la reine.",
+    texte: "Vous rappelez-vous la belle nuit qu’il faisait ? Comme l’air était doux et parfumé, comme le ciel était bleu et tout émaillé d’étoiles ! Ah ! Cette fois, Madame, j’avais pu être un instant seul avec vous ; cette fois, vous étiez prête à tout me dire, l’isolement de votre vie, les chagrins de votre cœur. Vous étiez appuyée à mon bras, tenez, à celui-ci. Je sentais, en inclinant ma tête à votre côté, vos beaux cheveux effleurer mon visage, et chaque fois qu’ils l’effleuraient je frissonnais de la tête aux pieds. Oh ! Reine, reine ! Oh ! Vous ne savez pas tout ce qu’il y a de félicités du ciel, de joies du paradis enfermées dans un moment pareil. Tenez, mes biens, ma fortune, ma gloire, tout ce qui me reste de jours à vivre, pour un pareil instant, et pour une semblable nuit ; car, cette nuit-là, Madame, cette nuit-là vous m’aimiez, je vous le jure."},
+  {id: "dnb-2023-metropole", an: 2023, session: "Métropole", sujet: "2023-metropole-francais", auteur: "George Sand", oeuvre: "Histoire de ma vie", date: "1855", dapres: true,
+    tableau: [], consignes: "La narratrice est une femme : elle raconte un souvenir d’enfance.",
+    texte: "Je me souviens d’un jour d’automne où, le dîner étant servi, la nuit s’était faite dans la chambre. Ma cousine et moi nous poursuivions l’une l’autre à travers les arbres, c’est-à-dire sous les plis du rideau. L’appartement avait disparu à nos yeux et nous étions véritablement dans un sombre paysage à l’entrée de la nuit. On nous appelait pour dîner et nous n’entendions rien. Ma mère vint me prendre dans ses bras pour me porter à table et je me rappellerai toujours mon étonnement en voyant les objets réels qui m’environnaient. Je sortais d’une hallucination complète et il me coûtait d’en sortir si brusquement."},
+  {id: "dnb-2024-an", an: 2024, session: "Amérique du Nord", sujet: "2024-amerique-du-nord-francais", auteur: "Alphonse Daudet", oeuvre: "Wood’stown", date: "1873",
+    tableau: [], consignes: "Dans une ville, après des pluies étranges, la végétation se met à tout envahir.",
+    texte: "Les toits rouges des monuments publics, les clochers des églises, le plancher des maisons et jusqu’au bois des lits, tout était saupoudré d’une teinte verte, mince comme une moisissure, légère comme une dentelle. De près, c’était une quantité de bourgeons microscopiques, où l’enroulement des feuilles se voyait déjà. Cette bizarrerie des pluies amusa sans inquiéter ; mais, avant le soir, des bouquets de verdure s’épanouissaient partout sur les meubles, sur les murailles. Les branches poussaient à vue d’œil ; légèrement retenues dans la main, on les sentait grandir et se débattre comme des ailes."},
+  {id: "dnb-2025-ce", an: 2025, session: "Centres étrangers", sujet: "2025-centres-etrangers-francais", auteur: "Molière", oeuvre: "Premier placet au roi, sur la comédie du Tartuffe", date: "1664", dapres: true,
+    tableau: ["hypocrisie", "décrie", "friponneries"], consignes: "Molière s’adresse au roi Louis XIV pour défendre sa pièce, Le Tartuffe.",
+    texte: "Le devoir de la comédie étant de corriger les hommes en les divertissant, j’ai cru que, dans l’emploi où je me trouve, je n’avais rien de mieux à faire que d’attaquer par des peintures ridicules les vices de mon siècle. Comme l’hypocrisie, sans doute, en est un des plus en usage, des plus incommodes et des plus dangereux, j’avais eu, Sire, la pensée que je ne rendrais pas un petit service à tous les honnêtes gens de votre royaume, si je faisais une comédie qui décrie les hypocrites, et mette en vue, comme il faut, toutes les grimaces étudiées de ces gens de bien à outrance, toutes les friponneries."}
+].map(d => ({...d, dnb: true, manuel: true, titre: `Brevet ${d.an} · ${d.session}`, verbes: [], coupes: coupesAuto(d.texte)}))
+  .sort((a, b) => b.an - a.an || a.session.localeCompare(b.session));
+
+// icône des dictées du brevet : la feuille d'examen (bleu, bandeau tricolore, « DNB »)
+function iconeDicteeDnb(w = 36, h = 44){
+  return `<svg class="exo-doc" width="${w}" height="${h}" viewBox="0 0 32 40" aria-hidden="true">
+    <path d="M3 2h26a3 3 0 0 1 3 3v31a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3z" fill="#1f4fa8"/>
+    <path d="M0 5a3 3 0 0 1 3-3h7.7v5H0z" fill="#2f6fe0"/><path d="M10.7 2h10.6v5H10.7z" fill="#f4f4f4"/><path d="M21.3 2H29a3 3 0 0 1 3 3v2H21.3z" fill="#e5484d"/>
+    <g stroke="#fff" stroke-opacity=".35" stroke-width="1"><path d="M5 22h22M5 27h22M5 32h14"/></g>
+    <text x="16" y="17.5" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-weight="700" font-size="8" fill="#fff">DNB</text>
+    <circle cx="25" cy="32" r="4.2" fill="#f5c518"/><path d="M23.2 32l1.3 1.3 2.4-2.6" fill="none" stroke="#1f4fa8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+const referenceDnb = d => `${d.dapres ? "D’après" : "Extrait de"} « ${d.oeuvre} », de ${d.auteur}, ${d.date}.`;
 /* ===================== SUJETS DU DNB (Éducation nationale, depuis 2018) =====================
    Une ligne par épreuve ; on l'ouvre pour lire le sujet et le corrigé (PDF hébergés sur Helper, affichés avec pdf.js).
    srcSujet / srcCorrige : d'où vient le fichier (Éduscol / Tout mon exam pour les sujets, APMEP pour les corrigés de maths…). */
