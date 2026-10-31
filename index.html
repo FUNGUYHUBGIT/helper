@@ -5862,7 +5862,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.91";
+const VERSION_SITE = "1.92";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6063,7 +6063,7 @@ const libChg = t => (TYPES_CHG.find(x => x[0] === t) || [, "Changement"])[1];
 const aVenir = (liste, champ = "date") => liste.filter(x => String(x[champ]) >= auj()).sort((a, b) => String(a.date).localeCompare(String(b.date)) || String(a.debut || "").localeCompare(String(b.debut || "")));
 function ligneChg(c, gerant){
   return `<div class="ligne-info"><span class="titre"><span class="date-bloc">${JOURS[jourDe(c.date)] || ""} ${dateFr(c.date)}${c.debut ? " · " + esc(c.debut) + (c.fin && !c.creneauId ? " – " + esc(c.fin) : "") : ""}</span>
-    <strong>${c.type === "remplace" ? (c.creneauId && c.cours ? esc(c.cours) + " → " : "") + esc(c.matiere || c.cours || "") + (c.prof ? ` <span class="doux">· ${esc(c.prof)}</span>` : "")
+    <strong>${c.type === "remplace" ? (c.creneauId && c.cours ? esc(c.cours) + " → " : "") + esc(c.matiere || c.cours || "") 
       : c.type === "evenement" ? esc(c.nom || c.cours || "Événement") + (c.creneauId && c.cours ? ` <span class="doux">(au lieu de ${esc(c.cours)})</span>` : "") : esc(c.cours)}</strong>${c.note ? `<span class="doux" style="font-size:.88rem">${esc(c.note)}</span>` : ""}</span>
     <span class="rangee"><span class="badge ${c.type === "annule" || c.type === "absent" ? "rouge" : "accent"}" ${c.type === "evenement" ? `style="border-color:${esc(c.couleur || COUL_EVENEMENT)};color:${esc(c.couleur || COUL_EVENEMENT)}"` : ""}>${libChg(c.type)}</span>${gerant ? `<button type="button" class="mini-btn danger" data-suppr="${esc(c.id)}">Supprimer</button>` : ""}</span></div>`;
 }
@@ -6124,7 +6124,7 @@ function agendaJour(parite, lundi, j, jAuj){
   const carte = it => { const annule = it.etat === "annule", enCours = estAuj && !annule && mn >= enMin(it.debut) && mn < enMin(it.fin);
     return `<div class="ag-cours ${it.etat} ${enCours ? "en-cours" : ""}" style="--c:${esc(it.couleur)}"><span class="ag-m">${esc(it.matiere)}</span>
       ${it.avant ? `<span class="ag-av">au lieu de ${esc(it.avant)}</span>` : ""}
-      <span class="ag-d">${[it.prof, it.salle].filter(Boolean).map(esc).join(" · ")}</span>
+      <span class="ag-d">${[it.salle].filter(Boolean).map(esc).join(" · ")}</span>
       ${it.badge ? `<span class="ag-chg ${annule ? "" : "mod"} ${it.etat}">${esc(it.badge)}${it.note ? " · " + esc(it.note) : ""}</span>` : it.note ? `<span class="ag-d">${esc(it.note)}</span>` : ""}${enCours ? `<span class="ag-maint">En ce moment</span>` : ""}</div>`; };
   let html = "", fin = null;
   groupes.forEach(g => {
@@ -15254,21 +15254,21 @@ function coursDate(lundi, j, parite, dsSem){
   const base = edt.creneaux.filter(c => c.jour === j && valeCetteSemaine(c, parite) && !ajouts.some(a => a.masque !== false && chevauche(a, c)));
   const items = base.map(c => {
     const chg = chgs.find(k => k.creneauId === c.id);
-    const it = {id: c.id, c, chg, debut: c.debut, fin: c.fin, matiere: c.matiere, prof: c.prof || "", salle: c.salle || "", couleur: couleurCours(c.matiere), etat: "", badge: "", note: (chg && chg.note) || "", avant: ""};
+    const it = {id: c.id, c, chg, debut: c.debut, fin: c.fin, matiere: c.matiere, prof: "", salle: c.salle || "", couleur: couleurCours(c.matiere), etat: "", badge: "", note: (chg && chg.note) || "", avant: ""};
     if (!chg){
       if (estCreneauDs(c) && dsSem){ const l = dsSem.get(c.id) || [];
         if (l.length) Object.assign(it, {matiere: "D.S. " + l.join(" · "), couleur: couleurCours(l[0]), etat: "ds"}); else Object.assign(it, {etat: "ds-vide", note: "Pas de D.S. cette semaine"}); }
       return it;
     }
     if (chg.type === "annule" || chg.type === "absent") Object.assign(it, {etat: "annule", badge: libChg(chg.type)});
-    else if (chg.type === "remplace"){ const m = chg.matiere || c.matiere; Object.assign(it, {avant: c.matiere, matiere: m, prof: chg.prof || "", salle: chg.salle || c.salle || "", couleur: couleurCours(m), etat: "remplace", badge: "Remplacement"}); }
+    else if (chg.type === "remplace"){ const m = chg.matiere || c.matiere; Object.assign(it, {avant: c.matiere, matiere: m, prof: "", salle: chg.salle || c.salle || "", couleur: couleurCours(m), etat: "remplace", badge: "Remplacement"}); }
     else if (chg.type === "evenement") Object.assign(it, {avant: c.matiere, matiere: chg.nom || "Événement", prof: "", salle: chg.salle || "", couleur: chg.couleur || COUL_EVENEMENT, etat: "evenement", badge: "Événement"});
     else Object.assign(it, {etat: "mod", badge: libChg(chg.type)});
     return it;
   });
   ajouts.forEach(a => items.push(a.type === "evenement"
     ? {id: a.id, chg: a, ajout: true, debut: a.debut, fin: a.fin, matiere: a.nom || "Événement", prof: "", salle: a.salle || "", couleur: a.couleur || COUL_EVENEMENT, etat: "evenement", badge: "Événement", note: a.note || "", avant: ""}
-    : {id: a.id, chg: a, ajout: true, debut: a.debut, fin: a.fin, matiere: a.matiere || "Cours", prof: a.prof || "", salle: a.salle || "", couleur: couleurCours(a.matiere), etat: "remplace", badge: "Remplacement", note: a.note || "", avant: ""}));
+    : {id: a.id, chg: a, ajout: true, debut: a.debut, fin: a.fin, matiere: a.matiere || "Cours", prof: "", salle: a.salle || "", couleur: couleurCours(a.matiere), etat: "remplace", badge: "Remplacement", note: a.note || "", avant: ""}));
   return items;
 }
 // parite : "paire" / "impaire" pour n'afficher que la bonne semaine, null pour tout afficher
@@ -15284,7 +15284,7 @@ function grilleEdt(gerant, parite, opts = {}){
   const fond = (gerant ? SEGMENTS.filter(x => x.type === "cours").map(x => `<div class="case-h" style="top:${x.y0}px;height:${x.y1 - x.y0}px"></div>`).join("") : "")
     + SEGMENTS.filter(x => x.type === "pause").map(x => `<div class="pause" style="top:${x.y0}px;height:${x.y1 - x.y0}px">${PAUSES.find(([d]) => enMin(d) === x.d)[2]}</div>`).join("");
   const itemsDu = d => lundi ? coursDate(lundi, d, parite, dsSem)
-    : cs.filter(c => c.jour === d).map(c => ({id: c.id, c, debut: c.debut, fin: c.fin, matiere: c.matiere, prof: c.prof || "", salle: c.salle || "", couleur: couleurCours(c.matiere), etat: "", badge: "", note: "", avant: ""}));
+    : cs.filter(c => c.jour === d).map(c => ({id: c.id, c, debut: c.debut, fin: c.fin, matiere: c.matiere, prof: "", salle: c.salle || "", couleur: couleurCours(c.matiere), etat: "", badge: "", note: "", avant: ""}));
   const cours = d => {
     if (lundi){ const k = congeDu(decalerJour(lundi, d)); if (k) return `<div class="conge-jour ${k.raison}"><b>${k.raison === "ferie" ? "Jour férié" : "Vacances"}</b>${k.nom ? `<span>${esc(k.nom)}</span>` : ""}</div>`; }
     return disposer(itemsDu(d)).map(x => {
@@ -15573,7 +15573,7 @@ VUES["a-chg"] = function vueAChg(){
   const remplirCours = () => {
     const date = $("#chg-date").value, j = date ? jourDe(date) : -1;
     const cs = j >= 0 && j < 5 ? trierCreneaux(edt.creneaux).filter(c => c.jour === j && valeCetteSemaine(c, pariteDe(date))) : [];
-    $("#chg-cours").innerHTML = cs.map(c => `<option value="${esc(c.id)}">${esc(c.debut)} – ${esc(c.fin)} · ${esc(c.matiere)}${c.prof ? " (" + esc(c.prof) + ")" : ""}</option>`).join("")
+    $("#chg-cours").innerHTML = cs.map(c => `<option value="${esc(c.id)}">${esc(c.debut)} – ${esc(c.fin)} · ${esc(c.matiere)}</option>`).join("")
       + `<option value="__autre">${cs.length ? "Autre cours…" : "Aucun cours ce jour-là dans l'emploi du temps — saisir le cours"}</option>`;
     $("#bloc-chg-autre").hidden = $("#chg-cours").value !== "__autre";
   };
@@ -15661,7 +15661,7 @@ VUES["g-edt"] = function vueGEdt(){
   zone().innerHTML = entete(espaceNom(), "Emploi du temps", modele ? `<button class="btn" type="button" id="ajout-cours">Ajouter un cours</button>` : "")
     + segment("mode-edt", [["modele","Modifier l'emploi du temps"],["annuler","Changements par semaine"]], modeEdtGerant) + `
     <p class="doux" style="max-width:75ch">${modele ? "Clique dans la grille pour ajouter un cours à cette heure, ou sur un cours pour le modifier. Pour deux cours à la même heure, mets l'un en semaines paires et l'autre en semaines impaires."
-      : "Choisis la semaine. Clique sur un cours pour l'annuler, le remplacer (autre matière ou autre professeur) ou le transformer en heure événementielle. Clique dans une case vide pour ajouter une heure ce jour-là. Les heures « Devoir surveillé » affichent toutes seules la matière du D.S. prévu dans D.S. et vacances."}</p>
+      : "Choisis la semaine. Clique sur un cours pour l'annuler, le remplacer par une autre matière ou le transformer en heure événementielle. Clique dans une case vide pour ajouter une heure ce jour-là. Les heures « Devoir surveillé » affichent toutes seules la matière du D.S. prévu dans D.S. et vacances."}</p>
     <p id="statut" class="statut" role="status"></p>
     <div id="grille-gerant" style="display:flex;flex-direction:column;gap:20px"></div>`;
   dessinerGrilleGerant();
@@ -15688,12 +15688,11 @@ function fenetreChangement(c, date){
   let type = !exist ? "normal" : exist.type === "remplace" || exist.type === "evenement" ? exist.type : "annule";
   const v = exist || {};
   const el = ouvrirFenetreEdt(`<h3 id="titre-fen">${esc(c.matiere)}</h3>
-    <p class="doux">${JOURS[jourDe(date)]} ${dateFr(date)} · ${esc(c.debut)} – ${esc(c.fin)}${c.prof ? " · " + esc(c.prof) : ""}</p>
+    <p class="doux">${JOURS[jourDe(date)]} ${dateFr(date)} · ${esc(c.debut)} – ${esc(c.fin)}</p>
     <div class="champ"><span style="font-size:.85rem;font-weight:500">Ce jour-là, ce cours est…</span>${segment("chg-type", [["normal","Normal"],["annule","Annulé"],["remplace","Remplacé"],["evenement","Événement"]], type)}</div>
     <div class="grille-form" id="bloc-remplace">
       <div class="champ"><label for="r-matiere">Remplacé par</label>${optionsMatieres(v.matiere || c.matiere, "r-matiere")}</div>
       <div class="champ" id="bloc-r-autre"><label for="r-autre">Nom du cours</label><input id="r-autre" type="text" value="${esc(v.matiere && !COURS.some(([n]) => n === v.matiere) ? v.matiere : "")}"></div>
-      <div class="champ"><label for="r-prof">Professeur</label><input id="r-prof" type="text" placeholder="Professeur remplaçant" value="${esc(v.prof || "")}"></div>
       <div class="champ"><label for="r-salle">Salle</label><input id="r-salle" type="text" placeholder="${esc(c.salle || "Facultatif")}" value="${esc(type === "remplace" ? v.salle || "" : "")}"></div>
     </div>
     <div class="grille-form" id="bloc-evenement">
@@ -15717,7 +15716,7 @@ function fenetreChangement(c, date){
     let d = null;
     if (type === "annule") d = base;
     if (type === "remplace"){ const m = $("#r-matiere").value === "__autre" ? $("#r-autre").value.trim() : $("#r-matiere").value; if (!m) return dire("Indique le cours qui remplace.");
-      d = {...base, matiere: m, prof: $("#r-prof").value.trim(), salle: $("#r-salle").value.trim()}; }
+      d = {...base, matiere: m, prof: "", salle: $("#r-salle").value.trim()}; }
     if (type === "evenement"){ const nom = $("#e-nom").value.trim(); if (!nom) return dire("Donne un nom à l'événement.");
       d = {...base, nom, couleur: $("#e-coul").value, salle: $("#e-lieu").value.trim()}; }
     try {
@@ -15748,7 +15747,6 @@ function fenetreAjoutHeure(date, minute, exist, lundiChoix){
     <div class="grille-form" id="bloc-remplace">
       <div class="champ"><label for="r-matiere">Cours</label>${optionsMatieres(v.matiere || COURS[0][0], "r-matiere")}</div>
       <div class="champ" id="bloc-r-autre"><label for="r-autre">Nom du cours</label><input id="r-autre" type="text" value="${esc(v.matiere && !COURS.some(([n]) => n === v.matiere) ? v.matiere : "")}"></div>
-      <div class="champ"><label for="r-prof">Professeur</label><input id="r-prof" type="text" placeholder="Facultatif" value="${esc(v.prof || "")}"></div>
       <div class="champ"><label for="r-salle">Salle</label><input id="r-salle" type="text" placeholder="Facultatif" value="${esc(type === "remplace" ? v.salle || "" : "")}"></div>
     </div>
     <label class="interrupteur"><span><strong>Remplace les cours prévus à ces heures</strong><small>Sinon, l'heure s'affiche à côté des cours.</small></span><input type="checkbox" id="aj-masque" ${v.masque !== false ? "checked" : ""}></label>
@@ -15772,7 +15770,7 @@ function fenetreAjoutHeure(date, minute, exist, lundiChoix){
     if (type === "evenement"){ const nom = $("#e-nom").value.trim(); if (!nom) return dire("Donne un nom à l'événement.");
       d = {...base, cours: nom, nom, couleur: $("#e-coul").value, salle: $("#e-lieu").value.trim()}; }
     else { const m = $("#r-matiere").value === "__autre" ? $("#r-autre").value.trim() : $("#r-matiere").value; if (!m) return dire("Indique le cours.");
-      d = {...base, cours: m, matiere: m, prof: $("#r-prof").value.trim(), salle: $("#r-salle").value.trim()}; }
+      d = {...base, cours: m, matiere: m, prof: "", salle: $("#r-salle").value.trim()}; }
     try { await db.doc("changements/" + (exist ? exist.id : nouvelId("ch"))).set(d); fermerFenetre(); statut(type === "evenement" ? "Heure événementielle enregistrée." : "Heure de remplacement enregistrée.", true); }
     catch (err){ dire(erreurEcriture(err)); }
   };
@@ -15799,7 +15797,6 @@ function fenetreCours(c, defaut){
       <div class="champ"><label for="c-matiere">Cours</label><select id="c-matiere">${COURS.map(([n]) => `<option ${n === v.matiere ? "selected" : ""}>${n}</option>`).join("")}<option value="__autre" ${connu ? "" : "selected"}>Autre…</option></select></div>
       <div class="champ" id="bloc-autre" ${connu ? "hidden" : ""}><label for="c-autre">Nom du cours</label><input id="c-autre" type="text" placeholder="Accomp. perso, Technologie…" value="${connu ? "" : esc(v.matiere)}"></div>
       <div class="champ"><label for="c-couleur">Couleur</label><input id="c-couleur" type="color" value="${esc(couleurCours(v.matiere))}" style="width:100%;height:42px"></div>
-      <div class="champ"><label for="c-prof">Professeur</label><input id="c-prof" type="text" placeholder="Facultatif" value="${esc(v.prof || "")}"></div>
       <div class="champ"><label for="c-salle">Salle</label><input id="c-salle" type="text" placeholder="Facultatif" value="${esc(v.salle || "")}"></div>
       <div class="champ"><label for="c-semaine">Semaine</label><select id="c-semaine">${[["toutes","Toutes les semaines"],["paire","Semaines paires"],["impaire","Semaines impaires"]].map(([k, t]) => `<option value="${k}" ${k === (v.semaine || "toutes") ? "selected" : ""}>${t}</option>`).join("")}</select></div>
     </div>
@@ -15835,7 +15832,7 @@ function fenetreCours(c, defaut){
   f.onsubmit = async ev => {
     ev.preventDefault();
     const n = {id: c ? c.id : nouvelId("c"), jour: +$("#c-jour").value, debut: $("#c-debut").value, fin: $("#c-fin").value,
-      matiere: nomChoisi(), prof: $("#c-prof").value.trim(), salle: $("#c-salle").value.trim(), semaine: $("#c-semaine").value};
+      matiere: nomChoisi(), prof: "", salle: $("#c-salle").value.trim(), semaine: $("#c-semaine").value};
     if (!n.debut || !n.fin || enMin(n.fin) <= enMin(n.debut)) return dire("L'heure de fin doit être après l'heure de début.");
     if (enMin(n.debut) < JOUR_DEBUT || enMin(n.fin) > JOUR_FIN) return dire("Les cours ont lieu entre 08:10 et 16:25.");
     if (!n.matiere) return dire("Donne un nom au cours.");
