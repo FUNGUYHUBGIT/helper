@@ -2477,6 +2477,12 @@ html.dys .doc-lecon,html.dys .doc-lecon *{font-family:"OpenDyslexic",sans-serif!
 html.dys .mono{letter-spacing:.04em}
 html.calme *,html.calme *::before,html.calme *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 html.calme .marque .trait{width:180px}
+/* ===== Passage sombre ↔ clair ===== */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){animation:vt-revele .65s cubic-bezier(.45,0,.2,1) both}
+@keyframes vt-revele{from{clip-path:circle(0 at var(--vt-x,50%) var(--vt-y,50%))}to{clip-path:circle(150vmax at var(--vt-x,50%) var(--vt-y,50%))}}
+html.theme-anim *:not(.theme-switch):not(.theme-switch *){transition:background-color .55s ease,color .55s ease,border-color .55s ease!important}
+html.theme-anim body{transition:background-color .55s ease}
 /* ===== Bouton du thème ===== */
 .theme-ligne{display:flex;align-items:center;gap:18px}
 .theme-ligne > div{display:flex;flex-direction:column;gap:2px}.theme-ligne small{font-size:.85rem}
@@ -6206,7 +6212,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.03";
+const VERSION_SITE = "2.04";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6428,6 +6434,10 @@ function enregistrerPrefs(){
   clearTimeout(minuteriePrefs);
   minuteriePrefs = setTimeout(() => majCompte({prefs: structuredClone(profil.prefs)}).then(() => statut("Préférences enregistrées.", true), () => statut("Le serveur ne répond pas. Réessaie dans un instant.")), 500);
 }
+const htmlNuancier = p => { const clair = p.theme === "clair";
+  return `<div class="nuancier">${(clair ? ACCENTS_CLAIR : ACCENTS).map(([n, c]) => `<button type="button" style="--c:${c}" data-c="${c}" aria-pressed="${String((clair ? p.accentClair || ACCENTS_CLAIR[0][1] : p.accent)).toLowerCase() === c}" aria-label="${n}" title="${n}"></button>`).join("")}</div>
+      <p class="doux" style="font-size:.85rem">${clair ? "Couleurs du thème clair. Le thème sombre garde ses propres couleurs." : "Couleurs du thème sombre. Le thème clair a ses propres couleurs."}</p>`; };
+let themeVerrou = false;
 VUES.prefs = function vuePrefs(){
   const p = profil.prefs, auto = lsGet("helper.auto") !== "0", clair = p.theme === "clair";
   const voixOk = "speechSynthesis" in window;
@@ -6439,13 +6449,12 @@ VUES.prefs = function vuePrefs(){
           <span class="ts-ciel"><i></i><i></i><i></i><i></i><span class="ts-nuage"></span></span>
           <span class="ts-astre"><span class="ts-crat"></span><span class="ts-crat"></span><span class="ts-crat"></span></span>
         </button>
-        <div><strong id="theme-nom">${clair ? "Thème clair" : "Thème sombre"}</strong><small class="doux">${clair ? "Fond blanc, avec sa propre palette de couleurs." : "Fond noir, comme d'habitude."}</small></div>
+        <div><strong id="theme-nom">${clair ? "Thème clair" : "Thème sombre"}</strong><small class="doux" id="theme-info">${clair ? "Fond blanc, avec sa propre palette de couleurs." : "Fond noir, comme d'habitude."}</small></div>
       </div>
     </div>
     <div class="bloc">
       <span class="mono">Couleur du site</span>
-      <div class="nuancier">${(clair ? ACCENTS_CLAIR : ACCENTS).map(([n, c]) => `<button type="button" style="--c:${c}" data-c="${c}" aria-pressed="${String((clair ? p.accentClair || ACCENTS_CLAIR[0][1] : p.accent)).toLowerCase() === c}" aria-label="${n}" title="${n}"></button>`).join("")}</div>
-      <p class="doux" style="font-size:.85rem">${clair ? "Couleurs du thème clair. Le thème sombre garde ses propres couleurs." : "Couleurs du thème sombre. Le thème clair a ses propres couleurs."}</p>
+      <div id="bloc-nuancier">${htmlNuancier(p)}</div>
     </div>
     <div class="bloc">
       <span class="mono">Lecture</span>
@@ -6494,8 +6503,26 @@ VUES.prefs = function vuePrefs(){
       <p class="doux" style="font-size:.85rem">${window.HelperApp && typeof window.HelperApp.configNotifs === "function" ? "Sur ce téléphone, les devoirs et les demandes arrivent aussi en notification, même appli fermée (les devoirs : le soir, à partir de 18 h)." : "Les notifications s'affichent dans Helper, à l'ouverture et pendant que la page est ouverte. Avec l'application Android (1.6), les devoirs et les demandes arrivent aussi sur le téléphone, même appli fermée."}</p>
     </div>
     <p id="statut" class="statut" role="status"></p>`;
-  zone().querySelectorAll(".nuancier button").forEach(b => b.onclick = () => { if (p.theme === "clair") p.accentClair = b.dataset.c; else p.accent = b.dataset.c; enregistrerPrefs(); vuePrefs(); });
-  $("#theme-switch").onclick = () => { p.theme = p.theme === "clair" ? "sombre" : "clair"; $("#theme-switch").classList.toggle("clair", p.theme === "clair"); enregistrerPrefs(); setTimeout(vuePrefs, 420); };
+  const brancherNuancier = () => zone().querySelectorAll(".nuancier button").forEach(b => b.onclick = () => {
+    if (p.theme === "clair") p.accentClair = b.dataset.c; else p.accent = b.dataset.c;
+    enregistrerPrefs(); $("#bloc-nuancier").innerHTML = htmlNuancier(p); brancherNuancier(); });
+  brancherNuancier();
+  // changement de thème : tout est mis à jour sur place (pas de rechargement de la page) ; les clics trop rapprochés sont ignorés
+  $("#theme-switch").onclick = () => {
+    if (themeVerrou) return; themeVerrou = true; setTimeout(() => themeVerrou = false, 700);
+    p.theme = p.theme === "clair" ? "sombre" : "clair";
+    const clair = p.theme === "clair", sw = $("#theme-switch"), h = document.documentElement, r = sw.getBoundingClientRect();
+    const appliquer = () => {
+      sw.classList.toggle("clair", clair); sw.setAttribute("aria-checked", clair);
+      $("#theme-nom").textContent = clair ? "Thème clair" : "Thème sombre";
+      $("#theme-info").textContent = clair ? "Fond blanc, avec sa propre palette de couleurs." : "Fond noir, comme d'habitude.";
+      enregistrerPrefs(); $("#bloc-nuancier").innerHTML = htmlNuancier(p); brancherNuancier();
+    };
+    h.style.setProperty("--vt-x", (r.left + r.width / 2) + "px"); h.style.setProperty("--vt-y", (r.top + r.height / 2) + "px");
+    if (animReduite()) return appliquer();
+    if (document.startViewTransition) document.startViewTransition(appliquer);   // le nouveau thème s'ouvre en cercle depuis le bouton
+    else { h.classList.add("theme-anim"); appliquer(); setTimeout(() => h.classList.remove("theme-anim"), 650); }
+  };
   zone().querySelectorAll("#taille-texte button").forEach(b => b.onclick = () => { p.taille = b.dataset.v; enregistrerPrefs(); vuePrefs(); });
   $("#pf-dys").onchange = () => { p.dys = $("#pf-dys").checked; enregistrerPrefs(); };
   $("#pf-calme").onchange = () => { p.calme = $("#pf-calme").checked; enregistrerPrefs(); };
