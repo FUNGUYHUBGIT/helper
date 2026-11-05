@@ -5856,7 +5856,7 @@ function marquerNav(v){ document.querySelectorAll("#nav button").forEach(b => b.
 const VUES = {};
 // ambiance violette de la dictée : formes du fond, menu de côté et couleur d'accent
 // ----- Application Android (téléchargée sur Entarsh Catalogue) -----
-const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.7";
+const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.8";
 const enModeApp = () => { try { if (new URLSearchParams(location.search).get("app")) sessionStorage.setItem("helper.app", "1"); } catch {}
   let s = false; try { s = sessionStorage.getItem("helper.app") === "1"; } catch {}
   return s || matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; };
@@ -5906,7 +5906,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.95";
+const VERSION_SITE = "1.96";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6529,7 +6529,7 @@ const normDv = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toL
 function matiereDevoir(m){ const n = normDv(m); const t = MAT_ED.find(([r]) => r.test(n)); if (t) return t[1];
   const s = String(m || "").trim().toLowerCase(); return s ? s.charAt(0).toUpperCase() + s.slice(1) : "Autre"; }
 // texte → HTML sûr, avec les retours à la ligne et les liens cliquables
-const texteDevoir = t => esc(t).replace(/(https?:\/\/[^\s<()]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g, "<br>");
+const texteDevoir = t => esc(t).replace(/(https?:\/\/[^\s<()]+)/g, '<a href="$1" target="_blank" rel="noopener" data-lien-dv>$1</a>').replace(/\n/g, "<br>");
 function listeDevoirs(){
   const a = auj();
   return [...devoirsED.devoirs.map(d => ({...d, auto: true})), ...devoirsMan.map(d => ({...d, manuel: true}))]
@@ -6696,7 +6696,9 @@ function pageDevoir(d, l){
       </header>
       <div class="dv-page-corps">
         <div class="dv-texte">${d.contenu ? texteDevoir(d.contenu) : `<span class="doux">Pas de détail.</span>`}</div>
-        ${(d.documents || []).length ? `<div class="dv-docs"><span class="mono">Pièces jointes</span>${d.documents.map(x => `<span class="dv-doc">📎 ${esc(x)}</span>`).join("")}<small class="doux">À télécharger sur EcoleDirecte.</small></div>` : ""}
+        ${(d.documents || []).length ? `<div class="dv-docs"><span class="mono">Pièces jointes</span>${d.documents.map(x => { const nom = typeof x === "string" ? x : x.nom || "Fichier";
+            return x && x.id ? `<button type="button" class="dv-doc lisible" data-doc-dv="${esc(x.id)}" data-nom="${esc(nom)}" title="Ouvrir dans Helper">${iconeLecture(nom)} ${esc(nom)}${x.taille ? ` <span class="doux">${tailleLisible(x.taille)}</span>` : ""}</button>` : `<span class="dv-doc">📎 ${esc(nom)}</span>`; }).join("")}
+          ${d.documents.some(x => !x || !x.id) ? `<small class="doux">${d.documents.some(x => x && x.id) ? "Les autres fichiers sont" : "À télécharger"} sur EcoleDirecte : ils seront dans Helper à la prochaine synchronisation.</small>` : ""}</div>` : ""}
         <dl class="dv-infos">${d.donneLe ? `<div><dt>Donné le</dt><dd>${esc(dateLongueDv(d.donneLe))}</dd></div>` : ""}${d.groupe ? `<div><dt>Groupe</dt><dd>${esc(d.groupe)}</dd></div>` : ""}</dl>
         ${edit ? `<div class="rangee"><button type="button" class="mini-btn" id="dv-modif">Modifier</button><button type="button" class="mini-btn danger" id="dv-suppr">Supprimer</button></div>` : ""}
       </div>
@@ -6871,7 +6873,29 @@ async function syncED(ident, mdp, demanderQcm, etape){
     if (j.code !== 200 || !j.data) continue;
     for (const m of j.data.matieres || []){ const af = m.aFaire; if (!af) continue;
       devoirs.push({id: "ed-" + (af.idDevoir || m.id), date, matiere: m.matiere || "", groupe: m.entityType === "G" ? m.entityLibelle || "" : "",
-        interrogation: !!m.interrogation, donneLe: af.donneLe || "", contenu: htmlEnTexte(b64Txt(af.contenu)).slice(0, 4000), documents: (af.documents || []).map(d => d.libelle).filter(Boolean).slice(0, 10)}); }
+        interrogation: !!m.interrogation, donneLe: af.donneLe || "", contenu: htmlEnTexte(b64Txt(af.contenu)).slice(0, 4000), documents: (af.documents || []).filter(d => d && d.libelle).slice(0, 10).map(d => ({nom: d.libelle, edId: String(d.id || ""), type: d.type || "FICHIER_CDT", taille: +d.taille || 0}))}); }
+  }
+  // pièces jointes : déjà rangées dans Helper (on les reprend) ou téléchargées maintenant sur EcoleDirecte puis envoyées dans Helper
+  const deja = new Map(); devoirsED.devoirs.forEach(d => (d.documents || []).forEach(x => { if (x && x.edId && x.id) deja.set(x.edId, x); }));
+  const aFaire = devoirs.flatMap(d => d.documents).filter(x => x.edId && !deja.has(x.edId));
+  devoirs.forEach(d => d.documents = d.documents.map(x => deja.get(x.edId) || x));
+  if (aFaire.length && assets){
+    let n = 0;
+    for (const x of aFaire.slice(0, 15)){
+      etape(`Pièces jointes… ${++n}/${Math.min(15, aFaire.length)}`);
+      try {
+        const r = await edReq("POST", `${ED_API}/telechargement.awp?verbe=get&fichierId=${encodeURIComponent(x.edId)}&leTypeDeFichier=${encodeURIComponent(x.type)}&v=${ED_VERSION}`,
+          {"Content-Type": "application/x-www-form-urlencoded", "User-Agent": ua, ...(token ? {"X-Token": token} : {}), ...(f2a ? {"2fa-Token": f2a} : {}), ...(gtk ? {"X-Gtk": gtk} : {}), ...(cookies ? {Cookie: cookies} : {})},
+          "data=" + encodeURIComponent(JSON.stringify({forceDownload: 0})));
+        if (!r.body64 || r.status >= 300) continue;            // appli trop ancienne (avant 1.8) ou refus
+        const octets = Uint8Array.from(atob(r.body64), c => c.charCodeAt(0));
+        if (octets.length < 20 || octets.length > 25e6 || (octets[0] === 123 && /"code"\s*:/.test(new TextDecoder().decode(octets.slice(0, 200))))) continue;   // une erreur en JSON, pas un fichier
+        const ext = (x.nom.match(/\.([a-z0-9]{1,5})$/i) || [, "bin"])[1].toLowerCase();
+        const type = ({pdf: "application/pdf", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain", mp4: "video/mp4", mp3: "audio/mpeg", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg"})[ext] || "application/octet-stream";
+        const up = await assets.upload(new File([octets], x.nom, {type}), {type});
+        Object.assign(x, {id: up.id, taille: octets.length});
+      } catch {}
+    }
   }
   return {devoirs, dates};
 }
@@ -6936,6 +6960,7 @@ function panneauSync(){
         <div class="champ"><label for="ed-mdp">Mot de passe</label><input id="ed-mdp" type="password" autocomplete="current-password"></div>
         <div class="champ" style="align-self:end"><button class="btn" type="submit">Enregistrer et synchroniser</button></div></form>`}
   </div>`;
+  if (enreg && parseFloat(APPLI_NATIVE || 0) < 1.8) z.querySelector(".sync-ed").insertAdjacentHTML("beforeend", `<p class="statut erreur" style="margin:0">Installe l'appli 1.8 pour que les pièces jointes des devoirs soient récupérées et lisibles dans Helper.</p>`);
   if (enreg) blocSyncFond(z.querySelector(".sync-ed"));
   const go = $("#sync-go"); if (go) go.onclick = () => lancerSyncED(false);
   const ou = $("#sync-oubli"); if (ou) ou.onclick = () => { ["helper.ed.mdp", "helper.ed.fa", "helper.ed.dernier"].forEach(k => lsSet(k, null)); syncEtat = null; panneauSync(); };
@@ -7415,6 +7440,42 @@ function lireFichier({url, nom, telecharger}){
     })();
   const v = corps.querySelector("video, audio"); if (v) v.onerror = raté;
 }
+// Lien d'un devoir : vidéo ou fichier ouverts dans Helper ; sinon le lien s'ouvre normalement
+function embedVideo(url){
+  let u; try { u = new URL(url); } catch { return ""; }
+  const h = u.hostname.replace(/^www\.|^m\./, ""), t = parseInt(u.searchParams.get("t") || u.searchParams.get("start") || "0", 10) || 0;
+  let m;
+  if (h === "youtu.be" && (m = /^\/([\w-]{11})/.exec(u.pathname))) return `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0${t ? "&start=" + t : ""}`;
+  if (/(^|\.)youtube(-nocookie)?\.com$/.test(h)){ const id = u.searchParams.get("v") || ((m = /^\/(?:shorts|embed|live|v)\/([\w-]{11})/.exec(u.pathname)) || [])[1];
+    if (id && /^[\w-]{11}$/.test(id)) return `https://www.youtube-nocookie.com/embed/${id}?rel=0${t ? "&start=" + t : ""}`; }
+  if (/(^|\.)vimeo\.com$/.test(h) && (m = /\/(\d{5,})/.exec(u.pathname))) return `https://player.vimeo.com/video/${m[1]}`;
+  if (h === "dai.ly" && (m = /^\/(\w+)/.exec(u.pathname))) return `https://www.dailymotion.com/embed/video/${m[1]}`;
+  if (/(^|\.)dailymotion\.com$/.test(h) && (m = /\/video\/(\w+)/.exec(u.pathname))) return `https://www.dailymotion.com/embed/video/${m[1]}`;
+  if (h === "drive.google.com" && (m = /\/file\/d\/([\w-]+)/.exec(u.pathname))) return `https://drive.google.com/file/d/${m[1]}/preview`;
+  return "";
+}
+function ouvrirLienHelper(url){
+  const e = embedVideo(url);
+  if (e){
+    fermerFenetre();
+    const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
+    el.innerHTML = `<div class="fenetre lecteur-pj" role="dialog" aria-modal="true"><div class="lp-tete"><span class="lp-ic" aria-hidden="true">🎬</span><b class="lp-nom">${esc(url.replace(/^https?:\/\/(www\.)?/, "").slice(0, 70))}</b>
+      <span class="rangee lp-boutons"><a class="mini-btn" href="${esc(url)}" target="_blank" rel="noopener">Ouvrir le site ↗</a><button class="mini-btn" type="button" id="lp-fermer">✕ Fermer</button></span></div>
+      <div class="lp-corps lp-embed"><iframe src="${esc(e)}" title="Vidéo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>`;
+    document.body.appendChild(el); el.querySelector("#lp-fermer").onclick = fermerFenetre;
+    el.addEventListener("mousedown", ev => { if (ev.target === el) fermerFenetre(); });
+    return true;
+  }
+  let nom = ""; try { nom = decodeURIComponent(new URL(url).pathname.split("/").pop() || ""); } catch {}
+  if (genreLecture(nom)){ lireFichier({url, nom}); return true; }
+  return false;
+}
+document.addEventListener("click", ev => {
+  const a = ev.target.closest && ev.target.closest("a[data-lien-dv]");
+  if (a && !ev.ctrlKey && !ev.metaKey && ouvrirLienHelper(a.href)) ev.preventDefault();
+  const b = ev.target.closest && ev.target.closest("[data-doc-dv]");
+  if (b) lireFichier({url: blobUrl(b.dataset.docDv), nom: b.dataset.nom || "Fichier"});
+});
 function brancherPj(racine){
   racine.querySelectorAll("[data-lire-pj]").forEach(b => b.onclick = () => lireFichier({url: blobUrl(b.dataset.lirePj), nom: b.dataset.nom || "Fichier"}));
   racine.querySelectorAll("[data-voir-ref]").forEach(b => b.onclick = async () => {
@@ -15081,6 +15142,9 @@ async function creerCadre(largeur, hauteur){
 .lp-docx section.docx{margin:0 auto 12px!important;box-shadow:0 4px 18px -8px #000}
 .lp-attente{padding:20px;text-align:center}
 @media (max-width:700px){.lecteur-pj{max-height:100vh;height:100vh;border-radius:0;padding:10px}.voile:has(.lecteur-pj){padding:0}}
+
+.lp-embed{background:#000;display:block}.lp-embed iframe{display:block;width:100%;aspect-ratio:16/9;max-height:80vh;border:0}
+.dv-doc.lisible{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid;border-radius:8px;background:var(--surface-2);cursor:pointer;font:inherit;color:var(--texte);border-color:color-mix(in srgb,var(--accent) 45%,var(--ligne))}.dv-doc.lisible:hover{border-color:var(--accent)}
 </style></head><body></body></html>`;
   const charge = new Promise(r => f.onload = r);
   document.body.appendChild(f); await charge;
