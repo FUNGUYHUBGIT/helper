@@ -2343,6 +2343,54 @@ body.ambiance-dnb .lateral .nav-groupe{color:#8ca6d6}
 .rc-zoom{display:flex;align-items:center;gap:10px}.rc-zoom input{flex:1}.rc-zoom span{font-size:1.2rem;color:var(--doux);width:14px;text-align:center}
 @media (max-width:900px){.pf-carte{grid-template-columns:auto minmax(0,1fr)}.pf-stats{grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr))}.pf-grille,.pf-confid-grille{grid-template-columns:1fr}}
 @media (max-width:520px){.pf-carte{grid-template-columns:1fr;justify-items:center;text-align:center}.pf-badges,.pf-photo-actions{justify-content:center}.pf-stats{grid-template-columns:repeat(2,minmax(0,1fr));width:100%}}
+
+/* ===== Gérant · Mise à jour du site ===== */
+.ms-etat{display:flex;align-items:center;gap:18px;max-width:820px;padding:22px 24px;border-radius:18px;border:1px solid color-mix(in srgb,#3fb950 45%,var(--ligne));background:color-mix(in srgb,#3fb950 9%,var(--surface))}
+.ms-etat.ferme{border-color:color-mix(in srgb,#f2ae02 55%,var(--ligne));background:repeating-linear-gradient(-45deg,color-mix(in srgb,#f2ae02 8%,var(--surface)) 0 14px,var(--surface) 14px 28px)}
+.ms-etat-ico{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#3fb950;color:#0e0e0f}
+.ms-etat.ferme .ms-etat-ico{background:#f2ae02}
+.ms-etat-ico svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ms-etat h3{margin:0 0 4px;font-size:1.25rem}.ms-etat p{margin:0;color:var(--doux);font-size:.92rem;line-height:1.5}
+.ms-pile{display:flex;flex-direction:column;gap:22px;max-width:820px;margin-top:22px}
+.ms-carte{display:flex;flex-direction:column;gap:18px;padding:26px;border-radius:18px;border:1px solid var(--ligne);background:var(--surface)}
+.ms-tete{display:flex;gap:14px;align-items:flex-start}
+.ms-tete h3{margin:0 0 4px;font-size:1.08rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.ms-tete p{margin:0;color:var(--doux);font-size:.88rem;line-height:1.5;max-width:60ch}
+.ms-ico{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.ms-ico.bleu{background:color-mix(in srgb,#4f8cff 18%,transparent);color:#7fa9ff}.ms-ico.orange{background:color-mix(in srgb,#f2ae02 16%,transparent);color:#f2ae02}
+.ms-ico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ms-champ{display:flex;flex-direction:column;gap:8px}.ms-lab{font-size:.85rem;font-weight:600}
+.ms-ligne{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.ms-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-top:4px}
+.ms-gros{font-size:1rem;padding:12px 22px}.ms-note{font-size:.8rem}
+.ms-pastille{font-size:.72rem;font-weight:600;padding:2px 9px;border-radius:999px;border:1px solid var(--ligne);color:var(--doux)}
+.ms-pastille.on{border-color:#3fb950;color:#3fb950}
+.ms-plus{border-top:1px solid var(--ligne);padding-top:12px}
+.ms-plus summary{cursor:pointer;font-size:.88rem;color:var(--doux);list-style:none;display:flex;align-items:center;gap:8px}
+.ms-plus summary::-webkit-details-marker{display:none}
+.ms-plus summary::before{content:"";width:7px;height:7px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(-45deg);transition:transform .15s}
+.ms-plus[open] summary::before{transform:rotate(45deg)}.ms-plus[open] > :not(summary){margin-top:12px}
+.ms-carte .segment{align-self:flex-start;flex-wrap:wrap}
+@media (max-width:600px){.ms-carte{padding:18px}.ms-etat{padding:18px}.ms-tete .ms-ico{display:none}}
+/* Sujets du DNB : menus déroulants */
+.sd-bloc{display:flex;flex-direction:column;gap:14px}
+.sd-filtres{display:grid;grid-template-columns:repeat(2,minmax(0,220px));gap:12px}
+.sd-choisi{padding:14px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface-2);display:flex;flex-direction:column;gap:10px}
+.sd-choisi-tete{display:flex;flex-direction:column;gap:2px}.sd-choisi-tete .doux{font-size:.82rem}
+.sd-docs{display:flex;flex-direction:column;gap:4px}
+@media (max-width:520px){.sd-filtres{grid-template-columns:1fr 1fr}}
+.dv-pli-corps{display:flex;flex-direction:column;gap:10px}
+/* Devoirs : « À venir » et « Déjà passés » pliables sur téléphone */
+.dv-pli-btn{display:none}
+.dv-pli-btn .sd-fl{width:12px;height:12px;transition:transform .15s}
+@media (max-width:700px){
+  .dv-pli-pc{display:none}
+  .dv-pli-btn{display:flex;align-items:center;gap:10px;width:100%;padding:14px 14px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:inherit;font-family:var(--f-texte);font-size:.95rem;font-weight:600;letter-spacing:0;text-transform:none;cursor:pointer;text-align:left}
+  .dv-pli-btn > span:nth-of-type(1){flex:1}
+  .dv-pli-nb{min-width:24px;padding:1px 8px;border-radius:999px;background:var(--surface-2);font-size:.8rem;text-align:center;color:var(--doux)}
+  .dv-pliable .dv-pli-corps{display:none}
+  .dv-pliable.ouvert .dv-pli-corps{display:flex;flex-direction:column;gap:10px}
+  .dv-pliable.ouvert .dv-pli-btn .sd-fl{transform:rotate(90deg)}
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5375,28 +5423,28 @@ function vueGSite(){
   const m = majSite || {}, actif = majEnCours(), expiree = m.actif && m.fin && Date.parse(m.fin) <= Date.now();
   if (actif && !majForm.touche){ majForm.message = m.message || ""; majForm.type = m.fin ? "date" : "indeterminee"; if (m.fin){ const d = new Date(m.fin); majForm.date = new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16); } }
   const unites = [["min", "minutes"], ["h", "heures"], ["j", "jours"]];
-  zone().innerHTML = entete("Gérant", "Mise à jour du site", `<span class="etat ${actif ? "maj-actif" : "fait"}">${actif ? "🚧 Site fermé" : "Site ouvert"}</span>`) + `
+  zone().innerHTML = entete("Gérant", "Mise à jour du site") + `
     <p id="statut" class="statut" role="status"></p>
-    <div class="bloc maj-etat ${actif ? "actif" : ""}">
-      <span class="mono">État actuel</span>
-      ${actif ? `<p><b>La mise à jour est en cours.</b> Les élèves et les administrateurs voient la page de mise à jour et ne peuvent pas utiliser le site. Toi seul (gérant) peux y accéder.</p>
-        <p class="doux">${m.fin ? `Fin prévue : <b>${dateLongue(m.fin)}</b> (encore ${resteTexte(Date.parse(m.fin) - Date.now())}). Le site rouvrira tout seul à cette heure-là.` : "Durée indéterminée : le site reste fermé jusqu'à ce que tu termines la mise à jour."}${m.debut ? ` · Commencée le ${dateLongue(m.debut)}${m.par ? " par " + esc(m.par) : ""}.` : ""}</p>`
-        : `<p><b>Le site est ouvert</b> à tout le monde.${expiree ? ` La dernière mise à jour s'est terminée le ${dateLongue(m.fin)}.` : ""}</p>`}
-    </div>
-    <form class="bloc" id="form-maj" novalidate>
-      <span class="mono">${actif ? "Modifier la mise à jour en cours" : "Lancer une mise à jour"}</span>
-      <p class="doux" style="font-size:.88rem;max-width:75ch">Quand le mode mise à jour est actif, toute personne qui ouvre le site tombe sur une page qui la prévient (avec le même fond « en travaux » que les onglets en construction). Les personnes déjà connectées sont bloquées immédiatement.</p>
-      <div class="champ"><span class="mono">Durée</span>${segment("maj-type", [["indeterminee", "Indéterminée"], ["duree", "Pendant…"], ["date", "Jusqu'au…"]], majForm.type)}</div>
-      ${majForm.type === "duree" ? `<div class="rangee" style="gap:10px;align-items:flex-end"><div class="champ" style="max-width:120px"><label for="maj-nb">Durée</label><input id="maj-nb" type="number" min="1" max="999" value="${majForm.nb}"></div>
+    <section class="ms-etat ${actif ? "ferme" : "ouvert"}">
+      <span class="ms-etat-ico">${actif ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11"/><path d="M10 20v-5h4v5"/></svg>` : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>`}</span>
+      <div><h3>${actif ? "Le site est fermé" : "Le site est ouvert"}</h3>
+        <p>${actif ? (m.fin ? `Réouverture automatique ${dateLongue(m.fin)} (dans ${resteTexte(Date.parse(m.fin) - Date.now())}).` : "Il reste fermé jusqu'à ce que tu cliques sur « Rouvrir le site ».") + " Seul le gérant peut l'utiliser."
+          : `Tout le monde peut l'utiliser.${expiree ? ` Dernière fermeture terminée ${dateLongue(m.fin)}.` : ""}`}</p></div>
+    </section>
+    <div class="ms-pile">` + htmlAvertRelance() + `
+    <form class="ms-carte" id="form-maj" novalidate>
+      <div class="ms-tete"><span class="ms-ico orange"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><div><h3>${actif ? "Modifier la fermeture" : "Fermer le site pour une mise à jour"}</h3><p>Les élèves voient une page « en travaux » à la place du site.</p></div></div>
+      <div class="ms-champ"><span class="ms-lab">Combien de temps ?</span>${segment("maj-type", [["indeterminee", "Je rouvre à la main"], ["duree", "Pendant…"], ["date", "Jusqu'au…"]], majForm.type)}</div>
+      ${majForm.type === "duree" ? `<div class="ms-ligne"><div class="champ" style="max-width:110px"><label for="maj-nb">Durée</label><input id="maj-nb" type="number" min="1" max="999" value="${majForm.nb}"></div>
         <div class="champ" style="max-width:160px"><label for="maj-unite">Unité</label><select id="maj-unite">${unites.map(([k, t]) => `<option value="${k}" ${majForm.unite === k ? "selected" : ""}>${t}</option>`).join("")}</select></div></div>` : ""}
-      ${majForm.type === "date" ? `<div class="champ" style="max-width:260px"><label for="maj-date">Fin prévue</label><input id="maj-date" type="datetime-local" value="${esc(majForm.date)}"></div>` : ""}
-      <div class="champ"><label for="maj-message">Message affiché (facultatif)</label><textarea id="maj-message" rows="3" maxlength="300" placeholder="Ex. : nouvelles cartes interactives et correction de bugs.">${esc(majForm.message)}</textarea></div>
-      <div class="rangee">
-        <button class="btn" type="submit">${actif ? "Enregistrer les changements" : "Activer la mise à jour"}</button>
-        <button class="btn sec" type="button" id="maj-apercu">Voir la page des élèves</button>
-        ${actif ? `<button class="btn danger" type="button" id="maj-terminer">Terminer la mise à jour</button>` : ""}
+      ${majForm.type === "date" ? `<div class="champ" style="max-width:260px"><label for="maj-date">Réouverture le</label><input id="maj-date" type="datetime-local" value="${esc(majForm.date)}"></div>` : ""}
+      <div class="champ"><label for="maj-message">Message pour les élèves <span class="doux">(facultatif)</span></label><textarea id="maj-message" rows="2" maxlength="300" placeholder="Ex. : nouvelles cartes interactives et correction de bugs.">${esc(majForm.message)}</textarea></div>
+      <div class="ms-actions">
+        <button class="btn" type="submit">${actif ? "Enregistrer" : "Fermer le site"}</button>
+        <button class="btn sec" type="button" id="maj-apercu">Aperçu</button>
+        ${actif ? `<button class="btn danger" type="button" id="maj-terminer">Rouvrir le site</button>` : ""}
       </div>
-    </form>` + htmlAvertRelance();
+    </form></div>`;
   brancherAvertRelance();
   zone().querySelectorAll("#maj-type button").forEach(b => b.onclick = () => { lireFormMaj(); majForm.type = b.dataset.v; majForm.touche = true; vueGSite(); });
   const finChoisie = () => {
@@ -5497,21 +5545,20 @@ async function relancerMaintenant(el){
 function htmlAvertRelance(){
   const av = avertSite || {}, rl = relanceSite || {};
   if (!avForm.touche){ avForm.texte = av.texte || ""; avForm.niveau = av.niveau === "important" ? "important" : "info"; }
-  return `<form class="bloc" id="form-avert" novalidate>
-      <div class="rangee" style="justify-content:space-between"><span class="mono">Message d'avertissement</span><span class="etat ${av.actif ? "maj-actif" : ""}">${av.actif ? "Affiché" : "Masqué"}</span></div>
-      <p class="doux" style="font-size:.88rem;max-width:75ch">Un bandeau s'affiche en haut de l'écran pour tout le monde, même sur la page de connexion, jusqu'à ce que tu le retires. Avec sa croix, chacun peut le réduire en une petite pastille qui reste en haut à droite (un clic la rouvre) ; si tu modifies le message, il se déplie à nouveau chez tout le monde.</p>
-      <div class="champ"><span class="mono">Type</span>${segment("avert-niveau", [["info", "ℹ Information"], ["important", "⚠ Important"]], avForm.niveau)}</div>
-      <div class="champ"><label for="avert-texte">Contenu du message</label><textarea id="avert-texte" rows="3" maxlength="400" placeholder="Ex. : le site sera en mise à jour samedi de 14 h à 16 h.">${esc(avForm.texte)}</textarea></div>
-      <div class="rangee"><button class="btn" type="submit">${av.actif ? "Mettre à jour le message" : "Afficher le message"}</button>${av.actif ? `<button class="btn danger" type="button" id="avert-retirer">Retirer le message</button>` : ""}</div>
+  return `<form class="ms-carte" id="form-relance" novalidate>
+      <div class="ms-tete"><span class="ms-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></span><div><h3>Relancer le site partout</h3><p>Après chaque mise à jour : le site se recharge chez tout le monde avec la nouvelle version. Les leçons en cours sont enregistrées avant.</p></div></div>
+      <div class="ms-champ"><span class="ms-lab">Délai</span>${segment("relance-delai", [["10", "10 s"], ["30", "30 s"], ["60", "1 min"]], String(rlForm.delai))}</div>
+      <details class="ms-plus"><summary>Modifier le message affiché</summary>
+        <div class="champ"><label for="relance-message">Message</label><textarea id="relance-message" rows="2" maxlength="200">${esc(rlForm.message)}</textarea></div></details>
+      <div class="ms-actions"><button class="btn ms-gros" type="button" id="relance-go">↻ Relancer le site partout</button>
+        ${rl.jeton ? `<span class="doux ms-note">Dernière : ${dateLongue(rl.jeton)}${rl.par ? " par " + esc(rl.par) : ""}</span>` : ""}</div>
+      <details class="ms-plus"><summary>Qui est connecté en ce moment ?</summary><div id="presence-liste">${htmlPresence()}</div></details>
     </form>
-    <form class="bloc" id="form-relance" novalidate>
-      <span class="mono">Relancer le site sur tous les ordinateurs</span>
-      <p class="doux" style="font-size:.88rem;max-width:75ch">À utiliser après chaque mise à jour : tous ceux qui ont le site ouvert reçoivent une notification avec un compte à rebours, puis le site se recharge avec la nouvelle version (plus besoin de Ctrl + F5). Les leçons et les séries d'exercices en cours de modification sont enregistrées automatiquement avant la relance.</p>
-      <div class="champ"><label for="relance-message">Message de la notification</label><textarea id="relance-message" rows="2" maxlength="200">${esc(rlForm.message)}</textarea></div>
-      <div class="champ"><span class="mono">Délai avant la relance</span>${segment("relance-delai", [["10", "10 secondes"], ["30", "30 secondes"], ["60", "1 minute"]], String(rlForm.delai))}</div>
-      <div class="rangee"><button class="btn" type="button" id="relance-go">↻ Relancer le site partout</button></div>
-      ${rl.jeton ? `<p class="doux" style="font-size:.82rem">Dernière relance : ${dateLongue(rl.jeton)}${rl.par ? " par " + esc(rl.par) : ""}.</p>` : ""}
-      <div class="presence-bloc"><span class="mono">Connectés en ce moment</span><div id="presence-liste">${htmlPresence()}</div></div>
+    <form class="ms-carte" id="form-avert" novalidate>
+      <div class="ms-tete"><span class="ms-ico bleu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M12 8v3.5M12 13.6v.1"/></svg></span><div><h3>Bandeau d'information <span class="ms-pastille ${av.actif ? "on" : ""}">${av.actif ? "Affiché" : "Masqué"}</span></h3><p>Un message en haut de l'écran pour tout le monde, jusqu'à ce que tu le retires.</p></div></div>
+      <div class="ms-champ"><span class="ms-lab">Type</span>${segment("avert-niveau", [["info", "ℹ Information"], ["important", "⚠ Important"]], avForm.niveau)}</div>
+      <div class="champ"><label for="avert-texte">Message</label><textarea id="avert-texte" rows="3" maxlength="400" placeholder="Ex. : le site sera en mise à jour samedi de 14 h à 16 h.">${esc(avForm.texte)}</textarea></div>
+      <div class="ms-actions"><button class="btn" type="submit">${av.actif ? "Mettre à jour" : "Afficher"}</button>${av.actif ? `<button class="btn danger" type="button" id="avert-retirer">Retirer</button>` : ""}</div>
     </form>`;
 }
 function brancherAvertRelance(){
@@ -6034,7 +6081,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.99";
+const VERSION_SITE = "2.00";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6812,6 +6859,7 @@ function animerEntete(cv, couleur, enerve){
   requestAnimationFrame(image);
 }
 /* ----- Devoirs faits (cochés par l'élève, enregistrés dans sa progression) ----- */
+const dvPlis = new Set();   // sections « À venir » / « Déjà passés » dépliées (téléphone)
 const faitsDv = () => prog ? (prog.devoirsFaits = prog.devoirsFaits || {}) : (() => { try { return JSON.parse(lsGet("helper.dv.faits") || "{}"); } catch { return {}; } })();
 const estFaitDv = d => !!faitsDv()[d.id];
 function basculerFaitDv(id){
@@ -6920,12 +6968,14 @@ VUES.devoirs = function vueDevoirs(){
         return `<button type="button" class="dv-ctrl" data-dv="${esc(c.id)}" style="--c:${esc(couleurCours(m))}"><span class="dv-ctrl-j"><b>${n === 0 ? "AUJ." : n === 1 ? "J-1" : "J-" + n}</b><small>${n <= 1 ? relJour(n) : courtDate(c.date)}</small></span>
           <span class="dv-ctrl-txt"><b>${esc(m)}</b><span>${esc(apercuDevoir(c.contenu) || "Contrôle")}</span></span></button>`; }).join("")}</div></section>` : "")
     + `<div class="dv-focus-grille">${panneauJour(pj, "Pour " + (pj === decalerJour(a, 1) ? "demain" : nomJourDv(pj)), groupes, true)}${panneauJour(a, "Aujourd'hui", groupes, false)}</div>`
-    + `<section class="dv-section"><h3 class="dv-titre-sec">Plus tard</h3>${plusTard.length ? `<div class="dv-rangs">${plusTard.map(rangJour).join("")}</div>` : `<div class="dv-rien">Rien de prévu pour l'instant.</div>`}</section>`
-    + (passes.length ? `<section class="dv-section"><h3 class="dv-titre-sec">Déjà passés</h3><div class="dv-rangs">${(dvPassesTout ? passes : passes.slice(0, 3)).map(rangJour).join("")}</div>
-        ${passes.length > 3 ? `<button type="button" class="dv-plus" id="dv-plus">${dvPassesTout ? "Afficher moins" : `Afficher plus <span>· ${passes.length - 3} autre${passes.length - 3 > 1 ? "s" : ""} jour${passes.length - 3 > 1 ? "s" : ""}</span>`}</button>` : ""}</section>` : "")
+    + `<section class="dv-section dv-pliable${dvPlis.has("tard") ? " ouvert" : ""}" data-pli="tard"><h3 class="dv-titre-sec"><button type="button" class="dv-pli-btn" aria-expanded="${dvPlis.has("tard")}">${FLECHE_CASIER}<span>À venir · plus tard</span><span class="dv-pli-nb">${plusTard.reduce((n, g) => n + g.l.length, 0)}</span></button><span class="dv-pli-pc">Plus tard</span></h3><div class="dv-pli-corps">${plusTard.length ? `<div class="dv-rangs">${plusTard.map(rangJour).join("")}</div>` : `<div class="dv-rien">Rien de prévu pour l'instant.</div>`}</div></section>`
+    + (passes.length ? `<section class="dv-section dv-pliable${dvPlis.has("passes") ? " ouvert" : ""}" data-pli="passes"><h3 class="dv-titre-sec"><button type="button" class="dv-pli-btn" aria-expanded="${dvPlis.has("passes")}">${FLECHE_CASIER}<span>Déjà passés · faits</span><span class="dv-pli-nb">${passes.reduce((n, g) => n + g.l.length, 0)}</span></button><span class="dv-pli-pc">Déjà passés</span></h3><div class="dv-pli-corps"><div class="dv-rangs">${(dvPassesTout ? passes : passes.slice(0, 3)).map(rangJour).join("")}</div>
+        ${passes.length > 3 ? `<button type="button" class="dv-plus" id="dv-plus">${dvPassesTout ? "Afficher moins" : `Afficher plus <span>· ${passes.length - 3} autre${passes.length - 3 > 1 ? "s" : ""} jour${passes.length - 3 > 1 ? "s" : ""}</span>`}</button>` : ""}</div></section>` : "")
     + (edit ? `<div id="sync-devoirs"></div>` : "");
   const aj = $("#ajout-devoir"); if (aj) aj.onclick = () => fenetreDevoir(null);
   const plus = $("#dv-plus"); if (plus) plus.onclick = () => { dvPassesTout = !dvPassesTout; vueDevoirs(); };
+  zone().querySelectorAll(".dv-pli-btn").forEach(b => b.onclick = () => { const sec = b.closest("[data-pli]"), k = sec.dataset.pli, o = !sec.classList.contains("ouvert");
+    sec.classList.toggle("ouvert", o); b.setAttribute("aria-expanded", o); o ? dvPlis.add(k) : dvPlis.delete(k); });
   zone().querySelectorAll("[data-jour]").forEach(b => b.onclick = () => { dvJourVu = b.dataset.jour; vueDevoirs(); window.scrollTo({top: 0}); });
   zone().querySelectorAll("[data-dv]").forEach(b => b.onclick = () => { dvDepuisJour = false; ouvrir(b.dataset.dv); });
   brancherCochesDv(vueDevoirs);
@@ -13932,17 +13982,28 @@ function brancherDicteesDnb(redessiner){
 const MATIERES_DNB = [["francais", "Français"], ["maths", "Mathématiques"], ["hge", "Histoire-Géo-EMC"], ["sciences", "Sciences"]];
 const nomMatDnb = m => (MATIERES_DNB.find(x => x[0] === m) || [, m])[1];
 let choixSujetsDnb = {an: "tous", mat: "tous"};
+let sujetDnbChoisi = "";
 function blocSujetsDnb(){
   const ans = [...new Set(SUJETS_DNB.map(s => s.an))].sort((a, b) => b - a), mats = MATIERES_DNB.filter(([m]) => SUJETS_DNB.some(s => s.mat === m));
   const ls = SUJETS_DNB.filter(s => (choixSujetsDnb.an === "tous" || s.an === +choixSujetsDnb.an) && (choixSujetsDnb.mat === "tous" || s.mat === choixSujetsDnb.mat))
     .sort((a, b) => b.an - a.an || String(b.date).localeCompare(String(a.date)) || MATIERES_DNB.findIndex(m => m[0] === a.mat) - MATIERES_DNB.findIndex(m => m[0] === b.mat));
-  return `<div class="bloc" id="bloc-sujets-dnb">
+  const s = ls.find(x => x.id === sujetDnbChoisi);
+  const anneesListe = [...new Set(ls.map(x => x.an))];
+  return `<div class="bloc sd-bloc" id="bloc-sujets-dnb">
     <span class="mono">Sujets du DNB · Éducation nationale</span>
-    <p class="doux" style="font-size:.88rem;max-width:75ch">Les vrais sujets du brevet depuis 2018, avec leur corrigé. Ouvre une épreuve pour la lire en entier.</p>
-    ${ans.length ? segment("sd-an", [["tous", "Toutes"], ...ans.map(a => [String(a), String(a)])], String(choixSujetsDnb.an))
-      + (mats.length > 1 ? segment("sd-mat", [["tous", "Toutes les matières"], ...mats], choixSujetsDnb.mat) : "") : ""}
-    ${ls.length ? `<div class="sd-arbre">${ls.map(s => ligneCasier(s.id, `${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}`, s.date ? dateLongueDnb(s.date) : "",
-        docsDe(s).map(d => [d.t, d.url, !!d.ext, d.nom]))).join("")}</div>` : `<div class="vide">Aucun sujet pour ce choix.</div>`}
+    <p class="doux" style="font-size:.88rem;max-width:75ch;margin:0">Les vrais sujets du brevet depuis 2018, avec leur corrigé. Choisis une épreuve dans le menu.</p>
+    <div class="sd-filtres">
+      <div class="champ"><label for="sd-an">Année</label><select id="sd-an" class="dd-select"><option value="tous">Toutes</option>${ans.map(a => `<option value="${a}"${String(a) === String(choixSujetsDnb.an) ? " selected" : ""}>${a}</option>`).join("")}</select></div>
+      <div class="champ"><label for="sd-mat">Matière</label><select id="sd-mat" class="dd-select"><option value="tous">Toutes</option>${mats.map(([m, t]) => `<option value="${m}"${m === choixSujetsDnb.mat ? " selected" : ""}>${t}</option>`).join("")}</select></div>
+    </div>
+    <div class="champ"><label for="sd-choix">Épreuve <span class="doux">· ${ls.length} sujet${ls.length > 1 ? "s" : ""}</span></label>
+      <select id="sd-choix" class="dd-select"${ls.length ? "" : " disabled"}>
+        <option value="" disabled${s ? "" : " selected"}>${ls.length ? "— Sélectionne une épreuve —" : "Aucun sujet pour ce choix"}</option>
+        ${anneesListe.map(a => `<optgroup label="Brevet ${a}">${ls.filter(x => x.an === a).map(x => `<option value="${esc(x.id)}"${x.id === sujetDnbChoisi ? " selected" : ""}>${esc(nomMatDnb(x.mat))} · ${esc(x.session)} ${x.an}</option>`).join("")}</optgroup>`).join("")}
+      </select></div>
+    ${s ? `<div class="sd-choisi"><div class="sd-choisi-tete"><b>${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}</b>${s.date ? `<span class="doux">${dateLongueDnb(s.date)}</span>` : ""}</div>
+      <div class="sd-docs">${docsDe(s).map((d, i) => { const corr = /^Corrigé/.test(d.t);
+        return `<button type="button" class="sd-doc ${corr ? "corr" : "suj"}" data-doc-dnb="${esc(s.id)}" data-quoi="${i}">${corr ? ICONE_CORRIGE : ICONE_SUJET}<b>${d.t.replace(/ \(.*\)$/, "")} :</b> <span>${esc(d.nom || d.url.split("/").pop())}</span>${d.ext ? ` <span class="doux">· ${esc(domaineDnb(d.url))}</span>` : ""}</button>`; }).join("")}</div></div>` : ""}
     <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Les questions des séries sont rédigées à partir de ces sujets et de leurs corrigés. Pendant une série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir.</p>
   </div>`;
 }
@@ -13975,8 +14036,11 @@ function brancherCasiers(){
 const domaineDnb = u => String(u).replace(/^https?:\/\/(www\.)?/, "").split("/")[0];
 const dateLongueDnb = iso => { const d = new Date(iso + "T12:00:00"); return isNaN(d) ? iso : d.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long", year: "numeric"}).replace(/^./, c => c.toUpperCase()); };
 function brancherSujetsDnb(redessiner){
-  zone().querySelectorAll("#sd-an button").forEach(b => b.onclick = () => { choixSujetsDnb.an = b.dataset.v; redessiner(); });
-  zone().querySelectorAll("#sd-mat button").forEach(b => b.onclick = () => { choixSujetsDnb.mat = b.dataset.v; redessiner(); });
+  const garder = () => setTimeout(() => zone().querySelector("#bloc-sujets-dnb")?.scrollIntoView({block: "nearest"}), 30);
+  const an = zone().querySelector("#sd-an"), mat = zone().querySelector("#sd-mat"), ch = zone().querySelector("#sd-choix");
+  if (an) an.onchange = () => { choixSujetsDnb.an = an.value; redessiner(); garder(); };
+  if (mat) mat.onchange = () => { choixSujetsDnb.mat = mat.value; redessiner(); garder(); };
+  if (ch) ch.onchange = () => { sujetDnbChoisi = ch.value; redessiner(); garder(); };
   brancherCasiers();
   zone().querySelectorAll("[data-doc-dnb]").forEach(b => b.onclick = () => { const s = SUJETS_DNB.find(x => x.id === b.dataset.docDnb); if (s) ouvrirSujetDnb(s, +b.dataset.quoi || 0); });
 }
