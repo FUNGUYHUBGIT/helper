@@ -51,6 +51,7 @@
   --doux:#9b978e;
   --accent:#f2ae02;
   --accent-sombre:color-mix(in srgb,var(--accent) 22%,#0e0e0f);
+  --mix-fond:#141416;
   --erreur:#ff6b5a;
   --ok:#7fcf8a;
   --f-titre:"Sora","Segoe UI",system-ui,sans-serif;
@@ -244,7 +245,7 @@ button.cours:hover{filter:brightness(1.15)}
 .case-h{position:absolute;left:0;right:0;border:1px dashed var(--ligne);border-radius:5px;background:rgba(22,22,24,.6);pointer-events:none}
 .gerant .edt-col:hover .case-h{border-color:#3d3d42}
 .pause{position:absolute;left:0;right:0;border-radius:4px;background:repeating-linear-gradient(45deg,rgba(244,242,237,.05) 0 6px,transparent 6px 12px);display:grid;place-items:center;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--doux);pointer-events:none;overflow:hidden}
-.cours{--c:#9b978e;position:absolute;border-radius:5px;padding:6px 8px;overflow:hidden;background:color-mix(in srgb,var(--c) 28%,#141416);border:1px solid color-mix(in srgb,var(--c) 55%,transparent);border-left:4px solid var(--c);font:inherit;font-size:.78rem;line-height:1.3;display:flex;flex-direction:column;gap:1px;text-align:left;color:var(--texte)}
+.cours{--c:#9b978e;position:absolute;border-radius:5px;padding:6px 8px;overflow:hidden;background:color-mix(in srgb,var(--c) 28%,var(--mix-fond));border:1px solid color-mix(in srgb,var(--c) 55%,transparent);border-left:4px solid var(--c);font:inherit;font-size:.78rem;line-height:1.3;display:flex;flex-direction:column;gap:1px;text-align:left;color:var(--texte)}
 button.cours{cursor:pointer}
 button.cours:hover{filter:brightness(1.15)}
 .cours .m{font-weight:600;overflow-wrap:break-word;hyphens:auto}
@@ -377,8 +378,8 @@ button.carte:hover{border-color:var(--doux)}
 .mois h3{font-size:.95rem;color:var(--doux);font-weight:500}
 .grille-sem{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
 .bloc-sem{--c:var(--ligne);position:relative;display:flex;flex-direction:column;gap:6px;text-align:left;font:inherit;color:var(--texte);padding:10px 12px;border-radius:5px;min-height:76px;background:var(--surface);border:1px solid var(--ligne);border-left:4px solid var(--c)}
-.bloc-sem.t-vacances,.bloc-sem.t-evenement{background:color-mix(in srgb,var(--c) 26%,#141416);border-color:color-mix(in srgb,var(--c) 55%,transparent);border-left-color:var(--c)}
-.bloc-sem.t-vacances{background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 8px,transparent 8px 16px),color-mix(in srgb,var(--c) 24%,#141416)}
+.bloc-sem.t-vacances,.bloc-sem.t-evenement{background:color-mix(in srgb,var(--c) 26%,var(--mix-fond));border-color:color-mix(in srgb,var(--c) 55%,transparent);border-left-color:var(--c)}
+.bloc-sem.t-vacances{background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 8px,transparent 8px 16px),color-mix(in srgb,var(--c) 24%,var(--mix-fond))}
 .bloc-sem.actuelle{outline:2px solid var(--accent);outline-offset:2px}
 button.bloc-sem{cursor:pointer}
 button.bloc-sem:hover{filter:brightness(1.15)}
@@ -387,11 +388,11 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .dates-sem{font-family:var(--f-mono);font-size:.72rem;color:var(--doux)}
 .lib-sem{font-weight:600;font-size:.88rem}
 .ds-sem{display:flex;flex-wrap:wrap;gap:5px}
-.ds-puce{display:inline-flex;align-items:center;font-size:.76rem;padding:2px 8px;border-radius:999px;border:1px solid color-mix(in srgb,var(--c) 60%,transparent);background:color-mix(in srgb,var(--c) 20%,#141416)}
+.ds-puce{display:inline-flex;align-items:center;font-size:.76rem;padding:2px 8px;border-radius:999px;border:1px solid color-mix(in srgb,var(--c) 60%,transparent);background:color-mix(in srgb,var(--c) 20%,var(--mix-fond))}
 .ds-puce .pastille-c{width:8px;height:8px;margin-right:6px}
 .legende-sem{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--doux)}
 .legende-sem span{display:inline-flex;align-items:center;gap:6px}
-.legende-sem i{width:14px;height:14px;border-radius:3px;background:color-mix(in srgb,var(--c) 40%,#141416);border-left:3px solid var(--c)}
+.legende-sem i{width:14px;height:14px;border-radius:3px;background:color-mix(in srgb,var(--c) 40%,var(--mix-fond));border-left:3px solid var(--c)}
 .legende-sem i.neutre{--c:var(--doux);background:var(--surface)}
 .legende-sem i.inutil{--c:var(--ligne);background:transparent;border:1px dashed var(--ligne)}
 .bloc-sem.t-normale{--c:var(--doux)}
@@ -1720,7 +1721,7 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .apercu-fig{display:flex}
 @media (max-width:820px){.nav-groupe{display:none}.lateral .moi .qui{display:none}}
 /* Semaine datée : jours de congé, D.S., remplacements, heures événementielles */
-.conge-jour{--c:#4fc1b6;position:absolute;inset:3px;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;text-align:center;border-radius:8px;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--c) 9%,transparent) 0 10px,transparent 10px 20px),color-mix(in srgb,var(--c) 12%,#141416)}
+.conge-jour{--c:#4fc1b6;position:absolute;inset:3px;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;text-align:center;border-radius:8px;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--c) 9%,transparent) 0 10px,transparent 10px 20px),color-mix(in srgb,var(--c) 12%,var(--mix-fond))}
 .conge-jour.ferie{--c:#e5c15d}
 .conge-jour b{color:var(--c);font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
 .conge-jour span{font-weight:600;font-size:.92rem;color:var(--texte);overflow-wrap:anywhere}
@@ -1729,10 +1730,10 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 .cours .chg.remplace{background:#5fa8d3;color:#04131d}
 .cours .d.av{font-style:italic;font-size:.92em}
 .cours.ds-vide{opacity:.45}
-.conge-puce{--c:#4fc1b6;align-self:flex-start;font-size:.74rem;padding:2px 8px;border-radius:999px;border:1px solid color-mix(in srgb,var(--c) 60%,transparent);background:color-mix(in srgb,var(--c) 16%,#141416);color:var(--texte);white-space:nowrap}
+.conge-puce{--c:#4fc1b6;align-self:flex-start;font-size:.74rem;padding:2px 8px;border-radius:999px;border:1px solid color-mix(in srgb,var(--c) 60%,transparent);background:color-mix(in srgb,var(--c) 16%,var(--mix-fond));color:var(--texte);white-space:nowrap}
 .conge-puce.ferie{--c:#e5c15d}
 .annulation .edt-col{cursor:copy}
-.ag-conge{--c:#4fc1b6;display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px;padding:30px 16px;text-align:center;border-radius:14px;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--c) 9%,transparent) 0 12px,transparent 12px 24px),color-mix(in srgb,var(--c) 12%,#141416)}
+.ag-conge{--c:#4fc1b6;display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px;padding:30px 16px;text-align:center;border-radius:14px;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--c) 9%,transparent) 0 12px,transparent 12px 24px),color-mix(in srgb,var(--c) 12%,var(--mix-fond))}
 .ag-conge.ferie{--c:#e5c15d}
 .ag-conge b{color:var(--c);font-family:var(--f-mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
 .ag-conge span{font-family:var(--f-titre);font-size:1.25rem}
@@ -2459,6 +2460,14 @@ html[data-theme="clair"] .lateral{background:rgba(250,248,243,.92);box-shadow:no
 html[data-theme="clair"] .lateral .nav button[aria-selected="true"]{color:var(--texte)}
 html[data-theme="clair"] .lateral .nav-groupe{color:var(--doux)}
 html[data-theme="clair"] .pf-confid-tete h3{color:#1f5fd6}
+html[data-theme="clair"]{--mix-fond:#ffffff}
+html[data-theme="clair"] .cours{background:color-mix(in srgb,var(--c) 20%,#fff);border-color:color-mix(in srgb,var(--c) 45%,#fff);border-left-color:var(--c);color:#1c1a16}
+html[data-theme="clair"] .cours .sem{background:rgba(0,0,0,.08)}
+html[data-theme="clair"] .case-h{background:rgba(255,255,255,.6);border-color:var(--ligne)}
+html[data-theme="clair"] .edt-col:hover .case-h{border-color:#c9c2b4}
+html[data-theme="clair"] .bloc-sem.t-vacances{background:repeating-linear-gradient(45deg,rgba(0,0,0,.04) 0 8px,transparent 8px 16px),color-mix(in srgb,var(--c) 20%,#fff)}
+/* thème clair : texte blanc sur les boutons de couleur (les couleurs claires sont foncées) */
+html[data-theme="clair"] .btn:not(.sec):not(.danger),html[data-theme="clair"] .segment button[aria-pressed="true"],html[data-theme="clair"] .edt-jours-tel button[aria-pressed=true] b,html[data-theme="clair"] .pf-photo-btn,html[data-theme="clair"] .nav button[data-n]:not([data-n=""])::after{color:#fff}
 /* ===== Taille du texte, dyslexie, animations ===== */
 @font-face{font-family:"OpenDyslexic";src:url("polices/OpenDyslexic-400.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"OpenDyslexic";src:url("polices/OpenDyslexic-700.woff2") format("woff2");font-weight:500 700;font-display:swap}
@@ -2466,7 +2475,8 @@ html.dys{--f-texte:"OpenDyslexic","IBM Plex Sans",system-ui,sans-serif;--f-titre
 html.dys body{word-spacing:.04em}
 html.dys .doc-lecon,html.dys .doc-lecon *{font-family:"OpenDyslexic",sans-serif!important;line-height:1.9!important;word-spacing:.12em}
 html.dys .mono{letter-spacing:.04em}
-html.calme *,html.calme *::before,html.calme *::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important;scroll-behavior:auto!important}
+html.calme *,html.calme *::before,html.calme *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+html.calme .marque .trait{width:180px}
 /* ===== Bouton du thème ===== */
 .theme-ligne{display:flex;align-items:center;gap:18px}
 .theme-ligne > div{display:flex;flex-direction:column;gap:2px}.theme-ligne small{font-size:.85rem}
@@ -5271,6 +5281,7 @@ const dateFr = j => j.split("-").reverse().join("/");
 function graine(str){ let h = 1779033703 ^ str.length; for (let i = 0; i < str.length; i++){ h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; }; }
 const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
 const lsSet = (k, v) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} };
+const animReduite = () => matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.classList.contains("calme");
 const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const nouvelId = p => p + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const NIVEAUX = {1:"Facile", 2:"Moyen", 3:"Difficile"};
@@ -5867,9 +5878,10 @@ const CLASSES = ["3A", "3B", "3C", "3D", "3E", "3F", "Hors-élèves"];
 const optionsClasses = actuelle => { const a = String(actuelle || ""), connue = CLASSES.some(c => normClasse(c) === normClasse(a));
   return (connue || !a ? "" : `<option value="${esc(a)}" selected>${esc(a)}</option>`) + CLASSES.map(c => `<option value="${c}" ${normClasse(c) === normClasse(a) ? "selected" : ""}>${c === "Hors-élèves" ? "Hors-élèves" : "Classe " + c}</option>`).join(""); };
 const ACCENTS = [["Or","#f2ae02"],["Orange","#f5a524"],["Corail","#ff6b3d"],["Bleu","#4fa3f7"],["Vert","#5cc98a"],["Rose","#ef6fa6"],["Violet","#a585f2"]];
-const PREFS_DEFAUT = {accent: "#f2ae02", formes: null, theme: "sombre", taille: "normal", dys: false, calme: false, accueil: "edt", masquerFaits: false, notifs: {actus: true, chg: true, devoirs: true, demandes: true}};
+const PREFS_DEFAUT = {accent: "#f2ae02", accentClair: "#a8590a", formes: null, theme: "sombre", taille: "normal", dys: false, calme: false, accueil: "edt", masquerFaits: false, notifs: {actus: true, chg: true, devoirs: true, demandes: true}};
 // thème clair : chaque couleur de la palette a sa version plus foncée, pour bien ressortir sur le blanc
-const ACCENTS_CLAIR = {"#f2ae02": "#b47c00", "#f5a524": "#c06a00", "#ff6b3d": "#d4441a", "#4fa3f7": "#1c6fcf", "#5cc98a": "#1f8f50", "#ef6fa6": "#cc3a7a", "#a585f2": "#7550d4"};
+// thème clair : une palette à part, avec des couleurs qui ressortent bien sur le blanc
+const ACCENTS_CLAIR = [["Ocre","#a8590a"],["Brique","#b83a2e"],["Bleu roi","#2350c2"],["Émeraude","#0d7a5a"],["Pétrole","#0b6b80"],["Framboise","#b02d68"],["Indigo","#5a3fc0"]];
 const TAILLES_TEXTE = {petit: "14px", normal: "16px", grand: "18px", "tres-grand": "20px"};
 const estTelephone = () => matchMedia("(max-width: 700px)").matches || (matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) < 600);
 function appliquerPrefs(p){
@@ -5878,9 +5890,10 @@ function appliquerPrefs(p){
   h.dataset.theme = clair ? "clair" : "sombre"; if (p !== PREFS_DEFAUT) lsSet("helper.theme", h.dataset.theme);
   h.style.fontSize = TAILLES_TEXTE[p && p.taille] || "";
   h.classList.toggle("dys", !!(p && p.dys)); h.classList.toggle("calme", !!(p && p.calme));
-  const affiche = clair ? ACCENTS_CLAIR[accent] || accent : accent;
+  const affiche = clair ? (ACCENTS_CLAIR.some(([, c]) => c === String(p && p.accentClair || "").toLowerCase()) ? String(p.accentClair).toLowerCase() : ACCENTS_CLAIR[0][1]) : accent;
   h.style.setProperty("--accent", affiche);
   Formes.theme(clair); Formes.accent(affiche);
+  if (typeof adapterCouleursLecons === "function") adapterCouleursLecons();
   Formes.nombre(p && Number.isFinite(p.formes) ? p.formes : null);
   if (p !== PREFS_DEFAUT) try { window.HelperApp && window.HelperApp.icone(lsGet("helper.iconeCouleur") === "1" ? accent : PREFS_DEFAUT.accent); } catch {}   // icône de l'appli Android (aux couleurs seulement si choisi)
 }
@@ -6193,7 +6206,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.02";
+const VERSION_SITE = "2.03";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6382,6 +6395,32 @@ function recadrerPhoto(bmp, enregistrer){
   };
 }
 
+/* ----- Thème clair : les couleurs du texte des leçons (faites pour le fond noir) sont foncées si elles ressortent mal sur le blanc ----- */
+const lumRel = ([r, g, b]) => { const f = v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }; return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); };
+const contrasteBlanc = c => 1.05 / (lumRel(c) + .05);
+function rgbVersHsl([r, g, b]){ r /= 255; g /= 255; b /= 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2; let h = 0, s = 0;
+  if (mx !== mn){ const d = mx - mn; s = l > .5 ? d / (2 - mx - mn) : d / (mx + mn); h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h /= 6; }
+  return [h, s, l]; }
+function hslVersRgb([h, s, l]){ if (!s) return [l, l, l].map(v => Math.round(v * 255)); const q = l < .5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+  const t = x => { x = (x + 1) % 1; return x < 1 / 6 ? p + (q - p) * 6 * x : x < .5 ? q : x < 2 / 3 ? p + (q - p) * (2 / 3 - x) * 6 : p; };
+  return [t(h + 1 / 3), t(h), t(h - 1 / 3)].map(v => Math.round(v * 255)); }
+function adapterCouleursLecons(racine){
+  const clair = document.documentElement.dataset.theme === "clair";
+  (racine || document).querySelectorAll(".doc-lecon").forEach(doc => {
+    [doc, ...doc.querySelectorAll("*")].forEach(el => {
+      if (el.dataset.cOrig !== undefined){ el.style.color = el.dataset.cOrig; delete el.dataset.cOrig; }   // on repart de la couleur d'origine
+      if (!clair) return;
+      const m = getComputedStyle(el).color.match(/\d+(\.\d+)?/g); if (!m) return;
+      let rgb = m.slice(0, 3).map(Number); if (contrasteBlanc(rgb) >= 4.5) return;
+      const hsl = rgbVersHsl(rgb); hsl[1] = Math.min(hsl[1], .85);
+      while (contrasteBlanc(rgb) < 4.5 && hsl[2] > .08){ hsl[2] -= .03; rgb = hslVersRgb(hsl); }
+      el.dataset.cOrig = el.style.color; el.style.color = `rgb(${rgb.join(",")})`;
+    });
+  });
+}
+{ let attente = 0; new MutationObserver(() => { if (attente) return; attente = requestAnimationFrame(() => { attente = 0; if (document.documentElement.dataset.theme === "clair") adapterCouleursLecons(); }); })
+    .observe(document.getElementById("vue") || document.body, {childList: true, subtree: true}); }
+
 /* ----- Préférences ----- */
 let minuteriePrefs = 0;
 function enregistrerPrefs(){
@@ -6400,12 +6439,13 @@ VUES.prefs = function vuePrefs(){
           <span class="ts-ciel"><i></i><i></i><i></i><i></i><span class="ts-nuage"></span></span>
           <span class="ts-astre"><span class="ts-crat"></span><span class="ts-crat"></span><span class="ts-crat"></span></span>
         </button>
-        <div><strong id="theme-nom">${clair ? "Thème clair" : "Thème sombre"}</strong><small class="doux">${clair ? "Fond blanc : les couleurs sont plus foncées pour bien ressortir." : "Fond noir, comme d'habitude."}</small></div>
+        <div><strong id="theme-nom">${clair ? "Thème clair" : "Thème sombre"}</strong><small class="doux">${clair ? "Fond blanc, avec sa propre palette de couleurs." : "Fond noir, comme d'habitude."}</small></div>
       </div>
     </div>
     <div class="bloc">
       <span class="mono">Couleur du site</span>
-      <div class="nuancier">${ACCENTS.map(([n, c]) => `<button type="button" style="--c:${clair ? ACCENTS_CLAIR[c] || c : c}" data-c="${c}" aria-pressed="${p.accent.toLowerCase() === c}" aria-label="${n}" title="${n}"></button>`).join("")}</div>
+      <div class="nuancier">${(clair ? ACCENTS_CLAIR : ACCENTS).map(([n, c]) => `<button type="button" style="--c:${c}" data-c="${c}" aria-pressed="${String((clair ? p.accentClair || ACCENTS_CLAIR[0][1] : p.accent)).toLowerCase() === c}" aria-label="${n}" title="${n}"></button>`).join("")}</div>
+      <p class="doux" style="font-size:.85rem">${clair ? "Couleurs du thème clair. Le thème sombre garde ses propres couleurs." : "Couleurs du thème sombre. Le thème clair a ses propres couleurs."}</p>
     </div>
     <div class="bloc">
       <span class="mono">Lecture</span>
@@ -6454,7 +6494,7 @@ VUES.prefs = function vuePrefs(){
       <p class="doux" style="font-size:.85rem">${window.HelperApp && typeof window.HelperApp.configNotifs === "function" ? "Sur ce téléphone, les devoirs et les demandes arrivent aussi en notification, même appli fermée (les devoirs : le soir, à partir de 18 h)." : "Les notifications s'affichent dans Helper, à l'ouverture et pendant que la page est ouverte. Avec l'application Android (1.6), les devoirs et les demandes arrivent aussi sur le téléphone, même appli fermée."}</p>
     </div>
     <p id="statut" class="statut" role="status"></p>`;
-  zone().querySelectorAll(".nuancier button").forEach(b => b.onclick = () => { p.accent = b.dataset.c; enregistrerPrefs(); vuePrefs(); });
+  zone().querySelectorAll(".nuancier button").forEach(b => b.onclick = () => { if (p.theme === "clair") p.accentClair = b.dataset.c; else p.accent = b.dataset.c; enregistrerPrefs(); vuePrefs(); });
   $("#theme-switch").onclick = () => { p.theme = p.theme === "clair" ? "sombre" : "clair"; $("#theme-switch").classList.toggle("clair", p.theme === "clair"); enregistrerPrefs(); setTimeout(vuePrefs, 420); };
   zone().querySelectorAll("#taille-texte button").forEach(b => b.onclick = () => { p.taille = b.dataset.v; enregistrerPrefs(); vuePrefs(); });
   $("#pf-dys").onchange = () => { p.dys = $("#pf-dys").checked; enregistrerPrefs(); };
@@ -6947,7 +6987,7 @@ function animerEntete(cv, couleur, enerve){
   const PAL = enerve ? [[0, 10, 5], [-12, 5, 15], [12, 0, -5], [-25, 10, 20], [8, -10, 28]] : [[0, 0, 12], [28, 0, 8], [-28, 0, 10], [55, -10, 18], [-50, 0, 22], [0, -15, 30]];
   const TYPES = ["rond", "carre", "triangle", "croix", "point", "losange"];
   let W = 0, H = 0, dpr = 1, items = [], t = 0, glitch = 0;
-  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches, V = enerve ? 1.9 : .2;
+  const reduit = animReduite(), V = enerve ? 1.9 : .2;
   const creer = () => {
     const n = Math.round(Math.max(enerve ? 22 : 16, Math.min(enerve ? 60 : 44, W * H / (enerve ? 4200 : 6000))));
     items = Array.from({length: n}, () => { const ang = Math.random() * Math.PI * 2, v = V * (.4 + Math.random());
@@ -7414,7 +7454,7 @@ function animerVagues(cv, controle){
   const jeton = ++dvAnim, ctx = cv.getContext("2d"); let W = 0, H = 0, dpr = 1;
   const taille = () => { const r = cv.getBoundingClientRect(); dpr = Math.min(2, devicePixelRatio || 1); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
   taille(); addEventListener("resize", taille);
-  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduit = animReduite();
   // contrôle fait : la mer « se désynchronise » comme une mort dans AC4 — elle se fige, saute, se découpe en bandes, des points passent au rouge
   let tv = 0, prec = 0, glitch = 0, phase = 0, total = 0, panneaux = [];
   const bruit = (a, b, c, d) => { const v = Math.sin(a * 127.1 + b * 311.7 + c * 74.7 + d * 19.3) * 43758.5453; return v - Math.floor(v); };
@@ -12347,7 +12387,7 @@ function lgCouleursPersos(scene){
 // fond animé : formes pleines aux couleurs du site qui dérivent et se relient quand elles sont proches
 function lgFondAnime(scene, acc){
   const cv = scene.querySelector(".lg-bd-cv"); if (!cv) return {teinte(){}};
-  const cx = cv.getContext("2d"), [h, sat, l] = lgHsl(acc), calme = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cx = cv.getContext("2d"), [h, sat, l] = lgHsl(acc), calme = animReduite();
   const COUL = [`hsl(${h.toFixed(0)} ${sat.toFixed(0)}% ${l.toFixed(0)}%)`, "rgb(244,242,237)", "rgb(90,87,81)"], ALPHA = [.6, .3, .75], TYPES = ["cercle", "carre", "triangle"];
   const teinte = [h, sat, l], cible = [h, sat, l];
   let L = 0, H = 0, formes = [], avant = performance.now();
@@ -12419,7 +12459,7 @@ function lgLecteurBD(racine, o, lignes, mode, etat){
   const dit = bulle.querySelector(".lg-dit"), qui = bulle.querySelector(".lg-qui"), fr = bulle.querySelector(".lg-fr"), compteur = racine.querySelector(".lg-compteur");
   const prec = racine.querySelector('[data-nav="-1"]'), suiv = racine.querySelector('[data-nav="1"]'), btTrad = racine.querySelector("[data-trad]"), btSon = racine.querySelector("[data-son]");
   const persos = [racine.querySelector('.lg-perso[data-q="1"]'), racine.querySelector('.lg-perso[data-q="2"]')], corps = persos.map(p => p.querySelector(".lg-corps"));
-  const calme = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const calme = animReduite();
   const coul = lgCouleursPersos(scene), fond = lgFondAnime(scene, coul.acc), queue = bulle.querySelector(".lg-queue path");
   // la pointe de la bulle vise toujours la tête de celui qui parle
   // … et ne touche jamais un personnage : la pointe raccourcit, et si la bulle est trop basse son texte se resserre
