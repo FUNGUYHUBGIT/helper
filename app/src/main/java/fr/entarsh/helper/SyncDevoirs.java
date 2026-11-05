@@ -214,7 +214,7 @@ public class SyncDevoirs extends Worker {
         for (int k = 0; dd != null && k < dd.length(); k++) { JSONObject x = dd.getJSONObject(k); String eid = x.optString("edId");
           if (deja.containsKey(eid)) { dd.put(k, deja.get(eid)); continue; }
           if (envois >= 15 || eid.isEmpty()) continue;
-          try { String id = televerser(x, hs); if (id != null) { x.put("id", id); envois++; } } catch (Exception e) {} } }
+          try { String idPj = televerser(x, hs); if (idPj != null) { x.put("id", idPj); envois++; } } catch (Exception e) {} } }
       Set<String> vus = new HashSet<>(dates); Calendar lim = (Calendar) cal.clone(); lim.add(Calendar.DAY_OF_MONTH, -120); String limite = f.format(lim.getTime());
       List<JSONObject> tous = new ArrayList<>();
       try { JSONArray rows = new JSONArray(ex.corps); if (rows.length() > 0) { JSONArray anc = rows.getJSONObject(0).getJSONObject("data").optJSONArray("devoirs");
