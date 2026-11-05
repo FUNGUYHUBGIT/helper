@@ -397,7 +397,7 @@ button.bloc-sem:hover{filter:brightness(1.15)}
 .bloc-sem.t-inutilisee{background:transparent;border-style:dashed;opacity:.6}
 .bloc-sem.t-inutilisee .num-sem{color:var(--doux)}
 /* Leçons : document et éditeur */
-.sous-titre-lecon{font-size:1.05rem;color:var(--doux);margin-top:-14px}
+.sous-titre-lecon{font-size:1.05rem;color:var(--doux);margin-top:-4px}
 .doc-lecon{position:relative;display:flow-root;line-height:1.65;font-size:1rem;max-width:none;min-height:120px}
 .doc-lecon p{margin:0 0 .7em}
 .doc-lecon h1,.doc-lecon h2,.doc-lecon h3{margin:.4em 0}
@@ -2391,6 +2391,65 @@ body.ambiance-dnb .lateral .nav-groupe{color:#8ca6d6}
   .dv-pliable.ouvert .dv-pli-corps{display:flex;flex-direction:column;gap:10px}
   .dv-pliable.ouvert .dv-pli-btn .sd-fl{transform:rotate(90deg)}
 }
+
+/* Leçons : sous-titre décollé du titre */
+.mini-entete .sous-titre-lecon{margin:4px 0 0;line-height:1.3}
+.mini-entete h2{line-height:1.2}
+/* Sujets du DNB : grand déroulant autour de la liste */
+.sd-grand{border:1px solid var(--ligne);border-radius:14px;background:var(--surface-2)}
+.sd-grand > summary{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;list-style:none;font-weight:600;font-size:1rem}
+.sd-grand > summary::-webkit-details-marker{display:none}
+.sd-grand-fl{width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .15s;margin:0 4px}
+.sd-grand[open] .sd-grand-fl{transform:rotate(45deg)}
+.sd-grand > summary span:nth-child(2){flex:1}
+.sd-grand-nb{padding:2px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--ligne);font-size:.8rem;color:var(--doux);font-weight:500}
+.sd-grand-corps{display:flex;flex-direction:column;gap:12px;padding:4px 18px 18px;border-top:1px solid var(--ligne);padding-top:16px}
+/* Demandes : liste plus aérée */
+.dmx-barre{margin-bottom:6px}
+.dmx-onglets{padding:4px 14px}
+.dmx-onglets button{padding:14px 14px 13px}
+.dmx-liste{gap:10px;padding:14px}
+.dmx-ligne{gap:16px;padding:18px 20px;border:1px solid var(--ligne);border-radius:14px;background:var(--surface-2)}
+.dmx-ligne:last-child{border-bottom:1px solid var(--ligne)}
+.dmx-ligne:hover{background:color-mix(in srgb,var(--texte) 5%,var(--surface-2))}
+.dmx-ligne-av .dm-av{width:46px;height:46px}
+.dmx-ligne-corps{gap:8px}
+.dmx-l1 b{font-size:1.02rem}
+.dmx-l2{gap:6px}
+.dmx-apercu{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.45}
+.dmx-public{margin-top:16px}
+@media (max-width:600px){.dmx-liste{padding:10px;gap:8px}.dmx-ligne{padding:14px;gap:12px}}
+/* Gérant · Élèves et codes */
+.ge-chiffres{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:900px}
+.ge-chiffres div{display:flex;flex-direction:column;gap:2px;padding:14px 16px;border-radius:14px;border:1px solid var(--ligne);background:var(--surface)}
+.ge-chiffres strong{font-size:1.5rem;font-variant-numeric:tabular-nums}.ge-chiffres span{font-size:.8rem;color:var(--doux)}
+.ge-barre{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:900px;margin-top:18px}
+.ge-barre .segment{flex-wrap:wrap}
+.ge-recherche{flex:1;min-width:200px;max-width:320px;margin-left:auto}
+.ge-liste{display:flex;flex-direction:column;gap:12px;max-width:900px;margin-top:6px}
+.ge-carte{display:flex;flex-direction:column;gap:14px;padding:18px 20px;border-radius:16px;border:1px solid var(--ligne);background:var(--surface)}
+.ge-carte.pris{background:color-mix(in srgb,var(--surface) 70%,var(--fond))}
+.ge-id{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.ge-av{width:44px!important;height:44px!important;font-size:1rem!important;flex:none}
+.ge-nom{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}.ge-nom b{font-size:1.08rem;overflow-wrap:anywhere}
+.ge-code{flex:1;min-width:0;font-size:1.15rem;letter-spacing:.06em;overflow-wrap:anywhere}
+.ge-badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge.libre{border-color:#3fb950;color:#3fb950}
+.ge-stats{display:flex;gap:14px;font-size:.84rem;color:var(--doux)}.ge-stats b{color:var(--texte);font-size:1rem}
+.ge-champs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:14px;border-radius:12px;background:var(--surface-2)}
+.ge-champ{display:flex;flex-direction:column;gap:5px;min-width:0}
+.ge-champ > span:first-child{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--doux)}
+.ge-champ input,.ge-champ select{width:100%;min-width:0}
+.ge-val{padding:8px 0;font-size:.92rem}
+.ge-champ .champ-ip{min-width:0;padding:8px 10px;border:1px solid var(--ligne);border-style:solid;background:var(--surface);box-shadow:none}
+.ge-champ .champ-ip:focus{border-color:var(--accent);outline:none}
+.ge-recherche{padding:10px 14px;border:1px solid var(--ligne);border-radius:10px;background:var(--surface);color:var(--texte);font:inherit;font-size:.92rem;outline:none}
+.ge-recherche:focus{border-color:var(--accent)}
+.ge-code{flex:1 1 auto!important;min-width:150px!important}.ge-code .doux{font-family:var(--f-texte);font-size:.9rem;letter-spacing:0}
+.ge-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.ge-creer{max-width:900px;margin-top:6px}
+.ge-creer-grille{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.ge-chiffres{grid-template-columns:repeat(2,minmax(0,1fr))}.ge-creer-grille{grid-template-columns:1fr}.ge-recherche{max-width:none;margin-left:0}.ge-stats{width:100%}.ge-actions{justify-content:stretch}.ge-actions button{flex:1}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -6081,7 +6140,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.00";
+const VERSION_SITE = "2.01";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -13982,28 +14041,20 @@ function brancherDicteesDnb(redessiner){
 const MATIERES_DNB = [["francais", "Français"], ["maths", "Mathématiques"], ["hge", "Histoire-Géo-EMC"], ["sciences", "Sciences"]];
 const nomMatDnb = m => (MATIERES_DNB.find(x => x[0] === m) || [, m])[1];
 let choixSujetsDnb = {an: "tous", mat: "tous"};
-let sujetDnbChoisi = "";
+let sdGrandOuvert = false;
 function blocSujetsDnb(){
   const ans = [...new Set(SUJETS_DNB.map(s => s.an))].sort((a, b) => b - a), mats = MATIERES_DNB.filter(([m]) => SUJETS_DNB.some(s => s.mat === m));
   const ls = SUJETS_DNB.filter(s => (choixSujetsDnb.an === "tous" || s.an === +choixSujetsDnb.an) && (choixSujetsDnb.mat === "tous" || s.mat === choixSujetsDnb.mat))
     .sort((a, b) => b.an - a.an || String(b.date).localeCompare(String(a.date)) || MATIERES_DNB.findIndex(m => m[0] === a.mat) - MATIERES_DNB.findIndex(m => m[0] === b.mat));
-  const s = ls.find(x => x.id === sujetDnbChoisi);
-  const anneesListe = [...new Set(ls.map(x => x.an))];
-  return `<div class="bloc sd-bloc" id="bloc-sujets-dnb">
+  return `<div class="bloc" id="bloc-sujets-dnb">
     <span class="mono">Sujets du DNB · Éducation nationale</span>
-    <p class="doux" style="font-size:.88rem;max-width:75ch;margin:0">Les vrais sujets du brevet depuis 2018, avec leur corrigé. Choisis une épreuve dans le menu.</p>
-    <div class="sd-filtres">
-      <div class="champ"><label for="sd-an">Année</label><select id="sd-an" class="dd-select"><option value="tous">Toutes</option>${ans.map(a => `<option value="${a}"${String(a) === String(choixSujetsDnb.an) ? " selected" : ""}>${a}</option>`).join("")}</select></div>
-      <div class="champ"><label for="sd-mat">Matière</label><select id="sd-mat" class="dd-select"><option value="tous">Toutes</option>${mats.map(([m, t]) => `<option value="${m}"${m === choixSujetsDnb.mat ? " selected" : ""}>${t}</option>`).join("")}</select></div>
-    </div>
-    <div class="champ"><label for="sd-choix">Épreuve <span class="doux">· ${ls.length} sujet${ls.length > 1 ? "s" : ""}</span></label>
-      <select id="sd-choix" class="dd-select"${ls.length ? "" : " disabled"}>
-        <option value="" disabled${s ? "" : " selected"}>${ls.length ? "— Sélectionne une épreuve —" : "Aucun sujet pour ce choix"}</option>
-        ${anneesListe.map(a => `<optgroup label="Brevet ${a}">${ls.filter(x => x.an === a).map(x => `<option value="${esc(x.id)}"${x.id === sujetDnbChoisi ? " selected" : ""}>${esc(nomMatDnb(x.mat))} · ${esc(x.session)} ${x.an}</option>`).join("")}</optgroup>`).join("")}
-      </select></div>
-    ${s ? `<div class="sd-choisi"><div class="sd-choisi-tete"><b>${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}</b>${s.date ? `<span class="doux">${dateLongueDnb(s.date)}</span>` : ""}</div>
-      <div class="sd-docs">${docsDe(s).map((d, i) => { const corr = /^Corrigé/.test(d.t);
-        return `<button type="button" class="sd-doc ${corr ? "corr" : "suj"}" data-doc-dnb="${esc(s.id)}" data-quoi="${i}">${corr ? ICONE_CORRIGE : ICONE_SUJET}<b>${d.t.replace(/ \(.*\)$/, "")} :</b> <span>${esc(d.nom || d.url.split("/").pop())}</span>${d.ext ? ` <span class="doux">· ${esc(domaineDnb(d.url))}</span>` : ""}</button>`; }).join("")}</div></div>` : ""}
+    <p class="doux" style="font-size:.88rem;max-width:75ch">Les vrais sujets du brevet depuis 2018, avec leur corrigé. Ouvre une épreuve pour la lire en entier.</p>
+    <details class="sd-grand" id="sd-grand"${sdGrandOuvert ? " open" : ""}><summary><span class="sd-grand-fl" aria-hidden="true"></span><span>Afficher la liste des sujets</span><span class="sd-grand-nb">${ls.length} sujet${ls.length > 1 ? "s" : ""}</span></summary><div class="sd-grand-corps">
+    ${ans.length ? segment("sd-an", [["tous", "Toutes"], ...ans.map(a => [String(a), String(a)])], String(choixSujetsDnb.an))
+      + (mats.length > 1 ? segment("sd-mat", [["tous", "Toutes les matières"], ...mats], choixSujetsDnb.mat) : "") : ""}
+    ${ls.length ? `<div class="sd-arbre">${ls.map(s => ligneCasier(s.id, `${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}`, s.date ? dateLongueDnb(s.date) : "",
+        docsDe(s).map(d => [d.t, d.url, !!d.ext, d.nom]))).join("")}</div>` : `<div class="vide">Aucun sujet pour ce choix.</div>`}
+    </div></details>
     <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Les questions des séries sont rédigées à partir de ces sujets et de leurs corrigés. Pendant une série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir.</p>
   </div>`;
 }
@@ -14036,11 +14087,9 @@ function brancherCasiers(){
 const domaineDnb = u => String(u).replace(/^https?:\/\/(www\.)?/, "").split("/")[0];
 const dateLongueDnb = iso => { const d = new Date(iso + "T12:00:00"); return isNaN(d) ? iso : d.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long", year: "numeric"}).replace(/^./, c => c.toUpperCase()); };
 function brancherSujetsDnb(redessiner){
-  const garder = () => setTimeout(() => zone().querySelector("#bloc-sujets-dnb")?.scrollIntoView({block: "nearest"}), 30);
-  const an = zone().querySelector("#sd-an"), mat = zone().querySelector("#sd-mat"), ch = zone().querySelector("#sd-choix");
-  if (an) an.onchange = () => { choixSujetsDnb.an = an.value; redessiner(); garder(); };
-  if (mat) mat.onchange = () => { choixSujetsDnb.mat = mat.value; redessiner(); garder(); };
-  if (ch) ch.onchange = () => { sujetDnbChoisi = ch.value; redessiner(); garder(); };
+  zone().querySelectorAll("#sd-an button").forEach(b => b.onclick = () => { choixSujetsDnb.an = b.dataset.v; redessiner(); });
+  zone().querySelectorAll("#sd-mat button").forEach(b => b.onclick = () => { choixSujetsDnb.mat = b.dataset.v; redessiner(); });
+  const gd = zone().querySelector("#sd-grand"); if (gd) gd.ontoggle = () => { sdGrandOuvert = gd.open; };
   brancherCasiers();
   zone().querySelectorAll("[data-doc-dnb]").forEach(b => b.onclick = () => { const s = SUJETS_DNB.find(x => x.id === b.dataset.docDnb); if (s) ouvrirSujetDnb(s, +b.dataset.quoi || 0); });
 }
@@ -16283,23 +16332,38 @@ async function enregistrerCodesClairs(){
 
 /* ----- Gérant : élèves et codes IAUWL ----- */
 VUES["g-site"] = () => vueGSite();
+let elevesVue = {onglet: "comptes", q: ""};
 VUES["g-eleves"] = function vueGEleves(){
   rafraichir = dessinerEleves;
+  const nbLibres = codes.filter(c => !(utilisations[c.id] && utilisations[c.id].compte)).length, nbComptes = comptes.filter(c => c.hash).length;
+  const nbAdmins = comptes.filter(c => c.hash && c.codeHash && ["administrateur", "gerant"].includes(rangDe((codes.find(k => k.id === c.codeHash) || {}).rang))).length;
   zone().innerHTML = entete("Gérant", "Élèves et codes d'accès") + `
-    <form class="bloc" id="form-code" novalidate>
-      <span class="mono">Créer un identifiant d'accès unique (IAUWL)</span>
-      <p class="doux" style="font-size:.88rem;max-width:75ch">Chaque code sert une seule fois, pour créer un compte. Il donne au compte son IP (identifiant personnel), son rang et sa classe. Un compte Gérant a tous les onglets élève et gérant ; un compte Élève n'a que les onglets élève.</p>
-      <div class="grille-form">
-        <div class="champ" style="grid-column:span 2"><label for="nc-code">Code</label><div class="rangee" style="flex-wrap:nowrap"><input id="nc-code" type="text" class="code-clair" spellcheck="false" autocapitalize="characters" value="${genererCode()}" style="flex:1;min-width:0"><button type="button" class="mini-btn" id="nc-gen">Générer</button></div></div>
-        <div class="champ"><label for="nc-nom" style="white-space:nowrap">IP <small class="doux" style="font-size:.78em">: identifiant personnel</small></label><input id="nc-nom" type="text" placeholder="Gabriel.C." maxlength="40"></div>
-        <div class="champ"><label for="nc-rang">Rang</label><select id="nc-rang"><option value="eleve">Élève</option><option value="administrateur">Administrateur (leçons, exercices, emploi du temps, D.S.)</option><option value="gerant">Gérant</option></select></div>
+    <div class="ge-chiffres">
+      <div><strong>${nbComptes}</strong><span>compte${nbComptes > 1 ? "s" : ""}</span></div>
+      <div><strong>${nbAdmins}</strong><span>admin${nbAdmins > 1 ? "s" : ""} et gérant</span></div>
+      <div><strong>${codes.length}</strong><span>code${codes.length > 1 ? "s" : ""} créé${codes.length > 1 ? "s" : ""}</span></div>
+      <div><strong>${nbLibres}</strong><span>code${nbLibres > 1 ? "s" : ""} libre${nbLibres > 1 ? "s" : ""}</span></div>
+    </div>
+    <div class="ge-barre">
+      ${segment("ge-onglet", [["comptes", "Comptes"], ["codes", "Codes d'accès"], ["creer", "＋ Créer un code"]], elevesVue.onglet)}
+      ${elevesVue.onglet !== "creer" ? `<input type="search" id="ge-q" class="ge-recherche" placeholder="Rechercher un pseudo, un IP…" value="${esc(elevesVue.q)}" aria-label="Rechercher">` : ""}
+    </div>
+    <p id="statut" class="statut" role="status"></p>
+    ${elevesVue.onglet === "creer" ? `<form class="bloc ge-creer" id="form-code" novalidate>
+      <span class="mono">Créer un code d'accès</span>
+      <p class="doux" style="font-size:.88rem;max-width:65ch;margin:0">Un code sert <b>une seule fois</b>, pour créer un compte. Il donne au compte son IP (identifiant personnel), son rang et sa classe.</p>
+      <div class="champ"><label for="nc-code">Code</label><div class="rangee" style="flex-wrap:nowrap"><input id="nc-code" type="text" class="code-clair" spellcheck="false" autocapitalize="characters" value="${genererCode()}" style="flex:1;min-width:0"><button type="button" class="mini-btn" id="nc-gen">Générer</button></div></div>
+      <div class="ge-creer-grille">
+        <div class="champ"><label for="nc-nom">IP <small class="doux">· identifiant personnel</small></label><input id="nc-nom" type="text" placeholder="Gabriel.C." maxlength="40"></div>
+        <div class="champ"><label for="nc-rang">Rang</label><select id="nc-rang"><option value="eleve">Élève</option><option value="administrateur">Administrateur</option><option value="gerant">Gérant</option></select></div>
         <div class="champ"><label for="nc-classe">Classe</label><select id="nc-classe">${optionsClasses("3C")}</select></div>
       </div>
-      <p id="statut" class="statut" role="status"></p>
+      <p class="doux" style="font-size:.8rem;margin:0">Élève : onglets élève. Administrateur : en plus, leçons, exercices, emploi du temps et D.S. Gérant : tout.</p>
       <div><button class="btn" type="submit">Créer le code</button></div>
-    </form>
-    <div class="bloc"><span class="mono">Codes créés</span><div id="liste-codes"></div></div>
-    <div class="bloc"><span class="mono">Comptes</span><div id="liste-comptes"></div></div>`;
+    </form>` : `<div id="${elevesVue.onglet === "codes" ? "liste-codes" : "liste-comptes"}"></div>`}`;
+  zone().querySelectorAll("#ge-onglet button").forEach(b => b.onclick = () => { elevesVue.onglet = b.dataset.v; vueGEleves(); });
+  const q = $("#ge-q"); if (q) q.oninput = () => { elevesVue.q = q.value; dessinerEleves(); };
+  if (!$("#form-code")) return dessinerEleves();
   $("#nc-gen").onclick = () => { $("#nc-code").value = genererCode(); };
   $("#form-code").onsubmit = async ev => {
     ev.preventDefault();
@@ -16318,29 +16382,49 @@ VUES["g-eleves"] = function vueGEleves(){
   dessinerEleves();
 };
 function dessinerEleves(){
-  const zc = $("#liste-codes"), za = $("#liste-comptes"); if (!zc) return;
+  const zc = $("#liste-codes") || document.createElement("div"), za = $("#liste-comptes") || document.createElement("div");
+  if (!$("#liste-codes") && !$("#liste-comptes")) return;
   const pseudoDe = id => { const c = comptes.find(x => x.id === id); return c ? c.pseudo || id : id; };
-  const tri = codes.slice().sort((a, b) => String(b.creeLe).localeCompare(String(a.creeLe)));
-  zc.innerHTML = tri.length ? `<div class="tableau"><table><thead><tr><th title="Identifiant personnel">IP</th><th>Code</th><th>Rang</th><th>Classe</th><th>État</th><th></th></tr></thead><tbody>${tri.map(c => {
-      const u = utilisations[c.id];
-      return `<tr><td><input class="champ-ip" data-ip-code="${esc(c.id)}" value="${esc(c.nom || "")}" maxlength="40" aria-label="IP (identifiant personnel)" spellcheck="false"></td><td class="code-clair">${codesClairs[c.id] ? esc(codesClairs[c.id]) : `<span class="doux" title="Créé depuis un autre appareil ou un autre compte gérant">masqué</span>`}</td>
-        <td>${RANGS[rangDe(c.rang)]}</td><td><select class="choix-classe" data-classe-code="${esc(c.id)}" aria-label="Classe">${optionsClasses(c.classe)}</select></td>
-        <td>${u && u.compte ? `<span class="badge accent">Utilisé · ${esc(pseudoDe(u.compte))}</span>` : `<span class="badge">Libre</span>`}</td>
-        <td style="text-align:right"><button type="button" class="mini-btn danger" data-suppr-code="${esc(c.id)}">Supprimer</button></td></tr>`; }).join("")}</tbody></table></div>`
-    : `<div class="vide">Aucun code pour le moment. Crée le premier ci-dessus, par exemple pour toi avec le rang Gérant.</div>`;
+  const q = elevesVue.q.trim().toLowerCase(), ok = (...t) => !q || t.some(x => String(x || "").toLowerCase().includes(q));
+  const champ = (lab, html) => `<label class="ge-champ"><span>${lab}</span>${html}</label>`;
+  const tri = codes.slice().sort((a, b) => !!(utilisations[a.id] && utilisations[a.id].compte) - !!(utilisations[b.id] && utilisations[b.id].compte) || String(b.creeLe).localeCompare(String(a.creeLe)))
+    .filter(c => ok(c.nom, codesClairs[c.id], c.classe, utilisations[c.id] && pseudoDe(utilisations[c.id].compte)));
+  zc.innerHTML = tri.length ? `<div class="ge-liste">${tri.map(c => {
+      const u = utilisations[c.id], pris = u && u.compte;
+      return `<div class="ge-carte${pris ? " pris" : ""}">
+        <div class="ge-id"><span class="ge-code code-clair">${codesClairs[c.id] ? esc(codesClairs[c.id]) : `<span class="doux" title="Créé depuis un autre appareil ou un autre compte gérant">Code masqué</span>`}</span>
+          <span class="ge-badges">${pris ? `<span class="badge accent">Utilisé par ${esc(pseudoDe(u.compte))}</span>` : `<span class="badge libre">Libre</span>`}<span class="badge">${RANGS[rangDe(c.rang)]}</span></span></div>
+        <div class="ge-champs">
+          ${champ("IP", `<input class="champ-ip" data-ip-code="${esc(c.id)}" value="${esc(c.nom || "")}" maxlength="40" aria-label="IP (identifiant personnel)" spellcheck="false">`)}
+          ${champ("Classe", `<select class="choix-classe" data-classe-code="${esc(c.id)}" aria-label="Classe">${optionsClasses(c.classe)}</select>`)}
+          ${champ("Créé le", `<span class="ge-val">${c.creeLe ? dateFr(String(c.creeLe).slice(0, 10)) : "—"}</span>`)}
+        </div>
+        <div class="ge-actions"><button type="button" class="mini-btn danger" data-suppr-code="${esc(c.id)}">Supprimer</button></div>
+      </div>`; }).join("")}</div>`
+    : `<div class="vide">${q ? "Aucun code ne correspond à ta recherche." : "Aucun code pour le moment. Crée le premier dans « Créer un code »."}</div>`;
   zc.querySelectorAll("[data-suppr-code]").forEach(b => deuxClics(b, async () => {
     const h = b.dataset.supprCode;
     await db.doc("codes/" + h).delete();
     if (codesClairs[h]){ delete codesClairs[h]; await enregistrerCodesClairs(); }
   }));
   const infosCode = c => { if (!c.codeHash) return {nom: "", rang: "eleve", classe: "3C", ancien: true}; const k = codes.find(x => x.id === c.codeHash); return k ? k : {nom: "", rang: "eleve", classe: "", sansCode: true}; };
-  const lignes = comptes.filter(c => c.hash).sort((a, b) => String(a.pseudo || a.id).localeCompare(String(b.pseudo || b.id)));
-  za.innerHTML = lignes.length ? `<div class="tableau"><table><thead><tr><th>Pseudo</th><th title="Identifiant personnel">IP</th><th>Rang</th><th>Classe</th><th>Points</th><th>Série</th><th>Créé le</th><th></th></tr></thead><tbody>${lignes.map(c => {
-      const k = infosCode(c), p = progresTous[c.id] || {};
-      return `<tr><td><span class="rangee" style="gap:8px;flex-wrap:nowrap"><span class="avatar" style="width:28px;height:28px;font-size:.75rem">${c.avatar ? `<img src="${esc(c.avatar)}" alt="">` : esc((c.pseudo || c.id).slice(0, 1).toUpperCase())}</span>${esc(c.pseudo || c.id)}</span></td>
-        <td>${k.ancien || k.sansCode ? `<span class="doux">${k.ancien ? "Ancien compte" : "Code supprimé"}</span>` : `<input class="champ-ip" data-ip-code="${esc(c.codeHash)}" value="${esc(k.nom || "")}" maxlength="40" aria-label="IP de ${esc(c.pseudo || c.id)}" spellcheck="false">`}</td><td>${k.ancien || k.sansCode || !c.codeHash ? (RANGS[rangDe(k.rang)]) : `<select class="choix-rang" data-rang-code="${esc(c.codeHash)}" data-compte="${esc(c.id)}" aria-label="Rôle de ${esc(c.pseudo || c.id)}"${c.id === moi ? ` disabled title="Tu ne peux pas changer ton propre rôle"` : ""}>${Object.entries(RANGS).map(([r, t]) => `<option value="${r}" ${rangDe(k.rang) === r ? "selected" : ""}>${t}</option>`).join("")}</select>`}</td><td>${k.ancien || k.sansCode ? esc(k.classe) || "—" : `<select class="choix-classe" data-classe-code="${esc(c.codeHash)}" aria-label="Classe de ${esc(c.pseudo || c.id)}">${optionsClasses(k.classe)}</select>`}</td>
-        <td class="num">${p.points || 0}</td><td class="num">${p.serie || 0} j</td><td>${c.creeLe ? dateFr(String(c.creeLe).slice(0, 10)) : "—"}</td><td style="text-align:right;white-space:nowrap">${c.pseudoBloque ? `<span class="badge" title="Changement de pseudo désactivé">🔒 Pseudo</span> ` : ""}<button type="button" class="mini-btn" data-moderer="${esc(c.id)}">Pseudo…</button> <button type="button" class="mini-btn danger" data-suppr-compte="${esc(c.id)}">Supprimer</button></td></tr>`; }).join("")}</tbody></table></div>`
-    : `<div class="vide">Aucun compte créé pour le moment.</div>`;
+  const lignes = comptes.filter(c => c.hash).sort((a, b) => String(a.pseudo || a.id).localeCompare(String(b.pseudo || b.id)))
+    .filter(c => { const k = infosCode(c); return ok(c.pseudo, c.id, k.nom, k.classe, RANGS[rangDe(k.rang)]); });
+  za.innerHTML = lignes.length ? `<div class="ge-liste">${lignes.map(c => {
+      const k = infosCode(c), p = progresTous[c.id] || {}, fige = k.ancien || k.sansCode || !c.codeHash, r = rangDe(k.rang);
+      return `<div class="ge-carte">
+        <div class="ge-id"><span class="avatar ge-av">${c.avatar ? `<img src="${esc(c.avatar)}" alt="">` : esc((c.pseudo || c.id).slice(0, 1).toUpperCase())}</span>
+          <span class="ge-nom"><b>${esc(c.pseudo || c.id)}</b><span class="ge-badges"><span class="badge${r !== "eleve" ? " accent" : ""}">${RANGS[r]}</span>${c.pseudoBloque ? `<span class="badge" title="Changement de pseudo désactivé">🔒 Pseudo bloqué</span>` : ""}${c.id === moi ? `<span class="badge">Toi</span>` : ""}</span></span>
+          <span class="ge-stats"><span><b>${p.points || 0}</b> pts</span><span><b>${p.serie || 0}</b> j de série</span></span></div>
+        <div class="ge-champs">
+          ${champ("IP", fige ? `<span class="ge-val doux">${k.ancien ? "Ancien compte" : "Code supprimé"}</span>` : `<input class="champ-ip" data-ip-code="${esc(c.codeHash)}" value="${esc(k.nom || "")}" maxlength="40" aria-label="IP de ${esc(c.pseudo || c.id)}" spellcheck="false">`)}
+          ${champ("Rôle", fige ? `<span class="ge-val">${RANGS[r]}</span>` : `<select class="choix-rang" data-rang-code="${esc(c.codeHash)}" data-compte="${esc(c.id)}" aria-label="Rôle de ${esc(c.pseudo || c.id)}"${c.id === moi ? ` disabled title="Tu ne peux pas changer ton propre rôle"` : ""}>${Object.entries(RANGS).map(([x, t]) => `<option value="${x}" ${r === x ? "selected" : ""}>${t}</option>`).join("")}</select>`)}
+          ${champ("Classe", k.ancien || k.sansCode ? `<span class="ge-val">${esc(k.classe) || "—"}</span>` : `<select class="choix-classe" data-classe-code="${esc(c.codeHash)}" aria-label="Classe de ${esc(c.pseudo || c.id)}">${optionsClasses(k.classe)}</select>`)}
+          ${champ("Créé le", `<span class="ge-val">${c.creeLe ? dateFr(String(c.creeLe).slice(0, 10)) : "—"}</span>`)}
+        </div>
+        <div class="ge-actions"><button type="button" class="mini-btn" data-moderer="${esc(c.id)}">Modérer le pseudo</button><button type="button" class="mini-btn danger" data-suppr-compte="${esc(c.id)}">Supprimer</button></div>
+      </div>`; }).join("")}</div>`
+    : `<div class="vide">${q ? "Aucun compte ne correspond à ta recherche." : "Aucun compte créé pour le moment."}</div>`;
   za.querySelectorAll("[data-suppr-compte]").forEach(b => deuxClics(b, () => supprimerCompteGerant(b.dataset.supprCompte)));
   za.querySelectorAll("[data-rang-code]").forEach(sel => sel.onchange = async () => {
     const c = comptes.find(x => x.id === sel.dataset.compte), r = sel.value;
