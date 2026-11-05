@@ -61,7 +61,8 @@ public class AppActivity extends Activity {
     s.setDatabaseEnabled(true);
     s.setMediaPlaybackRequiresUserGesture(false);
     s.setTextZoom(100);
-    s.setUserAgentString(s.getUserAgentString() + " HelperApp/1.4");
+    String versionAppli = "1.7"; try { versionAppli = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; } catch (Exception x) {}
+    s.setUserAgentString(s.getUserAgentString() + " HelperApp/" + versionAppli);   // la vraie version de l'appli (le site sait si une mise à jour existe)
 
     // Aucune inversion / assombrissement automatique : on garde les vraies couleurs de Helper
     if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
