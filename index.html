@@ -5856,13 +5856,16 @@ function marquerNav(v){ document.querySelectorAll("#nav button").forEach(b => b.
 const VUES = {};
 // ambiance violette de la dictée : formes du fond, menu de côté et couleur d'accent
 // ----- Application Android (téléchargée sur Entarsh Catalogue) -----
-const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.6";
+const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.7";
 const enModeApp = () => { try { if (new URLSearchParams(location.search).get("app")) sessionStorage.setItem("helper.app", "1"); } catch {}
   let s = false; try { s = sessionStorage.getItem("helper.app") === "1"; } catch {}
   return s || matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; };
 if (enModeApp()) document.body.classList.add("mode-app");
 if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
-const APPLI_NATIVE = (/HelperApp\/([\d.]+)/.exec(navigator.userAgent) || [])[1] || "";
+const APPLI_NATIVE = (() => { const v = (/HelperApp\/([\d.]+)/.exec(navigator.userAgent) || [])[1] || "";
+  // l'appli 1.6 annonçait « 1.4 » par erreur : on reconnaît sa version à ce qu'elle sait faire
+  try { if (window.HelperApp && typeof window.HelperApp.configNotifs === "function" && parseFloat(v || 0) < 1.6) return "1.6"; } catch {}
+  return v; })();
 const DERNIERE_APPLI = "1.6";
 const VIEILLE_APPLI = enModeApp() && /android/i.test(navigator.userAgent) && (!APPLI_NATIVE || parseFloat(APPLI_NATIVE) < parseFloat(DERNIERE_APPLI));   // appli Android à mettre à jour
 { const b = document.getElementById("btn-installer"); if (b){ b.hidden = (enModeApp() && !VIEILLE_APPLI) || !/android/i.test(navigator.userAgent);
@@ -5903,7 +5906,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.94";
+const VERSION_SITE = "1.95";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7368,9 +7371,52 @@ function remplirImages(racine){
   });
 }
 const tailleLisible = o => o > 1048576 ? (o / 1048576).toFixed(1).replace(".", ",") + " Mo" : Math.max(1, Math.round(o / 1024)) + " Ko";
-const lienPj = p => p.id ? `<a class="pj" href="${esc(blobUrl(p.id))}" target="_blank" rel="noopener">📎 ${esc(p.nom)} <span class="doux">${p.taille ? tailleLisible(p.taille) : ""}</span></a>`
+const lienPj = p => p.id ? `<button type="button" class="pj" data-lire-pj="${esc(p.id)}" data-nom="${esc(p.nom)}" title="Lire dans Helper">${iconeLecture(p.nom)} ${esc(p.nom)} <span class="doux">${p.taille ? tailleLisible(p.taille) : ""}</span></button>`
   : `<button type="button" class="pj" data-voir-ref="${esc(p.ref)}">📎 ${esc(p.nom)} <span class="doux">image</span></button>`;
+/* ----- Lecteur de pièces jointes : vidéo, son, image, PDF, Word (.docx), texte, lus directement dans Helper ----- */
+const GENRES_LECTURE = [[/^(mp4|webm|mov|m4v|ogv)$/, "video"], [/^(mp3|wav|ogg|oga|m4a|aac|flac|opus|weba)$/, "son"], [/^(png|jpe?g|gif|webp|bmp|svg|avif)$/, "image"],
+  [/^pdf$/, "pdf"], [/^docx$/, "docx"], [/^(txt|md|csv|tsv|json|xml|log|py|js|html?|css|c|cpp|h|java|lua|srt|vtt|ini|yml|yaml)$/, "texte"]];
+const genreLecture = nom => { const e = String(nom || "").toLowerCase().split(".").pop(); return (GENRES_LECTURE.find(([r]) => r.test(e)) || [, ""])[1]; };
+const iconeLecture = nom => ({video: "🎬", son: "🎵", image: "🖼️", pdf: "📕", docx: "📘", texte: "📄"})[genreLecture(nom)] || "📎";
+function lireFichier({url, nom, telecharger}){
+  fermerFenetre();
+  const g = genreLecture(nom);
+  const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
+  el.innerHTML = `<div class="fenetre lecteur-pj" role="dialog" aria-modal="true" aria-label="${esc(nom)}">
+    <div class="lp-tete"><span class="lp-ic" aria-hidden="true">${iconeLecture(nom)}</span><b class="lp-nom">${esc(nom)}</b>
+      <span class="rangee lp-boutons">${telecharger ? `<button class="mini-btn" type="button" id="lp-dl">Télécharger</button>` : `<a class="mini-btn" href="${esc(url)}" target="_blank" rel="noopener" download="${esc(nom)}">Télécharger</a>`}<button class="mini-btn" type="button" id="lp-fermer" aria-label="Fermer">✕ Fermer</button></span></div>
+    <div class="lp-corps lp-${g || "autre"}" id="lp-corps">${g === "video" ? `<video src="${esc(url)}" controls playsinline preload="metadata"></video>`
+      : g === "son" ? `<div class="lp-son"><span aria-hidden="true">🎵</span><audio src="${esc(url)}" controls preload="metadata"></audio></div>`
+      : g === "image" ? `<img src="${esc(url)}" alt="${esc(nom)}">`
+      : g ? `<p class="doux lp-attente">Ouverture du fichier…</p>`
+      : `<div class="vide">Ce type de fichier ne peut pas être lu dans Helper. Utilise « Télécharger » pour l'ouvrir sur ton appareil.</div>`}</div></div>`;
+  document.body.appendChild(el);
+  const corps = el.querySelector("#lp-corps"), vivant = () => corps.isConnected;
+  el.querySelector("#lp-fermer").onclick = fermerFenetre;
+  if (telecharger) el.querySelector("#lp-dl").onclick = telecharger;
+  el.addEventListener("mousedown", ev => { if (ev.target === el) fermerFenetre(); });
+  const raté = () => { if (vivant()) corps.innerHTML = `<div class="vide">Impossible d'afficher ce fichier ici. <a class="lien" href="${esc(url)}" target="_blank" rel="noopener">Ouvre-le dans un nouvel onglet ↗</a></div>`; };
+  if (g === "pdf") dessinerPdfDnb(url, corps);
+  else if (g === "texte") fetch(url).then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(b => {
+      if (!vivant()) return; let t = new TextDecoder("utf-8").decode(b); if (t.includes("\uFFFD")) t = new TextDecoder("windows-1252").decode(b);
+      corps.innerHTML = `<pre class="lp-texte">${esc(t.slice(0, 400000))}${t.length > 400000 ? "\n\n[…] (fichier trop long : la fin n'est pas affichée)" : ""}</pre>`;
+    }).catch(raté);
+  else if (g === "docx") (async () => {
+      try {
+        const [b] = await Promise.all([fetch(url).then(r => { if (!r.ok) throw 0; return r.blob(); }), chargerScript(LIBS.jszip).then(() => chargerScript(LIBS.docx))]);
+        if (!vivant()) return; corps.innerHTML = `<div class="lp-docx-cadre"><div class="lp-docx"></div></div>`;
+        const z = corps.querySelector(".lp-docx");
+        await window.docx.renderAsync(b, z, null, {inWrapper: true, breakPages: true, ignoreLastRenderedPageBreak: false, renderHeaders: true, renderFooters: true, useBase64URL: true});
+        // sur téléphone : la page Word est réduite pour tenir dans la largeur
+        const ajuster = () => { const pg = z.querySelector("section.docx"); if (!pg || !vivant()) return; z.style.zoom = "";
+          const k = Math.min(1, (corps.clientWidth - 16) / (pg.offsetWidth + 20)); if (k < 1) z.style.zoom = k; };
+        ajuster(); addEventListener("resize", ajuster);
+      } catch { raté(); }
+    })();
+  const v = corps.querySelector("video, audio"); if (v) v.onerror = raté;
+}
 function brancherPj(racine){
+  racine.querySelectorAll("[data-lire-pj]").forEach(b => b.onclick = () => lireFichier({url: blobUrl(b.dataset.lirePj), nom: b.dataset.nom || "Fichier"}));
   racine.querySelectorAll("[data-voir-ref]").forEach(b => b.onclick = async () => {
     const ref = b.dataset.voirRef;
     if (!imagesDoc[ref]){ const s = await db.doc("images/" + ref).get(); if (s.exists) imagesDoc[ref] = s.data().data; }
@@ -14651,6 +14697,7 @@ async function telechargerFichier(f){
 }
 // Agrandir la miniature (ou l'image / la vidéo elle-même)
 function agrandirFichier(f){
+  if (["pdf", "docx", "texte"].includes(genreLecture(f.nom))) return lireFichier({url: blobUrl(f.id), nom: f.nom, telecharger: () => telechargerFichier(f)});
   fermerFenetre();
   const t = infoType(f), image = /^image\//.test(f.type), video = /^video\//.test(f.type), son = t.lib === "AUD";
   const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
@@ -15018,7 +15065,23 @@ async function creerCadre(largeur, hauteur){
   const f = document.createElement("iframe");
   f.setAttribute("aria-hidden", "true"); f.tabIndex = -1;
   f.style.cssText = `position:fixed;left:-30000px;top:0;width:${largeur}px;height:${hauteur}px;border:0;background:#fff;pointer-events:none`;
-  f.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:#fff}</style></head><body></body></html>`;
+  f.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:#fff}
+/* Lecteur de pièces jointes */
+.lecteur-pj{width:min(1100px,100%);max-height:94vh;display:flex;flex-direction:column;gap:10px;padding:14px}
+.lp-tete{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.lp-ic{font-size:1.3rem}
+.lp-nom{flex:1;min-width:0;overflow-wrap:anywhere;font-size:1rem}.lp-boutons{gap:6px}
+.lp-corps{flex:1;min-height:0;overflow:auto;border-radius:10px;background:var(--surface-2);border:1px solid var(--ligne)}
+.lp-video,.lp-image{display:grid;place-items:center;background:#000}
+.lp-corps video{width:100%;max-height:80vh;display:block}
+.lp-corps img{max-width:100%;max-height:80vh;display:block;margin:auto}
+.lp-son{display:flex;flex-direction:column;align-items:center;gap:14px;padding:30px 16px}.lp-son span{font-size:3rem}.lp-son audio{width:100%;max-width:520px}
+.lp-pdf{padding:10px;display:flex;flex-direction:column;align-items:center;gap:10px}.lp-pdf canvas{max-width:100%;height:auto!important;background:#fff;border-radius:4px;box-shadow:0 4px 18px -8px #000}
+.lp-texte{margin:0;padding:16px;white-space:pre-wrap;overflow-wrap:anywhere;font:.9rem/1.55 var(--f-mono);color:var(--texte)}
+.lp-docx-cadre{padding:10px;overflow:auto}.lp-docx .docx-wrapper{background:transparent!important;padding:0!important}
+.lp-docx section.docx{margin:0 auto 12px!important;box-shadow:0 4px 18px -8px #000}
+.lp-attente{padding:20px;text-align:center}
+@media (max-width:700px){.lecteur-pj{max-height:100vh;height:100vh;border-radius:0;padding:10px}.voile:has(.lecteur-pj){padding:0}}
+</style></head><body></body></html>`;
   const charge = new Promise(r => f.onload = r);
   document.body.appendChild(f); await charge;
   const d = f.contentDocument, w = f.contentWindow;
