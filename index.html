@@ -5866,14 +5866,14 @@ const APPLI_NATIVE = (() => { const v = (/HelperApp\/([\d.]+)/.exec(navigator.us
   // l'appli 1.6 annonçait « 1.4 » par erreur : on reconnaît sa version à ce qu'elle sait faire
   try { if (window.HelperApp && typeof window.HelperApp.configNotifs === "function" && parseFloat(v || 0) < 1.6) return "1.6"; } catch {}
   return v; })();
-const DERNIERE_APPLI = "1.6";
+const DERNIERE_APPLI = "1.8";
 const VIEILLE_APPLI = enModeApp() && /android/i.test(navigator.userAgent) && (!APPLI_NATIVE || parseFloat(APPLI_NATIVE) < parseFloat(DERNIERE_APPLI));   // appli Android à mettre à jour
 { const b = document.getElementById("btn-installer"); if (b){ b.hidden = (enModeApp() && !VIEILLE_APPLI) || !/android/i.test(navigator.userAgent);
-  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : notifications" : "Nouvelle version : couleurs corrigées";
+  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : pièces jointes des devoirs" : "Nouvelle version : couleurs corrigées";
     let vu = false; try { vu = sessionStorage.getItem("helper.majAppli") === "1"; sessionStorage.setItem("helper.majAppli", "1"); } catch {}
     if (!vu) addEventListener("load", () => setTimeout(() => b.click(), 1200)); } } }
 document.getElementById("btn-installer")?.addEventListener("click", () => { fermerMenuMobile();
-  const el = ouvrirVoile(`<h3>${VIEILLE_APPLI ? "Nouvelle version de l'application" : "Application Helper pour Android"}</h3>${VIEILLE_APPLI ? `<p style="margin:0 0 6px">${APPLI_NATIVE ? `Une nouvelle version de l'application est disponible : elle peut <b>récupérer les devoirs d'EcoleDirecte toute seule</b>, même fermée, et son icône prend la couleur de tes Préférences.` : `Ton application Helper est l'<b>ancienne version</b> : c'est elle qui affiche les mauvaises couleurs.`} Installe la nouvelle par-dessus.</p>` : ""}<p class="doux" style="margin:0">Helper s'ouvre comme une vraie application, en plein écran, avec son icône sur ton écran d'accueil.</p>
+  const el = ouvrirVoile(`<h3>${VIEILLE_APPLI ? "Nouvelle version de l'application" : "Application Helper pour Android"}</h3>${VIEILLE_APPLI ? `<p style="margin:0 0 6px">${APPLI_NATIVE ? `La <b>version 1.8</b> de l'application est disponible : les <b>pièces jointes des devoirs</b> s'ouvrent dans Helper, les <b>notifications</b> des devoirs pour demain et des demandes arrivent même appli fermée, et les devoirs se synchronisent 2 fois par jour.` : `Ton application Helper est l'<b>ancienne version</b> : c'est elle qui affiche les mauvaises couleurs.`} Installe la nouvelle par-dessus.</p>` : ""}<p class="doux" style="margin:0">Helper s'ouvre comme une vraie application, en plein écran, avec son icône sur ton écran d'accueil.</p>
     <ol class="inst-etapes"><li><span>Touche <b>Télécharger</b> ci-dessous (fichier <b>Helper-Entarsh-1.0.apk</b>).</span></li><li><span>Ouvre le fichier téléchargé. Si le téléphone le demande, autorise ton navigateur à <b>installer des applications inconnues</b>.</span></li><li><span>Touche <b>Installer</b>, puis ouvre <b>Helper</b> depuis ton écran d'accueil.</span></li></ol>
     <div class="rangee"><a class="btn" href="${URL_APK}" download>Télécharger</a><a class="btn sec" href="https://entarsh-studio.github.io/" target="_blank" rel="noopener">Voir sur Entarsh Catalogue</a><button class="btn sec" type="button" id="fen-annuler">Fermer</button></div>`, 480);
   el.querySelector("#fen-annuler").onclick = fermerFenetre;
@@ -5906,7 +5906,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.96";
+const VERSION_SITE = "1.97";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
