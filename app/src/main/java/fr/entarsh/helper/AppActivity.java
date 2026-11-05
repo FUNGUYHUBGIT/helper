@@ -186,13 +186,16 @@ public class AppActivity extends Activity {
           Iterator<String> k = h.keys(); while (k.hasNext()) { String n = k.next(); c.setRequestProperty(n, h.getString(n)); }
           if ("POST".equals(m)) { byte[] b = (corps == null ? "" : corps).getBytes("UTF-8"); c.setDoOutput(true); c.setFixedLengthStreamingMode(b.length); OutputStream o = c.getOutputStream(); o.write(b); o.close(); }
           int st = c.getResponseCode(); InputStream in = st >= 400 ? c.getErrorStream() : c.getInputStream();
-          String txt = in == null ? "" : lireTout(in);
+          boolean binaire = url.contains("telechargement.awp");   // pièce jointe : renvoyée en base64
+          String txt = "", b64 = "";
+          if (binaire && st < 300 && in != null) { ByteArrayOutputStream o = new ByteArrayOutputStream(); byte[] tb = new byte[16384]; int n; while ((n = in.read(tb)) > 0) { o.write(tb, 0, n); if (o.size() > 26000000) break; } in.close(); b64 = android.util.Base64.encodeToString(o.toByteArray(), android.util.Base64.NO_WRAP); }
+          else txt = in == null ? "" : lireTout(in);
           JSONObject hs = new JSONObject(); JSONArray ck = new JSONArray();
           for (Map.Entry<String, List<String>> e : c.getHeaderFields().entrySet()) {
             if (e.getKey() == null) continue; String n = e.getKey().toLowerCase(Locale.ROOT);
             if (n.equals("set-cookie")) { for (String v : e.getValue()) ck.put(v); } else hs.put(n, android.text.TextUtils.join(", ", e.getValue()));
           }
-          r.put("status", st); r.put("headers", hs); r.put("cookies", ck); r.put("body", txt);
+          r.put("status", st); r.put("headers", hs); r.put("cookies", ck); r.put("body", txt); if (!b64.isEmpty()) r.put("body64", b64);
           c.disconnect();
         } catch (Exception e) { try { r = new JSONObject(); r.put("erreur", e.getClass().getSimpleName() + (e.getMessage() != null ? " : " + e.getMessage() : "")); } catch (Exception x) {} }
         js("window.__edRep&&__edRep('" + rid + "'," + r.toString() + ")");

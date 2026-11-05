@@ -124,6 +124,31 @@ public class SyncDevoirs extends Worker {
     return dernier < dernierCreneau;
   }
 
+  /* Télécharge une pièce jointe sur EcoleDirecte puis l'envoie dans les fichiers de Helper ; renvoie son identifiant */
+  String televerser(JSONObject x, Map<String, String> hs) throws Exception {
+    java.util.HashMap<String, String> h = new java.util.HashMap<>();
+    h.put("Content-Type", "application/x-www-form-urlencoded"); h.put("User-Agent", ua);
+    if (!token.isEmpty()) h.put("X-Token", token); if (!f2a.isEmpty()) h.put("2fa-Token", f2a); if (!gtk.isEmpty()) h.put("X-Gtk", gtk); if (!cookies.isEmpty()) h.put("Cookie", cookies);
+    HttpURLConnection c = (HttpURLConnection) new URL(ED + "/telechargement.awp?verbe=get&fichierId=" + URLEncoder.encode(x.optString("edId"), "UTF-8") + "&leTypeDeFichier=" + URLEncoder.encode(x.optString("type", "FICHIER_CDT"), "UTF-8") + "&v=" + V).openConnection();
+    c.setConnectTimeout(20000); c.setReadTimeout(60000); c.setRequestMethod("POST"); for (Map.Entry<String, String> e : h.entrySet()) c.setRequestProperty(e.getKey(), e.getValue());
+    byte[] corps = ("data=" + URLEncoder.encode("{\"forceDownload\":0}", "UTF-8")).getBytes("UTF-8"); c.setDoOutput(true); c.setFixedLengthStreamingMode(corps.length); OutputStream o = c.getOutputStream(); o.write(corps); o.close();
+    if (c.getResponseCode() >= 300) { c.disconnect(); return null; }
+    ByteArrayOutputStream b = new ByteArrayOutputStream(); InputStream in = c.getInputStream(); byte[] tb = new byte[16384]; int n;
+    while ((n = in.read(tb)) > 0) { b.write(tb, 0, n); if (b.size() > 25000000) { in.close(); c.disconnect(); return null; } } in.close(); c.disconnect();
+    byte[] data = b.toByteArray(); if (data.length < 20) return null;
+    if (data[0] == '{' && new String(data, 0, Math.min(200, data.length), "UTF-8").contains("\"code\"")) return null;   // une erreur, pas un fichier
+    String nom = x.optString("nom", "fichier"); Matcher m = Pattern.compile("\\.([A-Za-z0-9]{1,5})$").matcher(nom); String ext = m.find() ? m.group(1).toLowerCase(Locale.ROOT) : "bin";
+    String type = ext.equals("pdf") ? "application/pdf" : ext.equals("docx") ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : ext.equals("txt") ? "text/plain" : ext.equals("mp4") ? "video/mp4" : ext.equals("mp3") ? "audio/mpeg" : ext.equals("png") ? "image/png" : ext.matches("jpe?g") ? "image/jpeg" : "application/octet-stream";
+    StringBuilder id = new StringBuilder(); java.security.SecureRandom r = new java.security.SecureRandom(); for (int i = 0; i < 16; i++) id.append(String.format("%02x", r.nextInt(256))); id.append(".").append(ext);
+    java.util.HashMap<String, String> hu = new java.util.HashMap<>(hs); hu.put("Content-Type", type); hu.put("x-upsert", "false"); hu.put("cache-control", "max-age=31536000"); hu.remove("Prefer");
+    HttpURLConnection u = (HttpURLConnection) new URL(SB_URL + "/storage/v1/object/fichiers/" + id).openConnection();
+    u.setConnectTimeout(20000); u.setReadTimeout(60000); u.setRequestMethod("POST"); for (Map.Entry<String, String> e : hu.entrySet()) u.setRequestProperty(e.getKey(), e.getValue());
+    u.setDoOutput(true); u.setFixedLengthStreamingMode(data.length); OutputStream uo = u.getOutputStream(); uo.write(data); uo.close();
+    int st = u.getResponseCode(); u.disconnect();
+    if (st >= 300) return null;
+    x.put("taille", data.length); return id.toString();
+  }
+
   @NonNull @Override public Result doWork() {
     Context c = getApplicationContext(); SharedPreferences p = prefs(c);
     if (p.getString("edId", "").isEmpty()) return Result.success();
@@ -172,12 +197,24 @@ public class SyncDevoirs extends Worker {
           d.put("interrogation", m.optBoolean("interrogation", false)); d.put("donneLe", af.optString("donneLe", ""));
           String t = texte(b64(af.optString("contenu", ""))); d.put("contenu", t.length() > 4000 ? t.substring(0, 4000) : t);
           JSONArray docs = new JSONArray(), src = af.optJSONArray("documents");
-          for (int k = 0; src != null && k < src.length() && k < 10; k++) { String l = src.getJSONObject(k).optString("libelle", ""); if (!l.isEmpty()) docs.put(l); }
+          for (int k = 0; src != null && k < src.length() && k < 10; k++) { JSONObject sd = src.getJSONObject(k); String l = sd.optString("libelle", ""); if (l.isEmpty()) continue;
+            JSONObject x = new JSONObject(); x.put("nom", l); x.put("edId", String.valueOf(sd.opt("id"))); x.put("type", sd.optString("type", "FICHIER_CDT")); x.put("taille", sd.optLong("taille", 0)); docs.put(x); }
           d.put("documents", docs); nouveaux.put(d);
         }
       }
       // 3. fusion avec les devoirs déjà enregistrés, puis enregistrement dans Helper
       Rep ex = http("GET", SB_URL + "/rest/v1/docs?select=data&path=eq.edt/devoirs", hs, null);
+      // 3 bis. pièces jointes : on reprend celles déjà rangées dans Helper, on télécharge les nouvelles sur EcoleDirecte
+      java.util.HashMap<String, JSONObject> deja = new java.util.HashMap<>();
+      try { JSONArray rows0 = new JSONArray(ex.corps); if (rows0.length() > 0) { JSONArray anc0 = rows0.getJSONObject(0).getJSONObject("data").optJSONArray("devoirs");
+        for (int i = 0; anc0 != null && i < anc0.length(); i++) { JSONArray dd = anc0.getJSONObject(i).optJSONArray("documents");
+          for (int k = 0; dd != null && k < dd.length(); k++) { JSONObject x = dd.optJSONObject(k); if (x != null && !x.optString("id").isEmpty()) deja.put(x.optString("edId"), x); } } } } catch (Exception e) {}
+      int envois = 0;
+      for (int i = 0; i < nouveaux.length(); i++) { JSONArray dd = nouveaux.getJSONObject(i).optJSONArray("documents");
+        for (int k = 0; dd != null && k < dd.length(); k++) { JSONObject x = dd.getJSONObject(k); String eid = x.optString("edId");
+          if (deja.containsKey(eid)) { dd.put(k, deja.get(eid)); continue; }
+          if (envois >= 15 || eid.isEmpty()) continue;
+          try { String id = televerser(x, hs); if (id != null) { x.put("id", id); envois++; } } catch (Exception e) {} } }
       Set<String> vus = new HashSet<>(dates); Calendar lim = (Calendar) cal.clone(); lim.add(Calendar.DAY_OF_MONTH, -120); String limite = f.format(lim.getTime());
       List<JSONObject> tous = new ArrayList<>();
       try { JSONArray rows = new JSONArray(ex.corps); if (rows.length() > 0) { JSONArray anc = rows.getJSONObject(0).getJSONObject("data").optJSONArray("devoirs");
