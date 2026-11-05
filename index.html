@@ -39,6 +39,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>try{if(localStorage.getItem("helper.theme")==="clair")document.documentElement.dataset.theme="clair"}catch(e){}</script>
 <style>
 /* Mise en page : ouverture plein écran, formes animées en fond de tout le site, écran d'accès partagé, puis interface à barre latérale (élève ou gérant). Sombre, un seul accent jaune orangé, blanc. Mono-thème volontaire. */
 :root{
@@ -61,7 +62,7 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%}
-body{margin:0;background:var(--fond);color:var(--texte);font-family:var(--f-texte);font-size:15px;line-height:1.55}
+body{margin:0;background:var(--fond);color:var(--texte);font-family:var(--f-texte);font-size:.9375rem;line-height:1.55}
 h1,h2,h3{font-family:var(--f-titre);font-weight:500;margin:0;letter-spacing:-.01em;text-wrap:balance;line-height:1.15}
 h2{font-size:1.6rem}
 h3{font-size:1.1rem}
@@ -2450,6 +2451,47 @@ body.ambiance-dnb .lateral .nav-groupe{color:#8ca6d6}
 .ge-creer{max-width:900px;margin-top:6px}
 .ge-creer-grille{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 @media (max-width:700px){.ge-chiffres{grid-template-columns:repeat(2,minmax(0,1fr))}.ge-creer-grille{grid-template-columns:1fr}.ge-recherche{max-width:none;margin-left:0}.ge-stats{width:100%}.ge-actions{justify-content:stretch}.ge-actions button{flex:1}}
+
+/* ===== Thème clair ===== */
+html[data-theme="clair"]{--fond:#f4f2ec;--surface:#ffffff;--surface-2:#f1eee7;--ligne:#dcd6ca;--texte:#1c1a16;--doux:#5f5a50;--erreur:#c8371f;--ok:#2e8a3d;--accent-sombre:color-mix(in srgb,var(--accent) 14%,#ffffff);color-scheme:light only}
+html[data-theme="clair"] body{background:var(--fond)}
+html[data-theme="clair"] .lateral{background:rgba(250,248,243,.92);box-shadow:none}
+html[data-theme="clair"] .lateral .nav button[aria-selected="true"]{color:var(--texte)}
+html[data-theme="clair"] .lateral .nav-groupe{color:var(--doux)}
+html[data-theme="clair"] .pf-confid-tete h3{color:#1f5fd6}
+/* ===== Taille du texte, dyslexie, animations ===== */
+@font-face{font-family:"OpenDyslexic";src:url("polices/OpenDyslexic-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"OpenDyslexic";src:url("polices/OpenDyslexic-700.woff2") format("woff2");font-weight:500 700;font-display:swap}
+html.dys{--f-texte:"OpenDyslexic","IBM Plex Sans",system-ui,sans-serif;--f-titre:"OpenDyslexic","Sora",system-ui,sans-serif}
+html.dys body{word-spacing:.04em}
+html.dys .doc-lecon,html.dys .doc-lecon *{font-family:"OpenDyslexic",sans-serif!important;line-height:1.9!important;word-spacing:.12em}
+html.dys .mono{letter-spacing:.04em}
+html.calme *,html.calme *::before,html.calme *::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important;scroll-behavior:auto!important}
+/* ===== Bouton du thème ===== */
+.theme-ligne{display:flex;align-items:center;gap:18px}
+.theme-ligne > div{display:flex;flex-direction:column;gap:2px}.theme-ligne small{font-size:.85rem}
+.theme-switch{position:relative;flex:none;width:92px;height:44px;padding:0;border:0;border-radius:999px;cursor:pointer;overflow:hidden;background:linear-gradient(180deg,#141a33,#27305a);box-shadow:inset 0 2px 6px rgba(0,0,0,.5),0 0 0 2px var(--ligne);transition:background .45s}
+.theme-switch.clair{background:linear-gradient(180deg,#5db4ff,#a8dbff);box-shadow:inset 0 2px 6px rgba(0,40,90,.25),0 0 0 2px var(--ligne)}
+.ts-ciel i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.9;transition:opacity .4s,transform .45s}
+.ts-ciel i:nth-child(1){left:16px;top:11px}.ts-ciel i:nth-child(2){left:30px;top:24px;width:2px;height:2px}.ts-ciel i:nth-child(3){left:22px;top:32px;width:2px;height:2px}.ts-ciel i:nth-child(4){left:40px;top:13px;width:2px;height:2px}
+.theme-switch.clair .ts-ciel i{opacity:0;transform:translateY(10px)}
+.ts-nuage{position:absolute;left:14px;top:22px;width:30px;height:11px;border-radius:999px;background:#fff;opacity:0;transform:translateX(-20px);transition:opacity .4s,transform .45s}
+.ts-nuage::before{content:"";position:absolute;left:7px;top:-7px;width:14px;height:14px;border-radius:50%;background:#fff}
+.theme-switch.clair .ts-nuage{opacity:.95;transform:none}
+.ts-astre{position:absolute;top:5px;left:51px;width:34px;height:34px;border-radius:50%;background:#e9e6dc;box-shadow:inset -4px -3px 0 rgba(0,0,0,.12),0 0 14px rgba(233,230,220,.45);transition:left .45s cubic-bezier(.6,-.3,.3,1.3),background .45s,box-shadow .45s}
+.ts-crat{position:absolute;border-radius:50%;background:#cbc6b8;transition:opacity .3s}
+.ts-crat:nth-child(1){left:8px;top:8px;width:8px;height:8px}.ts-crat:nth-child(2){left:19px;top:17px;width:6px;height:6px}.ts-crat:nth-child(3){left:10px;top:22px;width:4px;height:4px}
+.theme-switch.clair .ts-astre{left:5px;background:#ffc93a;box-shadow:0 0 0 4px rgba(255,214,90,.35),0 0 18px #ffd65a}
+.theme-switch.clair .ts-crat{opacity:0}
+.theme-switch:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.pf-lab{font-size:.88rem;font-weight:600}
+.pf-voix{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:14px;align-items:end}
+.pf-voix select,.pf-voix input[type=range]{width:100%}
+@media (max-width:700px){.pf-voix{grid-template-columns:1fr}}
+/* ===== Dictées : pas sur téléphone ===== */
+.dt-bloque{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;border:1px solid color-mix(in srgb,var(--erreur) 45%,var(--ligne));background:color-mix(in srgb,var(--erreur) 8%,var(--surface))}
+.dt-bloque > span{font-size:1.3rem;line-height:1}.dt-bloque p{margin:2px 0 0;font-size:.86rem}
+.dt-tel .carte-dictee{opacity:.5;pointer-events:none}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5688,7 +5730,7 @@ const Formes = (() => {
   const e = {vitesse: 1, vitesseCible: 1, mix: 0, mixCible: 0, teinte: ROUGE, opacite: 1, opaciteCible: 1, amb: 0, ambCible: 0, ambTeinte: [176,107,255]};
   // mode « en travaux » : formes figées qui tremblent, bugs d'affichage façon chantier
   const ch = {on: false, glitch: 0, prochain: 0, saccade: 0, motif: null, bandes: []};
-  const reduit = matchMedia("(prefers-reduced-motion: reduce)");
+  const mqReduit = matchMedia("(prefers-reduced-motion: reduce)"), reduit = {get matches(){ return mqReduit.matches || document.documentElement.classList.contains("calme"); }};
   function motifChantier(){ const c = document.createElement("canvas"); c.width = c.height = 16; const g = c.getContext("2d");
     g.fillStyle = "#f2ae02"; g.fillRect(0, 0, 16, 16); g.fillStyle = "#16161a"; g.beginPath(); g.moveTo(0, 0); g.lineTo(8, 0); g.lineTo(0, 8); g.closePath(); g.moveTo(16, 0); g.lineTo(16, 8); g.lineTo(8, 16); g.lineTo(0, 16); g.closePath(); g.fill();
     return cx.createPattern(c, "repeat"); }
@@ -5762,7 +5804,7 @@ const Formes = (() => {
       const a = formes[i], b = formes[j], d = Math.hypot(a.x - b.x, a.y - b.y);
       if (d < 150){ cx.globalAlpha = (1 - d / 150) * .2 * e.opacite; cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y); cx.stroke(); }
     }
-    const k = dt * e.vitesse;
+    const k = reduit.matches ? 0 : dt * e.vitesse;   // « Réduire les animations » : formes immobiles
     formes.forEach(f => {
       f.x += f.vx * k; f.y += f.vy * k; f.a += f.va * k;
       if (f.x < -70) f.x = L + 70; else if (f.x > L + 70) f.x = -70;
@@ -5814,6 +5856,7 @@ const Formes = (() => {
     discret: on => { e.opaciteCible = on ? .45 : 1; },
     nombre: n => { nombre = n === null || n === undefined ? null : Math.max(0, Math.min(80, n)); ajuster(); },
     accent: hex => { COUL.a = hexRgb(hex); },
+    theme: clair => { COUL.b = clair ? [60,56,48] : [244,242,237]; COUL.g = clair ? [150,144,132] : [90,87,81]; },
     ambiance: rgb => { if (rgb) e.ambTeinte = rgb; e.ambCible = rgb ? 1 : 0; },
     chantier: on => { if (ch.on === !!on) return; ch.on = !!on; ch.prochain = performance.now() + 300; formes.forEach(f => { f.rayee = on && Math.random() < .3; f.dec = 0; }); document.body.classList.toggle("mode-chantier", ch.on); }
   };
@@ -5824,11 +5867,20 @@ const CLASSES = ["3A", "3B", "3C", "3D", "3E", "3F", "Hors-élèves"];
 const optionsClasses = actuelle => { const a = String(actuelle || ""), connue = CLASSES.some(c => normClasse(c) === normClasse(a));
   return (connue || !a ? "" : `<option value="${esc(a)}" selected>${esc(a)}</option>`) + CLASSES.map(c => `<option value="${c}" ${normClasse(c) === normClasse(a) ? "selected" : ""}>${c === "Hors-élèves" ? "Hors-élèves" : "Classe " + c}</option>`).join(""); };
 const ACCENTS = [["Or","#f2ae02"],["Orange","#f5a524"],["Corail","#ff6b3d"],["Bleu","#4fa3f7"],["Vert","#5cc98a"],["Rose","#ef6fa6"],["Violet","#a585f2"]];
-const PREFS_DEFAUT = {accent: "#f2ae02", formes: null, notifs: {actus: true, chg: true, devoirs: true, demandes: true}};
+const PREFS_DEFAUT = {accent: "#f2ae02", formes: null, theme: "sombre", taille: "normal", dys: false, calme: false, accueil: "edt", masquerFaits: false, notifs: {actus: true, chg: true, devoirs: true, demandes: true}};
+// thème clair : chaque couleur de la palette a sa version plus foncée, pour bien ressortir sur le blanc
+const ACCENTS_CLAIR = {"#f2ae02": "#b47c00", "#f5a524": "#c06a00", "#ff6b3d": "#d4441a", "#4fa3f7": "#1c6fcf", "#5cc98a": "#1f8f50", "#ef6fa6": "#cc3a7a", "#a585f2": "#7550d4"};
+const TAILLES_TEXTE = {petit: "14px", normal: "16px", grand: "18px", "tres-grand": "20px"};
+const estTelephone = () => matchMedia("(max-width: 700px)").matches || (matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) < 600);
 function appliquerPrefs(p){
   const accent = ACCENTS.some(([, c]) => c === String(p && p.accent || "").toLowerCase()) ? String(p.accent).toLowerCase() : PREFS_DEFAUT.accent;   // seulement les couleurs de la palette
-  document.documentElement.style.setProperty("--accent", accent);
-  Formes.accent(accent);
+  const h = document.documentElement, clair = p === PREFS_DEFAUT ? lsGet("helper.theme") === "clair" : !!p && p.theme === "clair";   // déconnecté : on garde le thème de l'appareil
+  h.dataset.theme = clair ? "clair" : "sombre"; if (p !== PREFS_DEFAUT) lsSet("helper.theme", h.dataset.theme);
+  h.style.fontSize = TAILLES_TEXTE[p && p.taille] || "";
+  h.classList.toggle("dys", !!(p && p.dys)); h.classList.toggle("calme", !!(p && p.calme));
+  const affiche = clair ? ACCENTS_CLAIR[accent] || accent : accent;
+  h.style.setProperty("--accent", affiche);
+  Formes.theme(clair); Formes.accent(affiche);
   Formes.nombre(p && Number.isFinite(p.formes) ? p.formes : null);
   if (p !== PREFS_DEFAUT) try { window.HelperApp && window.HelperApp.icone(lsGet("helper.iconeCouleur") === "1" ? accent : PREFS_DEFAUT.accent); } catch {}   // icône de l'appli Android (aux couleurs seulement si choisi)
 }
@@ -6082,7 +6134,8 @@ function ouvrirApp(){
   majIdentite(); majBadgeSignal(); suivreRequetes(); majBadgeRequetes();
   montrer("app");
   let vueDemandee = ""; try { vueDemandee = new URLSearchParams(location.search).get("vue") || ""; } catch {}
-  changerVue(VUES[vueDemandee] ? vueDemandee : modeGerant ? "g-eleves" : "edt");
+  const accueil = profil && profil.prefs && ONGLETS_ELEVE.some(o => o[0] === profil.prefs.accueil) ? profil.prefs.accueil : "edt";
+  changerVue(VUES[vueDemandee] ? vueDemandee : modeGerant ? "g-eleves" : accueil);
 }
 window.helperOuvrirVue = v => { if (VUES[v] && document.getElementById("app") && !document.getElementById("app").hidden) changerVue(v); };
 let vueActive = "";
@@ -6140,7 +6193,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.01";
+const VERSION_SITE = "2.02";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6337,11 +6390,46 @@ function enregistrerPrefs(){
   minuteriePrefs = setTimeout(() => majCompte({prefs: structuredClone(profil.prefs)}).then(() => statut("Préférences enregistrées.", true), () => statut("Le serveur ne répond pas. Réessaie dans un instant.")), 500);
 }
 VUES.prefs = function vuePrefs(){
-  const p = profil.prefs, auto = lsGet("helper.auto") !== "0";
+  const p = profil.prefs, auto = lsGet("helper.auto") !== "0", clair = p.theme === "clair";
+  const voixOk = "speechSynthesis" in window;
   zone().innerHTML = entete("Préférences", "Réglages") + `
     <div class="bloc">
+      <span class="mono">Thème</span>
+      <div class="theme-ligne">
+        <button type="button" class="theme-switch${clair ? " clair" : ""}" id="theme-switch" role="switch" aria-checked="${clair}" aria-label="Thème clair">
+          <span class="ts-ciel"><i></i><i></i><i></i><i></i><span class="ts-nuage"></span></span>
+          <span class="ts-astre"><span class="ts-crat"></span><span class="ts-crat"></span><span class="ts-crat"></span></span>
+        </button>
+        <div><strong id="theme-nom">${clair ? "Thème clair" : "Thème sombre"}</strong><small class="doux">${clair ? "Fond blanc : les couleurs sont plus foncées pour bien ressortir." : "Fond noir, comme d'habitude."}</small></div>
+      </div>
+    </div>
+    <div class="bloc">
       <span class="mono">Couleur du site</span>
-      <div class="nuancier">${ACCENTS.map(([n, c]) => `<button type="button" style="--c:${c}" data-c="${c}" aria-pressed="${p.accent.toLowerCase() === c}" aria-label="${n}" title="${n}"></button>`).join("")}</div>
+      <div class="nuancier">${ACCENTS.map(([n, c]) => `<button type="button" style="--c:${clair ? ACCENTS_CLAIR[c] || c : c}" data-c="${c}" aria-pressed="${p.accent.toLowerCase() === c}" aria-label="${n}" title="${n}"></button>`).join("")}</div>
+    </div>
+    <div class="bloc">
+      <span class="mono">Lecture</span>
+      <div class="champ"><span class="pf-lab">Taille du texte</span>${segment("taille-texte", [["petit", "Petit"], ["normal", "Normal"], ["grand", "Grand"], ["tres-grand", "Très grand"]], p.taille || "normal")}</div>
+      <label class="interrupteur"><span><strong>Police adaptée à la dyslexie</strong><small>Police OpenDyslexic et lettres plus espacées dans tout le site, et lignes plus aérées dans les leçons.</small></span><input type="checkbox" id="pf-dys" ${p.dys ? "checked" : ""}></label>
+      <label class="interrupteur"><span><strong>Réduire les animations</strong><small>Les formes du fond s'arrêtent et les transitions sont coupées. Économise aussi la batterie.</small></span><input type="checkbox" id="pf-calme" ${p.calme ? "checked" : ""}></label>
+    </div>
+    <div class="bloc">
+      <span class="mono">Ouverture</span>
+      <div class="champ"><label for="pf-accueil">Onglet affiché quand j'ouvre Helper</label>
+        <select id="pf-accueil" style="max-width:320px">${ONGLETS_ELEVE.filter(o => !["profil", "prefs"].includes(o[0])).map(([v, t]) => `<option value="${v}" ${(p.accueil || "edt") === v ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+    </div>
+    ${est3C() ? `<div class="bloc">
+      <span class="mono">Devoirs</span>
+      <label class="interrupteur"><span><strong>Masquer les devoirs faits</strong><small>Les devoirs que tu as cochés disparaissent du cahier de texte.</small></span><input type="checkbox" id="pf-faits" ${p.masquerFaits ? "checked" : ""}></label>
+    </div>` : ""}
+    <div class="bloc">
+      <span class="mono">Voix des dictées</span>
+      ${voixOk ? `<div class="pf-voix">
+        <div class="champ"><label for="pf-voix">Voix</label><select id="pf-voix"></select></div>
+        <div class="champ"><label for="pf-vitesse">Vitesse de lecture <b id="pf-vitesse-val">${String(vitesseDictee()).replace(".", ",")}×</b></label><input type="range" id="pf-vitesse" min="0.6" max="1.15" step="0.05" value="${vitesseDictee()}"></div>
+        <div><button type="button" class="btn sec" id="pf-tester">🔊 Tester</button></div></div>
+        <p class="doux" style="font-size:.85rem">Réglé pour cet appareil : les voix disponibles dépendent du navigateur et du téléphone.</p>`
+      : `<p class="doux">La lecture à voix haute n'est pas disponible sur ce navigateur.</p>`}
     </div>
     <div class="bloc">
       <span class="mono">Formes en arrière-plan</span>
@@ -6367,6 +6455,20 @@ VUES.prefs = function vuePrefs(){
     </div>
     <p id="statut" class="statut" role="status"></p>`;
   zone().querySelectorAll(".nuancier button").forEach(b => b.onclick = () => { p.accent = b.dataset.c; enregistrerPrefs(); vuePrefs(); });
+  $("#theme-switch").onclick = () => { p.theme = p.theme === "clair" ? "sombre" : "clair"; $("#theme-switch").classList.toggle("clair", p.theme === "clair"); enregistrerPrefs(); setTimeout(vuePrefs, 420); };
+  zone().querySelectorAll("#taille-texte button").forEach(b => b.onclick = () => { p.taille = b.dataset.v; enregistrerPrefs(); vuePrefs(); });
+  $("#pf-dys").onchange = () => { p.dys = $("#pf-dys").checked; enregistrerPrefs(); };
+  $("#pf-calme").onchange = () => { p.calme = $("#pf-calme").checked; enregistrerPrefs(); };
+  $("#pf-accueil").onchange = () => { p.accueil = $("#pf-accueil").value; enregistrerPrefs(); };
+  const pff = $("#pf-faits"); if (pff) pff.onchange = () => { p.masquerFaits = pff.checked; enregistrerPrefs(); };
+  if (voixOk){
+    const remplir = () => { const sel = $("#pf-voix"); if (!sel) return; const l = voixFrancaises(), c = voixChoisie();
+      sel.innerHTML = l.length ? l.map(v => `<option value="${esc(v.name)}" ${c && c.name === v.name ? "selected" : ""}>${esc(v.name.replace(/^Microsoft |^Google /, "").replace(/ Online \(Natural\)/, " (naturelle)").replace(/ - .*$/, ""))} · ${esc(v.lang)}</option>`).join("") : `<option>Voix française par défaut</option>`; };
+    remplir(); speechSynthesis.addEventListener("voiceschanged", remplir);
+    $("#pf-voix").onchange = () => { lsSet("helper.voixDictee", $("#pf-voix").value); statut("Voix enregistrée sur cet appareil.", true); };
+    $("#pf-vitesse").oninput = () => { $("#pf-vitesse-val").textContent = String(+$("#pf-vitesse").value).replace(".", ",") + "×"; lsSet("helper.vitesseDictee", $("#pf-vitesse").value); };
+    $("#pf-tester").onclick = () => parler("Bonjour, je vais te lire la dictée. Écoute bien, virgule, et écris lentement.", vitesseDictee());
+  }
   $("#nb-formes").oninput = () => { p.formes = +$("#nb-formes").value; $("#nb-formes-val").textContent = p.formes; enregistrerPrefs(); };
   const ic = $("#icone-couleur"); if (ic) ic.onchange = () => { lsSet("helper.iconeCouleur", ic.checked ? "1" : "0"); appliquerPrefs(p); };
   $("#formes-auto").onclick = () => { p.formes = null; $("#nb-formes-val").textContent = "Auto"; enregistrerPrefs(); };
@@ -6989,7 +7091,8 @@ VUES.devoirs = function vueDevoirs(){
   rafraichir = vueDevoirs;
   if (!est3C()){ zone().innerHTML = entete("Devoirs", "Cahier de texte") + verrou("Le cahier de texte"); return; }
   const edit = peutEditerDevoirs(), l = listeDevoirs(), a = auj(), groupes = [];
-  l.forEach(d => { const g = groupes.find(x => x.date === d.date); if (g) g.l.push(d); else groupes.push({date: d.date, l: [d]}); });
+  const masquer = !!(profil && profil.prefs && profil.prefs.masquerFaits);
+  l.filter(d => !masquer || !estFaitDv(d)).forEach(d => { const g = groupes.find(x => x.date === d.date); if (g) g.l.push(d); else groupes.push({date: d.date, l: [d]}); });
   const ouvrir = id => { dvDevoirVu = id; vueDevoirs(); window.scrollTo({top: 0}); };
   // 3e niveau : un devoir en entier
   const dv = dvDevoirVu && l.find(x => x.id === dvDevoirVu);
@@ -13410,6 +13513,7 @@ function voixFrancaises(){
     .sort((a, b) => b.score - a.score).map(x => x.v);
 }
 const voixChoisie = () => { const l = voixFrancaises(), nom = lsGet("helper.voixDictee"); return l.find(v => v.name === nom) || l[0] || null; };
+const vitesseDictee = () => { const v = +lsGet("helper.vitesseDictee"); return v >= .6 && v <= 1.15 ? v : .9; };
 let jetonLecture = 0;
 const arreterLecture = () => { jetonLecture++; if ("speechSynthesis" in window) speechSynthesis.cancel(); };
 // lit un texte (par phrases : Chrome coupe les longues lectures) ; la promesse se termine à la fin ou si on arrête
@@ -13489,7 +13593,9 @@ function motCorrige(e, r){
 const collerPonct = l => l.replace(/ ([.,;:!?»])/g, "$1").replace(/« /g, "« ").replace(/(<\/span>) (<span[^>]*>[.,;:!?»]<\/span>)/g, "$1$2");
 
 let choixDictee = {phrases: 5, temps: "passe", niveau: "facile", source: "invente"};
+const MSG_DICTEE_TEL = `<div class="dt-bloque"><span aria-hidden="true">🔒</span><div><b>Les dictées ne se font pas sur téléphone.</b><p class="doux">L'écran est trop petit pour écrire une dictée correctement. Utilise un ordinateur ou une tablette.</p></div></div>`;
 function lancerDictee(opts = choixDictee, deja = null){
+  if (estTelephone()){ toast("Les dictées se font sur ordinateur ou tablette, pas sur téléphone."); return; }
   rafraichir = null; arreterLecture(); ambianceDictee(true, !!(deja && deja.dnb));
   const d = deja || (opts.source === "auteur" ? dicteeAuteur() : genererDictee(opts)), ref = d.manuel ? referenceManuelle(d) : referenceDictee(d), groupes = d.manuel ? groupesManuels(d) : groupesDictee(d.texte), audio = "speechSynthesis" in window, niveau = opts.niveau || "facile";
   zone().innerHTML = entete(opts.essai ? "Essai de la dictée" : "Français · Dictée", d.dnb ? "Dictée du brevet " + d.an + " · " + esc(d.session) : d.manuel ? "Dictée : " + esc(d.titre || "") : d.auteur ? "Dictée : texte d'auteur" : "Dictée : " + esc(d.theme)) + `
@@ -13506,7 +13612,7 @@ function lancerDictee(opts = choixDictee, deja = null){
               <button type="button" class="mini-btn" id="dt-redire">↺ Répéter${niveau === "moyen" ? ` <span class="dt-compte" id="dt-compte">(${MAX_REPET})</span>` : ""}</button>
               ${niveau === "facile" ? `<button type="button" class="mini-btn" id="dt-prec">⏮ Groupe précédent</button>` : ""}`}</div>
           <div class="rangee dt-reglages"><label class="doux dt-vitesse"><input type="checkbox" id="dt-ponct" checked> Dire la ponctuation</label>
-            <label class="doux dt-vitesse">Vitesse <input type="range" id="dt-vitesse" min="0.6" max="1.15" step="0.05" value="0.9"></label>
+            <label class="doux dt-vitesse">Vitesse <input type="range" id="dt-vitesse" min="0.6" max="1.15" step="0.05" value="${vitesseDictee()}"></label>
             <label class="doux dt-vitesse">Voix <select id="dt-voix" class="dt-voix"></select></label><button type="button" class="mini-btn" id="dt-test-voix">Tester</button></div>
           <p class="doux dt-etat" id="dt-etat">${niveau === "difficile" ? "Clique sur « Commencer la dictée » quand tu es prêt." : "Écoute d'abord tout le texte, puis écris-le groupe par groupe."} La ponctuation est dite à voix haute : virgule, point, point-virgule, deux-points, point d'exclamation…</p>
           <div class="dt-avance"><i id="dt-barre" style="width:0"></i></div>`
@@ -13539,6 +13645,7 @@ function lancerDictee(opts = choixDictee, deja = null){
       sel.innerHTML = l.length ? l.map(v => `<option value="${esc(v.name)}" ${c && c.name === v.name ? "selected" : ""}>${esc(v.name.replace(/^Microsoft |^Google /, "").replace(/ Online \(Natural\)/, " (naturelle)").replace(/ - .*$/, ""))} · ${esc(v.lang)}</option>`).join("") : `<option>Voix française par défaut</option>`; };
     remplirVoix(); speechSynthesis.addEventListener("voiceschanged", remplirVoix);
     $("#dt-voix").onchange = () => lsSet("helper.voixDictee", $("#dt-voix").value);
+    $("#dt-vitesse").onchange = () => lsSet("helper.vitesseDictee", $("#dt-vitesse").value);
     $("#dt-test-voix").onclick = () => parler("Bonjour, je vais te lire la dictée. Écoute bien, virgule, et écris lentement.", vitesse());
     const compte = () => { const c = $("#dt-compte"); if (c) c.textContent = `(${Math.max(0, MAX_REPET - (repet[g] || 0))})`; const r = $("#dt-redire"); if (r && niveau === "moyen") r.disabled = g >= 0 && (repet[g] || 0) >= MAX_REPET; };
     const dire = k => { if (k < 0 || k >= groupes.length) return; g = k; barre(k); compte(); etat(`Groupe ${k + 1} sur ${groupes.length}.`); parler(texteGroupe(k), vitesse()); };
@@ -13953,11 +14060,11 @@ function sectionDictees(){
         <span class="ds-go">${n === undefined ? "Commencer" : "Refaire"} ›</span></span>
     </button>`; };
   const niv = NIVEAUX_DICTEE.find(x => x[0] === choixDictee.niveau) || NIVEAUX_DICTEE[0];
-  return `<div class="exos-section dictees-section">
+  return `<div class="exos-section dictees-section${estTelephone() ? " dt-tel" : ""}">
     <div class="ds-tete"><div class="ds-intro"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3>
         <p class="doux">Le texte est lu à voix haute, groupe par groupe. Tu l'écris, puis la correction souligne chaque faute.</p></div>
       <div class="ds-niveau">${segment("dt-niv", NIVEAUX_DICTEE.map(([v, t]) => [v, t]), choixDictee.niveau)}<small>${niv[2]}</small></div></div>
-    <p class="doux ds-choisir">Choisis la dictée que tu veux faire.</p>
+    ${estTelephone() ? MSG_DICTEE_TEL : `<p class="doux ds-choisir">Choisis la dictée que tu veux faire.</p>`}
     ${ls.length ? `<div class="liste">${ls.map(carte).join("")}</div>` : `<div class="vide">Aucune dictée pour le moment.</div>`}
     <p class="doux ds-choisir">Les dictées du brevet (sujets officiels) sont dans <b>Exercices Brevet</b>.</p>
   </div>`;
@@ -14018,6 +14125,7 @@ function blocDicteesDnb(){
   const mots = x => x.texte.split(/\s+/).filter(w => /\w/.test(w)).length;
   return `<div class="bloc dnb-dictees" id="bloc-dictees-dnb">
     <div class="dd-tete">${iconeDicteeDnb(30, 37)}<div><span class="mono">Dictées du brevet</span><p class="doux">Les vraies dictées des sujets de français du DNB, lues à voix haute. Choisis la dictée, puis le niveau.</p></div></div>
+    ${estTelephone() ? MSG_DICTEE_TEL : ""}
     <label class="dd-label" for="dd-choix">Dictée</label>
     <select id="dd-choix" class="dd-select">
       <option value=""${d ? "" : " selected"} disabled>— Sélectionne une dictée —</option>
@@ -14026,7 +14134,7 @@ function blocDicteesDnb(){
     ${d ? `<div class="dd-apercu"><b>${esc(d.auteur)}</b>, <i>${esc(d.oeuvre)}</i> (${esc(d.date)})<span class="doux"> · ${mots(d)} mots${faites[d.id] === undefined ? " · pas encore faite" : " · record " + String(faites[d.id]).replace(".", ",") + "/10"}</span></div>` : ""}
     <span class="mono">Niveau</span>
     <div class="dd-niveau">${segment("dd-niv", NIVEAUX_DICTEE.map(([v, t]) => [v, t]), choixDictee.niveau)}<small class="doux">${niv[2]}</small></div>
-    <div class="rangee"><button class="btn dd-go" type="button" id="dd-lancer"${d ? "" : " disabled"}>${iconeDicteeDnb(14, 17)} Commencer la dictée</button></div>
+    <div class="rangee"><button class="btn dd-go" type="button" id="dd-lancer"${d && !estTelephone() ? "" : " disabled"}>${iconeDicteeDnb(14, 17)} Commencer la dictée</button></div>
   </div>`;
 }
 function brancherDicteesDnb(redessiner){
