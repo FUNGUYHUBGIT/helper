@@ -2243,7 +2243,7 @@ body.ambiance-dnb .lateral .nav-groupe{color:#8ca6d6}
 .dmx-barre{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.dmx-intro{flex:1;min-width:220px;margin:0;font-size:.9rem;line-height:1.45}
 .dmx-nouveau{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
 .dmx-boite{border:1px solid var(--ligne);border-radius:14px;background:var(--surface);overflow:hidden}
-.dmx-onglets{display:flex;gap:4px;padding:0 10px;border-bottom:1px solid var(--ligne);overflow-x:auto}
+.dmx-onglets{display:flex;gap:4px;padding:0 10px;border-bottom:1px solid var(--ligne);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}.dmx-onglets::-webkit-scrollbar{display:none}
 .dmx-onglets button{position:relative;padding:12px 12px 11px;border:0;background:none;color:var(--doux);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer;white-space:nowrap}
 .dmx-onglets button.actif{color:var(--texte)}.dmx-onglets button.actif::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;border-radius:2px;background:var(--accent)}
 .dmx-onglets b{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:4px;padding:0 5px;border-radius:999px;background:var(--accent);color:#111;font-size:.7rem}
@@ -2306,6 +2306,43 @@ body.ambiance-dnb .lateral .nav-groupe{color:#8ca6d6}
   .dm-sujets{grid-template-columns:1fr}
 }
 
+
+/* ===== Profil ===== */
+.pf-carte{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:22px;padding:22px;border:1px solid var(--ligne);border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface) 55%)}
+.pf-photo{position:relative;flex:none}
+.pf-av{width:104px!important;height:104px!important;font-size:2.4rem!important;box-shadow:0 0 0 3px var(--surface),0 0 0 5px color-mix(in srgb,var(--accent) 60%,transparent)}
+.pf-photo-btn{position:absolute;right:-2px;bottom:-2px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:3px solid var(--surface);background:var(--accent);color:#111;cursor:pointer}
+.pf-photo-btn svg,.pf-confid svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pf-ident{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pf-ident h3{margin:0;font-size:1.6rem;line-height:1.15;overflow-wrap:anywhere}
+.pf-badges{display:flex;flex-wrap:wrap;gap:6px}
+.pf-badge{padding:3px 10px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface-2);font-size:.8rem;font-weight:600}
+.pf-badge.accent{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface-2))}
+.pf-cree{font-size:.8rem}
+.pf-photo-actions{display:flex;gap:6px;flex-wrap:wrap}
+.pf-stats{display:grid;grid-template-columns:repeat(2,minmax(84px,1fr));gap:8px}
+.pf-stats div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--ligne)}
+.pf-stats strong{font-size:1.25rem;font-variant-numeric:tabular-nums}.pf-stats span{font-size:.74rem;color:var(--doux)}
+.pf-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+/* confidentialité : en bleu */
+.pf-confid{--bleu:#4f8cff;margin-top:14px;padding:20px;border-radius:18px;border:1px solid color-mix(in srgb,var(--bleu) 40%,var(--ligne));background:linear-gradient(160deg,color-mix(in srgb,var(--bleu) 13%,var(--surface)),var(--surface) 60%)}
+.pf-confid-tete{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pf-confid-tete > svg{width:40px;height:40px;padding:8px;border-radius:12px;background:color-mix(in srgb,var(--bleu) 20%,transparent);color:var(--bleu)}
+.pf-confid-tete h3{margin:0;color:#9cc0ff}.pf-confid-tete span{font-size:.85rem;color:var(--doux)}
+.pf-confid-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pf-cf{display:flex;gap:12px;padding:14px;border-radius:12px;background:color-mix(in srgb,var(--bleu) 6%,var(--surface-2));border:1px solid color-mix(in srgb,var(--bleu) 22%,var(--ligne))}
+.pf-cf > svg{flex:none;width:22px;height:22px;color:var(--bleu);margin-top:1px}
+.pf-cf b{display:block;margin-bottom:4px}.pf-cf p{margin:0;font-size:.86rem;line-height:1.45;color:var(--doux)}.pf-cf p b{display:inline;color:var(--texte)}
+.pf-confid-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid color-mix(in srgb,var(--bleu) 20%,var(--ligne))}
+.pf-confid-actions .doux{font-size:.78rem}
+/* recadrage de la photo */
+.rc-cadre{position:relative;width:min(280px,100%);aspect-ratio:1;margin:6px auto;border-radius:14px;overflow:hidden;touch-action:none;cursor:grab;background:#161618}
+.rc-cadre:active{cursor:grabbing}.rc-cadre canvas{width:100%;height:100%;display:block}
+.rc-masque{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at center,transparent 69.5%,rgba(0,0,0,.6) 70.5%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.rc-masque::after{content:"";position:absolute;inset:0;border-radius:50%;margin:auto;width:100%;height:100%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7);transform:scale(.995)}
+.rc-zoom{display:flex;align-items:center;gap:10px}.rc-zoom input{flex:1}.rc-zoom span{font-size:1.2rem;color:var(--doux);width:14px;text-align:center}
+@media (max-width:900px){.pf-carte{grid-template-columns:auto minmax(0,1fr)}.pf-stats{grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr))}.pf-grille,.pf-confid-grille{grid-template-columns:1fr}}
+@media (max-width:520px){.pf-carte{grid-template-columns:1fr;justify-items:center;text-align:center}.pf-badges,.pf-photo-actions{justify-content:center}.pf-stats{grid-template-columns:repeat(2,minmax(0,1fr));width:100%}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2317,11 +2354,11 @@ body.ambiance-dnb .lateral .nav-groupe{color:#8ca6d6}
   <symbol id="logo" viewBox="0 0 48 48">
     <!-- rond en quatre quarts (le quart haut-gauche a deux tons) -->
     <g clip-path="url(#clip-rond)">
-      <rect x="0" y="0" width="13.2" height="48" style="fill:var(--logo-2)"/>
-      <rect x="13.2" y="0" width="11.2" height="48" style="fill:var(--logo-1)"/>
-      <rect x="0" y="23.2" width="24.4" height="25" style="fill:var(--logo-1)"/>
-      <rect x="24.4" y="0" width="24" height="23.2" style="fill:var(--logo-3)"/>
-      <rect x="24.4" y="23.2" width="24" height="25" style="fill:var(--logo-6)"/>
+      <!-- fond plein, puis les quarts posés dessus : pas de fente entre deux quarts (les traits gris) -->
+      <rect x="0" y="0" width="48" height="48" style="fill:var(--logo-1)"/>
+      <rect x="0" y="0" width="13.2" height="23.2" style="fill:var(--logo-2)"/>
+      <rect x="24.4" y="0" width="23.6" height="48" style="fill:var(--logo-3)"/>
+      <rect x="24.4" y="23.2" width="23.6" height="24.8" style="fill:var(--logo-6)"/>
     </g>
     <!-- carré arrondi et sa partie superposée au rond -->
     <rect x="3.3" y="25" width="19.1" height="19.1" rx="6.3" style="fill:var(--logo-4)"/>
@@ -5997,7 +6034,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "1.98";
+const VERSION_SITE = "1.99";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6063,64 +6100,69 @@ function brancherPseudo(){
 }
 VUES.profil = function vueProfil(){
   const p = profil, nbDefis = Object.values(prog.defis || {}).reduce((s, j) => s + Object.keys(j || {}).length, 0);
-  const lues = Object.keys(prog.lecons || {}).length;
-  zone().innerHTML = entete("Profil", esc(p.pseudo), `
-      <div class="chiffres">
-        <div class="chiffre"><span class="mono">Points</span><strong>${prog.points}</strong></div>
-        <div class="chiffre"><span class="mono">Série</span><strong>${prog.serie} j</strong></div>
-      </div>`) + `
-    <div class="deux">
-      <div class="bloc">
-        <span class="mono">Identité</span>
-        <div class="rangee" style="gap:18px;align-items:center">
-          <span class="avatar grand">${p.avatar ? `<img src="${esc(p.avatar)}" alt="Ta photo de profil">` : initiale(p)}</span>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn sec" type="button" id="choisir-photo">${p.avatar ? "Changer la photo" : "Ajouter une photo"}</button>
-            ${p.avatar ? `<button class="mini-btn danger" type="button" id="retirer-photo">Retirer la photo</button>` : ""}
-            <input type="file" id="fichier-photo" accept="image/*" hidden>
-          </div>
-        </div>
-        <dl class="fiche">
-          <dt>Pseudo</dt><dd>${esc(p.pseudo)} <span class="doux" style="font-weight:400">(sert à te connecter)</span></dd>
-          <dt>IP <span class="doux" style="font-weight:400">(identifiant personnel)</span></dt><dd>${esc(p.nom) || `<span class="doux">Non renseigné</span>`}</dd>
-          <dt>Rang</dt><dd>${RANGS[p.rang] || "Élève"}</dd>
-          <dt>Classe</dt><dd>${esc(p.classe) || `<span class="doux">Aucune</span>`}</dd>
-          <dt>Compte créé le</dt><dd>${p.creeLe ? dateFr(p.creeLe.slice(0, 10)) : "—"}</dd>
-        </dl>
-        <p class="doux" style="font-size:.85rem">L'IP, le rang et la classe viennent de ton code d'accès : seul le gérant peut les changer.</p>
+  const lues = Object.keys(prog.lecons || {}).length, pl = (n, m) => n + " " + m + (n > 1 ? "s" : "");
+  const ICO = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+  zone().innerHTML = entete("Profil", "Mon profil") + `
+    <section class="pf-carte">
+      <div class="pf-photo">
+        <span class="avatar pf-av">${p.avatar ? `<img src="${esc(p.avatar)}" alt="Ta photo de profil">` : initiale(p)}</span>
+        <button type="button" class="pf-photo-btn" id="choisir-photo" aria-label="${p.avatar ? "Changer la photo" : "Ajouter une photo"}" title="${p.avatar ? "Changer la photo" : "Ajouter une photo"}">${ICO('<path d="M4 8.5h3l1.6-2.5h6.8L17 8.5h3v10H4z"/><circle cx="12" cy="13" r="3.4"/>')}</button>
+        <input type="file" id="fichier-photo" accept="image/*" hidden>
       </div>
+      <div class="pf-ident">
+        <h3>${esc(p.pseudo)}</h3>
+        <div class="pf-badges"><span class="pf-badge accent">${RANGS[p.rang] || "Élève"}</span><span class="pf-badge">${esc(p.classe) || "Sans classe"}</span>${p.nom ? `<span class="pf-badge" title="IP : identifiant personnel">IP · ${esc(p.nom)}</span>` : ""}</div>
+        <span class="doux pf-cree">Compte créé le ${p.creeLe ? dateFr(p.creeLe.slice(0, 10)) : "—"} · l'IP, le rang et la classe viennent de ton code d'accès.</span>
+        ${p.avatar ? `<div class="pf-photo-actions"><button class="mini-btn" type="button" id="changer-photo">Changer la photo</button><button class="mini-btn danger" type="button" id="retirer-photo">Retirer</button></div>` : ""}
+      </div>
+      <div class="pf-stats">
+        <div><strong>${prog.points}</strong><span>points</span></div>
+        <div><strong>${prog.serie} j</strong><span>série</span></div>
+        <div><strong>${lues}</strong><span>${lues > 1 ? "leçons lues" : "leçon lue"}</span></div>
+        <div><strong>${nbDefis}</strong><span>${nbDefis > 1 ? "défis" : "défi"}</span></div>
+      </div>
+    </section>
+    <div class="pf-grille">
       ${blocPseudo(p)}
       <form class="bloc" id="form-mdp" novalidate>
         <span class="mono">Mot de passe</span>
-        <p class="doux" style="font-size:.88rem">Ton mot de passe est enregistré chiffré : personne ne peut le relire, ni le gérant ni Helper. Tu peux le changer ici.</p>
+        <p class="doux" style="font-size:.88rem;margin:0">Il est enregistré chiffré : personne ne peut le relire, ni le gérant ni Helper.</p>
         ${["mdp-actuel|Mot de passe actuel","mdp-nouveau|Nouveau mot de passe","mdp-confirme|Confirme le nouveau mot de passe"].map(x => { const [i, t] = x.split("|"); return `
           <div class="champ"><label for="${i}">${t}</label><div class="avec-oeil"><input id="${i}" type="password"><button type="button" class="oeil" data-cible="${i}"></button></div></div>`; }).join("")}
         <p id="statut-mdp" class="statut" role="status"></p>
         <div><button class="btn" type="submit">Changer le mot de passe</button></div>
       </form>
     </div>
-    <div class="bloc">
-      <span class="mono">Confidentialité</span>
-      <dl class="fiche">
-        <dt>Enregistré</dt><dd style="font-weight:400">Ton pseudo, ton mot de passe chiffré, ta photo, tes préférences et ta progression (${lues} leçon${lues > 1 ? "s" : ""} lue${lues > 1 ? "s" : ""}, ${nbDefis} défi${nbDefis > 1 ? "s" : ""}, ${prog.points} points).</dd>
-        <dt>Qui le voit</dt><dd style="font-weight:400">Le gérant voit ton pseudo, ton IP, ta classe et ta progression dans la liste des élèves. Rien de ton compte n'est affiché aux autres élèves.</dd>
-      </dl>
+    <section class="pf-confid" aria-labelledby="pf-confid-titre">
+      <div class="pf-confid-tete">${ICO('<path d="M12 3l7 3v5.5c0 4.4-3 7.9-7 9.5-4-1.6-7-5.1-7-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>')}<div><h3 id="pf-confid-titre">Confidentialité</h3><span>Ce que Helper garde sur toi, et qui peut le voir.</span></div></div>
+      <div class="pf-confid-grille">
+        <div class="pf-cf">${ICO('<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/>')}<div><b>Ce qui est enregistré</b>
+          <p>Ton pseudo, ton mot de passe <b>chiffré</b>, ta photo, tes préférences et ta progression (${pl(lues, "leçon")} lue${lues > 1 ? "s" : ""}, ${pl(nbDefis, "défi")}, ${pl(prog.points, "point")}).</p></div></div>
+        <div class="pf-cf">${ICO('<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>')}<div><b>Ce que voit le gérant</b>
+          <p>Ton pseudo, ton IP, ta classe et ta progression, dans la liste des élèves. Jamais ton mot de passe.</p></div></div>
+        <div class="pf-cf">${ICO('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/>')}<div><b>Ce que voient les autres élèves</b>
+          <p>Seulement ce que tu publies dans <b>Demandes</b> : ton pseudo, ta photo et tes messages. Ta progression et ton IP restent privées.</p></div></div>
+        <div class="pf-cf">${ICO('<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/>')}<div><b>Sur cet appareil</b>
+          <p>La connexion automatique et quelques réglages d'affichage. Tu peux les effacer en te déconnectant.</p></div></div>
+      </div>
       <p id="statut" class="statut" role="status"></p>
-      <div class="rangee">
+      <div class="pf-confid-actions">
         <button class="mini-btn danger" type="button" id="raz-prog">Remettre ma progression à zéro</button>
         <button class="mini-btn danger" type="button" id="suppr-compte">Supprimer mon compte</button>
+        <span class="doux">Il faut cliquer deux fois pour confirmer. Ces actions sont définitives.</span>
       </div>
-    </div>`;
+    </section>`;
   brancherPseudo();
   zone().querySelectorAll(".oeil").forEach(b => { majOeil(b, false); b.onclick = () => { const c = $("#" + b.dataset.cible), v = c.type === "password"; c.type = v ? "text" : "password"; majOeil(b, v); }; });
   $("#choisir-photo").onclick = () => $("#fichier-photo").click();
+  if ($("#changer-photo")) $("#changer-photo").onclick = () => $("#fichier-photo").click();
   $("#fichier-photo").onchange = async () => {
-    const f = $("#fichier-photo").files[0]; if (!f) return;
-    try { const url = await imageEnDataUrl(f, 192, true); await majCompte({avatar: url}); profil.avatar = url; majIdentite(); vueProfil(); toast("Photo de profil enregistrée."); }
-    catch { statut("Impossible de lire cette image. Essaie un fichier JPEG ou PNG."); }
+    const f = $("#fichier-photo").files[0]; $("#fichier-photo").value = ""; if (!f) return;
+    let bmp; try { bmp = await createImageBitmap(f); } catch { return statut("Impossible de lire cette image. Essaie un fichier JPEG ou PNG."); }
+    recadrerPhoto(bmp, async url => { await majCompte({avatar: url}); profil.avatar = url; majIdentite(); vueProfil(); toast("Photo de profil enregistrée."); });
   };
   const r = $("#retirer-photo");
-  if (r) r.onclick = async () => { await majCompte({avatar: ""}); profil.avatar = ""; majIdentite(); vueProfil(); };
+  if (r) deuxClics(r, async () => { await majCompte({avatar: ""}); profil.avatar = ""; majIdentite(); vueProfil(); });
   $("#form-mdp").onsubmit = async ev => {
     ev.preventDefault();
     const st = $("#statut-mdp"), dire = (t, ok) => { st.className = "statut " + (ok ? "ok" : "erreur"); st.textContent = t; };
@@ -6141,6 +6183,45 @@ VUES.profil = function vueProfil(){
     $("#deconnexion").click(); toast("Ton compte a été supprimé.");
   });
 };
+/* Recadrer la photo de profil : on fait glisser l'image dans le rond et on règle le zoom */
+function recadrerPhoto(bmp, enregistrer){
+  fermerFenetre();
+  const T = 280, el = ouvrirVoile(`<h3 style="margin:0">Recadrer ta photo</h3>
+    <p class="doux" style="margin:0;font-size:.88rem">Fais glisser la photo pour la placer dans le rond, puis règle le zoom.</p>
+    <div class="rc-cadre" id="rc-cadre"><canvas id="rc-cv" width="${T * 2}" height="${T * 2}"></canvas><div class="rc-masque"></div></div>
+    <div class="rc-zoom"><span aria-hidden="true">−</span><input type="range" id="rc-zoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom"><span aria-hidden="true">+</span></div>
+    <div class="rangee" style="justify-content:flex-end"><button class="btn sec" type="button" id="rc-annuler">Annuler</button><button class="btn" type="button" id="rc-ok">Enregistrer</button></div>`, 360);
+  const cv = el.querySelector("#rc-cv"), g = cv.getContext("2d"), zoom = el.querySelector("#rc-zoom");
+  const base = Math.max(T / bmp.width, T / bmp.height);   // l'image couvre tout le cadre au zoom 1
+  let z = 1, cx = 0, cy = 0;                                  // décalage du centre, en pixels du cadre
+  const borner = () => { const w = bmp.width * base * z, h = bmp.height * base * z, mx = (w - T) / 2, my = (h - T) / 2;
+    cx = Math.max(-mx, Math.min(mx, cx)); cy = Math.max(-my, Math.min(my, cy)); };
+  const dessiner = () => { borner(); const k = base * z, w = bmp.width * k, h = bmp.height * k;
+    g.setTransform(2, 0, 0, 2, 0, 0); g.fillStyle = "#161618"; g.fillRect(0, 0, T, T); g.imageSmoothingQuality = "high";
+    g.drawImage(bmp, (T - w) / 2 + cx, (T - h) / 2 + cy, w, h); };
+  dessiner();
+  zoom.oninput = () => { z = +zoom.value; dessiner(); };
+  const cadre = el.querySelector("#rc-cadre"), pts = new Map(); let ecart0 = 0, z0 = 1;
+  cadre.addEventListener("pointerdown", e => { cadre.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]);
+    if (pts.size === 2){ const [a, b] = [...pts.values()]; ecart0 = Math.hypot(a[0] - b[0], a[1] - b[1]); z0 = z; } });
+  cadre.addEventListener("pointermove", e => { if (!pts.has(e.pointerId)) return; const [x0, y0] = pts.get(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]);
+    if (pts.size === 2){ const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (ecart0) { z = Math.max(1, Math.min(4, z0 * d / ecart0)); zoom.value = z; } }   // pincer pour zoomer
+    else { const k = T / cadre.clientWidth; cx += (e.clientX - x0) * k; cy += (e.clientY - y0) * k; }
+    dessiner(); });
+  const fin = e => { pts.delete(e.pointerId); if (pts.size < 2) ecart0 = 0; };
+  cadre.addEventListener("pointerup", fin); cadre.addEventListener("pointercancel", fin);
+  cadre.addEventListener("wheel", e => { e.preventDefault(); z = Math.max(1, Math.min(4, z * (e.deltaY < 0 ? 1.08 : 1 / 1.08))); zoom.value = z; dessiner(); }, {passive: false});
+  el.querySelector("#rc-annuler").onclick = fermerFenetre;
+  el.querySelector("#rc-ok").onclick = async () => {
+    const out = document.createElement("canvas"), N = 256; out.width = out.height = N; const o = out.getContext("2d");
+    const k = base * z * N / T, w = bmp.width * k, h = bmp.height * k;
+    o.fillStyle = "#161618"; o.fillRect(0, 0, N, N); o.imageSmoothingQuality = "high";
+    o.drawImage(bmp, (N - w) / 2 + cx * N / T, (N - h) / 2 + cy * N / T, w, h);
+    const btn = el.querySelector("#rc-ok"); btn.disabled = true;
+    try { await enregistrer(out.toDataURL("image/jpeg", .85)); fermerFenetre(); }
+    catch { btn.disabled = false; toast("Le serveur ne répond pas. Réessaie dans un instant."); }
+  };
+}
 
 /* ----- Préférences ----- */
 let minuteriePrefs = 0;
