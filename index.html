@@ -6027,7 +6027,7 @@ const estGerantCompte = () => !!profil && profil.rang === "gerant";
 // Administrateur : modifie les leçons, les exercices, l'emploi du temps et les D.S. (moins de droits que le gérant)
 const estAdminCompte = () => !!profil && profil.rang === "administrateur";
 const normClasse = c => String(c || "").replace(/\s+/g, "").toUpperCase();
-const est3C = () => modeGerant || estGerantCompte() || (!!profil && normClasse(profil.classe) === "3C");
+const est3C = () => modeGerant || estGerantCompte() || (!!profil && (normClasse(profil.classe) === "3C" || profil.rang === "professeur"));   // les professeurs voient aussi les devoirs, le cloud et l'emploi du temps de la classe
 const RANGS = {eleve: "Élève", professeur: "Professeur", administrateur: "Administrateur", gerant: "Gérant"};
 const rangDe = r => r === "gerant" || r === "admin" ? "gerant" : r === "administrateur" ? "administrateur" : r === "professeur" ? "professeur" : "eleve";
 
@@ -6316,7 +6316,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.10";
+const VERSION_SITE = "2.11";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
