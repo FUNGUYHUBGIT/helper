@@ -6188,13 +6188,13 @@ async function configurerNotifsAppli(){
     if (n.devoirs === false && n.demandes === false){ window.HelperApp.configNotifs("{}"); return; }
     const s = await db.doc("comptes/" + moi).get(); let cle = s.exists ? s.data().cleNotif : "";
     if (!cle || String(cle).length < 20){ cle = Array.from(crypto.getRandomValues(new Uint8Array(24)), b => b.toString(16).padStart(2, "0")).join(""); await majCompte({cleNotif: cle}); }
-    window.HelperApp.configNotifs(JSON.stringify({compte: moi, cle, devoirs: n.devoirs !== false, demandes: n.demandes !== false, heure: [18, 19, 20, 21].includes(+n.heure) ? +n.heure : 18}));
+    window.HelperApp.configNotifs(JSON.stringify({compte: moi, cle, devoirs: n.devoirs !== false && !estProf(), demandes: n.demandes !== false, heure: [18, 19, 20, 21].includes(+n.heure) ? +n.heure : 18}));
   } catch {}
 }
 // dans Helper : les devoirs pour demain, une fois par jour à l'ouverture
 function annoncerDevoirsDemain(){
   try {
-    if (!profil || !est3C() || (profil.prefs.notifs || {}).devoirs === false) return;
+    if (!profil || estProf() || !est3C() || (profil.prefs.notifs || {}).devoirs === false) return;
     const cle = "helper.dv.notif." + moi; if (lsGet(cle) === auj()) return;
     const demain = decalerJour(auj(), 1), n = listeDevoirs().filter(d => d.date === demain && !estFaitDv(d)).length;
     lsSet(cle, auj()); if (n) toast(`📚 ${n} devoir${n > 1 ? "s" : ""} à faire pour demain.`);
@@ -6237,6 +6237,10 @@ function notifierEnDirect(type, docs){
 
 /* ===================== NAVIGATION ===================== */
 const ONGLETS_ELEVE = [["profil","Profil"],["prefs","Préférences"],["edt","Emploi du temps"],["lecons","Leçons"],["exos","Exercices"],["brevet","Exercices Brevet"],["devoirs","Devoirs"],["actu","Actualité"],["cloud","Cloud"],["demandes","Demandes"]];
+// les professeurs n'ont pas accès aux devoirs de la classe ni au Cloud des élèves
+const ONGLETS_INTERDITS_PROF = ["devoirs", "cloud"];
+const estProf = () => !modeGerant && !!profil && rangDe(profil.rang) === "professeur";
+const ongletsEleve = () => estProf() ? ONGLETS_ELEVE.filter(o => !ONGLETS_INTERDITS_PROF.includes(o[0])) : ONGLETS_ELEVE;
 const ONGLETS_ADMIN = [["g-lecons","Leçons"],["g-exos","Exercices"],["g-dictees","Dictées"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"]];
 const espaceNom = () => modeGerant || estGerantCompte() ? "Gérant" : "Administration";
 const ONGLETS_GERANT = [["g-site","Mise à jour du site"],["g-eleves","Élèves et codes"],["g-lecons","Leçons"],["g-exos","Exercices"],["g-dictees","Dictées"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"],["a-actus","Actus"],["g-cloud","Cloud"],["g-demandes","Demandes"],["g-signal","Signalements"]];
@@ -6249,7 +6253,7 @@ function majIdentite(){
 }
 function ouvrirApp(){
   const groupes = [];
-  if (!modeGerant) groupes.push(["Élève", ONGLETS_ELEVE]);
+  if (!modeGerant) groupes.push([estProf() ? "Professeur" : "Élève", ongletsEleve()]);
   if (modeGerant || estGerantCompte()){ groupes.push(["Gérant", ONGLETS_GERANT.filter(o => modeGerant || o[0] !== "g-demandes")]); suivreGestion(); }
   else if (estAdminCompte()) groupes.push(["Administration", ONGLETS_ADMIN]);
   $("#nav").innerHTML = groupes.map(([g, ongs]) => `<span class="nav-groupe">${g}</span>` + ongs.map(([v, t]) => `<button type="button" role="tab" data-vue="${v}" aria-selected="false"${EN_CHANTIER.includes(v) ? ` title="${t} : onglet en construction"` : ""}>${t}${EN_CHANTIER.includes(v) ? `<span class="nav-chantier" aria-label="en construction">En travaux</span>` : ""}</button>`).join("")).join("");
@@ -6257,7 +6261,7 @@ function ouvrirApp(){
   majIdentite(); majBadgeSignal(); suivreRequetes(); majBadgeRequetes();
   montrer("app");
   let vueDemandee = ""; try { vueDemandee = new URLSearchParams(location.search).get("vue") || ""; } catch {}
-  const accueil = profil && profil.prefs && ONGLETS_ELEVE.some(o => o[0] === profil.prefs.accueil) ? profil.prefs.accueil : "edt";
+  const accueil = profil && profil.prefs && ongletsEleve().some(o => o[0] === profil.prefs.accueil) ? profil.prefs.accueil : "edt";
   changerVue(VUES[vueDemandee] ? vueDemandee : modeGerant ? "g-eleves" : accueil);
 }
 window.helperOuvrirVue = v => { if (VUES[v] && document.getElementById("app") && !document.getElementById("app").hidden) changerVue(v); };
@@ -6299,6 +6303,7 @@ function ambianceDictee(on, bleu = false){
   else if (["#b06bff", "#3d7bff"].includes(document.documentElement.style.getPropertyValue("--accent")) || Formes){ appliquerPrefs(profil && profil.prefs ? profil.prefs : PREFS_DEFAUT); Formes.ambiance(null); }
 }
 function changerVue(v){
+  if (estProf() && ONGLETS_INTERDITS_PROF.includes(v)) v = "lecons";   // même par un lien ou une notification
   if (v !== vueActive) try { dvJourVu = null; dvDevoirVu = null; if (v !== "g-dictees") dictEd = null; } catch {}
   marquerNav(v); rafraichir = null; fermerMenuMobile();
   { const b = document.querySelector(`#nav [data-vue="${v}"]`), t = document.getElementById("bm-titre"); if (t) t.textContent = b ? b.textContent.replace(/en travaux/i, "").trim() : ""; } fermerFenetre(); if (typeof arreterLecture === "function") arreterLecture(); if (document.body.classList.contains("ambiance-dictee")) ambianceDictee(false);
@@ -6579,9 +6584,9 @@ VUES.prefs = function vuePrefs(){
     <div class="bloc">
       <div class="pf-titre"><span class="mono">Ouverture</span>${PORTEE.compte}</div>
       <div class="champ"><label for="pf-accueil">Onglet affiché quand j'ouvre Helper</label>
-        <select id="pf-accueil" style="max-width:320px">${ONGLETS_ELEVE.filter(o => !["profil", "prefs"].includes(o[0])).map(([v, t]) => `<option value="${v}" ${(p.accueil || "edt") === v ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+        <select id="pf-accueil" style="max-width:320px">${ongletsEleve().filter(o => !["profil", "prefs"].includes(o[0])).map(([v, t]) => `<option value="${v}" ${(p.accueil || "edt") === v ? "selected" : ""}>${t}</option>`).join("")}</select></div>
     </div>
-    ${est3C() ? `<div class="bloc">
+    ${est3C() && !estProf() ? `<div class="bloc">
       <div class="pf-titre"><span class="mono">Devoirs</span>${PORTEE.compte}</div>
       <label class="interrupteur"><span><strong>Masquer les devoirs faits</strong><small>Les devoirs que tu as cochés disparaissent du cahier de texte.</small></span><input type="checkbox" id="pf-faits" ${p.masquerFaits ? "checked" : ""}></label>
     </div>` : ""}
@@ -6612,9 +6617,9 @@ VUES.prefs = function vuePrefs(){
       <div class="pf-titre"><span class="mono">Notifications</span>${PORTEE.compte}</div>
       <label class="interrupteur"><span><strong>Nouvelles actualités</strong><small>Helper et classe.</small></span><input type="checkbox" data-n="actus" ${p.notifs.actus ? "checked" : ""}></label>
       <label class="interrupteur"><span><strong>Changements de cours</strong><small>Cours annulé, déplacé, changement de salle…</small></span><input type="checkbox" data-n="chg" ${p.notifs.chg ? "checked" : ""}></label>
-      <label class="interrupteur"><span><strong>Devoirs pour demain</strong><small>Le nombre de devoirs à faire pour le lendemain (élèves de 3C).</small></span><input type="checkbox" data-n="devoirs" ${p.notifs.devoirs !== false ? "checked" : ""}></label>
+      ${estProf() ? "" : `      <label class="interrupteur"><span><strong>Devoirs pour demain</strong><small>Le nombre de devoirs à faire pour le lendemain (élèves de 3C).</small></span><input type="checkbox" data-n="devoirs" ${p.notifs.devoirs !== false ? "checked" : ""}></label>
       <div class="pf-heure${p.notifs.devoirs === false ? " eteint" : ""}"><label for="pf-heure-dv"><strong>Heure de la notification des devoirs</strong><small>${parseFloat(APPLI_NATIVE || 0) >= 2 ? "Sur le téléphone, la notification arrive dans l'heure qui suit (Android regroupe les vérifications pour économiser la batterie)." : window.HelperApp && typeof window.HelperApp.configNotifs === "function" ? "Mets l'appli à jour (version 2.0) pour choisir l'heure ; en attendant, c'est à partir de 18 h." : "S'applique aux notifications de l'appli Android."}</small></label>
-        <select id="pf-heure-dv">${[18, 19, 20, 21].map(h => `<option value="${h}" ${(+p.notifs.heure || 18) === h ? "selected" : ""}>${h} h</option>`).join("")}</select></div>
+        <select id="pf-heure-dv">${[18, 19, 20, 21].map(h => `<option value="${h}" ${(+p.notifs.heure || 18) === h ? "selected" : ""}>${h} h</option>`).join("")}</select></div>`}
       <label class="interrupteur"><span><strong>Demandes qui me sont adressées</strong><small>Quand quelqu'un t'envoie une demande, ou répond dans une demande qui t'est adressée.</small></span><input type="checkbox" data-n="demandes" ${p.notifs.demandes !== false ? "checked" : ""}></label>
       <p class="doux" style="font-size:.85rem">${window.HelperApp && typeof window.HelperApp.configNotifs === "function" ? "Sur ce téléphone, les devoirs et les demandes arrivent aussi en notification, même appli fermée (les devoirs : le soir, à l'heure choisie)." : "Les notifications s'affichent dans Helper, à l'ouverture et pendant que la page est ouverte. Avec l'application Android (1.6), les devoirs et les demandes arrivent aussi sur le téléphone, même appli fermée."}</p>
     </div>
