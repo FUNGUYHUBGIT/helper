@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="fond">#0E0E0F</color>
+  <color name="fond_clair">#F4F2EC</color>
   <style name="Theme.Helper" parent="android:Theme.Material.NoActionBar">
     <item name="android:windowBackground">@color/fond</item>
     <item name="android:statusBarColor">@color/fond</item>

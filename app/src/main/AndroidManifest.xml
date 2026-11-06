@@ -27,6 +27,27 @@
     <activity-alias android:name=".IconeViolet" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_violet" android:roundIcon="@mipmap/ic_launcher_violet">
       <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
     </activity-alias>
+    <activity-alias android:name=".IconeClairOcre" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_clair_ocre" android:roundIcon="@mipmap/ic_launcher_clair_ocre">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeClairBrique" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_clair_brique" android:roundIcon="@mipmap/ic_launcher_clair_brique">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeClairBleu" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_clair_bleu" android:roundIcon="@mipmap/ic_launcher_clair_bleu">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeClairEmeraude" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_clair_emeraude" android:roundIcon="@mipmap/ic_launcher_clair_emeraude">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeClairPetrole" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_clair_petrole" android:roundIcon="@mipmap/ic_launcher_clair_petrole">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeClairFramboise" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_clair_framboise" android:roundIcon="@mipmap/ic_launcher_clair_framboise">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
+    <activity-alias android:name=".IconeClairIndigo" android:targetActivity=".AppActivity" android:exported="true" android:enabled="false" android:label="@string/app_name" android:icon="@mipmap/ic_launcher_clair_indigo" android:roundIcon="@mipmap/ic_launcher_clair_indigo">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity-alias>
   </application>
   <queries><intent><action android:name="android.intent.action.TTS_SERVICE"/></intent></queries>
 </manifest>

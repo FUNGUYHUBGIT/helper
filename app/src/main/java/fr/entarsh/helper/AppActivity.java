@@ -139,8 +139,10 @@ public class AppActivity extends Activity {
   void js(String code) { runOnUiThread(() -> { if (web != null) web.evaluateJavascript(code, null); }); }
 
   // ----- icône aux couleurs choisies dans les préférences -----
-  static final String[] ICONES = {"MainActivity", "IconeOrange", "IconeCorail", "IconeBleu", "IconeVert", "IconeRose", "IconeViolet"};
-  static final int[] TEINTES = {0xf2ae02, 0xf5a524, 0xff6b3d, 0x4fa3f7, 0x5cc98a, 0xef6fa6, 0xa585f2};
+  static final String[] ICONES = {"MainActivity", "IconeOrange", "IconeCorail", "IconeBleu", "IconeVert", "IconeRose", "IconeViolet",
+    "IconeClairOcre", "IconeClairBrique", "IconeClairBleu", "IconeClairEmeraude", "IconeClairPetrole", "IconeClairFramboise", "IconeClairIndigo"};   // thème clair : fond clair, couleurs foncées
+  static final int[] TEINTES = {0xf2ae02, 0xf5a524, 0xff6b3d, 0x4fa3f7, 0x5cc98a, 0xef6fa6, 0xa585f2,
+    0xa8590a, 0xb83a2e, 0x2350c2, 0x0d7a5a, 0x0b6b80, 0xb02d68, 0x5a3fc0};
   volatile String iconeVoulue = null;
   static String lireTout(InputStream in) throws Exception {
     ByteArrayOutputStream o = new ByteArrayOutputStream(); byte[] b = new byte[8192]; int n;
