@@ -2577,8 +2577,10 @@ html[data-theme="clair"] .rq-edit textarea{color:#1d7a33}
 .rq-corr + br,.rq-edit + br,.rq-signaler + br{display:none}
 .rq-orphelines{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px dashed var(--ligne)}
 .choix .rq-corr,.choix .rq-edit{grid-column:1/-1}
+.rq-mode-bouton button,.rq-mode-bouton [role=button],.rq-mode-bouton .choix > *{outline:2px dashed var(--prof,#3fb950);outline-offset:2px;cursor:crosshair!important}
+.rq-barre-prof .mini-btn.actif{border-color:var(--prof,#3fb950);background:color-mix(in srgb,var(--prof,#3fb950) 18%,transparent);color:var(--prof,#3fb950)}
 /* bouton flottant sous la sélection */
-.rq-flottant{position:absolute;z-index:200;display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--surface);border:1px solid var(--ligne);box-shadow:0 10px 28px rgba(0,0,0,.35);font-size:.85rem}
+.rq-flottant{position:fixed;z-index:500;display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--surface);border:1px solid var(--ligne);box-shadow:0 10px 28px rgba(0,0,0,.35);font-size:.85rem}
 .rq-flottant button{padding:7px 12px;border:0;border-radius:9px;background:transparent;color:var(--texte);font:inherit;font-weight:600;cursor:pointer}
 .rq-flottant button:hover{background:var(--surface-2)}
 .rq-flottant button[data-f="corr"]{color:#4ccb66}.rq-flottant button[data-f="info"]{color:#6aa4ff}
@@ -2615,6 +2617,17 @@ html[data-theme="clair"] .rq-edit textarea{color:#1d7a33}
 .rq-ligne-g{display:flex;flex-direction:column;gap:4px;padding:12px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface-2)}
 .rq-ou{font-size:.78rem}
 
+/* onglet « Sujets » des professeurs */
+.sp-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.sp-form .large{grid-column:1/-1}
+.sp-form-bloc .mono{display:inline-flex;align-items:center;gap:6px;color:var(--prof,#3fb950)}
+.sp-liste{display:flex;flex-direction:column;gap:10px}
+.sp-carte{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:12px;border:1px solid color-mix(in srgb,var(--prof,#3fb950) 30%,var(--ligne));background:var(--surface-2)}
+.sp-tete{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.sp-tete .dm-etat{margin-left:auto}
+.sp-liens{display:flex;gap:14px;flex-wrap:wrap;font-size:.88rem}.sp-liens a{color:var(--prof,#3fb950)}
+.sp-msg,.sp-rep{margin:0;font-size:.9rem}.sp-rep{padding:8px 10px;border-radius:8px;background:var(--surface)}
+.sp-actions{gap:6px}.sp-reponse{flex:1;min-width:180px}
+@media (max-width:700px){.sp-form{grid-template-columns:1fr}}
 /* ===== Professeurs : couleur verte, onglets du menu, conversations avec l'équipe ===== */
 :root{--prof:#3fb950}
 html[data-theme="clair"]{--prof:#1f8a3b}
@@ -6316,7 +6329,7 @@ let pcFils = null, pcMsgs = {}, pcChargement = null;   // conversations professe
 // les professeurs n'ont pas accès aux devoirs de la classe ni au Cloud des élèves
 const ONGLETS_INTERDITS_PROF = ["devoirs", "cloud"];
 const estProf = () => !modeGerant && !!profil && rangDe(profil.rang) === "professeur";
-const ongletsEleve = () => estProf() ? ONGLETS_ELEVE.filter(o => !ONGLETS_INTERDITS_PROF.includes(o[0])) : ONGLETS_ELEVE;
+const ongletsEleve = () => estProf() ? [...ONGLETS_ELEVE.filter(o => !ONGLETS_INTERDITS_PROF.includes(o[0])), ["sujets", "Sujets"]] : ONGLETS_ELEVE;
 const ONGLETS_ADMIN = [["g-lecons","Leçons"],["g-exos","Exercices"],["g-dictees","Dictées"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"]];
 const espaceNom = () => modeGerant || estGerantCompte() ? "Gérant" : "Administration";
 const ONGLETS_GERANT = [["g-site","Mise à jour du site"],["g-eleves","Élèves et codes"],["g-lecons","Leçons"],["g-exos","Exercices"],["g-dictees","Dictées"],["g-edt","Emploi du temps"],["g-annee","D.S. et vacances"],["a-actus","Actus"],["g-cloud","Cloud"],["g-demandes","Demandes"],["g-signal","Signalements"]];
@@ -6333,7 +6346,7 @@ function ouvrirApp(){
   if (modeGerant || estGerantCompte()){ groupes.push(["Gérant", ONGLETS_GERANT.filter(o => modeGerant || o[0] !== "g-demandes")]); suivreGestion(); }
   else if (estAdminCompte()) groupes.push(["Administration", ONGLETS_ADMIN]);
   document.body.classList.toggle("est-prof", estProf());
-  const PROF_AGIT = ["lecons", "exos", "brevet", "demandes"];
+  const PROF_AGIT = ["lecons", "exos", "brevet", "demandes", "sujets"];
   $("#nav").innerHTML = groupes.map(([g, ongs]) => `<span class="nav-groupe">${g}</span>` + ongs.map(([v, t]) => `<button type="button" role="tab" data-vue="${v}"${estProf() && PROF_AGIT.includes(v) ? ` class="nav-prof" title="${t} : tu peux y corriger et ajouter des infos"` : ""} aria-selected="false"${EN_CHANTIER.includes(v) ? ` title="${t} : onglet en construction"` : ""}>${t}${EN_CHANTIER.includes(v) ? `<span class="nav-chantier" aria-label="en construction">En travaux</span>` : ""}${estProf() && PROF_AGIT.includes(v) ? ICO_PROF : ""}</button>`).join("")).join("");
   $("#nav").querySelectorAll("button").forEach(b => b.onclick = () => changerVue(b.dataset.vue));
   majIdentite(); majBadgeSignal(); suivreRequetes(); majBadgeRequetes(); if (pcAcces()) setTimeout(() => chargerPc(), 1500);
@@ -6381,7 +6394,8 @@ function ambianceDictee(on, bleu = false){
   else if (["#b06bff", "#3d7bff"].includes(document.documentElement.style.getPropertyValue("--accent")) || Formes){ appliquerPrefs(profil && profil.prefs ? profil.prefs : PREFS_DEFAUT); Formes.ambiance(null); }
 }
 function changerVue(v){
-  if (estProf() && ONGLETS_INTERDITS_PROF.includes(v)) v = "lecons";   // même par un lien ou une notification
+  if (estProf() && ONGLETS_INTERDITS_PROF.includes(v)) v = "lecons";
+  if (v === "sujets" && !estProf()) v = "edt";   // même par un lien ou une notification
   if (v !== vueActive) try { dvJourVu = null; dvDevoirVu = null; if (v !== "g-dictees") dictEd = null; } catch {}
   marquerNav(v); rafraichir = null; fermerMenuMobile();
   { const b = document.querySelector(`#nav [data-vue="${v}"]`), t = document.getElementById("bm-titre"); if (t) t.textContent = b ? b.textContent.replace(/en travaux/i, "").trim() : ""; } fermerFenetre(); if (typeof arreterLecture === "function") arreterLecture(); if (document.body.classList.contains("ambiance-dictee")) ambianceDictee(false);
@@ -6399,7 +6413,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.13";
+const VERSION_SITE = "2.14";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -8223,12 +8237,16 @@ const Remarques = (() => {
       fermer();
     });
   }
+  const preparer = racine => { if (racine && !racine.dataset.rqSeg){ segmenter(racine); racine.dataset.rqSeg = "1"; } };
   const modulesDe = racine => [...racine.querySelectorAll(SEL_MODULES)].filter(m => !m.closest(IGNORE) && !m.parentElement.closest(SEL_MODULES));
   const nomModule = m => m.matches(".obj-doc") ? (norm(m.querySelector("figcaption,.titre,h3,h4")?.textContent) || "Schéma") : m.tagName === "IMG" ? (m.alt || "Image") : m.tagName === "VIDEO" || m.tagName === "IFRAME" ? "Vidéo" : "Module";
   // retrouver le passage d'une remarque dans la page
-  function trouverPassage(lignes, a){
+  const BLOCS_REPLI = "span.rq-seg,p,li,td,th,dd,dt,h1,h2,h3,h4,h5,h6,blockquote,pre,figcaption,button,label,div";
+  const blocDe = (racine, n) => { let el = n.nodeType === 1 ? n : n.parentElement; while (el && el !== racine && !el.matches(BLOCS_REPLI)) el = el.parentElement; return el || racine; };
+  function trouverPassage(lignes, a, racine){
     if (!a || a.m !== undefined) return null;
-    const cand = lignes.filter(x => norm(texteSans(x)) === norm(a.l));
+    let cand = lignes.filter(x => norm(texteSans(x)) === norm(a.l));
+    if (!cand.length && racine) cand = [...racine.querySelectorAll(BLOCS_REPLI)].filter(x => !x.closest(IGNORE) && norm(texteSans(x)) === norm(a.l)).reverse();
     for (const el of cand){
       if (!a.s) return {el};
       const brut = textes(el).map(n => n.data).join("");
@@ -8251,7 +8269,7 @@ const Remarques = (() => {
     o.racine.querySelectorAll(".rq-barree,.rq-mod-signale").forEach(x => x.classList.remove("rq-barree", "rq-mod-signale"));
     const corr = liste.filter(r => r.type === "correction"), infos = liste.filter(r => r.type === "aide");
     const ancres = [...corr, ...infos].map(r => lireAncre(r.ligne));
-    if (o.cible.startsWith("lecon:") && !o.racine.dataset.rqSeg && (peutEcrire() || corr.length || ancres.some(a => a && a.s))){ segmenter(o.racine); o.racine.dataset.rqSeg = "1"; }
+    if (o.cible.startsWith("lecon:") && (peutEcrire() || corr.length || ancres.some(a => a && a.s))) preparer(o.racine);
     const lignes = lignesDe(o.racine, o.sel), modules = modulesDe(o.racine), orphelines = [];
     // corrections de passages et modules signalés
     corr.forEach(r => {
@@ -8263,7 +8281,7 @@ const Remarques = (() => {
         box.innerHTML = `<div class="rq-corr-texte rouge">${ICO.drapeau}<span><b>Module signalé :</b> ${esc(r.texte)}</span></div>${pied(r)}`;
         m.after(box); return brancher(box, r, o);
       }
-      const p = trouverPassage(lignes, a); if (!p) return orphelines.push(r);
+      const p = trouverPassage(lignes, a, o.racine); if (!p) return orphelines.push(r);
       if (a.s) envelopper(p.el, p.d, p.f, "rq-barree"); else p.el.classList.add("rq-barree");
       box.innerHTML = `<div class="rq-corr-texte">${ICO.crayon}<span>${a.s ? `<s>${esc(a.s)}</s> <span class="rq-fl">→</span> ` : ""}<b>${esc(r.texte)}</b></span></div>${pied(r)}`;
       if (conteneur(p.el)) p.el.appendChild(box); else p.el.after(box);
@@ -8278,7 +8296,7 @@ const Remarques = (() => {
       o.racine.prepend(b);
     }
     // infos : passage souligné (si attachée) + bulle numérotée
-    infos.forEach((r, k) => { const a = lireAncre(r.ligne), p = a && a.s ? trouverPassage(lignes, a) : null;
+    infos.forEach((r, k) => { const a = lireAncre(r.ligne), p = a && a.s ? trouverPassage(lignes, a, o.racine) : null;
       if (p) envelopper(p.el, p.d, p.f, "rq-ancre", {"data-info": r.id, title: "Info du professeur : touche pour la lire", "data-n": k + 1}).forEach((s, i, l) => { if (i === l.length - 1) s.classList.add("fin"); }); });
     if (infos.length || peutEcrire()){
       const a = document.createElement("aside"); a.className = "rq-aides" + (infos.length ? "" : " vide");
@@ -8303,13 +8321,27 @@ const Remarques = (() => {
       const bar = document.createElement("div"); bar.className = "rq-barre-prof";
       bar.innerHTML = `<span class="rq-badge">Mode professeur</span>
         <button type="button" class="mini-btn" data-rq="info">${ICO.info}Ajouter une info</button>
-        <span class="doux rq-info"><b>Sélectionne un passage</b> pour le corriger ou y attacher une info. Sous chaque schéma ou image : « Signaler ce module ». Tes corrections ne sont vues que par les administrateurs et le gérant ; tes infos par tous.</span>`;
+        <button type="button" class="mini-btn" data-rq="bouton" aria-pressed="false">${ICO.crayon}Corriger un bouton</button>
+        <span class="doux rq-info"><b>Sélectionne un passage</b> (souris ou doigt) pour le corriger ou y attacher une info. Pour le texte d'un bouton (réponses d'un exercice…), touche « Corriger un bouton » puis le bouton. Sous chaque schéma ou image : « Signaler ce module ». Tes corrections ne sont vues que par les administrateurs et le gérant ; tes infos par tous.</span>`;
       (o.avant || o.racine).before(bar);
       bar.querySelector('[data-rq="info"]').onclick = () => fenetreInfo(o, null);
+      modeBouton(o, bar.querySelector('[data-rq="bouton"]'));
       modules.forEach((m, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "rq-ui rq-signaler"; b.innerHTML = ICO.drapeau + "Signaler ce module";
         b.onclick = ev => { ev.stopPropagation(); editerModule(o, m, i, b); }; (m.nextElementSibling && m.nextElementSibling.classList.contains("rq-corr") ? m.nextElementSibling : m).after(b); });
       ctx = {o, lignes: () => lignesDe(o.racine, o.sel)};
     } else ctx = null;
+  }
+  // « Corriger un bouton » : le prochain bouton touché dans la page n'agit pas, on corrige son texte
+  function modeBouton(o, btn){
+    let actif = false;
+    const clic = ev => {
+      const b = ev.target.closest("button,[role=button],.choix > *"); if (!b || !o.racine.contains(b) || b.closest(IGNORE + ",.rq-barre-prof")) return;
+      ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation(); finir();
+      const t = textes(b).map(n => n.data).join(""); if (!norm(t)) return toast("Ce bouton n'a pas de texte à corriger.");
+      editerPassage(o, {el: b, d: 0, f: t.length, passage: t, ligne: norm(texteSans(b)), bouton: true});
+    };
+    const finir = () => { actif = false; o.racine.classList.remove("rq-mode-bouton"); btn.setAttribute("aria-pressed", "false"); btn.classList.remove("actif"); o.racine.removeEventListener("click", clic, true); };
+    btn.onclick = () => { if (actif) return finir(); actif = true; o.racine.classList.add("rq-mode-bouton"); btn.setAttribute("aria-pressed", "true"); btn.classList.add("actif"); o.racine.addEventListener("click", clic, true); toast("Touche le bouton dont le texte est faux."); };
   }
   const flash = els => els.forEach(e => { e.classList.remove("rq-flash"); void e.offsetWidth; e.classList.add("rq-flash"); });
   const pied = r => `<div class="rq-corr-pied">${sig(r)}${peutRegler() ? `<button type="button" class="mini-btn rq-ok" data-regler>✓ Réglé</button>` : ""}${peutRegler() || r.auteurId === moi ? `<button type="button" class="mini-btn danger" data-suppr>Supprimer</button>` : ""}</div>`;
@@ -8320,40 +8352,54 @@ const Remarques = (() => {
   }
 
   /* --- sélection d'un passage par le prof --- */
-  let flottant = null, attenteSel = 0;
+  let flottant = null, attenteSel = 0, dernierAffichage = 0;
   const cacherFlottant = () => { if (flottant){ flottant.remove(); flottant = null; } };
   function selectionValide(){
     if (!ctx || !ctx.o.racine.isConnected) return null;
     const s = getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return null;
     const r = s.getRangeAt(0), txt = r.toString(); if (!norm(txt)) return null;
-    if (!ctx.o.racine.contains(r.commonAncestorContainer)) return null;
+    if (!ctx.o.racine.contains(r.commonAncestorContainer) && !ctx.o.racine.contains(r.startContainer)) return null;
     const dep = r.startContainer.nodeType === 1 ? r.startContainer : r.startContainer.parentElement;
-    if (dep.closest(IGNORE)) return null;
-    const lignes = ctx.lignes(), el = lignes.find(l => l.contains(r.startContainer));
-    if (!el) return {erreur: "Sélectionne du texte de la leçon."};
-    if (!el.contains(r.endContainer)) return {erreur: "Sélectionne un passage sur une seule ligne à la fois."};
+    if (!dep || dep.closest(IGNORE)) return null;
+    const lignes = ctx.lignes();
+    let el = lignes.find(l => l.contains(r.startContainer));
+    if (!el || !el.contains(r.endContainer)){
+      // repli : le plus petit bloc qui contient toute la sélection
+      el = blocDe(ctx.o.racine, r.commonAncestorContainer);
+      if (el === ctx.o.racine && norm(texteSans(el)).length > 400) return {erreur: "Sélectionne un passage plus court (une ligne à la fois).", rect: r.getBoundingClientRect()};
+    }
     const d = posDans(el, r.startContainer, r.startOffset), f = posDans(el, r.endContainer, r.endOffset);
     const brut = textes(el).map(n => n.data).join(""), passage = brut.slice(d, f);
     if (!passage.trim()) return null;
     return {el, d, f, passage, ligne: norm(texteSans(el)), rect: r.getBoundingClientRect()};
   }
-  document.addEventListener("selectionchange", () => { clearTimeout(attenteSel); attenteSel = setTimeout(() => {
-    const v = selectionValide(); if (!v){ cacherFlottant(); return; }
-    cacherFlottant(); flottant = document.createElement("div"); flottant.className = "rq-ui rq-flottant";
-    if (v.erreur){ flottant.innerHTML = `<span>${v.erreur}</span>`; }
-    else flottant.innerHTML = `<button type="button" data-f="corr">${ICO.crayon}Corriger</button><button type="button" data-f="info">${ICO.info}Info ici</button>`;
+  function afficherMenu(){
+    const v = selectionValide(); if (!v) return;
+    cacherFlottant(); flottant = document.createElement("div"); flottant.className = "rq-ui rq-flottant"; dernierAffichage = Date.now();
+    flottant.innerHTML = v.erreur ? `<span>${v.erreur}</span>` : `<button type="button" data-f="corr">${ICO.crayon}Corriger</button><button type="button" data-f="info">${ICO.info}Info ici</button>`;
     document.body.appendChild(flottant);
     const x = Math.min(innerWidth - flottant.offsetWidth - 8, Math.max(8, v.rect.left + v.rect.width / 2 - flottant.offsetWidth / 2));
-    flottant.style.left = (x + scrollX) + "px"; flottant.style.top = (v.rect.bottom + scrollY + 10) + "px";
-    flottant.addEventListener("pointerdown", ev => ev.preventDefault());   // garder la sélection en cliquant
-    flottant.querySelectorAll("button").forEach(b => b.onclick = () => { const w = selectionValide() || v; cacherFlottant(); getSelection().removeAllRanges();
+    const y = v.rect.bottom + 10 + flottant.offsetHeight < innerHeight ? v.rect.bottom + 10 : Math.max(8, v.rect.top - flottant.offsetHeight - 10);
+    flottant.style.left = x + "px"; flottant.style.top = y + "px";
+    flottant.addEventListener("pointerdown", ev => { ev.preventDefault(); ev.stopPropagation(); });   // garder la sélection en cliquant
+    flottant.addEventListener("mousedown", ev => ev.preventDefault());
+    flottant.querySelectorAll("button").forEach(b => b.onclick = ev => { ev.stopPropagation(); const w = v; cacherFlottant(); try { getSelection().removeAllRanges(); } catch {}
       if (b.dataset.f === "corr") editerPassage(ctx.o, w); else fenetreInfo(ctx.o, w); });
-  }, 260); });
-  addEventListener("scroll", () => { if (flottant && !getSelection().toString()) cacherFlottant(); }, {passive: true});
+  }
+  const bientot = d => { clearTimeout(attenteSel); attenteSel = setTimeout(afficherMenu, d); };
+  // souris, doigt, clavier (Maj + flèches), poignées de sélection du téléphone
+  document.addEventListener("mouseup", () => bientot(10));
+  document.addEventListener("touchend", () => bientot(350));
+  document.addEventListener("keyup", ev => { if (ev.shiftKey || ev.key === "Shift") bientot(10); });
+  document.addEventListener("selectionchange", () => { if (flottant && Date.now() - dernierAffichage < 300) return; const s = getSelection(); if (s && !s.isCollapsed) bientot(500); });
+  // le menu se ferme quand on touche ailleurs (pas quand la sélection disparaît)
+  document.addEventListener("pointerdown", ev => { if (flottant && !flottant.contains(ev.target)) cacherFlottant(); }, true);
+  document.addEventListener("scroll", () => cacherFlottant(), {passive: true, capture: true});   // le menu est fixe à l'écran : on le ferme quand la page défile
 
   function editerPassage(o, v){
     o.racine.querySelectorAll(".rq-edit").forEach(x => x.remove());
-    const marques = envelopper(v.el, v.d, v.f, "rq-selection");
+    const marques = v.bouton ? [] : envelopper(v.el, v.d, v.f, "rq-selection");
+    if (v.bouton) v.el.classList.add("rq-mod-signale");
     const d = document.createElement("div"); d.className = "rq-edit";
     d.innerHTML = `<span class="mono">Corriger le passage</span>
       <div class="rq-avant"><s>${esc(v.passage)}</s></div>
@@ -8361,9 +8407,9 @@ const Remarques = (() => {
       <textarea id="rq-remplace" rows="${Math.min(5, Math.max(1, Math.ceil(v.passage.length / 60)))}" maxlength="1000">${esc(v.passage)}</textarea>
       <div class="rangee"><button type="button" class="btn" data-envoyer>Envoyer la correction</button><button type="button" class="btn sec" data-annuler>Annuler</button></div>
       <span class="doux" style="font-size:.78rem">Signée à ton nom. Seuls les administrateurs et le gérant la voient.</span>`;
-    if (conteneur(v.el)) v.el.appendChild(d); else v.el.after(d);
+    if (conteneur(v.el) && !v.bouton) v.el.appendChild(d); else v.el.after(d);
     d.addEventListener("click", ev => ev.stopPropagation());
-    const fin = () => { d.remove(); marques.forEach(s => s.replaceWith(...s.childNodes)); };
+    const fin = () => { d.remove(); marques.forEach(s => s.replaceWith(...s.childNodes)); if (v.bouton) v.el.classList.remove("rq-mod-signale"); };
     const ta = d.querySelector("textarea"); ta.focus(); ta.select();
     d.querySelector("[data-annuler]").onclick = fin;
     d.querySelector("[data-envoyer]").onclick = async () => {
@@ -8409,7 +8455,7 @@ const Remarques = (() => {
   }
   const cleQuestion = q => { const s = norm([q.q, q.texte, q.phrase, (q.choix || []).join("|")].filter(Boolean).join("¦")); let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return "exo:" + h.toString(36) + s.length.toString(36); };
   new MutationObserver(() => { const z = zone(); if (z && !z.querySelector(":scope > .rq-aides")) z.classList.remove("rq-avec-aides"); cacherFlottant(); }).observe(document.getElementById("vue"), {childList: true});
-  return {monter, cleQuestion, peutRegler, rpc, lireAncre, SEL_LECON, ouvertes: () => rpc("remarques_ouvertes", {})};
+  return {monter, preparer, cleQuestion, peutRegler, peutEcrire, rpc, lireAncre, SEL_LECON, ouvertes: () => rpc("remarques_ouvertes", {})};
 })();
 
 function lireLecon(l){
@@ -8426,6 +8472,7 @@ function lireLecon(l){
     </div>`;
   remplirImages(zone()); remplirObjets(zone()); brancherPj(zone());
   enHaut();
+  if (Remarques.peutEcrire()) Remarques.preparer(zone().querySelector(".doc-lecon"));
   Remarques.monter({racine: zone().querySelector(".doc-lecon"), cible: "lecon:" + l.id, sel: Remarques.SEL_LECON, avant: zone().querySelector("article.bloc")});
   $("#retour").onclick = VUES.lecons;
   // le texte sélectionné dans la leçon est repris dans le signalement
@@ -17678,6 +17725,74 @@ function imageCapture(id){
   return capCache[id];
 }
 let filtreSignal = "ouverts";
+/* ----- Professeurs : onglet « Sujets » — proposer des liens de sujets du DNB au gérant ----- */
+let spListe = null;
+const ETATS_SP = {attente: ["En attente", "attente"], ajoute: ["Ajouté à Helper", "fait"], refuse: ["Pas ajouté", "refuse"]};
+async function chargerSp(){ try { const r = await sb.rpc("sp_liste"); if (r.error) throw r.error; spListe = r.data || []; } catch { spListe = spListe || []; } return spListe; }
+const htmlSp = (x, gestion) => `<div class="sp-carte" data-sp="${esc(x.id)}">
+  <div class="sp-tete"><b>Brevet ${x.an}${x.session ? " · " + esc(x.session) : ""}</b><span class="doux">${esc(nomMatDnb(x.matiere) || x.matiere || "")}</span><span class="dm-etat ${ETATS_SP[x.statut][1]}">${ETATS_SP[x.statut][0]}</span></div>
+  <div class="sp-liens"><a href="${esc(x.sujet)}" target="_blank" rel="noopener">📄 Sujet · ${esc(domaineDnb(x.sujet))}</a>${x.corrige ? `<a href="${esc(x.corrige)}" target="_blank" rel="noopener">✅ Corrigé · ${esc(domaineDnb(x.corrige))}</a>` : ""}</div>
+  ${x.message ? `<p class="sp-msg">${esc(x.message)}</p>` : ""}
+  <span class="rq-sig">— ${esc(x.profNom)}, professeur · ${new Date(x.le).toLocaleDateString("fr-FR", {day: "numeric", month: "short"})}</span>
+  ${x.reponse ? `<p class="sp-rep"><b>Réponse${x.traitePar ? " de " + esc(x.traitePar) : ""} :</b> ${esc(x.reponse)}</p>` : ""}
+  ${gestion ? `<div class="rangee sp-actions"><input type="text" class="sp-reponse" maxlength="600" placeholder="Réponse au professeur (facultatif)" value="${esc(x.reponse || "")}">
+      <button type="button" class="mini-btn rq-ok" data-sp-etat="ajoute">✓ Ajouté</button><button type="button" class="mini-btn" data-sp-etat="refuse">Pas ajouté</button><button type="button" class="mini-btn danger" data-sp-suppr>Supprimer</button></div>`
+    : x.statut === "attente" ? `<div><button type="button" class="mini-btn danger" data-sp-suppr>Retirer</button></div>` : ""}
+</div>`;
+function brancherCartesSp(z, apres){
+  z.querySelectorAll("[data-sp-etat]").forEach(b => b.onclick = async () => { const c = b.closest("[data-sp]"); b.disabled = true;
+    const r = await sb.rpc("sp_traiter", {p_id: c.dataset.sp, p_statut: b.dataset.spEtat, p_reponse: c.querySelector(".sp-reponse").value.trim()});
+    if (r.error){ b.disabled = false; return toast("Impossible pour l'instant."); } toast("Réponse envoyée au professeur."); await chargerSp(); apres(); });
+  z.querySelectorAll("[data-sp-suppr]").forEach(b => deuxClics(b, async () => { const r = await sb.rpc("sp_supprimer", {p_id: b.closest("[data-sp]").dataset.sp}); if (r.error) throw r.error; await chargerSp(); apres(); }));
+}
+VUES.sujets = async function vueSujets(){
+  rafraichir = null;
+  const ans = []; for (let a = new Date().getFullYear(); a >= 2010; a--) ans.push(a);
+  const sessions = [...new Set(SUJETS_DNB.map(x => x.session))].sort();
+  const dessiner = () => {
+    const l = spListe || [];
+    zone().innerHTML = entete("Professeur", "Sujets du DNB") + `
+      <div class="bloc sp-form-bloc">
+        <div class="pf-titre"><span class="mono">${ICO_PROF}Proposer un sujet au gérant</span></div>
+        <p class="doux" style="margin:0;font-size:.9rem">Tu connais un sujet du brevet qui manque dans Helper ? Donne le lien du sujet (et de son corrigé si tu l'as) : le gérant l'ajoutera aux « Sujets du DNB » des élèves.</p>
+        <form id="sp-form" class="sp-form" novalidate>
+          <div class="champ"><label for="sp-an">Année</label><select id="sp-an">${ans.map(a => `<option>${a}</option>`).join("")}</select></div>
+          <div class="champ"><label for="sp-mat">Matière</label><select id="sp-mat">${MATIERES_DNB.map(([m, t]) => `<option value="${m}">${t}</option>`).join("")}</select></div>
+          <div class="champ"><label for="sp-session">Session</label><input id="sp-session" list="sp-sessions" maxlength="80" placeholder="Ex. : Métropole, Centres étrangers…"><datalist id="sp-sessions">${sessions.map(x => `<option value="${esc(x)}">`).join("")}</datalist></div>
+          <div class="champ large"><label for="sp-sujet">Lien du sujet <span class="doux">(obligatoire)</span></label><input id="sp-sujet" type="url" inputmode="url" placeholder="https://…" maxlength="600"></div>
+          <div class="champ large"><label for="sp-corrige">Lien du corrigé <span class="doux">(facultatif)</span></label><input id="sp-corrige" type="url" inputmode="url" placeholder="https://…" maxlength="600"></div>
+          <div class="champ large"><label for="sp-message">Message pour le gérant <span class="doux">(facultatif)</span></label><textarea id="sp-message" rows="2" maxlength="1000" placeholder="Ex. : sujet de secours, très bon pour réviser la géométrie."></textarea></div>
+          <p id="sp-statut" class="statut large" role="status"></p>
+          <div class="large"><button class="btn pc-btn" type="submit">${ICO_PROF}Envoyer au gérant</button></div>
+        </form>
+      </div>
+      <div class="bloc"><span class="mono">Mes propositions${l.length ? " · " + l.length : ""}</span>
+        ${spListe === null ? `<p class="doux">Chargement…</p>` : l.length ? `<div class="sp-liste">${l.map(x => htmlSp(x, false)).join("")}</div>` : `<p class="doux" style="margin:0">Tu n'as encore proposé aucun sujet.</p>`}</div>`;
+    const dire = (t, ok) => { const st = $("#sp-statut"); st.className = "statut large " + (ok ? "ok" : "erreur"); st.textContent = t; };
+    $("#sp-form").onsubmit = async ev => {
+      ev.preventDefault();
+      const lien = $("#sp-sujet").value.trim(), corr = $("#sp-corrige").value.trim(), url = u => /^https?:\/\/[^\s.]+\.[^\s]+$/i.test(u);
+      if (!url(lien)) return dire("Colle le lien complet du sujet (il commence par https://).");
+      if (corr && !url(corr)) return dire("Le lien du corrigé n'est pas valide.");
+      const b = ev.submitter || $("#sp-form button[type=submit]"); b.disabled = true;
+      const r = await sb.rpc("sp_proposer", {p_an: +$("#sp-an").value, p_session: $("#sp-session").value.trim(), p_matiere: $("#sp-mat").value, p_sujet: lien, p_corrige: corr, p_message: $("#sp-message").value.trim()});
+      b.disabled = false;
+      if (r.error) return dire(/Réservé/.test(r.error.message) ? "Ton compte n'a pas le rang Professeur." : "Le serveur ne répond pas. Réessaie dans un instant.");
+      toast("Sujet envoyé au gérant. Merci !"); await chargerSp(); dessiner();
+    };
+    brancherCartesSp(zone(), dessiner);
+  };
+  dessiner(); await chargerSp(); if (vueActive === "sujets") dessiner();
+};
+// pour le gérant et les admins : liste dans Signalements
+async function chargerSujetsProposes(){
+  const z = $("#sp-gestion"); if (!z) return;
+  const l = (await chargerSp()) || []; if (!z.isConnected || !l.length) return;
+  const n = l.filter(x => x.statut === "attente").length;
+  const dessiner = () => { const l2 = spListe || []; z.innerHTML = `<div class="bloc"><span class="mono">Sujets du DNB proposés par les professeurs${n ? ` · ${n} en attente` : ""}</span><div class="sp-liste">${l2.map(x => htmlSp(x, true)).join("")}</div></div>`; brancherCartesSp(z, dessiner); };
+  dessiner();
+}
+
 // corrections des professeurs à régler (dans l'onglet Signalements)
 async function chargerCorrectionsProfs(){
   const z = $("#rq-ouvertes"); if (!z) return;
@@ -17703,6 +17818,7 @@ VUES["g-signal"] = function vueSignal(){
     <p id="statut" class="statut" role="status"></p>
     ${htmlDemandesGerant()}
     <div id="rq-ouvertes"></div>
+    <div id="sp-gestion"></div>
     ${liste.length ? `<div class="liste">${liste.map(x => `
       <div class="ligne-liste${x.traite ? " traite" : ""}" style="align-items:flex-start">
         <span class="titre" style="min-width:0">
@@ -17743,7 +17859,7 @@ VUES["g-signal"] = function vueSignal(){
   zone().querySelectorAll("[data-suppr]").forEach(b => deuxClics(b, async () => {
     try { await db.doc("signalements/" + b.dataset.suppr).delete(); db.doc("captures/" + b.dataset.suppr).delete().catch(() => {}); delete capCache[b.dataset.suppr]; } catch (err){ statut(erreurEcriture(err)); }
   }));
-  chargerCorrectionsProfs();
+  chargerCorrectionsProfs(); chargerSujetsProposes();
 };
 
 /* ===================== DÉMARRAGE ===================== */
