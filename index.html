@@ -2529,6 +2529,16 @@ html[data-theme="clair"] .pf-portee.compte{color:#1f5fd6}html[data-theme="clair"
 .pf-heure label{display:flex;flex-direction:column;gap:2px;cursor:default}.pf-heure small{color:var(--doux);font-size:.82rem}
 .pf-heure select{flex:none;width:auto;min-width:96px;padding:8px 12px;border-radius:10px;border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte);font:inherit}
 .pf-heure.eteint{opacity:.5}
+
+/* ===== Fluidité ===== */
+html.bascule-theme{transition:none!important}
+@media (pointer:coarse){
+  :root{transition:--accent .4s ease}   /* fondu de couleur plus court sur téléphone */
+  .lateral,.panneau{-webkit-backdrop-filter:none;backdrop-filter:none}
+  .panneau{background:color-mix(in srgb,var(--fond) 96%,transparent)}
+  .lateral{background:var(--fond)}
+  ::view-transition-new(root){animation-duration:.5s}
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5792,8 +5802,10 @@ const Formes = (() => {
     while (formes.length < n) formes.push(creer(formes.length));
     formes.length = n;
   }
+  const TACTILE = matchMedia("(pointer: coarse)").matches;   // téléphone / tablette : 30 images/s et définition réduite (la batterie et la fluidité avant tout)
+  let pauseJusqua = 0, derniereImage = 0, sale = true;
   function taille(){
-    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const dpr = Math.min(devicePixelRatio || 1, TACTILE ? 1.5 : 2); sale = true;
     L = innerWidth; H = innerHeight; cv.width = L * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ajuster();
   }
@@ -5840,7 +5852,14 @@ const Formes = (() => {
     cx.restore();
   }
   function image(t){
-    const dt = Math.min(.05, (t - avant) / 1000); avant = t;
+    // pause (pendant le changement de thème) ou image sautée sur écran tactile : on garde l'image d'avant
+    if (t < pauseJusqua || (TACTILE && t - derniereImage < 31)){ requestAnimationFrame(image); return; }
+    derniereImage = t;
+    const dt = Math.min(TACTILE ? .07 : .05, (t - avant) / 1000); avant = t;
+    // formes immobiles (« Réduire les animations ») et rien qui change : inutile de redessiner
+    const fige = reduit.matches && !ch.on && Math.abs(e.vitesseCible - e.vitesse) < .001 && Math.abs(e.mixCible - e.mix) < .001 && Math.abs(e.opaciteCible - e.opacite) < .001;
+    if (fige && !sale){ requestAnimationFrame(image); return; }
+    sale = false;
     e.vitesse += (e.vitesseCible - e.vitesse) * Math.min(1, dt * 4);
     e.mix += (e.mixCible - e.mix) * Math.min(1, dt * 6);
     e.opacite += (e.opaciteCible - e.opacite) * Math.min(1, dt * 3);
@@ -5902,8 +5921,9 @@ const Formes = (() => {
     succes: () => reaction(VERT, .2, 1800),
     discret: on => { e.opaciteCible = on ? .45 : 1; },
     nombre: n => { nombre = n === null || n === undefined ? null : Math.max(0, Math.min(80, n)); ajuster(); },
-    accent: hex => { COUL.a = hexRgb(hex); },
-    theme: clair => { COUL.b = clair ? [60,56,48] : [244,242,237]; COUL.g = clair ? [150,144,132] : [90,87,81]; },
+    accent: hex => { COUL.a = hexRgb(hex); sale = true; },
+    pause: ms => { pauseJusqua = performance.now() + ms; sale = true; },
+    theme: clair => { sale = true; COUL.b = clair ? [60,56,48] : [244,242,237]; COUL.g = clair ? [150,144,132] : [90,87,81]; },
     ambiance: rgb => { if (rgb) e.ambTeinte = rgb; e.ambCible = rgb ? 1 : 0; },
     chantier: on => { if (ch.on === !!on) return; ch.on = !!on; ch.prochain = performance.now() + 300; formes.forEach(f => { f.rayee = on && Math.random() < .3; f.dec = 0; }); document.body.classList.toggle("mode-chantier", ch.on); }
   };
@@ -6245,7 +6265,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.07";
+const VERSION_SITE = "2.08";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6445,7 +6465,8 @@ function hslVersRgb([h, s, l]){ if (!s) return [l, l, l].map(v => Math.round(v *
   return [t(h + 1 / 3), t(h), t(h - 1 / 3)].map(v => Math.round(v * 255)); }
 function adapterCouleursLecons(racine){
   const clair = document.documentElement.dataset.theme === "clair";
-  (racine || document).querySelectorAll(".doc-lecon").forEach(doc => {
+  const docs = racine && racine.nodeType === 1 ? [...(racine.matches(".doc-lecon") ? [racine] : []), ...racine.querySelectorAll(".doc-lecon")] : [...document.querySelectorAll(".doc-lecon")];
+  docs.forEach(doc => {
     [doc, ...doc.querySelectorAll("*")].forEach(el => {
       if (el.dataset.cOrig !== undefined){ el.style.color = el.dataset.cOrig; delete el.dataset.cOrig; }   // on repart de la couleur d'origine
       if (!clair) return;
@@ -6457,8 +6478,13 @@ function adapterCouleursLecons(racine){
     });
   });
 }
-{ let attente = 0; new MutationObserver(() => { if (attente) return; attente = requestAnimationFrame(() => { attente = 0; if (document.documentElement.dataset.theme === "clair") adapterCouleursLecons(); }); })
-    .observe(document.getElementById("vue") || document.body, {childList: true, subtree: true}); }
+{ let attente = 0, ajouts = new Set();
+  new MutationObserver(liste => {
+    if (document.documentElement.dataset.theme !== "clair") return;
+    for (const m of liste) for (const n of m.addedNodes) if (n.nodeType === 1 && (n.matches(".doc-lecon") || n.querySelector(".doc-lecon"))) ajouts.add(n);
+    if (!ajouts.size || attente) return;
+    attente = requestAnimationFrame(() => { attente = 0; const l = [...ajouts]; ajouts = new Set(); l.forEach(n => n.isConnected && adapterCouleursLecons(n)); });
+  }).observe(document.getElementById("vue") || document.body, {childList: true, subtree: true}); }
 
 /* ----- Préférences ----- */
 let minuteriePrefs = 0;
@@ -6560,6 +6586,8 @@ VUES.prefs = function vuePrefs(){
     };
     h.style.setProperty("--vt-x", (r.left + r.width / 2) + "px"); h.style.setProperty("--vt-y", (r.top + r.height / 2) + "px");
     if (animReduite()) return appliquer();
+    // pendant le passage : la couleur change d'un coup (au lieu de 1,4 s de fondu qui recalcule toute la page) et les formes du fond se figent
+    h.classList.add("bascule-theme"); Formes.pause(900); setTimeout(() => h.classList.remove("bascule-theme"), 900);
     if (document.startViewTransition) document.startViewTransition(appliquer);   // le nouveau thème s'ouvre en cercle depuis le bouton
     else { h.classList.add("theme-anim"); appliquer(); setTimeout(() => h.classList.remove("theme-anim"), 650); }
   };
