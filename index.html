@@ -2540,52 +2540,76 @@ html.bascule-theme{transition:none!important}
   ::view-transition-new(root){animation-duration:.5s}
 }
 
-/* ===== Professeurs : corrections et aides ===== */
+/* ===== Professeurs : corrections, modules signalés, infos ===== */
 .rq-barre-prof{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;border-radius:12px;border:1px dashed color-mix(in srgb,#3fb950 55%,var(--ligne));background:color-mix(in srgb,#3fb950 7%,var(--surface))}
-.rq-barre-prof.actif{border-style:solid;box-shadow:0 0 0 3px color-mix(in srgb,#3fb950 25%,transparent)}
-.rq-barre-prof .mini-btn{display:inline-flex;align-items:center;gap:6px}
-.rq-barre-prof svg,.rq-aides svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.rq-barre-prof .mini-btn,.rq-flottant button,.rq-signaler{display:inline-flex;align-items:center;gap:6px}
+.rq-barre-prof svg,.rq-aides svg,.rq-flottant svg,.rq-signaler svg,.rq-corr svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .rq-badge{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#3fb950;margin-right:4px}
-.rq-info{font-size:.78rem;flex-basis:100%}
-.rq-seg.rq-barree{display:inline}
-.rq-corr + br,.rq-edit + br{display:none}
-.rq-choix .rq-l{cursor:pointer;border-radius:6px;outline:1px dashed transparent;outline-offset:3px;transition:outline-color .12s,background .12s}
-.rq-choix .rq-l:hover{outline-color:#3fb950;background:color-mix(in srgb,#3fb950 10%,transparent)}
-.rq-barree{text-decoration:line-through;text-decoration-color:#ff5c5c;text-decoration-thickness:2px;opacity:.7}
-.rq-barree .rq-corr,.rq-barree .rq-edit{opacity:1;text-decoration:none}
+.rq-info{font-size:.8rem;flex-basis:100%;line-height:1.45}
+/* passage barré, sélection en cours, passage avec une info */
+.rq-barree{text-decoration:line-through;text-decoration-color:#ff5c5c;text-decoration-thickness:2px;background:color-mix(in srgb,#ff5c5c 12%,transparent);border-radius:3px}
+.rq-selection{background:color-mix(in srgb,#3fb950 30%,transparent);border-radius:3px}
+.rq-ancre{text-decoration:underline dotted #5b9bff 2px;text-underline-offset:3px;background:color-mix(in srgb,#4f8cff 10%,transparent);cursor:help;border-radius:3px}
+.rq-ancre.fin::after{content:attr(data-n);display:inline-grid;place-items:center;min-width:15px;height:15px;margin-left:3px;padding:0 3px;border-radius:999px;background:#4f8cff;color:#fff;font-size:.62rem;font-weight:700;vertical-align:super;line-height:1;font-style:normal}
+.rq-flash{animation:rq-flash 1.2s ease}
+@keyframes rq-flash{0%,60%{box-shadow:0 0 0 3px #4f8cff;background:color-mix(in srgb,#4f8cff 30%,transparent)}}
+/* boîte de correction (verte) et module signalé (rouge) */
 .rq-corr,.rq-edit{display:block;margin:6px 0 12px;padding:10px 12px;border-left:3px solid #3fb950;border-radius:0 10px 10px 0;background:color-mix(in srgb,#3fb950 9%,var(--surface));text-decoration:none;font-style:normal;font-weight:400;text-align:left;font-size:.95rem;color:var(--texte)}
-.rq-corr-texte{display:flex;gap:8px;color:#4ccb66;font-weight:600;white-space:pre-wrap}
-html[data-theme="clair"] .rq-corr-texte{color:#1d7a33}
-.rq-fl{flex:none}
+.rq-corr.module,.rq-edit.module{border-left-color:#ff5c5c;background:color-mix(in srgb,#ff5c5c 9%,var(--surface))}
+.rq-corr-texte{display:flex;gap:8px;align-items:flex-start;color:#4ccb66;white-space:pre-wrap}
+.rq-corr-texte s{color:var(--doux);text-decoration-color:#ff5c5c}
+.rq-corr-texte.rouge{color:#ff7b7b}
+html[data-theme="clair"] .rq-corr-texte{color:#1d7a33}html[data-theme="clair"] .rq-corr-texte.rouge{color:#c0322b}
+.rq-corr-texte svg{margin-top:3px}
+.rq-fl{color:var(--doux)}
 .rq-corr-pied{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
 .rq-sig{font-size:.78rem;color:var(--doux);font-style:italic;margin-right:auto}
 .rq-ok{border-color:#3fb950;color:#3fb950}
-.rq-ancien{display:block;color:var(--doux);text-decoration-color:#ff5c5c;margin-bottom:4px;font-size:.9rem}
 .rq-edit{display:flex;flex-direction:column;gap:8px}
+.rq-avant{color:var(--doux)}.rq-avant s{text-decoration-color:#ff5c5c}
+.rq-lab{font-size:.82rem;font-weight:600}
 .rq-edit textarea{width:100%;border:1px solid #3fb950;border-radius:8px;background:var(--surface-2);color:#4ccb66;font:inherit;font-weight:600;padding:8px 10px;resize:vertical}
+.rq-edit.module textarea{border-color:#ff5c5c;color:var(--texte);font-weight:400}
 html[data-theme="clair"] .rq-edit textarea{color:#1d7a33}
+.rq-mod-signale{outline:2px dashed #ff5c5c;outline-offset:4px;border-radius:6px}
+.rq-signaler{margin:4px 0 10px;padding:4px 10px;border-radius:999px;border:1px solid color-mix(in srgb,#ff5c5c 45%,var(--ligne));background:transparent;color:#ff7b7b;font:inherit;font-size:.78rem;cursor:pointer}
+.rq-signaler:hover{background:color-mix(in srgb,#ff5c5c 10%,transparent)}
+.rq-corr + br,.rq-edit + br,.rq-signaler + br{display:none}
 .rq-orphelines{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px dashed var(--ligne)}
 .choix .rq-corr,.choix .rq-edit{grid-column:1/-1}
-/* bulles d'aide : colonne à droite qui suit le défilement */
-.contenu.rq-avec-aides{max-width:1290px;display:grid;grid-template-columns:minmax(0,1fr) 270px;column-gap:28px;align-content:start}
+/* bouton flottant sous la sélection */
+.rq-flottant{position:absolute;z-index:200;display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--surface);border:1px solid var(--ligne);box-shadow:0 10px 28px rgba(0,0,0,.35);font-size:.85rem}
+.rq-flottant button{padding:7px 12px;border:0;border-radius:9px;background:transparent;color:var(--texte);font:inherit;font-weight:600;cursor:pointer}
+.rq-flottant button:hover{background:var(--surface-2)}
+.rq-flottant button[data-f="corr"]{color:#4ccb66}.rq-flottant button[data-f="info"]{color:#6aa4ff}
+.rq-flottant > span{padding:6px 10px;color:var(--doux)}
+/* infos du prof : colonne à droite qui suit le défilement */
+.contenu.rq-avec-aides{max-width:1290px;display:grid;grid-template-columns:minmax(0,1fr) 280px;column-gap:28px;align-content:start}
 .contenu.rq-avec-aides > *{grid-column:1;min-width:0}
 .contenu.rq-avec-aides > .retour{justify-self:start}
 .contenu.rq-avec-aides > .rq-aides{grid-column:2;grid-row:1/span 40;align-self:start;position:sticky;top:20px}
 .rq-aides-bouton{display:none}
 .rq-aides-liste{display:flex;flex-direction:column;gap:12px}
-.rq-bulle{position:relative;margin:0;padding:14px 16px 12px;border-radius:16px 16px 16px 4px;background:color-mix(in srgb,#4f8cff 13%,var(--surface));border:1px solid color-mix(in srgb,#4f8cff 40%,var(--ligne));box-shadow:0 6px 18px rgba(0,0,0,.18)}
-.rq-bulle blockquote{margin:0 0 6px;font-size:.95rem;line-height:1.5}
+.rq-aides-titre{display:flex;align-items:center;gap:6px;color:#6aa4ff}
+.rq-bulle{position:relative;margin:0;padding:16px 16px 12px 18px;border-radius:18px 18px 18px 6px;background:linear-gradient(160deg,color-mix(in srgb,#4f8cff 16%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,#4f8cff 38%,var(--ligne));box-shadow:0 8px 22px rgba(0,0,0,.18);cursor:pointer}
+.rq-bulle:hover{border-color:#4f8cff}
+.rq-num{position:absolute;top:-9px;left:-9px;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#4f8cff;color:#fff;font-size:.72rem;font-weight:700;box-shadow:0 0 0 3px var(--fond)}
+.rq-cite{margin:0 0 6px;font-size:.78rem;color:var(--doux)}.rq-cite q{quotes:"“" "”";color:var(--texte);font-style:italic}
+.rq-bulle blockquote,.rq-apercu-bulle blockquote{margin:0 0 8px;font-size:1rem;line-height:1.5;font-weight:500}
 .rq-bulle figcaption{display:flex;align-items:center;gap:6px}
 .rq-x{border:0;background:none;color:var(--doux);font-size:1.1rem;cursor:pointer;padding:0 4px;line-height:1}
-.rq-vide{font-size:.82rem;margin:0}
-.rq-aides.vide{opacity:.8}
+.rq-vide{font-size:.82rem;margin:0;line-height:1.45}
+.rq-apercu-bulle{padding:12px 14px;border-radius:16px 16px 16px 6px;background:color-mix(in srgb,#4f8cff 12%,var(--surface-2));border:1px solid color-mix(in srgb,#4f8cff 35%,var(--ligne))}
+.rq-apercu-bulle blockquote{margin:0}
 @media (max-width:1180px){
   .contenu.rq-avec-aides{display:flex;max-width:980px}
   .contenu.rq-avec-aides > .rq-aides{position:fixed;top:auto;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;width:min(340px,calc(100vw - 32px));display:flex;flex-direction:column;align-items:flex-end;gap:10px}
   .rq-aides-bouton{display:inline-flex;align-items:center;gap:6px;order:2;padding:10px 14px;border-radius:999px;border:1px solid color-mix(in srgb,#4f8cff 50%,var(--ligne));background:var(--surface);color:var(--texte);font:inherit;font-size:.86rem;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.3)}
-  .rq-aides-liste{display:none;max-height:60vh;overflow:auto;width:100%;padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .rq-aides-bouton svg{color:#6aa4ff}
+  .rq-aides-liste{display:none;max-height:60vh;overflow:auto;width:100%;padding:16px 12px 12px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);box-shadow:0 10px 30px rgba(0,0,0,.35)}
   .rq-aides.ouvert .rq-aides-liste{display:flex}
   .rq-aides.vide:not(.ouvert) .rq-aides-bouton b{display:none}
+  .rq-num{left:-4px;top:-6px}
 }
 .rq-liste-g{display:flex;flex-direction:column;gap:12px}
 .rq-ligne-g{display:flex;flex-direction:column;gap:4px;padding:12px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface-2)}
@@ -6321,7 +6345,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.11";
+const VERSION_SITE = "2.12";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -8090,147 +8114,248 @@ VUES.lecons = function vueLecons(){
   ajusterMiniatures(zone());
   zone().querySelectorAll("[data-l]").forEach(b => b.onclick = () => lireLecon(ls.find(l => l.id === b.dataset.l)));
 };
-/* ===================== PROFESSEURS : corrections de lignes et aides signées =====================
-   - correction : la ligne d'origine est barrée et la correction du prof s'affiche en vert dessous ;
-     visible seulement par son auteur, les administrateurs et le gérant (le serveur ne l'envoie pas aux autres) ;
-   - aide : une info entre guillemets dans une bulle qui suit le défilement, à côté de la leçon ou de l'exercice ; visible par tous.
-   Tout est signé par le serveur (pseudo et rang du compte connecté). */
+/* ===================== PROFESSEURS : corrections de passages, modules signalés, infos =====================
+   Réservé au rang Professeur (ni le gérant ni les administrateurs n'ont l'outil).
+   - correction : le prof sélectionne un passage → le passage est barré et sa correction s'affiche en vert sous la ligne ;
+   - module (schéma, image, objet) : le prof le signale avec un message affiché dessous ;
+     corrections et modules signalés ne sont vus que par les administrateurs, le gérant et le prof qui les a écrits (filtré par le serveur) ;
+   - info : une info “entre guillemets” dans une bulle qui suit le défilement à côté de la leçon ou de l'exercice,
+     éventuellement attachée à un passage (souligné en bleu) ; vue par tous.
+   Tout est signé par le serveur avec le compte connecté. */
 const Remarques = (() => {
   const rang = () => profil ? rangDe(profil.rang) : "eleve";
-  const peutEcrire = () => ["professeur", "gerant", "administrateur"].includes(rang());
-  const peutRegler = () => ["gerant", "administrateur"].includes(rang());
+  const peutEcrire = () => !modeGerant && rang() === "professeur";
+  const peutRegler = () => modeGerant || ["gerant", "administrateur"].includes(rang());
   const norm = t => String(t || "").replace(/\s+/g, " ").trim();
   const SEL_LECON = "p,li,h1,h2,h3,h4,h5,h6,blockquote,td,th,dt,dd,figcaption,pre,span.rq-seg";
-  // Lignes écrites « à la main » (texte simple coupé par des retours à la ligne, sans paragraphe) :
-  // chaque ligne visible est entourée d'un <span class="rq-seg"> à l'affichage, pour pouvoir la choisir (la leçon enregistrée ne change pas)
-  const BLOCS = /^(P|DIV|UL|OL|LI|H[1-6]|TABLE|THEAD|TBODY|TR|TD|TH|BLOCKQUOTE|PRE|HR|FIGURE|SECTION|ARTICLE|DETAILS|SUMMARY|DL|DT|DD|ASIDE|HEADER|FOOTER|NAV|CANVAS|IFRAME|VIDEO|AUDIO|SVG|svg|FORM)$/;
+  const SEL_MODULES = ".obj-doc,img,iframe,video";
+  const IGNORE = ".rq-corr,.rq-edit,.rq-ui,.rq-orphelines";
+  const ICO = {
+    crayon: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>`,
+    info: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.1"/></svg>`,
+    drapeau: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>`};
+  const sig = r => `<span class="rq-sig">— ${esc(r.auteurNom)}${r.auteurRang === "professeur" ? ", professeur" : ""} · ${new Date(r.le).toLocaleDateString("fr-FR", {day: "numeric", month: "short"})}</span>`;
+  const guillemets = t => "“" + String(t).trim().replace(/^[«»"“”\s]+|[«»"“”\s]+$/g, "") + "”";
+  const lireAncre = l => { if (!l) return null; if (l[0] !== "{") return {l: l}; try { return JSON.parse(l); } catch { return {l: l}; } };   // ancienne correction = ligne entière
+  async function rpc(nom, args){ if (typeof sb === "undefined" || !sb) throw new Error("hors ligne"); const r = await sb.rpc(nom, args); if (r.error) throw r.error; return r.data; }
+
+  /* --- lignes, texte et positions (en ignorant ce que l'outil a lui-même ajouté) --- */
+  const texteSans = el => { const c = el.cloneNode(true); c.querySelectorAll(IGNORE).forEach(x => x.remove()); return c.textContent; };
+  const conteneur = el => /^(LI|TD|TH|DD|DT)$/.test(el.tagName);
+  const lignesDe = (racine, sel) => [...racine.querySelectorAll(sel)].filter(el => norm(texteSans(el)) && !el.closest(IGNORE) && ![...el.querySelectorAll(sel)].some(x => !x.closest(IGNORE) && norm(texteSans(x))));
+  const textes = el => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {acceptNode: n => n.parentElement && n.parentElement.closest(IGNORE) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT}); const l = []; while (w.nextNode()) l.push(w.currentNode); return l; };
+  const posDans = (el, c, o) => { const r = document.createRange(); r.setStart(el, 0); r.setEnd(c, o); const f = r.cloneContents(); f.querySelectorAll && f.querySelectorAll(IGNORE).forEach(x => x.remove()); return f.textContent.length; };
+  function envelopper(el, a, b, cls, attrs = {}){   // entoure les caractères [a, b[ de la ligne avec des <span>
+    const spans = []; let t = 0;
+    for (const n of textes(el)){
+      const L = n.data.length, d = Math.max(a, t), f = Math.min(b, t + L);
+      if (d < f){ let x = n; if (d > t) x = x.splitText(d - t); if (f - d < x.data.length) x.splitText(f - d);
+        const s = document.createElement("span"); s.className = cls; Object.entries(attrs).forEach(([k, v]) => s.setAttribute(k, v)); x.before(s); s.appendChild(x); spans.push(s); }
+      t += L;
+    }
+    return spans;
+  }
+  // texte coupé par des retours à la ligne : chaque ligne visible devient un <span class="rq-seg"> (à l'affichage seulement)
+  const BLOCS = /^(P|DIV|UL|OL|LI|H[1-6]|TABLE|THEAD|TBODY|TR|TD|TH|BLOCKQUOTE|PRE|HR|FIGURE|SECTION|ARTICLE|DETAILS|SUMMARY|DL|DT|DD|ASIDE|HEADER|FOOTER|NAV|CANVAS|IFRAME|VIDEO|AUDIO|SVG|svg|FORM|IMG)$/;
   function segmenter(racine){
-    [racine, ...racine.querySelectorAll("div,p,li,td,th,blockquote,dd,section,article")].forEach(el => {
-      if (el.closest(".rq-corr,.rq-edit,.rq-seg,[data-objet],.objet,.module")) return;
+    [racine, ...racine.querySelectorAll("div,p,li,td,th,blockquote,dd,section,article,span,font,b,strong,i,em")].forEach(el => {
+      if (el.closest(IGNORE + ",.rq-seg,.obj-doc")) return;
       const enf = [...el.childNodes], aBr = enf.some(n => n.nodeName === "BR"), aBloc = enf.some(n => n.nodeType === 1 && BLOCS.test(n.nodeName));
       const aTexte = enf.some(n => (n.nodeType === 3 && n.textContent.trim()) || (n.nodeType === 1 && !BLOCS.test(n.nodeName) && n.nodeName !== "BR" && n.textContent.trim()));
-      if (!aTexte || (!aBr && !aBloc)) return;   // un seul morceau de texte : la ligne est déjà l'élément lui-même
+      if (!aTexte || (!aBr && !aBloc)) return;
       let groupe = [];
       const fermer = () => { if (groupe.some(n => n.textContent.trim())){ const sp = document.createElement("span"); sp.className = "rq-seg"; groupe[0].before(sp); sp.append(...groupe); } groupe = []; };
       enf.forEach(n => { if (n.nodeName === "BR" || (n.nodeType === 1 && BLOCS.test(n.nodeName))) fermer(); else groupe.push(n); });
       fermer();
     });
   }
-  const signature = r => `<span class="rq-sig">— ${esc(r.auteurNom)}${r.auteurRang === "professeur" ? ", professeur" : r.auteurRang === "gerant" ? ", gérant" : r.auteurRang === "administrateur" ? ", administrateur" : ""} · ${new Date(r.le).toLocaleDateString("fr-FR", {day: "numeric", month: "short"})}</span>`;
-  const ICO_CRAYON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>`;
-  const ICO_BULLE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>`;
-  async function rpc(nom, args){ if (typeof sb === "undefined" || !sb) throw new Error("hors ligne"); const r = await sb.rpc(nom, args); if (r.error) throw r.error; return r.data; }
-  // lignes « corrigeables » : blocs de texte qui ne contiennent pas eux-mêmes d'autres lignes
-  const texteLigne = el => { const c = el.cloneNode(true); c.querySelectorAll(".rq-corr,.rq-edit").forEach(x => x.remove()); return norm(c.textContent); };
-  const conteneur = el => /^(LI|TD|TH|DD|DT)$/.test(el.tagName);
-  // barrer la ligne ; dans une case ou un élément de liste, on barre seulement le texte d'origine (pas la correction ajoutée dedans)
-  const barrer = el => { if (!conteneur(el)) return el.classList.add("rq-barree"); const sp = document.createElement("span"); sp.className = "rq-barree"; sp.append(...el.childNodes); el.appendChild(sp); };
-  const lignesDe = (racine, sel) => [...racine.querySelectorAll(sel)].filter(el => texteLigne(el) && !el.closest(".rq-corr,.rq-edit,.rq-orphelines") && ![...el.querySelectorAll(sel)].some(x => !x.closest(".rq-corr,.rq-edit") && texteLigne(x)));
+  const modulesDe = racine => [...racine.querySelectorAll(SEL_MODULES)].filter(m => !m.closest(IGNORE) && !m.parentElement.closest(SEL_MODULES));
+  const nomModule = m => m.matches(".obj-doc") ? (norm(m.querySelector("figcaption,.titre,h3,h4")?.textContent) || "Schéma") : m.tagName === "IMG" ? (m.alt || "Image") : m.tagName === "VIDEO" || m.tagName === "IFRAME" ? "Vidéo" : "Module";
+  // retrouver le passage d'une remarque dans la page
+  function trouverPassage(lignes, a){
+    if (!a || a.m !== undefined) return null;
+    const cand = lignes.filter(x => norm(texteSans(x)) === norm(a.l));
+    for (const el of cand){
+      if (!a.s) return {el};
+      const brut = textes(el).map(n => n.data).join("");
+      let d = a.o >= 0 && brut.substr(a.o, a.s.length) === a.s ? a.o : brut.indexOf(a.s);
+      if (d < 0){ const i = norm(brut).indexOf(norm(a.s)); if (i < 0) continue; d = brut.indexOf(a.s.trim()); if (d < 0) continue; }
+      return {el, d, f: d + a.s.length};
+    }
+    return null;
+  }
 
+  /* --- affichage --- */
+  let ctx = null;   // page en cours (pour la sélection du prof)
   async function monter(o){
-    // o = {racine, cible, sel, avant (élément devant lequel mettre la barre du prof)}
     const zoneV = zone(); let liste = [];
     try { liste = await rpc("remarques_lire", {p_cible: o.cible}) || []; } catch { liste = []; }
     if (!o.racine.isConnected) return;
-    zoneV.querySelectorAll(".rq-aides,.rq-barre-prof").forEach(x => x.remove());
-    o.racine.querySelectorAll(".rq-corr,.rq-orphelines").forEach(x => x.remove());
-    o.racine.querySelectorAll("span.rq-barree").forEach(x => x.replaceWith(...x.childNodes));
-    o.racine.querySelectorAll(".rq-barree").forEach(x => x.classList.remove("rq-barree"));
-    if (o.cible.startsWith("lecon:") && (peutEcrire() || peutRegler()) && !o.racine.dataset.rqSeg){ segmenter(o.racine); o.racine.dataset.rqSeg = "1"; }
-    const lignes = lignesDe(o.racine, o.sel), corr = liste.filter(r => r.type === "correction"), aides = liste.filter(r => r.type === "aide");
-    // corrections : on retrouve la ligne par son texte, sinon par sa position
-    const orphelines = [];
+    zoneV.querySelectorAll(":scope > .rq-aides, .rq-barre-prof").forEach(x => x.remove());
+    o.racine.querySelectorAll(".rq-ui,.rq-corr,.rq-orphelines").forEach(x => x.remove());
+    o.racine.querySelectorAll("span.rq-barree,span.rq-ancre").forEach(x => x.replaceWith(...x.childNodes));
+    o.racine.querySelectorAll(".rq-barree,.rq-mod-signale").forEach(x => x.classList.remove("rq-barree", "rq-mod-signale"));
+    const corr = liste.filter(r => r.type === "correction"), infos = liste.filter(r => r.type === "aide");
+    const ancres = [...corr, ...infos].map(r => lireAncre(r.ligne));
+    if (o.cible.startsWith("lecon:") && !o.racine.dataset.rqSeg && (peutEcrire() || corr.length || ancres.some(a => a && a.s))){ segmenter(o.racine); o.racine.dataset.rqSeg = "1"; }
+    const lignes = lignesDe(o.racine, o.sel), modules = modulesDe(o.racine), orphelines = [];
+    // corrections de passages et modules signalés
     corr.forEach(r => {
-      const el = lignes.find(x => texteLigne(x) === norm(r.ligne) && !x.classList.contains("rq-barree") && !x.querySelector(":scope > .rq-barree"));   // si la ligne a changé, la correction va dans la liste du haut
-      if (!el){ orphelines.push(r); return; }
-      barrer(el);
-      const d = document.createElement("div"); d.className = "rq-corr"; d.innerHTML = htmlCorr(r);
-      if (conteneur(el)) el.appendChild(d); else el.after(d);
-      brancherCorr(d, r, o);
+      const a = lireAncre(r.ligne), box = document.createElement("div"); box.className = "rq-corr";
+      if (a && a.m !== undefined){
+        const m = modules[a.m] && nomModule(modules[a.m]) === a.n ? modules[a.m] : modules.find(x => nomModule(x) === a.n);
+        if (!m) return orphelines.push(r);
+        m.classList.add("rq-mod-signale"); box.classList.add("module");
+        box.innerHTML = `<div class="rq-corr-texte rouge">${ICO.drapeau}<span><b>Module signalé :</b> ${esc(r.texte)}</span></div>${pied(r)}`;
+        m.after(box); return brancher(box, r, o);
+      }
+      const p = trouverPassage(lignes, a); if (!p) return orphelines.push(r);
+      if (a.s) envelopper(p.el, p.d, p.f, "rq-barree"); else p.el.classList.add("rq-barree");
+      box.innerHTML = `<div class="rq-corr-texte">${ICO.crayon}<span>${a.s ? `<s>${esc(a.s)}</s> <span class="rq-fl">→</span> ` : ""}<b>${esc(r.texte)}</b></span></div>${pied(r)}`;
+      if (conteneur(p.el)) p.el.appendChild(box); else p.el.after(box);
+      brancher(box, r, o);
     });
     if (orphelines.length){
       const b = document.createElement("div"); b.className = "rq-orphelines";
-      b.innerHTML = `<span class="mono">Corrections dont la ligne a changé</span>` + orphelines.map(r => `<div class="rq-corr" data-id="${r.id}"><s class="rq-ancien">${esc(r.ligne)}</s>${htmlCorr(r)}</div>`).join("");
-      o.racine.prepend(b); b.querySelectorAll(".rq-corr").forEach((d, k) => brancherCorr(d, orphelines[k], o));
+      b.innerHTML = `<span class="mono">Remarques dont le passage a changé</span>`;
+      orphelines.forEach(r => { const a = lireAncre(r.ligne) || {}, d = document.createElement("div"); d.className = "rq-corr";
+        d.innerHTML = `<div class="rq-corr-texte">${a.m !== undefined ? ICO.drapeau : ICO.crayon}<span>${a.m !== undefined ? `<b>${esc(a.n)} :</b> ` : `<s>${esc(a.s || a.l || "")}</s> <span class="rq-fl">→</span> `}<b>${esc(r.texte)}</b></span></div>${pied(r)}`;
+        b.appendChild(d); brancher(d, r, o); });
+      o.racine.prepend(b);
     }
-    // aides : bulles à côté, qui suivent le défilement
-    if (aides.length || peutEcrire()){
-      const a = document.createElement("aside"); a.className = "rq-aides" + (aides.length ? "" : " vide");
-      a.innerHTML = `<button type="button" class="rq-aides-bouton" aria-expanded="false">${ICO_BULLE}<b>${aides.length}</b><span>aide${aides.length > 1 ? "s" : ""} du prof</span></button>
-        <div class="rq-aides-liste">${aides.length ? `<span class="mono">Aide${aides.length > 1 ? "s" : ""} du professeur</span>` : ""}${aides.map(r => `<figure class="rq-bulle" data-id="${r.id}"><blockquote>« ${esc(r.texte)} »</blockquote><figcaption>${signature(r)}${peutRegler() || r.auteurId === moi ? `<button type="button" class="rq-x" data-suppr="${r.id}" title="Supprimer cette aide" aria-label="Supprimer cette aide">×</button>` : ""}</figcaption></figure>`).join("")}
-        ${!aides.length ? `<p class="doux rq-vide">Pas encore d'aide sur ${o.cible.startsWith("lecon:") ? "cette leçon" : "cette question"}.</p>` : ""}</div>`;
+    // infos : passage souligné (si attachée) + bulle numérotée
+    infos.forEach((r, k) => { const a = lireAncre(r.ligne), p = a && a.s ? trouverPassage(lignes, a) : null;
+      if (p) envelopper(p.el, p.d, p.f, "rq-ancre", {"data-info": r.id, title: "Info du professeur : touche pour la lire", "data-n": k + 1}).forEach((s, i, l) => { if (i === l.length - 1) s.classList.add("fin"); }); });
+    if (infos.length || peutEcrire()){
+      const a = document.createElement("aside"); a.className = "rq-aides" + (infos.length ? "" : " vide");
+      a.innerHTML = `<button type="button" class="rq-aides-bouton" aria-expanded="false">${ICO.info}<b>${infos.length}</b><span>info${infos.length > 1 ? "s" : ""} du prof</span></button>
+        <div class="rq-aides-liste">${infos.length ? `<span class="mono rq-aides-titre">${ICO.info}Info${infos.length > 1 ? "s" : ""} du professeur</span>` : ""}
+        ${infos.map((r, k) => { const an = lireAncre(r.ligne); return `<figure class="rq-bulle" data-id="${r.id}" tabindex="0">
+          <span class="rq-num">${k + 1}</span>
+          ${an && an.s ? `<p class="rq-cite">À propos de <q>${esc(an.s.length > 70 ? an.s.slice(0, 68) + "…" : an.s)}</q></p>` : ""}
+          <blockquote>${esc(guillemets(r.texte))}</blockquote>
+          <figcaption>${sig(r)}${peutRegler() || r.auteurId === moi ? `<button type="button" class="rq-x" data-suppr="${r.id}" title="Supprimer cette info" aria-label="Supprimer cette info">×</button>` : ""}</figcaption></figure>`; }).join("")}
+        ${!infos.length ? `<p class="doux rq-vide">Pas encore d'info sur ${o.cible.startsWith("lecon:") ? "cette leçon" : "cette question"}. Sélectionne un passage pour en attacher une, ou utilise « Ajouter une info ».</p>` : ""}</div>`;
       zoneV.appendChild(a); zoneV.classList.add("rq-avec-aides");
-      a.querySelector(".rq-aides-bouton").onclick = () => { const ouv = !a.classList.contains("ouvert"); a.classList.toggle("ouvert", ouv); a.querySelector(".rq-aides-bouton").setAttribute("aria-expanded", ouv); };
-      a.querySelectorAll("[data-suppr]").forEach(b => deuxClics(b, async () => { await rpc("remarque_supprimer", {p_id: b.dataset.suppr}); monter(o); }));
+      const bouton = a.querySelector(".rq-aides-bouton"), ouvrir = v => { a.classList.toggle("ouvert", v); bouton.setAttribute("aria-expanded", v); };
+      bouton.onclick = () => ouvrir(!a.classList.contains("ouvert"));
+      a.querySelectorAll("[data-suppr]").forEach(b => { b.onclick = ev => ev.stopPropagation(); deuxClics(b, async () => { await rpc("remarque_supprimer", {p_id: b.dataset.suppr}); monter(o); }); });
+      // bulle → passage, passage → bulle
+      a.querySelectorAll(".rq-bulle").forEach(f => f.onclick = () => { const s = o.racine.querySelector(`.rq-ancre[data-info="${f.dataset.id}"]`); if (!s) return; s.scrollIntoView({block: "center", behavior: "smooth"}); flash(o.racine.querySelectorAll(`.rq-ancre[data-info="${f.dataset.id}"]`)); });
+      o.racine.querySelectorAll(".rq-ancre").forEach(s => s.onclick = ev => { ev.stopPropagation(); const f = a.querySelector(`.rq-bulle[data-id="${s.dataset.info}"]`); if (!f) return; ouvrir(true); f.scrollIntoView({block: "nearest", behavior: "smooth"}); flash([f]); });
     }
-    // barre du professeur
+    // outils du professeur
     if (peutEcrire()){
       const bar = document.createElement("div"); bar.className = "rq-barre-prof";
-      bar.innerHTML = `<span class="rq-badge">${rang() === "professeur" ? "Mode professeur" : "Outils professeur"}</span>
-        <button type="button" class="mini-btn" data-rq="corriger">${ICO_CRAYON}Corriger une ligne</button>
-        <button type="button" class="mini-btn" data-rq="aide">${ICO_BULLE}Ajouter une aide</button>
-        <span class="doux rq-info">Tes corrections ne sont vues que par les administrateurs et le gérant. Tes aides sont vues par tous.</span>`;
+      bar.innerHTML = `<span class="rq-badge">Mode professeur</span>
+        <button type="button" class="mini-btn" data-rq="info">${ICO.info}Ajouter une info</button>
+        <span class="doux rq-info"><b>Sélectionne un passage</b> pour le corriger ou y attacher une info. Sous chaque schéma ou image : « Signaler ce module ». Tes corrections ne sont vues que par les administrateurs et le gérant ; tes infos par tous.</span>`;
       (o.avant || o.racine).before(bar);
-      bar.querySelector('[data-rq="corriger"]').onclick = () => choisirLigne(o, bar);
-      bar.querySelector('[data-rq="aide"]').onclick = () => fenetreAide(o);
-    }
+      bar.querySelector('[data-rq="info"]').onclick = () => fenetreInfo(o, null);
+      modules.forEach((m, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "rq-ui rq-signaler"; b.innerHTML = ICO.drapeau + "Signaler ce module";
+        b.onclick = ev => { ev.stopPropagation(); editerModule(o, m, i, b); }; (m.nextElementSibling && m.nextElementSibling.classList.contains("rq-corr") ? m.nextElementSibling : m).after(b); });
+      ctx = {o, lignes: () => lignesDe(o.racine, o.sel)};
+    } else ctx = null;
   }
-  const htmlCorr = r => `<div class="rq-corr-texte"><span class="rq-fl" aria-hidden="true">↳</span><span>${esc(r.texte)}</span></div>
-    <div class="rq-corr-pied">${signature(r)}${peutRegler() ? `<button type="button" class="mini-btn rq-ok" data-regler>✓ Réglé</button>` : ""}${peutRegler() || r.auteurId === moi ? `<button type="button" class="mini-btn danger" data-suppr>Supprimer</button>` : ""}</div>`;
-  function brancherCorr(d, r, o){
-    const g = d.querySelector("[data-regler]"); if (g) g.onclick = async ev => { ev.stopPropagation(); g.disabled = true; try { await rpc("remarque_regler", {p_id: r.id}); toast("Correction marquée comme réglée."); monter(o); } catch { g.disabled = false; toast("Le serveur ne répond pas. Réessaie dans un instant."); } };
+  const flash = els => els.forEach(e => { e.classList.remove("rq-flash"); void e.offsetWidth; e.classList.add("rq-flash"); });
+  const pied = r => `<div class="rq-corr-pied">${sig(r)}${peutRegler() ? `<button type="button" class="mini-btn rq-ok" data-regler>✓ Réglé</button>` : ""}${peutRegler() || r.auteurId === moi ? `<button type="button" class="mini-btn danger" data-suppr>Supprimer</button>` : ""}</div>`;
+  function brancher(d, r, o){
+    const g = d.querySelector("[data-regler]"); if (g) g.onclick = async ev => { ev.stopPropagation(); g.disabled = true; try { await rpc("remarque_regler", {p_id: r.id}); toast("Marqué comme réglé."); monter(o); } catch { g.disabled = false; toast("Le serveur ne répond pas. Réessaie dans un instant."); } };
     const s = d.querySelector("[data-suppr]"); if (s) deuxClics(s, async () => { await rpc("remarque_supprimer", {p_id: r.id}); monter(o); });
     d.addEventListener("click", ev => ev.stopPropagation());
   }
-  // le prof touche une ligne, puis écrit sa correction juste en dessous
-  function choisirLigne(o, bar){
-    const lignes = lignesDe(o.racine, o.sel); if (!lignes.length) return toast("Aucune ligne à corriger ici.");
-    o.racine.classList.add("rq-choix"); lignes.forEach(x => x.classList.add("rq-l"));
-    bar.classList.add("actif"); const btn = bar.querySelector('[data-rq="corriger"]'), libelle = btn.innerHTML;
-    btn.innerHTML = "Annuler"; toast("Touche la ligne à corriger.");
-    const finir = () => { o.racine.classList.remove("rq-choix"); lignes.forEach(x => x.classList.remove("rq-l")); o.racine.removeEventListener("click", clic, true); document.removeEventListener("keydown", echap); bar.classList.remove("actif"); btn.innerHTML = libelle; btn.onclick = () => choisirLigne(o, bar); };
-    const echap = ev => { if (ev.key === "Escape") finir(); };
-    const clic = ev => {
-      const el = ev.target.closest(".rq-l"); if (!el || !o.racine.contains(el)) return;
-      ev.preventDefault(); ev.stopPropagation(); finir(); editer(o, el, lignes.indexOf(el));
-    };
-    btn.onclick = finir; o.racine.addEventListener("click", clic, true); document.addEventListener("keydown", echap);
+
+  /* --- sélection d'un passage par le prof --- */
+  let flottant = null, attenteSel = 0;
+  const cacherFlottant = () => { if (flottant){ flottant.remove(); flottant = null; } };
+  function selectionValide(){
+    if (!ctx || !ctx.o.racine.isConnected) return null;
+    const s = getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return null;
+    const r = s.getRangeAt(0), txt = r.toString(); if (!norm(txt)) return null;
+    if (!ctx.o.racine.contains(r.commonAncestorContainer)) return null;
+    const dep = r.startContainer.nodeType === 1 ? r.startContainer : r.startContainer.parentElement;
+    if (dep.closest(IGNORE)) return null;
+    const lignes = ctx.lignes(), el = lignes.find(l => l.contains(r.startContainer));
+    if (!el) return {erreur: "Sélectionne du texte de la leçon."};
+    if (!el.contains(r.endContainer)) return {erreur: "Sélectionne un passage sur une seule ligne à la fois."};
+    const d = posDans(el, r.startContainer, r.startOffset), f = posDans(el, r.endContainer, r.endOffset);
+    const brut = textes(el).map(n => n.data).join(""), passage = brut.slice(d, f);
+    if (!passage.trim()) return null;
+    return {el, d, f, passage, ligne: norm(texteSans(el)), rect: r.getBoundingClientRect()};
   }
-  function editer(o, el, position){
+  document.addEventListener("selectionchange", () => { clearTimeout(attenteSel); attenteSel = setTimeout(() => {
+    const v = selectionValide(); if (!v){ cacherFlottant(); return; }
+    cacherFlottant(); flottant = document.createElement("div"); flottant.className = "rq-ui rq-flottant";
+    if (v.erreur){ flottant.innerHTML = `<span>${v.erreur}</span>`; }
+    else flottant.innerHTML = `<button type="button" data-f="corr">${ICO.crayon}Corriger</button><button type="button" data-f="info">${ICO.info}Info ici</button>`;
+    document.body.appendChild(flottant);
+    const x = Math.min(innerWidth - flottant.offsetWidth - 8, Math.max(8, v.rect.left + v.rect.width / 2 - flottant.offsetWidth / 2));
+    flottant.style.left = (x + scrollX) + "px"; flottant.style.top = (v.rect.bottom + scrollY + 10) + "px";
+    flottant.addEventListener("pointerdown", ev => ev.preventDefault());   // garder la sélection en cliquant
+    flottant.querySelectorAll("button").forEach(b => b.onclick = () => { const w = selectionValide() || v; cacherFlottant(); getSelection().removeAllRanges();
+      if (b.dataset.f === "corr") editerPassage(ctx.o, w); else fenetreInfo(ctx.o, w); });
+  }, 260); });
+  addEventListener("scroll", () => { if (flottant && !getSelection().toString()) cacherFlottant(); }, {passive: true});
+
+  function editerPassage(o, v){
     o.racine.querySelectorAll(".rq-edit").forEach(x => x.remove());
-    const ancien = texteLigne(el), d = document.createElement("div"); d.className = "rq-edit";
-    d.innerHTML = `<span class="mono">Correction de la ligne</span><s class="rq-ancien">${esc(ancien)}</s>
-      <textarea rows="${Math.min(6, Math.max(2, Math.ceil(ancien.length / 70)))}" maxlength="1000" aria-label="Ligne corrigée">${esc(ancien)}</textarea>
-      <div class="rangee"><button type="button" class="btn" data-envoyer>Envoyer la correction</button><button type="button" class="btn sec" data-annuler>Annuler</button><span class="doux" style="font-size:.8rem">Signée à ton nom, vue seulement par les administrateurs et le gérant.</span></div>`;
-    if (conteneur(el)) el.appendChild(d); else el.after(d);
+    const marques = envelopper(v.el, v.d, v.f, "rq-selection");
+    const d = document.createElement("div"); d.className = "rq-edit";
+    d.innerHTML = `<span class="mono">Corriger le passage</span>
+      <div class="rq-avant"><s>${esc(v.passage)}</s></div>
+      <label class="rq-lab" for="rq-remplace">Remplacer par</label>
+      <textarea id="rq-remplace" rows="${Math.min(5, Math.max(1, Math.ceil(v.passage.length / 60)))}" maxlength="1000">${esc(v.passage)}</textarea>
+      <div class="rangee"><button type="button" class="btn" data-envoyer>Envoyer la correction</button><button type="button" class="btn sec" data-annuler>Annuler</button></div>
+      <span class="doux" style="font-size:.78rem">Signée à ton nom. Seuls les administrateurs et le gérant la voient.</span>`;
+    if (conteneur(v.el)) v.el.appendChild(d); else v.el.after(d);
     d.addEventListener("click", ev => ev.stopPropagation());
-    const ta = d.querySelector("textarea"); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
-    d.querySelector("[data-annuler]").onclick = () => d.remove();
+    const fin = () => { d.remove(); marques.forEach(s => s.replaceWith(...s.childNodes)); };
+    const ta = d.querySelector("textarea"); ta.focus(); ta.select();
+    d.querySelector("[data-annuler]").onclick = fin;
     d.querySelector("[data-envoyer]").onclick = async () => {
-      const t = ta.value.trim(); if (!t || t === ancien) return toast("Modifie la ligne avant d'envoyer.");
+      const t = ta.value.trim(); if (!t || t === v.passage.trim()) return toast("Écris la correction avant d'envoyer.");
       const b = d.querySelector("[data-envoyer]"); b.disabled = true;
-      try { await rpc("remarque_ajouter", {p_cible: o.cible, p_type: "correction", p_ligne: ancien, p_position: position, p_texte: t}); toast("Correction envoyée. Merci !"); d.remove(); monter(o); }
+      try { await rpc("remarque_ajouter", {p_cible: o.cible, p_type: "correction", p_ligne: JSON.stringify({v: 2, l: v.ligne, s: v.passage, o: v.d}), p_position: -1, p_texte: t}); fin(); toast("Correction envoyée. Merci !"); monter(o); }
       catch (e) { b.disabled = false; toast(/Réservé/.test(e && e.message) ? "Ton compte n'a pas le rang Professeur." : "Le serveur ne répond pas. Réessaie dans un instant."); }
     };
   }
-  function fenetreAide(o){
-    const el = ouvrirVoile(`<h3 style="margin:0">Ajouter une aide</h3>
-      <p class="doux" style="margin:0;font-size:.88rem">Une astuce ou une précision pour les élèves. Elle s'affiche entre guillemets dans une bulle à côté ${o.cible.startsWith("lecon:") ? "de la leçon" : "de la question"}, signée à ton nom. Tous les élèves la voient.</p>
-      <div class="champ"><label for="rq-aide">Ton aide</label><textarea id="rq-aide" rows="4" maxlength="600" placeholder="Ex. : retiens bien qu'une proposition = un verbe conjugué."></textarea></div>
-      <div class="rangee" style="justify-content:flex-end"><button class="btn sec" type="button" id="rq-annuler">Annuler</button><button class="btn" type="button" id="rq-ok">Publier l'aide</button></div>`, 520);
-    el.querySelector("#rq-aide").focus(); el.querySelector("#rq-annuler").onclick = fermerFenetre;
+  function editerModule(o, m, i, bouton){
+    o.racine.querySelectorAll(".rq-edit").forEach(x => x.remove());
+    const d = document.createElement("div"); d.className = "rq-edit module";
+    d.innerHTML = `<span class="mono">Signaler ce module · ${esc(nomModule(m))}</span>
+      <textarea rows="3" maxlength="1000" placeholder="Ex. : la flèche du schéma pointe vers le mauvais organe."></textarea>
+      <div class="rangee"><button type="button" class="btn" data-envoyer>Signaler</button><button type="button" class="btn sec" data-annuler>Annuler</button></div>`;
+    bouton.after(d); m.classList.add("rq-mod-signale");
+    const fin = () => { d.remove(); if (!m.nextElementSibling || !m.nextElementSibling.classList.contains("rq-corr")) m.classList.remove("rq-mod-signale"); };
+    d.addEventListener("click", ev => ev.stopPropagation());
+    const ta = d.querySelector("textarea"); ta.focus();
+    d.querySelector("[data-annuler]").onclick = fin;
+    d.querySelector("[data-envoyer]").onclick = async () => {
+      const t = ta.value.trim(); if (!t) return toast("Explique le problème avant d'envoyer.");
+      const b = d.querySelector("[data-envoyer]"); b.disabled = true;
+      try { await rpc("remarque_ajouter", {p_cible: o.cible, p_type: "correction", p_ligne: JSON.stringify({v: 2, m: i, n: nomModule(m)}), p_position: -1, p_texte: t}); d.remove(); toast("Module signalé. Merci !"); monter(o); }
+      catch (e) { b.disabled = false; toast("Le serveur ne répond pas. Réessaie dans un instant."); }
+    };
+  }
+  function fenetreInfo(o, v){
+    const el = ouvrirVoile(`<h3 style="margin:0">Ajouter une info</h3>
+      ${v ? `<p class="rq-cite" style="margin:0">À propos de <q>${esc(v.passage)}</q></p>` : ""}
+      <p class="doux" style="margin:0;font-size:.88rem">Une astuce ou une précision pour les élèves, affichée “entre guillemets” dans une bulle à côté ${o.cible.startsWith("lecon:") ? "de la leçon" : "de la question"}${v ? ", et le passage est souligné en bleu" : ""}. Signée à ton nom, tous les élèves la voient.</p>
+      <div class="champ"><label for="rq-aide">Ton info</label><textarea id="rq-aide" rows="4" maxlength="600" placeholder="Ex. : retiens qu'une proposition = un verbe conjugué."></textarea></div>
+      <div class="rq-apercu-bulle" aria-hidden="true"><blockquote id="rq-apercu">“…”</blockquote></div>
+      <div class="rangee" style="justify-content:flex-end"><button class="btn sec" type="button" id="rq-annuler">Annuler</button><button class="btn" type="button" id="rq-ok">Publier l'info</button></div>`, 520);
+    const ta = el.querySelector("#rq-aide"); ta.focus(); el.querySelector("#rq-annuler").onclick = fermerFenetre;
+    ta.oninput = () => { el.querySelector("#rq-apercu").textContent = ta.value.trim() ? guillemets(ta.value) : "“…”"; };
     el.querySelector("#rq-ok").onclick = async () => {
-      const t = el.querySelector("#rq-aide").value.trim().replace(/^[«"“\s]+|[»"”\s]+$/g, ""); if (!t) return;
+      const t = ta.value.trim().replace(/^[«»"“”\s]+|[«»"“”\s]+$/g, ""); if (!t) return;
       const b = el.querySelector("#rq-ok"); b.disabled = true;
-      try { await rpc("remarque_ajouter", {p_cible: o.cible, p_type: "aide", p_ligne: "", p_position: -1, p_texte: t}); fermerFenetre(); toast("Aide publiée."); monter(o); }
+      try { await rpc("remarque_ajouter", {p_cible: o.cible, p_type: "aide", p_ligne: v ? JSON.stringify({v: 2, l: v.ligne, s: v.passage, o: v.d}) : "", p_position: -1, p_texte: t}); fermerFenetre(); toast("Info publiée."); monter(o); }
       catch (e) { b.disabled = false; toast(/Réservé/.test(e && e.message) ? "Ton compte n'a pas le rang Professeur." : "Le serveur ne répond pas. Réessaie dans un instant."); }
     };
   }
-  // une question d'exercice est reconnue par son texte (elle peut apparaître dans plusieurs séries)
   const cleQuestion = q => { const s = norm([q.q, q.texte, q.phrase, (q.choix || []).join("|")].filter(Boolean).join("¦")); let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return "exo:" + h.toString(36) + s.length.toString(36); };
-  // la colonne des aides disparaît avec la page
-  new MutationObserver(() => { const z = zone(); if (z && !z.querySelector(":scope > .rq-aides")) z.classList.remove("rq-avec-aides"); }).observe(document.getElementById("vue"), {childList: true});
-  return {monter, cleQuestion, peutRegler, rpc, SEL_LECON, ouvertes: () => rpc("remarques_ouvertes", {})};
+  new MutationObserver(() => { const z = zone(); if (z && !z.querySelector(":scope > .rq-aides")) z.classList.remove("rq-avec-aides"); cacherFlottant(); }).observe(document.getElementById("vue"), {childList: true});
+  return {monter, cleQuestion, peutRegler, rpc, lireAncre, SEL_LECON, ouvertes: () => rpc("remarques_ouvertes", {})};
 })();
 
 function lireLecon(l){
@@ -17202,7 +17327,7 @@ function lancerQuiz(questions, ctx){
       </div>`;
     remplirImages(zone()); masquerFigure(zone(), q); if (dnb) masquerIlluDnb(zone(), q); Promise.resolve(remplirObjets(zone())).then(() => masquerFigure(zone(), q));
     $("#prevenir").onclick = () => fenetrePrevenir(q, ctx, i + 1, capturerZone());
-    { const bq = [...zone().querySelectorAll(":scope > .bloc")].pop(); if (bq) Remarques.monter({racine: bq, cible: Remarques.cleQuestion(q), sel: ".question,.choix button,.exemple-q p", avant: bq}); }
+    { const bq = [...zone().querySelectorAll(":scope > .bloc")].pop(); if (bq) Remarques.monter({racine: bq, cible: Remarques.cleQuestion(q), sel: ".question,.choix button,.exemple-q p,.exemple-q li,p,li", avant: bq}); }
     fermerBrouillon(); if ($("#ouvrir-brouillon")) $("#ouvrir-brouillon").onclick = () => basculerBrouillon(q);
     const repondre = juste => {
       document.dispatchEvent(new CustomEvent("helper-reponse", {detail: {juste}})); // les personnages des BD réagissent
@@ -17355,9 +17480,8 @@ async function chargerCorrectionsProfs(){
   let l = []; try { l = await Remarques.ouvertes() || []; } catch { return; }
   if (!z.isConnected || !l.length) return;
   const nomCible = c => { if (c.startsWith("lecon:")){ const x = toutesLecons().find(k => k.id === c.slice(6)); return x ? `Leçon · ${esc(nomMatiere(x.matiere))} · ${esc(x.titre)}` : "Leçon supprimée"; } return "Question d'exercice"; };
-  z.innerHTML = `<div class="bloc rq-liste-g"><span class="mono">Corrections des professeurs · ${l.length} à régler</span>
-    ${l.map(r => `<div class="rq-ligne-g" data-id="${r.id}"><span class="doux rq-ou">${nomCible(r.cible)}</span><s class="rq-ancien">${esc(r.ligne)}</s>
-      <div class="rq-corr-texte"><span class="rq-fl" aria-hidden="true">↳</span><span>${esc(r.texte)}</span></div>
+  z.innerHTML = `<div class="bloc rq-liste-g"><span class="mono">Remarques des professeurs · ${l.length} à régler</span>
+    ${l.map(r => `<div class="rq-ligne-g" data-id="${r.id}"><span class="doux rq-ou">${nomCible(r.cible)}</span>${(() => { const a = Remarques.lireAncre(r.ligne) || {}; return a.m !== undefined ? `<div class="rq-corr-texte rouge"><span><b>Module signalé · ${esc(a.n)} :</b> ${esc(r.texte)}</span></div>` : `<div class="rq-corr-texte"><span><s>${esc(a.s || a.l || "")}</s> <span class="rq-fl">→</span> <b>${esc(r.texte)}</b></span></div>${a.s && a.l && a.l !== a.s ? `<span class="doux rq-ou">Dans : ${esc(a.l.length > 140 ? a.l.slice(0, 138) + "…" : a.l)}</span>` : ""}`; })()}
       <div class="rq-corr-pied"><span class="rq-sig">— ${esc(r.auteurNom)} · ${new Date(r.le).toLocaleDateString("fr-FR", {day: "numeric", month: "short"})}</span>
         ${r.cible.startsWith("lecon:") && toutesLecons().some(k => k.id === r.cible.slice(6)) ? `<button type="button" class="mini-btn" data-ouvrir="${esc(r.cible.slice(6))}">Ouvrir la leçon</button>` : ""}
         <button type="button" class="mini-btn rq-ok" data-regler="${r.id}">✓ Réglé</button></div></div>`).join("")}</div>`;
