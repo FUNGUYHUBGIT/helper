@@ -2708,6 +2708,14 @@ body.est-prof .doc-lecon ::selection,body.est-prof .contenu .bloc ::selection{ba
 .dx-vers-dnb:hover{border-style:solid;color:var(--texte)}
 .dx-vers-dnb b{color:var(--texte)}.dx-vers-dnb span{flex:1}
 .dx-vers-dnb > svg:last-child{color:#6aa4ff}
+/* dictées du brevet : même présentation, en bleu */
+.dx.bleu .dx-tete{border-color:color-mix(in srgb,#3d7bff 40%,var(--ligne));background:linear-gradient(135deg,color-mix(in srgb,#3d7bff 15%,var(--surface)),var(--surface) 70%)}
+.dx.bleu .dx-niveaux button[aria-pressed=true],.dx.bleu .dx-go{background:#3d7bff}
+.dx.bleu .dx-barres i.on{background:#3d7bff}.dx.bleu .dx-niveaux button[aria-pressed=true] .dx-barres i.on{background:#fff}
+.dx.bleu .dx-menu{border-color:color-mix(in srgb,#3d7bff 35%,var(--ligne))}.dx.bleu .dx-menu[open] > summary{color:#8fb4ff}
+.dx.bleu .dx-ligne:hover{border-color:#3d7bff}
+.dx.bleu .dx-record.vide{color:#8fb4ff;border-color:color-mix(in srgb,#3d7bff 50%,transparent)}
+.dx.dt-tel .dx-ligne{opacity:.5;pointer-events:none}
 @media (max-width:700px){.dx-niveau{align-items:stretch;width:100%}.dx-niveaux button{flex:1;justify-content:center}.dx-meta{white-space:normal}}
 /* ===== Dictée : ruban des commandes qui suit l'écran ===== */
 .dt-ruban-ancre{position:sticky;top:0;height:0;z-index:60}
@@ -6458,7 +6466,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.16";
+const VERSION_SITE = "2.17";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -14758,30 +14766,32 @@ const referenceDnb = d => `${d.dapres ? "D’après" : "Extrait de"} « ${d.oeuv
 
 /* ----- Exercices Brevet (DNB) : choisir une dictée dans le menu déroulant ----- */
 let dicteeDnbChoisie = "";
+let ddOuvert = false;   // menu déroulant des dictées du brevet ouvert ?
 function blocDicteesDnb(){
-  const faites = (prog && prog.dicteesFaites) || {}, d = DICTEES_DNB.find(x => x.id === dicteeDnbChoisie);
-  const note = x => faites[x.id] === undefined ? "" : ` — record ${String(faites[x.id]).replace(".", ",")}/10`;
-  const niv = NIVEAUX_DICTEE.find(x => x[0] === choixDictee.niveau) || NIVEAUX_DICTEE[0];
+  const faites = (prog && prog.dicteesFaites) || {};
   const mots = x => x.texte.split(/\s+/).filter(w => /\w/.test(w)).length;
-  return `<div class="bloc dnb-dictees" id="bloc-dictees-dnb">
-    <div class="dd-tete">${iconeDicteeDnb(30, 37)}<div><span class="mono">Dictées du brevet</span><p class="doux">Les vraies dictées des sujets de français du DNB, lues à voix haute. Choisis la dictée, puis le niveau.</p></div></div>
+  const barres = k => `<span class="dx-barres" aria-hidden="true">${[1, 2, 3].map(i => `<i class="${i <= k ? "on" : ""}"></i>`).join("")}</span>`;
+  const niv = NIVEAUX_DICTEE.find(x => x[0] === choixDictee.niveau) || NIVEAUX_DICTEE[0];
+  const ligne = x => { const n = faites[x.id], cl = n === undefined ? "" : n >= 8 ? "fait" : n >= 5 ? "moyen" : "faible";
+    return `<button type="button" class="dx-ligne" data-dnb-dictee="${x.id}">
+      <span class="dx-ligne-corps"><b>Brevet ${x.an} · ${esc(x.session)}</b><span class="dx-meta">${esc(x.auteur)}, <i>${esc(x.oeuvre)}</i> · ${mots(x)} mots</span></span>
+      ${n === undefined ? `<span class="dx-record vide">Nouvelle</span>` : `<span class="dx-record ${cl}">${String(n).replace(".", ",")}<small>/10</small></span>`}
+      <span class="dx-go">${n === undefined ? "Commencer" : "Refaire"}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button>`; };
+  const ls = DICTEES_DNB.slice().sort((a, b) => b.an - a.an || String(a.session).localeCompare(String(b.session)));
+  return `<div class="dx bleu${estTelephone() ? " dt-tel" : ""}" id="bloc-dictees-dnb">
+    <div class="dx-tete"><span class="dx-tete-ico">${iconeDicteeDnb(28, 34)}</span>
+      <div class="dx-tete-txt"><h3>Dictées du brevet</h3><p class="doux">Les vraies dictées des sujets de français du DNB, lues à voix haute comme le jour de l'examen.</p></div>
+      <div class="dx-niveau"><div class="dx-niveaux" id="dd-niv" role="group" aria-label="Niveau">${NIVEAUX_DICTEE.map(([v, t], k) => `<button type="button" data-v="${v}" aria-pressed="${choixDictee.niveau === v}">${barres(k + 1)}${t}</button>`).join("")}</div><small>${niv[2]}</small></div></div>
     ${estTelephone() ? MSG_DICTEE_TEL : ""}
-    <label class="dd-label" for="dd-choix">Dictée</label>
-    <select id="dd-choix" class="dd-select">
-      <option value=""${d ? "" : " selected"} disabled>— Sélectionne une dictée —</option>
-      ${DICTEES_DNB.map(x => `<option value="${x.id}"${x.id === dicteeDnbChoisie ? " selected" : ""}>Brevet ${x.an} · ${esc(x.session)} — ${esc(x.auteur)}${note(x)}</option>`).join("")}
-    </select>
-    ${d ? `<div class="dd-apercu"><b>${esc(d.auteur)}</b>, <i>${esc(d.oeuvre)}</i> (${esc(d.date)})<span class="doux"> · ${mots(d)} mots${faites[d.id] === undefined ? " · pas encore faite" : " · record " + String(faites[d.id]).replace(".", ",") + "/10"}</span></div>` : ""}
-    <span class="mono">Niveau</span>
-    <div class="dd-niveau">${segment("dd-niv", NIVEAUX_DICTEE.map(([v, t]) => [v, t]), choixDictee.niveau)}<small class="doux">${niv[2]}</small></div>
-    <div class="rangee"><button class="btn dd-go" type="button" id="dd-lancer"${d && !estTelephone() ? "" : " disabled"}>${iconeDicteeDnb(14, 17)} Commencer la dictée</button></div>
+    <details class="sd-grand dx-menu" id="dd-menu"${ddOuvert ? " open" : ""}><summary><span class="sd-grand-fl" aria-hidden="true"></span><span>Choisis ta dictée du brevet</span><span class="sd-grand-nb">${ls.length} dictée${ls.length > 1 ? "s" : ""}</span></summary>
+      <div class="sd-grand-corps"><div class="dx-liste">${ls.map(ligne).join("")}</div></div></details>
   </div>`;
 }
 function brancherDicteesDnb(redessiner){
-  const sel = zone().querySelector("#dd-choix"); if (!sel) return;
-  sel.onchange = () => { dicteeDnbChoisie = sel.value; redessiner(); setTimeout(() => zone().querySelector("#bloc-dictees-dnb")?.scrollIntoView({block: "nearest"}), 30); };
-  zone().querySelectorAll("#dd-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; redessiner(); });
-  const go = zone().querySelector("#dd-lancer"); if (go) go.onclick = () => { const d = DICTEES_DNB.find(x => x.id === dicteeDnbChoisie); if (d) lancerDictee(choixDictee, {...d}); };
+  const z = zone().querySelector("#bloc-dictees-dnb"); if (!z) return;
+  z.querySelectorAll("#dd-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; redessiner(); });
+  const m = z.querySelector("#dd-menu"); if (m) m.ontoggle = () => { ddOuvert = m.open; };
+  z.querySelectorAll("[data-dnb-dictee]").forEach(b => b.onclick = () => { const d = DICTEES_DNB.find(x => x.id === b.dataset.dnbDictee); if (!d) return; dicteeDnbChoisie = d.id; lancerDictee(choixDictee, {...d}); });
 }
 /* ===================== SUJETS DU DNB (Éducation nationale, depuis 2018) =====================
    Une ligne par épreuve ; on l'ouvre pour lire le sujet et le corrigé (PDF hébergés sur Helper, affichés avec pdf.js).
