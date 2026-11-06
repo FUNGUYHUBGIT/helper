@@ -5901,7 +5901,10 @@ function appliquerPrefs(p){
   Formes.theme(clair); Formes.accent(affiche);
   if (typeof adapterCouleursLecons === "function") adapterCouleursLecons();
   Formes.nombre(p && Number.isFinite(p.formes) ? p.formes : null);
-  if (p !== PREFS_DEFAUT) try { window.HelperApp && window.HelperApp.icone(lsGet("helper.iconeCouleur") === "1" ? accent : PREFS_DEFAUT.accent); } catch {}   // icône de l'appli Android (aux couleurs seulement si choisi)
+  if (p !== PREFS_DEFAUT) try {   // icône de l'appli Android (aux couleurs seulement si choisi) ; l'appli 1.9 a aussi les icônes du thème clair
+    const couleur = lsGet("helper.iconeCouleur") === "1", iconesClaires = parseFloat(APPLI_NATIVE || 0) >= 1.9;
+    window.HelperApp && window.HelperApp.icone(clair && iconesClaires ? (couleur ? affiche : ACCENTS_CLAIR[0][1]) : couleur ? accent : PREFS_DEFAUT.accent);
+  } catch {}   // icône de l'appli Android (aux couleurs seulement si choisi)
 }
 function toast(t){
   const el = document.createElement("div"); el.className = "toast"; el.textContent = t;
@@ -6162,7 +6165,7 @@ function marquerNav(v){ document.querySelectorAll("#nav button").forEach(b => b.
 const VUES = {};
 // ambiance violette de la dictée : formes du fond, menu de côté et couleur d'accent
 // ----- Application Android (téléchargée sur Entarsh Catalogue) -----
-const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.8";
+const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-1.0.apk?v=1.9";
 const enModeApp = () => { try { if (new URLSearchParams(location.search).get("app")) sessionStorage.setItem("helper.app", "1"); } catch {}
   let s = false; try { s = sessionStorage.getItem("helper.app") === "1"; } catch {}
   return s || matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; };
@@ -6172,10 +6175,10 @@ const APPLI_NATIVE = (() => { const v = (/HelperApp\/([\d.]+)/.exec(navigator.us
   // l'appli 1.6 annonçait « 1.4 » par erreur : on reconnaît sa version à ce qu'elle sait faire
   try { if (window.HelperApp && typeof window.HelperApp.configNotifs === "function" && parseFloat(v || 0) < 1.6) return "1.6"; } catch {}
   return v; })();
-const DERNIERE_APPLI = "1.8";
+const DERNIERE_APPLI = "1.9";
 const VIEILLE_APPLI = enModeApp() && /android/i.test(navigator.userAgent) && (!APPLI_NATIVE || parseFloat(APPLI_NATIVE) < parseFloat(DERNIERE_APPLI));   // appli Android à mettre à jour
 { const b = document.getElementById("btn-installer"); if (b){ b.hidden = (enModeApp() && !VIEILLE_APPLI) || !/android/i.test(navigator.userAgent);
-  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : pièces jointes des devoirs" : "Nouvelle version : couleurs corrigées";
+  if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : icônes du thème clair" : "Nouvelle version : couleurs corrigées";
     let vu = false; try { vu = sessionStorage.getItem("helper.majAppli") === "1"; sessionStorage.setItem("helper.majAppli", "1"); } catch {}
     if (!vu) addEventListener("load", () => setTimeout(() => b.click(), 1200)); } } }
 document.getElementById("btn-installer")?.addEventListener("click", () => { fermerMenuMobile();
@@ -6212,7 +6215,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.04";
+const VERSION_SITE = "2.05";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6488,7 +6491,7 @@ VUES.prefs = function vuePrefs(){
     </div>
     ${window.HelperApp && typeof window.HelperApp.icone === "function" ? `<div class="bloc">
       <span class="mono">Application Android</span>
-      <label class="interrupteur"><span><strong>Icône aux couleurs du site</strong><small>L'icône de Helper prend la couleur choisie ci-dessus. Elle change quand tu quittes l'appli. Sur certains téléphones, l'icône peut alors disparaître de l'écran d'accueil : remets-la depuis la liste des applications.</small></span><input type="checkbox" id="icone-couleur" ${lsGet("helper.iconeCouleur") === "1" ? "checked" : ""}></label>
+      <label class="interrupteur"><span><strong>Icône aux couleurs du site</strong><small>L'icône de Helper prend la couleur choisie ci-dessus${parseFloat(APPLI_NATIVE || 0) >= 1.9 ? ", et passe sur fond clair avec le thème clair" : ""}. Elle change quand tu quittes l'appli. Sur certains téléphones, l'icône peut alors disparaître de l'écran d'accueil : remets-la depuis la liste des applications.</small></span><input type="checkbox" id="icone-couleur" ${lsGet("helper.iconeCouleur") === "1" ? "checked" : ""}></label>
     </div>` : ""}
     <div class="bloc">
       <span class="mono">Connexion</span>
