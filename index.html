@@ -2508,6 +2508,14 @@ html.theme-anim body{transition:background-color .55s ease}
 .dt-bloque{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;border:1px solid color-mix(in srgb,var(--erreur) 45%,var(--ligne));background:color-mix(in srgb,var(--erreur) 8%,var(--surface))}
 .dt-bloque > span{font-size:1.3rem;line-height:1}.dt-bloque p{margin:2px 0 0;font-size:.86rem}
 .dt-tel .carte-dictee{opacity:.5;pointer-events:none}
+
+/* Bouton « Rafraîchir » : seulement dans l'appli Android */
+.bm-rafraichir,.btn-rafraichir{display:none}
+body.mode-app .bm-rafraichir{display:grid;place-items:center;flex:none;width:40px;height:40px;margin-left:8px;border:1px solid var(--ligne);border-radius:10px;background:var(--surface);color:var(--texte);cursor:pointer}
+body.mode-app .btn-rafraichir{display:flex;align-items:center;justify-content:center;gap:8px}
+.bm-rafraichir svg{width:19px;height:19px}.btn-rafraichir svg{width:16px;height:16px}
+[data-rafraichir].tourne svg{animation:rf-tourne .8s linear infinite}
+@keyframes rf-tourne{to{transform:rotate(360deg)}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2607,6 +2615,7 @@ html.theme-anim body{transition:background-color .55s ease}
     <button type="button" class="bm-menu" id="bm-menu" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span><span></span></button>
     <span class="bm-logo"><svg><use href="#logo"/></svg>Helper</span>
     <span class="bm-titre" id="bm-titre"></span>
+    <button type="button" class="bm-rafraichir" data-rafraichir aria-label="Rafraîchir l'application" title="Rafraîchir : charge la dernière version de Helper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button>
   </header>
   <div class="voile-menu" id="voile-menu"></div>
   <aside class="lateral">
@@ -2620,6 +2629,7 @@ html.theme-anim body{transition:background-color .55s ease}
         <span class="bc-texte"><small>Entarsh</small><b>Catalogue</b></span>
         <span class="bc-fleche" aria-hidden="true">↗</span>
       </a>
+      <button class="btn sec btn-rafraichir" type="button" data-rafraichir title="Charge la dernière version de Helper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span>Rafraîchir l'appli</span></button>
       <button class="btn sec" type="button" id="deconnexion">Se déconnecter</button>
       <p class="version-site" data-version><span class="badge-beta">Bêta</span> Version <b data-num-version></b> · accès anticipé. Le site est encore en développement : signale les bugs avec ⚑ Prévenir.</p>
     </div>
@@ -5649,6 +5659,13 @@ async function sauvegarderEditeurs(){
   for (let i = 0; i < 50 && editeurOuvert(); i++) await new Promise(r => setTimeout(r, 200));
   return !editeurOuvert();
 }
+// Bouton « Rafraîchir » de l'appli : enregistre ce qui est en cours puis recharge la dernière version du site
+document.addEventListener("click", async ev => {
+  const b = ev.target.closest("[data-rafraichir]"); if (!b || b.classList.contains("tourne")) return;
+  document.querySelectorAll("[data-rafraichir]").forEach(x => x.classList.add("tourne"));
+  try { await sauvegarderEditeurs(); } catch {}
+  rechargerSite();
+});
 const rechargerSite = () => { const u = new URL(location.href); u.searchParams.set("v", Date.now().toString(36)); location.replace(u.toString()); };
 async function relancerMaintenant(el){
   const info = el.querySelector(".relance-info"), btn = el.querySelector("[data-maintenant]"), compte = el.querySelector(".relance-compte");
@@ -6215,7 +6232,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.05";
+const VERSION_SITE = "2.06";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
