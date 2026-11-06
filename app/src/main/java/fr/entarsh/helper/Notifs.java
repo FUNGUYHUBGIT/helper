@@ -25,7 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /* Notifications de Helper, même appli fermée (vérification toutes les heures) :
-   - le soir (à partir de 18 h) : le nombre de devoirs à faire pour le lendemain ;
+   - le soir (à partir de l'heure choisie, 18 h par défaut) : le nombre de devoirs à faire pour le lendemain ;
    - les demandes envoyées à cette personne précisément (et les réponses dans ces demandes).
    Le téléphone interroge Helper avec une clé propre au compte (aucun mot de passe n'est gardé). */
 public class Notifs extends Worker {
@@ -42,7 +42,8 @@ public class Notifs extends Worker {
       if (o.optString("compte", "").isEmpty() || o.optString("cle", "").isEmpty()) { arreter(c); return; }
       SharedPreferences p = prefs(c); boolean nouveau = !o.optString("compte").equals(p.getString("compte", ""));
       SharedPreferences.Editor e = p.edit().putString("compte", o.optString("compte")).putString("cle", o.optString("cle"))
-        .putBoolean("devoirs", o.optBoolean("devoirs", true)).putBoolean("demandes", o.optBoolean("demandes", true));
+        .putBoolean("devoirs", o.optBoolean("devoirs", true)).putBoolean("demandes", o.optBoolean("demandes", true))
+        .putInt("heure", Math.max(18, Math.min(21, o.optInt("heure", 18))));   // heure choisie dans les préférences de Helper
       if (nouveau) e.remove("dernierMsg").remove("jourDevoirs");
       e.apply();
       PeriodicWorkRequest r = new PeriodicWorkRequest.Builder(Notifs.class, 1, TimeUnit.HOURS).setConstraints(contraintes()).build();
@@ -80,10 +81,10 @@ public class Notifs extends Worker {
       SyncDevoirs.Rep r = SyncDevoirs.http("POST", SyncDevoirs.SB_URL + "/rest/v1/rpc/notifs_helper", hs, arg.toString());
       if (r.st != 200 || r.corps == null || r.corps.trim().equals("null")) return Result.success();
       JSONObject j = new JSONObject(r.corps);
-      // 1. devoirs pour demain : une seule notification par soir, à partir de 18 h (après la synchronisation de 17 h 30)
+      // 1. devoirs pour demain : une seule notification par soir, à partir de l'heure choisie (18 h à 21 h, après la synchronisation de 17 h 30)
       Calendar h = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
       String jour = String.format(java.util.Locale.US, "%tF", h);
-      if (p.getBoolean("devoirs", true) && h.get(Calendar.HOUR_OF_DAY) >= 18 && !jour.equals(p.getString("jourDevoirs", ""))) {
+      if (p.getBoolean("devoirs", true) && h.get(Calendar.HOUR_OF_DAY) >= p.getInt("heure", 18) && !jour.equals(p.getString("jourDevoirs", ""))) {
         int n = j.optInt("devoirs", 0);
         if (n > 0) montrer(c, 1, CANAL_DEVOIRS, n == 1 ? "1 devoir pour demain" : n + " devoirs pour demain", n == 1 ? "Tu as 1 devoir à faire pour demain." : "Tu as " + n + " devoirs à faire pour demain.", "devoirs");
         p.edit().putString("jourDevoirs", jour).apply();
