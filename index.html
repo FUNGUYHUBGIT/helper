@@ -2677,6 +2677,55 @@ body.est-prof .doc-lecon ::selection,body.est-prof .contenu .bloc ::selection{ba
 .pc-puce.actif{border-color:var(--prof);background:color-mix(in srgb,var(--prof) 16%,var(--surface-2));color:var(--prof)}
 .pc-puce .dm-av.mini{width:20px;height:20px;font-size:.65rem}
 .pc-vide-flux{display:grid;place-items:center;min-height:160px;text-align:center}
+
+/* ===== Dictées : liste refaite ===== */
+.dx{display:flex;flex-direction:column;gap:18px}
+.dx-tete{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:16px;border:1px solid color-mix(in srgb,#b06bff 35%,var(--ligne));background:linear-gradient(135deg,color-mix(in srgb,#b06bff 16%,var(--surface)),var(--surface) 70%)}
+.dx-tete-ico svg{width:44px;height:54px;display:block}
+.dx-tete h3{margin:0 0 4px;font-size:1.3rem}.dx-tete p{margin:0;max-width:62ch}
+.dx-bloc{display:flex;flex-direction:column;gap:10px}
+.dx-niveaux{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.dx-niveaux button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px 16px;border-radius:14px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+.dx-niveaux button:hover{border-color:color-mix(in srgb,#b06bff 60%,var(--ligne))}
+.dx-niveaux button[aria-pressed=true]{border-color:#b06bff;background:color-mix(in srgb,#b06bff 16%,var(--surface));box-shadow:0 0 0 1px #b06bff}
+.dx-niveaux b{font-size:1rem}.dx-niveaux small{color:var(--doux);font-size:.8rem}
+.dx-barres{display:flex;gap:3px;align-items:flex-end;height:14px;margin-bottom:2px}
+.dx-barres i{width:5px;border-radius:2px;background:var(--ligne)}.dx-barres i:nth-child(1){height:6px}.dx-barres i:nth-child(2){height:10px}.dx-barres i:nth-child(3){height:14px}
+.dx-barres i.on{background:#b06bff}
+.dx-liste{display:flex;flex-direction:column;gap:10px}
+.dx-carte{display:flex;align-items:center;gap:16px;width:100%;padding:16px 18px;border-radius:14px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,transform .15s}
+.dx-carte:hover{border-color:#b06bff;transform:translateY(-1px)}
+.dx-carte-ico svg{width:36px;height:44px;display:block}
+.dx-carte-corps{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.dx-carte-corps b{font-size:1.05rem}
+.dx-meta{font-size:.85rem;color:var(--doux)}
+.dx-tags{display:flex;gap:6px;flex-wrap:wrap}.dx-tags span{padding:2px 9px;border-radius:999px;background:var(--surface-2);border:1px solid var(--ligne);font-size:.75rem;color:var(--doux)}
+.dx-carte-droite{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none}
+.dx-record{display:inline-flex;align-items:baseline;gap:3px;padding:4px 10px;border-radius:10px;font-weight:700;font-size:1.05rem;border:1px solid var(--ligne)}
+.dx-record small{font-size:.7rem;font-weight:500;color:var(--doux)}.dx-record small:first-child{margin-right:4px}
+.dx-record.vide{font-size:.78rem;font-weight:500;color:var(--doux)}
+.dx-record.fait{color:#4ccb66;border-color:color-mix(in srgb,#4ccb66 50%,transparent)}.dx-record.moyen{color:#f2ae02;border-color:color-mix(in srgb,#f2ae02 50%,transparent)}.dx-record.faible{color:#ff6b6b;border-color:color-mix(in srgb,#ff6b6b 50%,transparent)}
+.dx-go{display:inline-flex;align-items:center;gap:2px;padding:7px 12px 7px 14px;border-radius:999px;background:#b06bff;color:#fff;font-weight:600;font-size:.85rem}
+.dx-go svg,.dx-vers-dnb > svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.dx-vers-dnb{display:flex;align-items:center;gap:14px;width:100%;padding:12px 16px;border-radius:14px;border:1px dashed color-mix(in srgb,#3d7bff 55%,var(--ligne));background:color-mix(in srgb,#3d7bff 7%,transparent);color:var(--texte);font:inherit;text-align:left;cursor:pointer}
+.dx-vers-dnb:hover{border-style:solid}
+.dx-vers-dnb > svg:first-child{width:28px;height:34px}
+.dx-vers-dnb span{display:flex;flex-direction:column;flex:1}.dx-vers-dnb small{color:var(--doux);font-size:.82rem}
+.dx-vers-dnb > svg:last-child{color:#6aa4ff}
+@media (max-width:700px){.dx-niveaux{grid-template-columns:1fr}.dx-carte{flex-wrap:wrap}.dx-carte-droite{flex-direction:row;width:100%;justify-content:space-between;align-items:center}}
+/* ===== Dictée : ruban des commandes qui suit l'écran ===== */
+.dt-ruban-ancre{position:sticky;top:0;height:0;z-index:60}
+.dt-ruban{position:absolute;left:0;right:0;top:10px;display:flex;align-items:center;gap:12px;padding:8px 10px 8px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--ligne));background:color-mix(in srgb,var(--accent) 12%,var(--surface));box-shadow:0 12px 30px rgba(0,0,0,.4);opacity:0;transform:translateY(-12px);pointer-events:none;transition:opacity .2s,transform .2s}
+.dt-ruban.visible{opacity:1;transform:none;pointer-events:auto}
+.dt-ruban-ic svg{width:28px;height:18px;color:var(--accent);display:block}
+.dt-ruban-boutons{display:flex;gap:6px;flex-wrap:wrap}
+.dt-ruban-boutons button{padding:8px 12px;border-radius:10px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.dt-ruban-boutons button.principal{background:var(--accent);border-color:var(--accent);color:#fff}
+.dt-ruban-boutons button:disabled{opacity:.45;cursor:default}
+.dt-ruban-info{display:flex;flex-direction:column;gap:4px;margin-left:auto;min-width:110px;font-size:.8rem}
+.dt-ruban-avance{height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden}.dt-ruban-avance i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.dt-ruban-haut{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:10px;border:1px solid var(--ligne);background:var(--surface);color:var(--doux);cursor:pointer}
+.dt-ruban-haut svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -6413,7 +6462,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.14";
+const VERSION_SITE = "2.15";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -14252,6 +14301,7 @@ function lancerDictee(opts = choixDictee, deja = null){
     if (d.dnb){ choixBrevet.ex = "dnb"; changerVue("brevet"); setTimeout(() => zone().querySelector("#bloc-dictees-dnb")?.scrollIntoView({block: "start"}), 60); return; }
     matiereActive = "francais"; changerVue("exos"); setTimeout(() => zone().querySelector(".dictees-section")?.scrollIntoView({block: "start"}), 60); };
   if ($("#dt-nouvelle")) deuxClics($("#dt-nouvelle"), suivante);
+  if (audio) rubanDictee(zone().querySelector(".dictee-page"), groupes.length);
   $("#dt-retour").onclick = $("#dt-quitter").onclick = () => { arreterLecture(); if (opts.essai){ ambianceDictee(false); changerVue("g-dictees"); } else if (d.dnb){ choixBrevet.ex = "dnb"; changerVue("brevet"); } else changerVue("exos"); };
   $("#dt-corriger").onclick = () => {
     arreterLecture();
@@ -14605,6 +14655,35 @@ function dessinerDecoupe(){
   zg.querySelectorAll("[data-ecoute]").forEach(b => b.onclick = () => parler(gs[+b.dataset.ecoute].dit, .9));
 }
 
+/* Ruban de la dictée : quand on descend sur la feuille, les commandes (groupe suivant, répéter…) restent en haut de l'écran.
+   Ses boutons déclenchent les vrais boutons de la dictée, sans quitter la feuille où l'on écrit. */
+function rubanDictee(page, nbGroupes){
+  if (!page) return;
+  const IDS = ["dt-auto", "dt-pause", "dt-tout", "dt-prec", "dt-redire", "dt-groupe"].filter(id => page.querySelector("#" + id));
+  const ancre = document.createElement("div"); ancre.className = "dt-ruban-ancre";
+  ancre.innerHTML = `<div class="dt-ruban" role="toolbar" aria-label="Commandes de la dictée">
+    <span class="dt-ruban-ic" aria-hidden="true">${ONDES_DICTEE}</span>
+    <div class="dt-ruban-boutons">${IDS.map(id => `<button type="button" data-proxy="${id}" class="${id === "dt-groupe" || id === "dt-auto" ? "principal" : ""}"></button>`).join("")}</div>
+    <div class="dt-ruban-info"><b id="dt-ruban-num"></b><span class="dt-ruban-avance"><i></i></span></div>
+    <button type="button" class="dt-ruban-haut" title="Remonter aux réglages" aria-label="Remonter aux réglages"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+  </div>`;
+  page.prepend(ancre);
+  const ruban = ancre.firstElementChild, num = ancre.querySelector("#dt-ruban-num"), av = ancre.querySelector(".dt-ruban-avance i");
+  const maj = () => {
+    ancre.querySelectorAll("[data-proxy]").forEach(b => { const o = page.querySelector("#" + b.dataset.proxy); if (!o) return;
+      b.innerHTML = o.innerHTML.replace(/ Groupe précédent/, "").replace(/Lire tout le texte/, "Tout le texte").replace(/Commencer la dictée/, "Commencer"); b.disabled = o.disabled; b.title = o.textContent.trim(); });
+    const w = parseFloat((page.querySelector("#dt-barre") || {style: {}}).style.width) || 0, k = Math.round(w / 100 * nbGroupes);
+    av.style.width = w + "%"; num.textContent = k ? `Groupe ${k} / ${nbGroupes}` : `${nbGroupes} groupes`;
+  };
+  maj();
+  new MutationObserver(maj).observe(page.querySelector(".dt-lecteur") || page, {subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["disabled", "style"]});
+  ancre.querySelectorAll("[data-proxy]").forEach(b => { b.onmousedown = ev => ev.preventDefault(); b.onclick = () => { const o = page.querySelector("#" + b.dataset.proxy); if (o && !o.disabled) o.click(); }; });
+  ancre.querySelector(".dt-ruban-haut").onmousedown = ev => ev.preventDefault();
+  ancre.querySelector(".dt-ruban-haut").onclick = () => page.querySelector(".dt-lecteur").scrollIntoView({behavior: "smooth", block: "start"});
+  // il apparaît seulement quand les commandes d'origine sont sorties de l'écran
+  const cmds = page.querySelector(".dt-commandes");
+  if (cmds && "IntersectionObserver" in window) new IntersectionObserver(([e]) => ruban.classList.toggle("visible", !e.isIntersecting && e.boundingClientRect.top < 0)).observe(cmds);
+}
 /* ----- Élèves : liste des dictées dans Exercices → Français ----- */
 const NIVEAUX_DICTEE = [["facile", "Facile", "Réécoute autant que tu veux"], ["moyen", "Moyen", "2 répétitions par groupe"], ["difficile", "Difficile", "Comme en classe, sans pause"]];
 // (ancienne présentation en cartes)
@@ -14613,26 +14692,31 @@ function sectionDictees(){
   const ls = dicteesVisibles(), faites = (prog && prog.dicteesFaites) || {};
   const carte = d => {
     const n = faites[d.id], mots = nbMots(d.texte), gs = groupesManuels(d).length, lg = mots < 90 ? "Courte" : mots < 180 ? "Moyenne" : "Longue";
-    return `<button type="button" class="carte-dictee" data-dictee="${esc(d.id)}">
-      <span class="exo-tete">${iconeDictee()}<span class="titre"><strong><span class="et-theme-nom">Dictée :</span> ${esc(d.titre)}</strong>
-        <span class="doux" style="font-size:.85rem">${mots} mots · ${gs} groupe${gs > 1 ? "s" : ""} · ${d.auteur ? esc(d.auteur) + (d.oeuvre ? ", " + esc(d.oeuvre) : "") : "texte de la classe"}</span>
-        <span class="exo-types"><span class="exo-type"><i aria-hidden="true">🔊</i>Lue à voix haute</span><span class="exo-type"><i aria-hidden="true">✎</i>${lg}</span></span></span></span>
-      <span class="ds-droite"><span class="etat ds-note ${n === undefined ? "" : n >= 8 ? "fait" : n >= 5 ? "moyen" : "faible"}">${n === undefined ? "Non commencée" : "Record " + String(n).replace(".", ",") + "/10"}</span>
-        <span class="ds-go">${n === undefined ? "Commencer" : "Refaire"} ›</span></span>
+    const cl = n === undefined ? "" : n >= 8 ? "fait" : n >= 5 ? "moyen" : "faible";
+    return `<button type="button" class="dx-carte" data-dictee="${esc(d.id)}">
+      <span class="dx-carte-ico">${iconeDictee()}</span>
+      <span class="dx-carte-corps"><b>${esc(d.titre)}</b>
+        <span class="dx-meta">${d.auteur ? esc(d.auteur) + (d.oeuvre ? ", <i>" + esc(d.oeuvre) + "</i>" : "") : "Texte de la classe"}</span>
+        <span class="dx-tags"><span>${mots} mots</span><span>${gs} groupe${gs > 1 ? "s" : ""}</span><span>${lg}</span></span></span>
+      <span class="dx-carte-droite">${n === undefined ? `<span class="dx-record vide">Pas encore faite</span>` : `<span class="dx-record ${cl}"><small>Record</small>${String(n).replace(".", ",")}<small>/10</small></span>`}
+        <span class="dx-go">${n === undefined ? "Commencer" : "Refaire"}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></span>
     </button>`; };
-  const niv = NIVEAUX_DICTEE.find(x => x[0] === choixDictee.niveau) || NIVEAUX_DICTEE[0];
-  return `<div class="exos-section dictees-section${estTelephone() ? " dt-tel" : ""}">
-    <div class="ds-tete"><div class="ds-intro"><h3>${iconeDictee().replace('width="36" height="44"', 'width="16" height="20"')} Dictées</h3>
-        <p class="doux">Le texte est lu à voix haute, groupe par groupe. Tu l'écris, puis la correction souligne chaque faute.</p></div>
-      <div class="ds-niveau">${segment("dt-niv", NIVEAUX_DICTEE.map(([v, t]) => [v, t]), choixDictee.niveau)}<small>${niv[2]}</small></div></div>
-    ${estTelephone() ? MSG_DICTEE_TEL : `<p class="doux ds-choisir">Choisis la dictée que tu veux faire.</p>`}
-    ${ls.length ? `<div class="liste">${ls.map(carte).join("")}</div>` : `<div class="vide">Aucune dictée pour le moment.</div>`}
-    <p class="doux ds-choisir">Les dictées du brevet (sujets officiels) sont dans <b>Exercices Brevet</b>.</p>
+  const barres = k => `<span class="dx-barres" aria-hidden="true">${[1, 2, 3].map(i => `<i class="${i <= k ? "on" : ""}"></i>`).join("")}</span>`;
+  return `<div class="exos-section dictees-section dx${estTelephone() ? " dt-tel" : ""}">
+    <div class="dx-tete"><span class="dx-tete-ico">${iconeDictee()}</span>
+      <div><h3>Dictées</h3><p class="doux">Le texte est lu à voix haute, groupe par groupe. Tu l'écris sur la feuille, puis la correction souligne chaque faute.</p></div></div>
+    <div class="dx-bloc"><span class="mono">1 · Choisis ton niveau</span>
+      <div class="dx-niveaux" id="dt-niv">${NIVEAUX_DICTEE.map(([v, t, aide], k) => `<button type="button" data-v="${v}" aria-pressed="${choixDictee.niveau === v}">${barres(k + 1)}<b>${t}</b><small>${aide}</small></button>`).join("")}</div></div>
+    ${estTelephone() ? MSG_DICTEE_TEL : ""}
+    <div class="dx-bloc"><span class="mono">2 · Choisis ta dictée${ls.length ? " · " + ls.length : ""}</span>
+      ${ls.length ? `<div class="dx-liste">${ls.map(carte).join("")}</div>` : `<div class="vide">Aucune dictée pour le moment.</div>`}</div>
+    <button type="button" class="dx-vers-dnb" data-vers-dnb>${iconeDicteeDnb()}<span><b>Dictées du brevet</b><small>Les vraies dictées des sujets officiels, dans Exercices Brevet.</small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
   </div>`;
 }
 function brancherDictees(redessiner){
   zone().querySelectorAll("#dt-niv button").forEach(b => b.onclick = () => { choixDictee.niveau = b.dataset.v; redessiner(); });
   zone().querySelectorAll("[data-dictee]").forEach(b => b.onclick = () => { const d = dicteesDb.find(x => x.id === b.dataset.dictee); if (d) lancerDictee(choixDictee, {...d, manuel: true}); });
+  zone().querySelectorAll("[data-vers-dnb]").forEach(b => b.onclick = () => { choixBrevet.ex = "dnb"; changerVue("brevet"); });
 }
 // une autre dictée (au hasard, sauf celle qu'on vient de faire)
 function autreDictee(d){ const ls = dicteesVisibles().filter(x => x.id !== d.id); return ls.length ? {...choisir(ls), manuel: true} : null; }
