@@ -2614,6 +2614,56 @@ html[data-theme="clair"] .rq-edit textarea{color:#1d7a33}
 .rq-liste-g{display:flex;flex-direction:column;gap:12px}
 .rq-ligne-g{display:flex;flex-direction:column;gap:4px;padding:12px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface-2)}
 .rq-ou{font-size:.78rem}
+
+/* ===== Professeurs : couleur verte, onglets du menu, conversations avec l'équipe ===== */
+:root{--prof:#3fb950}
+html[data-theme="clair"]{--prof:#1f8a3b}
+body.est-prof .doc-lecon ::selection,body.est-prof .contenu .bloc ::selection{background:color-mix(in srgb,var(--prof) 38%,transparent);color:inherit}
+.ic-prof{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav button.nav-prof{color:var(--prof)}
+.nav button.nav-prof .ic-prof{margin-left:auto;opacity:.9}
+.nav button.nav-prof[aria-selected="true"]{background:color-mix(in srgb,var(--prof) 14%,transparent);color:var(--prof)}
+.nav button.nav-prof[aria-selected="true"]::before{background:var(--prof)}
+.dmx-boutons{display:flex;gap:8px;flex-wrap:wrap}
+.btn.pc-btn{background:var(--prof);border-color:var(--prof);color:#fff;display:inline-flex;align-items:center;gap:8px}
+.btn.pc-btn .ic-prof{width:18px;height:18px}
+.dmx-onglets button.pc{color:var(--prof);display:inline-flex;align-items:center;gap:6px}
+.dmx-onglets button.pc.actif::after{background:var(--prof)}
+.dmx-onglets button.pc b{background:var(--prof);color:#fff}
+.dmx-ligne.pc{border-color:color-mix(in srgb,var(--prof) 35%,var(--ligne));background:color-mix(in srgb,var(--prof) 6%,var(--surface-2))}
+.dmx-type.pc{background:var(--prof);color:#fff}.dmx-type.pc .ic-prof{width:11px;height:11px}
+.dmx-point.pc{background:var(--prof)}
+.dmx-vide.pc{color:var(--prof)}.dmx-vide.pc .ic-prof{width:34px;height:34px}
+.dmx.pc .dmx-tete{border-bottom-color:color-mix(in srgb,var(--prof) 40%,var(--ligne));background:color-mix(in srgb,var(--prof) 8%,transparent)}
+.dmx-tete-ic.pc{background:color-mix(in srgb,var(--prof) 18%,transparent);color:var(--prof)}
+.pc-prive{margin-left:auto;padding:3px 10px;border-radius:999px;font-size:.74rem;font-weight:600;color:var(--prof);border:1px solid color-mix(in srgb,var(--prof) 50%,transparent);white-space:nowrap}
+.dmx.pc .dmx-msg.moi .dmx-bulle{background:color-mix(in srgb,var(--prof) 24%,var(--surface));border-color:color-mix(in srgb,var(--prof) 45%,transparent)}
+.dmx.pc .dmx-msg:not(.moi) .dmx-bulle{border-color:color-mix(in srgb,var(--prof) 25%,var(--ligne))}
+.dm-rang.professeur{background:color-mix(in srgb,var(--prof) 18%,transparent);color:var(--prof)}
+.dm-av.professeur{box-shadow:0 0 0 2px var(--prof)}
+.dmx-saisie.pc .dmx-envoyer{background:var(--prof);color:#fff}
+.dmx-saisie.pc.envoi{opacity:.6;pointer-events:none}
+.pc-joindre{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:10px;color:var(--prof);cursor:pointer}
+.pc-joindre:hover{background:color-mix(in srgb,var(--prof) 12%,transparent)}
+.pc-joindre svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pc-joints{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px}
+.pc-joints:empty{display:none}
+.pc-joint{display:inline-flex;align-items:center;gap:6px;max-width:220px;padding:4px 6px 4px 4px;border-radius:10px;border:1px solid color-mix(in srgb,var(--prof) 45%,var(--ligne));background:var(--surface-2);font-size:.8rem}
+.pc-joint img{width:34px;height:34px;object-fit:cover;border-radius:7px}
+.pc-joint span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-joint button{border:0;background:none;color:var(--doux);font-size:1.1rem;cursor:pointer}
+.pc-pj{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+.pc-img{padding:0;border:0;background:none;cursor:zoom-in;display:block}
+.pc-img img,.pc-video{display:block;max-width:min(320px,100%);max-height:320px;border-radius:12px;object-fit:cover}
+.pc-video{background:#000;width:min(320px,100%)}
+.pc-fichier{color:var(--prof)}
+.pc-qui{display:flex;flex-direction:column;gap:10px;padding:16px 18px;border-bottom:1px solid var(--ligne)}
+.pc-puces{display:flex;gap:8px;flex-wrap:wrap}
+.pc-puce{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface-2);color:var(--texte);font:inherit;font-size:.86rem;cursor:pointer}
+.pc-puce small{color:var(--doux);font-size:.72rem}
+.pc-puce.actif{border-color:var(--prof);background:color-mix(in srgb,var(--prof) 16%,var(--surface-2));color:var(--prof)}
+.pc-puce .dm-av.mini{width:20px;height:20px;font-size:.65rem}
+.pc-vide-flux{display:grid;place-items:center;min-height:160px;text-align:center}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -6261,6 +6311,8 @@ function notifierEnDirect(type, docs){
 
 /* ===================== NAVIGATION ===================== */
 const ONGLETS_ELEVE = [["profil","Profil"],["prefs","Préférences"],["edt","Emploi du temps"],["lecons","Leçons"],["exos","Exercices"],["brevet","Exercices Brevet"],["devoirs","Devoirs"],["actu","Actualité"],["cloud","Cloud"],["demandes","Demandes"]];
+const ICO_PROF = `<svg class="ic-prof" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5"/><path d="M22 9v6"/></svg>`;
+let pcFils = null, pcMsgs = {}, pcChargement = null;   // conversations professeurs ↔ équipe
 // les professeurs n'ont pas accès aux devoirs de la classe ni au Cloud des élèves
 const ONGLETS_INTERDITS_PROF = ["devoirs", "cloud"];
 const estProf = () => !modeGerant && !!profil && rangDe(profil.rang) === "professeur";
@@ -6280,9 +6332,11 @@ function ouvrirApp(){
   if (!modeGerant) groupes.push([estProf() ? "Professeur" : "Élève", ongletsEleve()]);
   if (modeGerant || estGerantCompte()){ groupes.push(["Gérant", ONGLETS_GERANT.filter(o => modeGerant || o[0] !== "g-demandes")]); suivreGestion(); }
   else if (estAdminCompte()) groupes.push(["Administration", ONGLETS_ADMIN]);
-  $("#nav").innerHTML = groupes.map(([g, ongs]) => `<span class="nav-groupe">${g}</span>` + ongs.map(([v, t]) => `<button type="button" role="tab" data-vue="${v}" aria-selected="false"${EN_CHANTIER.includes(v) ? ` title="${t} : onglet en construction"` : ""}>${t}${EN_CHANTIER.includes(v) ? `<span class="nav-chantier" aria-label="en construction">En travaux</span>` : ""}</button>`).join("")).join("");
+  document.body.classList.toggle("est-prof", estProf());
+  const PROF_AGIT = ["lecons", "exos", "brevet", "demandes"];
+  $("#nav").innerHTML = groupes.map(([g, ongs]) => `<span class="nav-groupe">${g}</span>` + ongs.map(([v, t]) => `<button type="button" role="tab" data-vue="${v}"${estProf() && PROF_AGIT.includes(v) ? ` class="nav-prof" title="${t} : tu peux y corriger et ajouter des infos"` : ""} aria-selected="false"${EN_CHANTIER.includes(v) ? ` title="${t} : onglet en construction"` : ""}>${t}${EN_CHANTIER.includes(v) ? `<span class="nav-chantier" aria-label="en construction">En travaux</span>` : ""}${estProf() && PROF_AGIT.includes(v) ? ICO_PROF : ""}</button>`).join("")).join("");
   $("#nav").querySelectorAll("button").forEach(b => b.onclick = () => changerVue(b.dataset.vue));
-  majIdentite(); majBadgeSignal(); suivreRequetes(); majBadgeRequetes();
+  majIdentite(); majBadgeSignal(); suivreRequetes(); majBadgeRequetes(); if (pcAcces()) setTimeout(() => chargerPc(), 1500);
   montrer("app");
   let vueDemandee = ""; try { vueDemandee = new URLSearchParams(location.search).get("vue") || ""; } catch {}
   const accueil = profil && profil.prefs && ongletsEleve().some(o => o[0] === profil.prefs.accueil) ? profil.prefs.accueil : "edt";
@@ -6345,7 +6399,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.12";
+const VERSION_SITE = "2.13";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -14794,16 +14848,16 @@ const deMoiDm = f => f.deId === moiDm() || f.messages.some(m => m.deId === moiDm
 const vusDm = () => { try { return JSON.parse(lsGet("helper.dm.vus") || "{}"); } catch { return {}; } };
 const nonLuDm = f => { const v = vusDm()[f.id]; return f.dernier.deId !== moiDm() && (!v || v < f.activite) && pourMoiDm(f); };
 function majBadgeRequetes(){
-  const n = filsDm().filter(nonLuDm).length;
+  const n = filsDm().filter(nonLuDm).length + (pcFils || []).filter(f => pcNonLu(f)).length;
   ["demandes", "g-demandes"].forEach(v => { const b = document.querySelector(`#nav button[data-vue="${v}"]`); if (b) b.dataset.n = n ? String(n) : ""; });
 }
 
 
 /* ---------- La vue : liste façon messagerie, conversation façon chat ---------- */
-let etatDm = {onglet: "miennes", fil: null, ecrire: false, brouillon: {}};
+let etatDm = {onglet: "miennes", fil: null, ecrire: false, brouillon: {}, pc: {fil: null, ecrire: false}};
 const AIDE_TYPES_DM = {lecon: "Une leçon qui n'existe pas encore sur Helper.", exo: "Des exercices pour t'entraîner sur un chapitre.", modif: "Tu as vu une erreur ou un oubli dans une leçon.", question: "Tu ne comprends pas quelque chose.", site: "Un bug, une idée ou une remarque sur Helper."};
 const PHRASE_ETAT_DM = {attente: "pas encore vue par l'équipe", encours: "l'équipe s'en occupe", fait: "c'est fait", refuse: "l'équipe ne peut pas la faire"};
-const ONGLETS_DM = () => [["miennes", estEquipeDm() ? "Pour moi" : "Mes demandes"], ...(estEquipeDm() ? [["traiter", "À traiter"]] : []), ["toutes", "Toutes"]];
+const ONGLETS_DM = () => [["miennes", estEquipeDm() ? "Pour moi" : "Mes demandes"], ...(estEquipeDm() ? [["traiter", "À traiter"]] : []), ["toutes", "Toutes"], ...(pcAcces() ? [["profs", "Profs"]] : [])];
 function filsDeOnglet(o){
   const l = filsDm();
   if (o === "miennes") return l.filter(f => deMoiDm(f) || pourMoiDm(f));
@@ -14834,8 +14888,155 @@ const nomDestDm = f => f.a === "equipe" ? "toute l'équipe" : f.aNom || f.a;
 const etatDm1 = f => f.type === "question" ? null : ETATS_DM[f.statut] || ETATS_DM.attente;
 const sujetDm = f => f.type === "site" ? "Site Helper" : f.matiere ? nomMatiere(f.matiere) : "";
 
+/* ---------- Conversations privées professeurs ↔ équipe (admins + gérant) — vertes, sans type, avec photos et vidéos ---------- */
+const ICO_TROMBONE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5l-8.2 8.2a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/></svg>`;
+const MAX_PJ_PC = 50 * 1024 * 1024;
+const pcVus = () => { try { return JSON.parse(lsGet("helper.pc.vus") || "{}"); } catch { return {}; } };
+const pcNonLu = f => f.activite !== pcVus()[f.id] && f.dernier && f.dernier.auteurId !== moi;
+const pcAcces = () => !modeGerant && (estProf() || estEquipeDm());
+const nomDestPc = f => !f.dest || !f.dest.length ? "toute l'équipe" : f.dest.map(d => d.nom).join(", ");
+async function chargerPc(fil){
+  if (!pcAcces() || typeof sb === "undefined" || !sb) return;
+  try {
+    const r = await sb.rpc("pc_fils_liste"); if (r.error) throw r.error;
+    const avant = JSON.stringify(pcFils); pcFils = r.data || [];
+    let change = avant !== JSON.stringify(pcFils);
+    if (fil){ const m = await sb.rpc("pc_fil_lire", {p_fil: fil}); if (!m.error){ const a = JSON.stringify(pcMsgs[fil]); pcMsgs[fil] = m.data || []; change = change || a !== JSON.stringify(pcMsgs[fil]); } }
+    if (change && vueActive === "demandes" && !etatDm.pc.ecrire && (etatDm.onglet === "profs" || etatDm.pc.fil)) VUES.demandes();
+    majBadgeRequetes();
+  } catch { if (pcFils === null){ pcFils = []; } }
+}
+setInterval(() => { if (vueActive === "demandes" && (etatDm.onglet === "profs" || etatDm.pc.fil) && document.visibilityState === "visible") chargerPc(etatDm.pc.fil); }, 12000);
+setInterval(() => { if (pcAcces() && vueActive !== "demandes" && document.visibilityState === "visible") chargerPc(); }, 60000);   // pastille du menu
+const htmlPjPc = l => (l || []).map(p => /^video\//.test(p.type) ? `<video class="pc-video" src="${esc(p.url)}" controls preload="metadata" playsinline></video>`
+  : /^image\//.test(p.type) ? `<button type="button" class="pc-img" data-pc-voir="${esc(p.url)}" data-nom="${esc(p.nom || "image")}"><img src="${esc(p.url)}" alt="${esc(p.nom || "Image jointe")}" loading="lazy"></button>`
+  : `<a class="pc-fichier" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.nom || "Fichier")}</a>`).join("");
+function htmlListePc(){
+  if (pcFils === null) return `<div class="dmx-vide"><span>Chargement…</span></div>`;
+  if (!pcFils.length) return `<div class="dmx-vide pc">${ICO_PROF}<span>${estProf() ? "Tu n'as encore parlé à personne de l'équipe. Touche « Parler à l'équipe »." : "Aucun professeur n'a encore écrit à l'équipe."}</span></div>`;
+  return pcFils.map(f => { const nl = pcNonLu(f), d = f.dernier || {};
+    return `<button type="button" class="dmx-ligne pc${nl ? " nonlu" : ""}" data-pc-fil="${esc(f.id)}">
+      <span class="dmx-ligne-av">${avatarDm(f.profNom, "professeur", f.profId)}<span class="dmx-type pc">${ICO_PROF}</span></span>
+      <span class="dmx-ligne-corps">
+        <span class="dmx-l1"><b>${estProf() ? "Avec " + esc(nomDestPc(f)) : esc(f.profNom) + " · professeur"}</b><time>${quandDm(f.activite)}</time></span>
+        <span class="dmx-l2 doux">${estProf() ? "Conversation privée avec l'équipe" : "Pour " + esc(nomDestPc(f))}</span>
+        <span class="dmx-l3"><span class="dmx-apercu">${d.auteurId === moi ? "Toi : " : esc(d.auteurNom || "") + " : "}${esc(String(d.texte || "").slice(0, 110)) || (d.pj ? "📎 pièce jointe" : "")}</span>${nl ? `<i class="dmx-point pc" aria-label="Nouveau"></i>` : ""}</span>
+      </span></button>`; }).join("");
+}
+function lecturePc(f){
+  const msgs = pcMsgs[f.id];
+  const v = pcVus(); if (v[f.id] !== f.activite){ v[f.id] = f.activite; lsSet("helper.pc.vus", JSON.stringify(v)); setTimeout(majBadgeRequetes, 30); }
+  let jour = "", avant = null;
+  const bulles = !msgs ? `<p class="doux" style="text-align:center">Chargement…</p>` : msgs.map(m => {
+    const j = String(m.le).slice(0, 10), sep = j !== jour ? `<div class="dmx-jour"><span>${jourDm(m.le)}</span></div>` : ""; jour = j;
+    const suite = !sep && avant && avant.auteurId === m.auteurId; avant = m; const moiM = m.auteurId === moi;
+    return sep + `<div class="dmx-msg${moiM ? " moi" : ""}${suite ? " suite" : ""}">
+      ${moiM ? "" : suite ? `<span class="dmx-av-vide"></span>` : avatarDm(m.auteurNom, m.auteurRang, m.auteurId)}
+      <div class="dmx-bulle-col">
+        ${!moiM && !suite ? `<div class="dmx-qui"><b>${esc(m.auteurNom)}</b><span class="dm-rang ${m.auteurRang}">${m.auteurRang === "professeur" ? "Professeur" : libRangDm(m.auteurRang)}</span></div>` : ""}
+        <div class="dmx-bulle">${m.pj && m.pj.length ? `<div class="pc-pj">${htmlPjPc(m.pj)}</div>` : ""}${m.texte ? `<p>${esc(m.texte)}</p>` : ""}<span class="dmx-heure">${heureDm(m.le)}</span></div>
+        ${moiM || jeSuisGerantDm() ? `<button type="button" class="dmx-suppr" data-pc-suppr="${esc(m.id)}">Supprimer</button>` : ""}
+      </div></div>`; }).join("");
+  return `<div class="dmx dmx-conv pc">
+    <header class="dmx-tete">
+      <button type="button" class="dmx-retour" id="pc-retour" aria-label="Retour">${icoDm("retour")}</button>
+      <span class="dmx-tete-ic pc">${ICO_PROF}</span>
+      <div class="dmx-tete-txt"><h3>${estProf() ? "Avec " + esc(nomDestPc(f)) : esc(f.profNom) + " · professeur"}</h3><span class="doux">${estProf() ? "Conversation privée" : "Pour " + esc(nomDestPc(f))}</span></div>
+      <span class="pc-prive">🔒 Privé</span>
+      ${jeSuisGerantDm() ? `<button type="button" class="dmx-icone-btn danger" data-pc-suppr-fil title="Supprimer toute la conversation" aria-label="Supprimer toute la conversation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg></button>` : ""}
+    </header>
+    <div class="dmx-flux" data-pc="${esc(f.id)}">${bulles}</div>
+    ${htmlSaisiePc("pc-repondre")}
+    <p class="dmx-pied doux">🔒 Visible seulement par ${estProf() ? "toi, les administrateurs et le gérant" : esc(f.profNom) + ", les administrateurs et le gérant"}. Les élèves ne la voient pas.</p>
+  </div>`;
+}
+const htmlSaisiePc = id => `<div class="pc-joints" id="${id}-joints"></div>
+  <form class="dmx-saisie pc" id="${id}" novalidate>
+    <label class="pc-joindre" title="Joindre une photo ou une vidéo">${ICO_TROMBONE}<span class="sr-only">Joindre une photo ou une vidéo</span><input type="file" accept="image/*,video/*" multiple hidden></label>
+    <textarea rows="1" maxlength="2000" placeholder="Écris un message…" aria-label="Ton message"></textarea>
+    <button class="dmx-envoyer" type="submit" aria-label="Envoyer">${icoDm("envoyes")}</button>
+  </form>`;
+// pièces jointes en attente (avant l'envoi) + envoi
+function brancherSaisiePc(id, envoyer){
+  const form = $("#" + id); if (!form) return;
+  const ta = form.querySelector("textarea"), inp = form.querySelector("input[type=file]"), zj = $("#" + id + "-joints"), joints = [];
+  const dessiner = () => { zj.innerHTML = joints.map((f, i) => `<span class="pc-joint">${/^video\//.test(f.type) ? "🎬" : `<img src="${f.apercu}" alt="">`}<span>${esc(f.name)}</span><button type="button" data-retirer="${i}" aria-label="Retirer">×</button></span>`).join("");
+    zj.querySelectorAll("[data-retirer]").forEach(b => b.onclick = () => { joints.splice(+b.dataset.retirer, 1); dessiner(); }); };
+  inp.onchange = () => { [...inp.files].forEach(f => { if (!/^(image|video)\//.test(f.type)) return toast("Seulement des photos ou des vidéos.");
+      if (f.size > MAX_PJ_PC) return toast(`« ${f.name} » est trop lourd (50 Mo maximum).`);
+      f.apercu = /^image\//.test(f.type) ? URL.createObjectURL(f) : ""; joints.push(f); }); inp.value = ""; dessiner(); };
+  ta.oninput = () => { ta.style.height = "auto"; ta.style.height = Math.min(160, ta.scrollHeight) + "px"; };
+  ta.onkeydown = ev => { if (ev.key === "Enter" && !ev.shiftKey && !estTelephone()){ ev.preventDefault(); form.requestSubmit(); } };
+  form.onsubmit = async ev => {
+    ev.preventDefault(); const t = ta.value.trim(); if (!t && !joints.length) return;
+    const b = form.querySelector(".dmx-envoyer"); b.disabled = true; form.classList.add("envoi");
+    try {
+      const pj = [];
+      for (const f of joints){ toast(`Envoi de « ${f.name} »…`); const u = await Fichiers.upload(f, {type: f.type}); pj.push({id: u.id, url: u.url, type: f.type, nom: f.name, taille: f.size}); }
+      ta.value = ""; const gardes = joints.splice(0); dessiner(); ta.oninput();   // vidé avant l'envoi : l'affichage se redessine pendant l'envoi
+      try { await envoyer(t, pj); } catch (e) { ta.value = t; joints.push(...gardes); dessiner(); throw e; }
+    } catch (e) { toast(/Réservé/.test(e && e.message) ? "Ton compte n'a pas le rang Professeur." : "L'envoi n'a pas marché. Réessaie dans un instant."); }
+    b.disabled = false; form.classList.remove("envoi");
+  };
+  return ta;
+}
+// nouvelle conversation (prof) : avec qui + message + photos/vidéos
+async function composerPc(){
+  zone().innerHTML = entete("Demandes", "Parler à l'équipe") + `<div class="dmx dmx-conv pc"><p class="doux" style="padding:20px">Chargement…</p></div>`;
+  const eq = (await chargerEquipeDm()).filter(x => ["administrateur", "gerant"].includes(x.rang));
+  const choix = new Set();
+  const dessiner = () => {
+    zone().innerHTML = entete("Demandes", "Parler à l'équipe") + `
+    <div class="dmx dmx-conv pc pc-nouveau">
+      <header class="dmx-tete"><button type="button" class="dmx-retour" id="pc-retour" aria-label="Retour">${icoDm("retour")}</button><span class="dmx-tete-ic pc">${ICO_PROF}</span>
+        <div class="dmx-tete-txt"><h3>Parler à l'équipe</h3><span class="doux">Conversation privée : seuls les administrateurs et le gérant la voient</span></div><span class="pc-prive">🔒 Privé</span></header>
+      <div class="pc-qui"><span class="mono">Avec qui ?</span>
+        <div class="pc-puces"><button type="button" class="pc-puce${choix.size ? "" : " actif"}" data-pc-dest="">${ICO_PROF}Toute l'équipe</button>
+        ${eq.map(x => `<button type="button" class="pc-puce${choix.has(x.id) ? " actif" : ""}" data-pc-dest="${esc(x.id)}">${avatarDm(x.pseudo, x.rang, x.id, "mini")}${esc(x.pseudo)}<small>${x.rang === "gerant" ? "gérant" : "admin"}</small></button>`).join("")}</div>
+        <p class="doux" style="margin:0;font-size:.8rem">Choisis une ou plusieurs personnes. Tous les administrateurs et le gérant peuvent lire et répondre.</p></div>
+      <div class="dmx-flux pc-vide-flux"><p class="doux">Écris ton premier message ci-dessous. Tu peux joindre des photos et des vidéos avec le trombone.</p></div>
+      ${htmlSaisiePc("pc-nouveau")}
+    </div>`;
+    $("#pc-retour").onclick = () => { etatDm.pc.ecrire = false; VUES.demandes(); };
+    zone().querySelectorAll("[data-pc-dest]").forEach(b => b.onclick = () => { const id = b.dataset.pcDest; if (!id) choix.clear(); else choix.has(id) ? choix.delete(id) : choix.add(id);
+      zone().querySelectorAll("[data-pc-dest]").forEach(x => x.classList.toggle("actif", x.dataset.pcDest ? choix.has(x.dataset.pcDest) : !choix.size)); });
+    brancherSaisiePc("pc-nouveau", async (t, pj) => {
+      const r = await sb.rpc("pc_creer", {p_dest: eq.filter(x => choix.has(x.id)).map(x => ({id: x.id, nom: x.pseudo})), p_texte: t, p_pj: pj}); if (r.error) throw r.error;
+      etatDm.pc = {ecrire: false, fil: r.data}; etatDm.onglet = "profs"; await chargerPc(r.data); VUES.demandes(); toast("Message envoyé à l'équipe.");
+    });
+  };
+  dessiner();
+}
+function brancherPc(f){
+  const z = zone();
+  const r = z.querySelector("#pc-retour"); if (r) r.onclick = () => { etatDm.pc.fil = null; VUES.demandes(); enHaut(); };
+  z.querySelectorAll("[data-pc-voir]").forEach(b => b.onclick = () => lireFichier({url: b.dataset.pcVoir, nom: b.dataset.nom}));
+  if (!f) return;
+  brancherSaisiePc("pc-repondre", async (t, pj) => { const res = await sb.rpc("pc_envoyer", {p_fil: f.id, p_texte: t, p_pj: pj}); if (res.error) throw res.error; await chargerPc(f.id); });
+  z.querySelectorAll("[data-pc-suppr]").forEach(b => deuxClics(b, async () => { const res = await sb.rpc("pc_supprimer", {p_fil: f.id, p_message: b.dataset.pcSuppr}); if (res.error) throw res.error; await chargerPc(f.id); VUES.demandes(); }));
+  const sf = z.querySelector("[data-pc-suppr-fil]"); if (sf) deuxClics(sf, async () => { const res = await sb.rpc("pc_supprimer", {p_fil: f.id, p_message: null}); if (res.error) throw res.error; etatDm.pc.fil = null; await chargerPc(); VUES.demandes(); });
+  const fl = z.querySelector(".dmx-flux"); if (fl) fl.scrollTop = fl.scrollHeight;
+}
+
 VUES.demandes = function vueDemandes(){
   rafraichir = vueDemandes; suivreRequetes();
+  if (!pcAcces() && etatDm.onglet === "profs") etatDm.onglet = "miennes";
+  if (pcAcces()){
+    if (etatDm.pc.ecrire){ if (!zone().querySelector("#pc-nouveau")) composerPc(); return; }
+    const pf = etatDm.pc.fil && (pcFils || []).find(f => f.id === etatDm.pc.fil);
+    if (etatDm.pc.fil){
+      if (!pf){ if (pcFils === null || !pcMsgs[etatDm.pc.fil]) chargerPc(etatDm.pc.fil); else etatDm.pc.fil = null; if (etatDm.pc.fil) return; }
+      else {
+        const ancien = zone().querySelector("#pc-repondre textarea"), txt = ancien ? ancien.value : "", foc = ancien && document.activeElement === ancien, joints = zone().querySelector("#pc-repondre-joints");
+        if (joints && joints.children.length) return;   // ne pas effacer des pièces jointes en attente
+        zone().innerHTML = entete("Demandes", "Demandes") + lecturePc(pf); brancherPc(pf);
+        const nv = zone().querySelector("#pc-repondre textarea"); if (nv && txt){ nv.value = txt; if (foc) nv.focus(); }
+        if (!pcMsgs[pf.id]) chargerPc(pf.id);
+        return;
+      }
+    }
+    if (pcFils === null && !pcChargement){ pcChargement = chargerPc().finally(() => pcChargement = null); }
+  }
   if (etatDm.ecrire){ if (!zone().querySelector("#dm-form")) composerDm(); return; }   // on ne redessine pas un brouillon
   const fil = etatDm.fil && filsDm().find(f => f.id === etatDm.fil);
   if (fil){
@@ -14851,15 +15052,16 @@ VUES.demandes = function vueDemandes(){
     <div class="dmx" ${styleDm()}>
       <div class="dmx-barre">
         <p class="doux dmx-intro">Demande une leçon, des exercices, signale une erreur ou une idée pour le site : l'équipe te répond ici.</p>
-        <button type="button" class="btn dmx-nouveau" data-ecrire>${icoDm("ecrire")}Nouvelle demande</button>
+        <div class="dmx-boutons"><button type="button" class="btn dmx-nouveau" data-ecrire>${icoDm("ecrire")}Nouvelle demande</button>
+        ${estProf() ? `<button type="button" class="btn pc-btn" data-pc-ecrire>${ICO_PROF}Parler à l'équipe</button>` : ""}</div>
       </div>
       ${!messagerieOk ? `<div class="dm-alerte">Les demandes ne sont pas encore activées sur le serveur. Le gérant doit lancer le fichier <b>6-messagerie.sql</b> dans Supabase.</div>` : ""}
       <div class="dmx-boite">
-        <div class="dmx-onglets" role="tablist">${ONGLETS_DM().map(([v, nom]) => { const l = filsDeOnglet(v), n = v === "miennes" ? l.filter(nonLuDm).length : v === "traiter" ? l.length : 0;
-          return `<button type="button" role="tab" class="${v === o ? "actif" : ""}" aria-selected="${v === o}" data-onglet="${v}">${nom}${n ? ` <b>${n}</b>` : ""}</button>`; }).join("")}</div>
-        <div class="dmx-liste">${liste.length ? liste.map(ligneDm).join("") : `<div class="dmx-vide">${icoDm("boite", "grand")}<span>${o === "miennes" ? "Tu n'as encore aucune demande." : o === "traiter" ? "Rien à traiter pour l'instant." : "Personne n'a encore fait de demande."}</span></div>`}</div>
+        <div class="dmx-onglets" role="tablist">${ONGLETS_DM().map(([v, nom]) => { const l = v === "profs" ? [] : filsDeOnglet(v), n = v === "miennes" ? l.filter(nonLuDm).length : v === "traiter" ? l.length : v === "profs" ? (pcFils || []).filter(pcNonLu).length : 0;
+          return `<button type="button" role="tab" class="${v === o ? "actif" : ""}${v === "profs" ? " pc" : ""}" aria-selected="${v === o}" data-onglet="${v}">${v === "profs" ? ICO_PROF : ""}${nom}${n ? ` <b>${n}</b>` : ""}</button>`; }).join("")}</div>
+        <div class="dmx-liste${o === "profs" ? " pc" : ""}">${o === "profs" ? htmlListePc() : liste.length ? liste.map(ligneDm).join("") : `<div class="dmx-vide">${icoDm("boite", "grand")}<span>${o === "miennes" ? "Tu n'as encore aucune demande." : o === "traiter" ? "Rien à traiter pour l'instant." : "Personne n'a encore fait de demande."}</span></div>`}</div>
       </div>
-      <p class="doux dmx-public">${icoDm("public")}Les demandes ne sont pas privées : tous les élèves et tous les admins de Helper peuvent les lire.</p>
+      <p class="doux dmx-public">${o === "profs" ? `🔒 Les conversations « Profs » sont privées : seuls les professeurs concernés, les administrateurs et le gérant les voient.` : `${icoDm("public")}Les demandes ne sont pas privées : tous les élèves et tous les admins de Helper peuvent les lire.`}</p>
     </div>`;
   brancherDm(null);
 };
@@ -14992,6 +15194,8 @@ function brancherDm(f){
   z.querySelectorAll("[data-onglet]").forEach(b => b.onclick = () => { etatDm.onglet = b.dataset.onglet; VUES.demandes(); });
   z.querySelectorAll("[data-ecrire]").forEach(b => b.onclick = () => { etatDm.ecrire = true; etatDm.fil = null; etatDm.brouillon = {}; zone().innerHTML = ""; composerDm(); enHaut(); });
   z.querySelectorAll("[data-fil]").forEach(b => b.onclick = () => { etatDm.fil = b.dataset.fil; VUES.demandes(); enHaut(); });
+  z.querySelectorAll("[data-pc-fil]").forEach(b => b.onclick = () => { etatDm.pc.fil = b.dataset.pcFil; VUES.demandes(); enHaut(); chargerPc(b.dataset.pcFil); });
+  z.querySelectorAll("[data-pc-ecrire]").forEach(b => b.onclick = () => { etatDm.pc = {fil: null, ecrire: true}; etatDm.fil = null; zone().innerHTML = ""; composerPc(); enHaut(); });
   const r = z.querySelector("#dm-retour"); if (r) r.onclick = () => { etatDm.fil = null; VUES.demandes(); enHaut(); };
   if (!f) return;
   const se = z.querySelector("#dmx-etat"); if (se) se.onchange = async () => { const st = se.value;
