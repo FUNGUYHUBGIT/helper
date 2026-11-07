@@ -2730,6 +2730,38 @@ body.est-prof .doc-lecon ::selection,body.est-prof .contenu .bloc ::selection{ba
 .dt-ruban-avance{height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden}.dt-ruban-avance i{display:block;height:100%;background:var(--accent);transition:width .3s}
 .dt-ruban-haut{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:10px;border:1px solid var(--ligne);background:var(--surface);color:var(--doux);cursor:pointer}
 .dt-ruban-haut svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== Exercices Brevet : séries d'entraînement et sujets ===== */
+.bx{display:flex;flex-direction:column;gap:14px;padding:16px 18px;border-radius:16px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--ligne));background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 9%,var(--surface)),var(--surface) 65%)}
+.bx-tete{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bx-ico{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.bx-ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bx-tete-txt{flex:1;min-width:220px}.bx-tete h3{margin:0;font-size:1.1rem}.bx-tete p{margin:2px 0 0;font-size:.85rem}
+.bx-chiffres{display:flex;align-items:center;gap:14px}
+.bx-record{display:inline-flex;align-items:baseline;gap:2px;padding:4px 10px;border-radius:10px;border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);color:var(--accent);font-weight:700;font-size:1.05rem}
+.bx-record small{font-size:.7rem;font-weight:500;color:var(--doux)}.bx-record small:first-child{margin-right:4px}
+.bx-vues{display:flex;flex-direction:column;gap:4px;min-width:120px}.bx-vues small{font-size:.74rem;color:var(--doux)}
+.bx-vues-barre{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}.bx-vues-barre i{display:block;height:100%;background:var(--accent)}
+.bx-filtres{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:end;padding:12px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--ligne)}
+.bx-champ{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bx-select{min-width:170px;padding:8px 12px}
+.bx-mats .filtres{gap:6px}.bx-mats .filtres button .doux{font-size:.78rem;margin-left:2px}
+.bx-interrupteur{display:flex;align-items:center;gap:10px;cursor:pointer;padding-bottom:2px}
+.bx-interrupteur input{position:absolute;opacity:0;width:1px;height:1px}
+.bx-glisse{position:relative;flex:none;width:40px;height:22px;border-radius:999px;background:var(--ligne);transition:background .2s}
+.bx-glisse::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+.bx-interrupteur input:checked + .bx-glisse{background:var(--accent)}.bx-interrupteur input:checked + .bx-glisse::after{transform:translateX(18px)}
+.bx-interrupteur input:focus-visible + .bx-glisse{outline:2px solid var(--accent);outline-offset:2px}
+.bx-interrupteur > span:last-child{display:flex;flex-direction:column}.bx-interrupteur b{font-size:.88rem}.bx-interrupteur small{font-size:.75rem;color:var(--doux)}
+.bx-compte{display:flex;gap:8px;flex-wrap:wrap}
+.bx-compte span{padding:4px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--ligne);font-size:.8rem;color:var(--doux)}.bx-compte b{color:var(--texte)}
+.bx-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bx-go{font-size:1rem;padding:12px 22px}
+.sujets-dnb .dx-tete{border-color:var(--ligne);background:var(--surface)}
+.sujets-dnb .dx-menu{border-color:var(--ligne)}.sujets-dnb .dx-menu[open] > summary{color:var(--accent)}
+.bx-select{border:1px solid var(--ligne);border-radius:10px;background:var(--surface)}
+@media (max-width:700px){.bx-vues{width:100%}.bx-chiffres{width:100%}}
+@media (max-width:900px){.bx-filtres{grid-template-columns:1fr}.bx-select{width:100%}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -6466,7 +6498,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.17";
+const VERSION_SITE = "2.18";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -6997,15 +7029,22 @@ VUES.brevet = function vueBrevet(){
   const sujets = Object.entries(SUJETS).filter(([k, v]) => !v.heberge && k.startsWith(ex + "-") && (choixBrevet.an === "tous" || k.includes("-" + choixBrevet.an)));
   const record = (prog.brevet || {})[ex === "bia" ? "bia" : "serie"];
   zone().innerHTML = entete("Exercices Brevet", ex === "bia" ? "Brevet d'initiation aéronautique" : "Diplôme national du brevet") + ongletsBrevet(ex) + `
-    <div class="bloc">
-      <span class="mono">Année</span>
-      ${segment("an-brevet", [["tous","Toutes"], ...anneesDe(ex).map(a => [String(a), String(a)])], String(choixBrevet.an))}
-      <span class="mono">${ex === "bia" ? "Modules" : "Matières"}</span>
-      <div class="filtres" id="mat-brevet">${listeMatieres(ex).map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${choixBrevet.mats[ex].includes(v)}">${t} <span class="doux">(${parMat(v)})</span></button>`).join("")}</div>
-      <span class="mono">Questions d'entraînement</span>
-      ${segment("entr-brevet", [["oui","Incluses"],["non","Sujets officiels seulement"]], choixBrevet.entrainement ? "oui" : "non")}
-      <p class="doux" style="font-size:.88rem">${total || genMats.length ? `<strong>${pool.length}</strong> question${pool.length > 1 ? "s" : ""} des sujets officiels${choixBrevet.entrainement ? `, <strong>${rev.length}</strong> de révision${genMats.length ? ` et des questions <strong>générées à l'infini</strong> (${genMats.map(m => listeMatieres(ex).find(x => x[0] === m)[1]).join(", ")}), avec des valeurs différentes à chaque série` : ""}` : ""}. Déjà vues : ${dejaVues} / ${total}. Les questions jamais vues passent en premier, puis celles que tu as ratées.` : "Aucune question pour ce choix : sélectionne au moins une matière."}${record ? ` Record : ${record} %.` : ""}</p>
-      <div class="rangee"><button class="btn" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>Lancer une série de ${nbSerie || 50} questions</button>${dejaVues ? `<button class="btn sec" type="button" id="raz-vues">Oublier les questions vues</button>` : ""}</div>
+    <div class="bx">
+      <div class="bx-tete"><span class="bx-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="M15.5 16.5l1.5 1.5 3-3"/></svg></span>
+        <div class="bx-tete-txt"><h3>Séries d'entraînement</h3><p class="doux">${ex === "bia" ? "Les questions des vrais sujets du BIA" : "Les questions des vrais sujets du brevet"}, celles jamais vues d'abord, puis celles que tu as ratées.</p></div>
+        <div class="bx-chiffres">${record ? `<span class="bx-record"><small>Record</small>${record}<small>%</small></span>` : ""}
+          <span class="bx-vues" title="Questions déjà vues"><span class="bx-vues-barre"><i style="width:${total ? Math.round(dejaVues / total * 100) : 0}%"></i></span><small>${dejaVues} / ${total} vues</small></span></div></div>
+      <div class="bx-filtres">
+        <label class="bx-champ"><span class="mono">Année</span><select id="an-brevet" class="dd-select bx-select"><option value="tous"${choixBrevet.an === "tous" ? " selected" : ""}>Toutes les années</option>${anneesDe(ex).map(a => `<option value="${a}"${String(a) === String(choixBrevet.an) ? " selected" : ""}>${a}</option>`).join("")}</select></label>
+        <div class="bx-champ bx-mats"><span class="mono">${ex === "bia" ? "Modules" : "Matières"}</span>
+          <div class="filtres" id="mat-brevet">${listeMatieres(ex).map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${choixBrevet.mats[ex].includes(v)}">${t} <span class="doux">${parMat(v)}</span></button>`).join("")}</div></div>
+        <label class="bx-interrupteur"><input type="checkbox" id="entr-brevet"${choixBrevet.entrainement ? " checked" : ""}><span class="bx-glisse" aria-hidden="true"></span><span><b>Questions d'entraînement</b><small>${choixBrevet.entrainement ? "Incluses, en plus des sujets officiels" : "Sujets officiels seulement"}</small></span></label>
+      </div>
+      ${total || genMats.length ? `<div class="bx-compte">
+        <span><b>${pool.length}</b> officielle${pool.length > 1 ? "s" : ""}</span>
+        ${choixBrevet.entrainement ? `<span><b>${rev.length}</b> de révision</span>${genMats.length ? `<span title="${esc(genMats.map(m => listeMatieres(ex).find(x => x[0] === m)[1]).join(", "))}"><b>∞</b> générées, différentes à chaque série</span>` : ""}` : ""}
+      </div>` : `<p class="statut erreur" style="margin:0">Aucune question pour ce choix : sélectionne au moins ${ex === "bia" ? "un module" : "une matière"}.</p>`}
+      <div class="bx-actions"><button class="btn bx-go" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>▶ Lancer une série de ${nbSerie || 50} questions</button>${dejaVues ? `<button class="mini-btn" type="button" id="raz-vues" title="Toutes les questions redeviennent « jamais vues »">↺ Oublier les questions vues</button>` : ""}</div>
     </div>
     ${ex === "dnb" ? blocDicteesDnb() + blocSujetsDnb() : ""}
     ${ex === "bia" ? `<div class="bloc">
@@ -7014,12 +7053,12 @@ VUES.brevet = function vueBrevet(){
       <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Questions reformulées d'après les sujets officiels du BIA, réponses selon leurs corrigés. Pendant la série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir en entier.</p>
     </div>` : ""}`;
   zone().querySelectorAll("#examen button").forEach(b => b.onclick = () => { choixBrevet.ex = b.dataset.v; choixBrevet.an = "tous"; vueBrevet(); });
-  zone().querySelectorAll("#an-brevet button").forEach(b => b.onclick = () => { choixBrevet.an = b.dataset.v; vueBrevet(); });
+  const anB = $("#an-brevet"); if (anB) anB.onchange = () => { choixBrevet.an = anB.value; vueBrevet(); };
   zone().querySelectorAll("#mat-brevet button").forEach(b => b.onclick = () => {
     const v = b.dataset.v, m = choixBrevet.mats[ex];
     choixBrevet.mats[ex] = m.includes(v) ? m.filter(x => x !== v) : [...m, v]; vueBrevet();
   });
-  zone().querySelectorAll("#entr-brevet button").forEach(b => b.onclick = () => { choixBrevet.entrainement = b.dataset.v === "oui"; vueBrevet(); });
+  const entr = $("#entr-brevet"); if (entr) entr.onchange = () => { choixBrevet.entrainement = entr.checked; vueBrevet(); };
   if (ex === "dnb"){ brancherSujetsDnb(vueBrevet); brancherDicteesDnb(vueBrevet); } else { brancherCasiers(); zone().querySelectorAll("[data-lien]").forEach(b => b.onclick = () => window.open(b.dataset.lien, "_blank", "noopener")); }
   if ($("#raz-vues")) deuxClics($("#raz-vues"), () => { prog.vuesB = {}; sauver(); vueBrevet(); });
   zone().querySelectorAll("#lv-brevet button").forEach(b => b.onclick = () => { choixBrevet.lv = b.dataset.v; vueBrevet(); });
@@ -14804,16 +14843,16 @@ function blocSujetsDnb(){
   const ans = [...new Set(SUJETS_DNB.map(s => s.an))].sort((a, b) => b - a), mats = MATIERES_DNB.filter(([m]) => SUJETS_DNB.some(s => s.mat === m));
   const ls = SUJETS_DNB.filter(s => (choixSujetsDnb.an === "tous" || s.an === +choixSujetsDnb.an) && (choixSujetsDnb.mat === "tous" || s.mat === choixSujetsDnb.mat))
     .sort((a, b) => b.an - a.an || String(b.date).localeCompare(String(a.date)) || MATIERES_DNB.findIndex(m => m[0] === a.mat) - MATIERES_DNB.findIndex(m => m[0] === b.mat));
-  return `<div class="bloc" id="bloc-sujets-dnb">
-    <span class="mono">Sujets du DNB · Éducation nationale</span>
-    <p class="doux" style="font-size:.88rem;max-width:75ch">Les vrais sujets du brevet depuis 2018, avec leur corrigé. Ouvre une épreuve pour la lire en entier.</p>
-    <details class="sd-grand" id="sd-grand"${sdGrandOuvert ? " open" : ""}><summary><span class="sd-grand-fl" aria-hidden="true"></span><span>Afficher la liste des sujets</span><span class="sd-grand-nb">${ls.length} sujet${ls.length > 1 ? "s" : ""}</span></summary><div class="sd-grand-corps">
+  return `<div class="dx sujets-dnb" id="bloc-sujets-dnb">
+    <div class="dx-tete"><span class="bx-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7M9 16h7"/></svg></span>
+      <div class="dx-tete-txt"><h3>Sujets du DNB</h3><p class="doux">Les vrais sujets du brevet depuis 2018 avec leur corrigé (Éducation nationale). Ouvre une épreuve pour la lire en entier.</p></div></div>
+    <details class="sd-grand dx-menu" id="sd-grand"${sdGrandOuvert ? " open" : ""}><summary><span class="sd-grand-fl" aria-hidden="true"></span><span>Choisis un sujet</span><span class="sd-grand-nb">${ls.length} sujet${ls.length > 1 ? "s" : ""}</span></summary><div class="sd-grand-corps">
     ${ans.length ? segment("sd-an", [["tous", "Toutes"], ...ans.map(a => [String(a), String(a)])], String(choixSujetsDnb.an))
       + (mats.length > 1 ? segment("sd-mat", [["tous", "Toutes les matières"], ...mats], choixSujetsDnb.mat) : "") : ""}
     ${ls.length ? `<div class="sd-arbre">${ls.map(s => ligneCasier(s.id, `${esc(nomMatDnb(s.mat))} · ${esc(s.session)} ${s.an}`, s.date ? dateLongueDnb(s.date) : "",
         docsDe(s).map(d => [d.t, d.url, !!d.ext, d.nom]))).join("")}</div>` : `<div class="vide">Aucun sujet pour ce choix.</div>`}
     </div></details>
-    <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Les questions des séries sont rédigées à partir de ces sujets et de leurs corrigés. Pendant une série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir.</p>
+    <p class="doux" style="font-size:.8rem;margin:0 4px">Les questions des séries viennent de ces sujets : pendant une série, chaque question donne le lien de son sujet d'origine.</p>
   </div>`;
 }
 // Une ligne « nom du sujet ▸ » qui s'ouvre comme un casier sur ses documents (Sujet, Corrigé)
