@@ -2732,35 +2732,37 @@ body.est-prof .doc-lecon ::selection,body.est-prof .contenu .bloc ::selection{ba
 .dt-ruban-haut svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 
 /* ===== Exercices Brevet : séries d'entraînement et sujets ===== */
-.bx{display:flex;flex-direction:column;gap:14px;padding:16px 18px;border-radius:16px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--ligne));background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 9%,var(--surface)),var(--surface) 65%)}
-.bx-tete{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bx{display:flex;flex-direction:column;border-radius:16px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--ligne));background:var(--surface);overflow:hidden}
+.bx-tete{display:flex;align-items:center;gap:14px;padding:16px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 11%,var(--surface)),var(--surface) 70%);border-bottom:1px solid var(--ligne)}
 .bx-ico{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
 .bx-ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.bx-tete-txt{flex:1;min-width:220px}.bx-tete h3{margin:0;font-size:1.1rem}.bx-tete p{margin:2px 0 0;font-size:.85rem}
-.bx-chiffres{display:flex;align-items:center;gap:14px}
-.bx-record{display:inline-flex;align-items:baseline;gap:2px;padding:4px 10px;border-radius:10px;border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);color:var(--accent);font-weight:700;font-size:1.05rem}
-.bx-record small{font-size:.7rem;font-weight:500;color:var(--doux)}.bx-record small:first-child{margin-right:4px}
-.bx-vues{display:flex;flex-direction:column;gap:4px;min-width:120px}.bx-vues small{font-size:.74rem;color:var(--doux)}
-.bx-vues-barre{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}.bx-vues-barre i{display:block;height:100%;background:var(--accent)}
-.bx-filtres{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:end;padding:12px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--ligne)}
-.bx-champ{display:flex;flex-direction:column;gap:6px;min-width:0}
-.bx-select{min-width:170px;padding:8px 12px}
-.bx-mats .filtres{gap:6px}.bx-mats .filtres button .doux{font-size:.78rem;margin-left:2px}
-.bx-interrupteur{display:flex;align-items:center;gap:10px;cursor:pointer;padding-bottom:2px}
+.bx-tete-txt{flex:1;min-width:0}.bx-tete h3{margin:0;font-size:1.1rem}.bx-tete p{margin:2px 0 0;font-size:.85rem}
+.bx-stats{display:flex;gap:8px;flex:none}
+.bx-stat{display:flex;flex-direction:column;gap:3px;min-width:96px;padding:8px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--ligne)}
+.bx-stat small{font-size:.7rem;color:var(--doux);text-transform:uppercase;letter-spacing:.06em}
+.bx-stat b{font-size:1.15rem;line-height:1.1;font-variant-numeric:tabular-nums}.bx-stat b span{font-size:.8rem;font-weight:500;color:var(--doux)}
+.bx-vues-barre{display:block;height:4px;border-radius:2px;background:var(--ligne);overflow:hidden}.bx-vues-barre i{display:block;height:100%;background:var(--accent)}
+.bx-reglages{display:grid;grid-template-columns:130px minmax(0,1fr);padding:4px 18px}
+.bx-lab,.bx-val{display:flex;align-items:center;min-height:56px;padding:10px 0;border-bottom:1px solid var(--ligne)}
+.bx-reglages > :nth-last-child(-n+2){border-bottom:0}
+.bx-lab{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--doux)}
+.bx-select{min-width:200px;padding:8px 12px;border:1px solid var(--ligne);border-radius:10px;background:var(--surface-2)}
+.bx-val .filtres{gap:6px}.bx-val .filtres button .doux{font-size:.78rem;margin-left:2px}
+.bx-interrupteur{display:flex;align-items:center;gap:12px;cursor:pointer;font-size:.9rem}
 .bx-interrupteur input{position:absolute;opacity:0;width:1px;height:1px}
-.bx-glisse{position:relative;flex:none;width:40px;height:22px;border-radius:999px;background:var(--ligne);transition:background .2s}
-.bx-glisse::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+.bx-glisse{position:relative;flex:none;width:42px;height:24px;border-radius:999px;background:var(--ligne);transition:background .2s}
+.bx-glisse::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s}
 .bx-interrupteur input:checked + .bx-glisse{background:var(--accent)}.bx-interrupteur input:checked + .bx-glisse::after{transform:translateX(18px)}
 .bx-interrupteur input:focus-visible + .bx-glisse{outline:2px solid var(--accent);outline-offset:2px}
-.bx-interrupteur > span:last-child{display:flex;flex-direction:column}.bx-interrupteur b{font-size:.88rem}.bx-interrupteur small{font-size:.75rem;color:var(--doux)}
-.bx-compte{display:flex;gap:8px;flex-wrap:wrap}
-.bx-compte span{padding:4px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--ligne);font-size:.8rem;color:var(--doux)}.bx-compte b{color:var(--texte)}
-.bx-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bx-pied{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 18px;border-top:1px solid var(--ligne);background:var(--surface-2)}
 .bx-go{font-size:1rem;padding:12px 22px}
+.bx-compte{font-size:.85rem;color:var(--doux)}
+.bx-oublier{margin-left:auto;border:0;background:none;color:var(--doux);font:inherit;font-size:.82rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.bx-oublier:hover{color:var(--texte)}
+@media (max-width:760px){.bx-tete{flex-wrap:wrap}.bx-stats{width:100%}.bx-stat{flex:1}.bx-reglages{grid-template-columns:1fr}.bx-lab{min-height:0;border:0;padding:12px 0 4px}.bx-reglages > .bx-val:last-child{border:0}.bx-select{width:100%}.bx-go{width:100%}.bx-oublier{margin-left:0}}
 .sujets-dnb .dx-tete{border-color:var(--ligne);background:var(--surface)}
 .sujets-dnb .dx-menu{border-color:var(--ligne)}.sujets-dnb .dx-menu[open] > summary{color:var(--accent)}
 .bx-select{border:1px solid var(--ligne);border-radius:10px;background:var(--surface)}
-@media (max-width:700px){.bx-vues{width:100%}.bx-chiffres{width:100%}}
 @media (max-width:900px){.bx-filtres{grid-template-columns:1fr}.bx-select{width:100%}}
 </style>
 
@@ -6498,7 +6500,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.18";
+const VERSION_SITE = "2.19";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7031,20 +7033,24 @@ VUES.brevet = function vueBrevet(){
   zone().innerHTML = entete("Exercices Brevet", ex === "bia" ? "Brevet d'initiation aéronautique" : "Diplôme national du brevet") + ongletsBrevet(ex) + `
     <div class="bx">
       <div class="bx-tete"><span class="bx-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="M15.5 16.5l1.5 1.5 3-3"/></svg></span>
-        <div class="bx-tete-txt"><h3>Séries d'entraînement</h3><p class="doux">${ex === "bia" ? "Les questions des vrais sujets du BIA" : "Les questions des vrais sujets du brevet"}, celles jamais vues d'abord, puis celles que tu as ratées.</p></div>
-        <div class="bx-chiffres">${record ? `<span class="bx-record"><small>Record</small>${record}<small>%</small></span>` : ""}
-          <span class="bx-vues" title="Questions déjà vues"><span class="bx-vues-barre"><i style="width:${total ? Math.round(dejaVues / total * 100) : 0}%"></i></span><small>${dejaVues} / ${total} vues</small></span></div></div>
-      <div class="bx-filtres">
-        <label class="bx-champ"><span class="mono">Année</span><select id="an-brevet" class="dd-select bx-select"><option value="tous"${choixBrevet.an === "tous" ? " selected" : ""}>Toutes les années</option>${anneesDe(ex).map(a => `<option value="${a}"${String(a) === String(choixBrevet.an) ? " selected" : ""}>${a}</option>`).join("")}</select></label>
-        <div class="bx-champ bx-mats"><span class="mono">${ex === "bia" ? "Modules" : "Matières"}</span>
-          <div class="filtres" id="mat-brevet">${listeMatieres(ex).map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${choixBrevet.mats[ex].includes(v)}">${t} <span class="doux">${parMat(v)}</span></button>`).join("")}</div></div>
-        <label class="bx-interrupteur"><input type="checkbox" id="entr-brevet"${choixBrevet.entrainement ? " checked" : ""}><span class="bx-glisse" aria-hidden="true"></span><span><b>Questions d'entraînement</b><small>${choixBrevet.entrainement ? "Incluses, en plus des sujets officiels" : "Sujets officiels seulement"}</small></span></label>
+        <div class="bx-tete-txt"><h3>Séries d'entraînement</h3><p class="doux">Les questions des vrais sujets ${ex === "bia" ? "du BIA" : "du brevet"} : d'abord celles jamais vues, puis celles que tu as ratées.</p></div>
+        <div class="bx-stats">
+          <div class="bx-stat"><small>Record</small><b>${record ? record + " %" : "—"}</b></div>
+          <div class="bx-stat"><small>Déjà vues</small><b>${dejaVues}<span> / ${total}</span></b><span class="bx-vues-barre"><i style="width:${total ? Math.round(dejaVues / total * 100) : 0}%"></i></span></div>
+        </div></div>
+      <div class="bx-reglages">
+        <label class="bx-lab" for="an-brevet">Année</label>
+        <div class="bx-val"><select id="an-brevet" class="dd-select bx-select"><option value="tous"${choixBrevet.an === "tous" ? " selected" : ""}>Toutes les années</option>${anneesDe(ex).map(a => `<option value="${a}"${String(a) === String(choixBrevet.an) ? " selected" : ""}>${a}</option>`).join("")}</select></div>
+        <span class="bx-lab">${ex === "bia" ? "Modules" : "Matières"}</span>
+        <div class="bx-val"><div class="filtres" id="mat-brevet">${listeMatieres(ex).map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${choixBrevet.mats[ex].includes(v)}">${t} <span class="doux">${parMat(v)}</span></button>`).join("")}</div></div>
+        <span class="bx-lab">Entraînement</span>
+        <div class="bx-val"><label class="bx-interrupteur"><input type="checkbox" id="entr-brevet"${choixBrevet.entrainement ? " checked" : ""}><span class="bx-glisse" aria-hidden="true"></span><span>${choixBrevet.entrainement ? "Questions de révision incluses, en plus des sujets officiels" : "Sujets officiels seulement"}</span></label></div>
       </div>
-      ${total || genMats.length ? `<div class="bx-compte">
-        <span><b>${pool.length}</b> officielle${pool.length > 1 ? "s" : ""}</span>
-        ${choixBrevet.entrainement ? `<span><b>${rev.length}</b> de révision</span>${genMats.length ? `<span title="${esc(genMats.map(m => listeMatieres(ex).find(x => x[0] === m)[1]).join(", "))}"><b>∞</b> générées, différentes à chaque série</span>` : ""}` : ""}
-      </div>` : `<p class="statut erreur" style="margin:0">Aucune question pour ce choix : sélectionne au moins ${ex === "bia" ? "un module" : "une matière"}.</p>`}
-      <div class="bx-actions"><button class="btn bx-go" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>▶ Lancer une série de ${nbSerie || 50} questions</button>${dejaVues ? `<button class="mini-btn" type="button" id="raz-vues" title="Toutes les questions redeviennent « jamais vues »">↺ Oublier les questions vues</button>` : ""}</div>
+      <div class="bx-pied">
+        <button class="btn bx-go" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>▶ Lancer une série de ${nbSerie || 50} questions</button>
+        <span class="bx-compte">${total || genMats.length ? `${pool.length} officielle${pool.length > 1 ? "s" : ""}${choixBrevet.entrainement ? ` · ${rev.length} de révision${genMats.length ? " · ∞ générées" : ""}` : ""}` : `<span class="statut erreur">Choisis au moins ${ex === "bia" ? "un module" : "une matière"}.</span>`}</span>
+        ${dejaVues ? `<button class="bx-oublier" type="button" id="raz-vues" title="Toutes les questions redeviennent « jamais vues »">↺ Oublier les questions vues</button>` : ""}
+      </div>
     </div>
     ${ex === "dnb" ? blocDicteesDnb() + blocSujetsDnb() : ""}
     ${ex === "bia" ? `<div class="bloc">
