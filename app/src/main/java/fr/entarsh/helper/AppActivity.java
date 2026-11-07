@@ -5,11 +5,24 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ContentValues;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.Toast;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.HashMap;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
@@ -46,6 +59,9 @@ public class AppActivity extends Activity {
   boolean ttsPret = false;
   String scriptVoix = "";
   ValueCallback<Uri[]> rappelFichier;
+  FrameLayout racine;
+  View vuePleinEcran;
+  WebChromeClient.CustomViewCallback rappelPleinEcran;
 
   @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
   @Override protected void onCreate(Bundle etat) {
@@ -53,7 +69,9 @@ public class AppActivity extends Activity {
     if (!SyncDevoirs.prefs(this).getString("edId", "").isEmpty()) SyncDevoirs.planifier(this, true);   // met à jour le rythme (2 fois par jour)
     web = new WebView(this);
     web.setBackgroundColor(Color.parseColor("#0E0E0F"));
-    setContentView(web);
+    racine = new FrameLayout(this);
+    racine.addView(web, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    setContentView(racine);
 
     WebSettings s = web.getSettings();
     s.setJavaScriptEnabled(true);
@@ -115,6 +133,17 @@ public class AppActivity extends Activity {
         catch (ActivityNotFoundException e) { rappelFichier = null; return false; }
         return true;
       }
+      // Plein écran du lecteur vidéo Helper : l'écran peut tourner, les barres du téléphone sont masquées
+      @Override public void onShowCustomView(View vue, CustomViewCallback rappel) {
+        if (vuePleinEcran != null) { rappel.onCustomViewHidden(); return; }
+        vuePleinEcran = vue; rappelPleinEcran = rappel;
+        racine.addView(vue, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        web.setVisibility(View.GONE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        vue.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
+      }
+      @Override public void onHideCustomView() { quitterPleinEcran(); }
     });
     web.setDownloadListener((url, ua, cd, mime, len) -> ouvrir(Uri.parse(url)));
 
@@ -135,6 +164,17 @@ public class AppActivity extends Activity {
     ouvrir(u);
     return true;
   }
+  void quitterPleinEcran() {
+    if (vuePleinEcran == null) return;
+    racine.removeView(vuePleinEcran); vuePleinEcran = null;
+    web.setVisibility(View.VISIBLE);
+    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    if (rappelPleinEcran != null) { rappelPleinEcran.onCustomViewHidden(); rappelPleinEcran = null; }
+  }
+  // ----- Enregistrer un fichier envoyé par le site (vidéo convertie, pièce jointe…) dans Téléchargements -----
+  final HashMap<Integer, Object[]> fichiers = new HashMap<>();
+  int prochainFichier = 1;
   void ouvrir(Uri u) { try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception e) {} }
   void js(String code) { runOnUiThread(() -> { if (web != null) web.evaluateJavascript(code, null); }); }
 
@@ -149,6 +189,35 @@ public class AppActivity extends Activity {
     while ((n = in.read(b)) > 0) o.write(b, 0, n); in.close(); return o.toString("UTF-8");
   }
   class PontAppli {
+    @JavascriptInterface public synchronized int fichierDebut(String nom, String mime) {
+      try {
+        String n = (nom == null || nom.isEmpty() ? "fichier" : nom).replaceAll("[\\/:*?\"<>|]", "_");
+        OutputStream o; Uri u = null; File f = null;
+        if (Build.VERSION.SDK_INT >= 29) {
+          ContentValues cv = new ContentValues();
+          cv.put(MediaStore.MediaColumns.DISPLAY_NAME, n);
+          cv.put(MediaStore.MediaColumns.MIME_TYPE, mime == null || mime.isEmpty() ? "application/octet-stream" : mime);
+          cv.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/Helper");
+          u = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
+          o = getContentResolver().openOutputStream(u);
+        } else {
+          File d = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "Helper"); d.mkdirs();
+          f = new File(d, n); o = new FileOutputStream(f);
+        }
+        int id = prochainFichier++; fichiers.put(id, new Object[]{o, u, f, n}); return id;
+      } catch (Exception e) { return 0; }
+    }
+    @JavascriptInterface public synchronized void fichierMorceau(int id, String b64) {
+      Object[] x = fichiers.get(id); if (x == null) return;
+      try { ((OutputStream) x[0]).write(Base64.decode(b64, Base64.DEFAULT)); } catch (Exception e) { fichiers.remove(id); try { ((OutputStream) x[0]).close(); } catch (Exception z) {} }
+    }
+    @JavascriptInterface public synchronized boolean fichierFin(int id) {
+      Object[] x = fichiers.remove(id); if (x == null) return false;
+      try { ((OutputStream) x[0]).close(); } catch (Exception e) { return false; }
+      final String n = (String) x[3];
+      runOnUiThread(() -> Toast.makeText(AppActivity.this, n + " : enregistré dans Téléchargements/Helper", Toast.LENGTH_LONG).show());
+      return true;
+    }
     // Notifications (devoirs pour demain, demandes) : le site donne le compte et sa clé de notification
     @JavascriptInterface public void configNotifs(String json) {
       Notifs.configurer(AppActivity.this, json);
@@ -273,7 +342,7 @@ public class AppActivity extends Activity {
   }
   @Override protected void onSaveInstanceState(Bundle o) { super.onSaveInstanceState(o); web.saveState(o); }
   @SuppressWarnings("deprecation")
-  @Override public void onBackPressed() { if (web.canGoBack()) web.goBack(); else super.onBackPressed(); }
+  @Override public void onBackPressed() { if (vuePleinEcran != null) quitterPleinEcran(); else if (web.canGoBack()) web.goBack(); else super.onBackPressed(); }
   @Override protected void onPause() { super.onPause(); if (ttsPret) tts.stop(); }
   @Override protected void onStop() { super.onStop(); appliquerIcone(); }
   @Override protected void onDestroy() { if (tts != null) tts.shutdown(); if (web != null) web.destroy(); super.onDestroy(); }
