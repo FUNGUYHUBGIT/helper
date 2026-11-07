@@ -5968,6 +5968,8 @@ function brancherAvertRelance(){
 /* ----- Qui est connecté, et avec quelle version du site (présence en direct, sans écriture en base) ----- */
 let presences = [], canalPresence = null;
 const clePresence = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)) ;
+// « 2.20 » doit passer après « 2.19 » : on compare le numéro de part et d'autre du point
+const numVersion = v => { const [a, b] = String(v || "0").split("."); return (+a || 0) * 1000 + (+b || 0); };
 const infosPresence = () => ({version: VERSION_SITE, pseudo: (typeof profil !== "undefined" && profil && profil.pseudo) || "", rang: (typeof profil !== "undefined" && profil && profil.rang) || "", depuis: new Date().toISOString()});
 function majPresence(){
   try {
@@ -5986,12 +5988,12 @@ function majPresence(){
 function htmlPresence(){
   if (!canalPresence) return `<p class="doux" style="font-size:.85rem">Liste indisponible pour le moment.</p>`;
   if (!presences.length) return `<p class="doux" style="font-size:.85rem">Recherche des personnes connectées…</p>`;
-  const vRec = Math.max(...presences.map(p => parseFloat(p.version) || 0), parseFloat(VERSION_SITE) || 0);
-  const ajour = presences.filter(p => (parseFloat(p.version) || 0) >= vRec).length;
+  const vRec = Math.max(...presences.map(p => numVersion(p.version) || 0), numVersion(VERSION_SITE) || 0);
+  const ajour = presences.filter(p => (numVersion(p.version) || 0) >= vRec).length;
   const nomRang = r => ({gerant: "Gérant", admin: "Gérant", administrateur: "Administrateur", eleve: "Élève"})[r] || "Pas connecté";
-  const tri = presences.slice().sort((a, b) => (parseFloat(a.version) || 0) - (parseFloat(b.version) || 0) || String(a.pseudo).localeCompare(b.pseudo));
+  const tri = presences.slice().sort((a, b) => (numVersion(a.version) || 0) - (numVersion(b.version) || 0) || String(a.pseudo).localeCompare(b.pseudo));
   return `<p class="presence-resume"><b>${presences.length}</b> personne${presences.length > 1 ? "s" : ""} sur le site · <b class="${ajour === presences.length ? "ok" : "ko"}">${ajour} / ${presences.length}</b> sur la dernière version (${vRec.toFixed(2)})</p>
-    <table class="tab-doc presence-tab"><tr><th>Qui</th><th>Rôle</th><th>Version</th><th>État</th></tr>${tri.map(p => { const ok = (parseFloat(p.version) || 0) >= vRec;
+    <table class="tab-doc presence-tab"><tr><th>Qui</th><th>Rôle</th><th>Version</th><th>État</th></tr>${tri.map(p => { const ok = (numVersion(p.version) || 0) >= vRec;
       return `<tr${p.cle === clePresence ? ' class="moi"' : ""}><td>${esc(p.pseudo || "Visiteur")}${p.cle === clePresence ? " (toi)" : ""}</td><td>${nomRang(p.rang)}</td><td>${esc(p.version || "?")}</td><td class="${ok ? "ok" : "ko"}">${ok ? "✓ à jour" : "⟳ ancienne version"}</td></tr>`; }).join("")}</table>
     <p class="doux" style="font-size:.78rem">Chaque onglet ouvert compte pour une personne. La liste se met à jour toute seule : après une relance, tout le monde doit repasser sur la dernière version.</p>`;
 }
