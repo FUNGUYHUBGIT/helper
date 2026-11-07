@@ -2772,6 +2772,32 @@ html[data-theme="clair"] .bx-ico.serie .qm{stroke:#fff}html[data-theme="clair"] 
 .sujets-dnb .dx-menu{border-color:var(--ligne)}.sujets-dnb .dx-menu[open] > summary{color:var(--accent)}
 .bx-select{border:1px solid var(--ligne);border-radius:10px;background:var(--surface)}
 @media (max-width:900px){.bx-filtres{grid-template-columns:1fr}.bx-select{width:100%}}
+
+/* Langues vivantes : document du sujet choisi */
+.bx-doc{display:flex;flex-direction:column;gap:10px;margin:0 18px 16px;padding:14px 16px;border-radius:12px;border:1px solid var(--ligne);border-left:3px solid var(--accent);background:var(--surface-2)}
+.bx-doc-tete{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.bx-doc-tete b{font-size:1rem}
+.bx-doc-txt{margin:0;line-height:1.7;max-width:75ch;font-size:.95rem}
+.bx-doc .ec-transcription summary{cursor:pointer;color:var(--doux);font-size:.88rem}.bx-doc .ec-transcription p{margin:8px 0 0;line-height:1.6}
+/* Corrigé du BIA écrit par Helper */
+.cb{width:100%;max-width:820px;display:flex;flex-direction:column;gap:18px}
+.cb-intro{margin:0;font-size:.9rem;color:var(--doux)}
+.cb-mod{display:flex;flex-direction:column;gap:10px}.cb-mod h3{margin:6px 0 0;font-size:1rem;color:var(--accent)}
+.cb-q{padding:12px 14px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface)}
+.cb-enonce{margin:0 0 8px;font-weight:600;line-height:1.5;display:flex;gap:10px}
+.cb-n{flex:none;display:grid;place-items:center;min-width:24px;height:24px;border-radius:7px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);font-size:.78rem;font-family:var(--f-mono)}
+.cb-choix{list-style:none;margin:0 0 0 34px;padding:0;display:flex;flex-direction:column;gap:3px;font-size:.9rem;color:var(--doux)}
+.cb-choix li.bon{color:var(--ok);font-weight:600}
+.cb-rep{margin:0 0 0 34px;font-size:.9rem}.cb-exp{margin:8px 0 0 34px;font-size:.86rem;color:var(--doux);border-left:2px solid var(--ligne);padding-left:10px}
+/* Lire un sujet par-dessus la page */
+.sdm{position:fixed;inset:0;z-index:900;display:none;place-items:center;padding:20px;background:rgba(0,0,0,.6);backdrop-filter:blur(3px)}
+.sdm.ouvert{display:grid}
+.sdm-boite{display:flex;flex-direction:column;width:min(1040px,100%);height:min(92vh,100%);border-radius:16px;border:1px solid var(--ligne);background:var(--fond,var(--surface));overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.sdm-tete{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--ligne);background:var(--surface)}
+.sdm-tete b{flex:1;min-width:160px}
+.sdm-x{border:1px solid var(--ligne);background:var(--surface-2);color:inherit;border-radius:10px;width:36px;height:36px;cursor:pointer;font-size:1rem}
+.sdm-corps{flex:1;overflow:auto;padding:16px}
+html.sdm-bloque{overflow:hidden}
+@media (max-width:760px){.sdm{padding:0}.sdm-boite{height:100%;border-radius:0}.bx-doc{margin:0 12px 14px}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -4986,7 +5012,10 @@ SUJETS_DNB.push(
    ["dnb-2024-francais", "francais", 2024], ["dnb-2024-sciences", "sciences", 2024], ["dnb-2023-francais", "francais", 2023], ["dnb-2023-hge", "hge", 2023]].forEach(([k, mat, an]) => {
     const v = SUJETS[k]; if (v) v.heberge = true;   // remplacés par les sujets officiels + corrigés de la liste
   });
-  SUJETS_DNB.forEach(s => { SUJETS["dnb-" + s.an + "-" + s.id.replace(/^\d+-/, "").replace(/-maths$/, "") + "-maths"] = {titre: `DNB ${s.an} ${s.session} · Mathématiques`, url: s.sujet, heberge: true}; });
+  SUJETS_DNB.forEach(s => { if (s.mat === "maths") SUJETS["dnb-" + s.an + "-" + s.id.replace(/^\d+-/, "").replace(/-maths$/, "") + "-maths"] = {titre: `DNB ${s.an} ${s.session} · Mathématiques`, url: s.sujet, heberge: true, dnb: s.id}; });
+  // chaque ancienne clé « dnb-AN-matière » pointe vers l'épreuve de Métropole hébergée (sujet + corrigé lisibles dans Helper)
+  Object.entries(SUJETS).forEach(([k, v]) => { const m = k.match(/^dnb-(\d{4})-(maths|francais|hge|sciences)$/); if (!m || v.dnb) return;
+    const s = SUJETS_DNB.find(x => x.id === m[1] + "-metropole-" + m[2]); if (s){ v.dnb = s.id; v.heberge = true; if (s.sujet) v.url = s.sujet; else if (s.docs && s.docs[0]) v.url = s.docs[0].url; } });
 })();
 const cleSujetDnb = (an, ses) => "dnb-" + an + "-" + ses + "-maths";
 // QA(an, session, source, contexte, question, {choix, bonne} | {rep}, explication)
@@ -6544,7 +6573,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.21";
+const VERSION_SITE = "2.22";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7060,7 +7089,9 @@ VUES.brevet = function vueBrevet(){
     zone().innerHTML = entete("Exercices Brevet", "Langues vivantes") + ongletsBrevet("lv") + blocLangues();
     zone().querySelectorAll("#examen button").forEach(b => b.onclick = () => { choixBrevet.ex = b.dataset.v; choixBrevet.an = "tous"; vueBrevet(); });
     zone().querySelectorAll("#lv-brevet button").forEach(b => b.onclick = () => { choixBrevet.lv = b.dataset.v; vueBrevet(); });
-    const sj = $("#lv-sujet"); if (sj) sj.onchange = () => { choixBrevet.lvSujet = sj.value; vueBrevet(); };
+    const sj = $("#lv-sujet"); if (sj) sj.onchange = () => { if ("speechSynthesis" in window) speechSynthesis.cancel(); choixBrevet.lvSujet = sj.value; vueBrevet(); };
+    zone().querySelectorAll("[data-lv-ecoute]").forEach(b => b.onclick = () => { const q = BANQUE_LANGUES.find(x => sujetLv(x) === choixBrevet.lvSujet);
+      if (q && !lireVoix(q.audio, b.dataset.voix, b.dataset.lvEcoute === "lent" ? .65 : .9)) b.closest(".bx-doc").querySelector("details").open = true; });
     zone().querySelectorAll("#lv-comp button").forEach(b => b.onclick = () => { const v = b.dataset.v, m = choixBrevet.lvComp;
       choixBrevet.lvComp = m.includes(v) ? m.filter(x => x !== v) : [...m, v]; vueBrevet(); });
     $("#lancer-langues").onclick = () => { const serie = construireSerieLangues(choixBrevet.lv), sujet = choixBrevet.lvSujet;
@@ -7102,8 +7133,8 @@ VUES.brevet = function vueBrevet(){
     ${ex === "dnb" ? blocDicteesDnb() + blocSujetsDnb() : ""}
     ${ex === "bia" ? `<div class="bloc">
       <span class="mono">Sujets du BIA</span>
-      ${sujets.length ? `<div class="sd-arbre">${sujets.map(([k, s]) => ligneCasier(k, esc(s.titre), "", [["Sujet", s.url, true, s.url.split("/").pop()]])).join("")}</div>` : `<div class="vide">Aucun sujet pour cette année.</div>`}
-      <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Questions reformulées d'après les sujets officiels du BIA, réponses selon leurs corrigés. Pendant la série, chaque question indique son sujet d'origine avec un lien pour l'ouvrir en entier.</p>
+      ${sujets.length ? `<div class="sd-arbre">${sujets.map(([k, s]) => ligneCasier(k, esc(s.titre), "", sujetBia(k).liste.map(d => [d.t, d.url || "#", false, d.nom]))).join("")}</div>` : `<div class="vide">Aucun sujet pour cette année.</div>`}
+      <p class="doux" style="font-size:.82rem;max-width:75ch;margin:0">Questions reformulées d'après les sujets officiels du BIA, réponses selon leurs corrigés. Pendant la série, chaque question indique son sujet d'origine avec un lien pour le lire dans Helper, avec son corrigé.</p>
     </div>` : ""}`;
   zone().querySelectorAll("#examen button").forEach(b => b.onclick = () => { choixBrevet.ex = b.dataset.v; choixBrevet.an = "tous"; vueBrevet(); });
   const anB = $("#an-brevet"); if (anB) anB.onchange = () => { choixBrevet.an = anB.value; vueBrevet(); };
@@ -7112,7 +7143,7 @@ VUES.brevet = function vueBrevet(){
     choixBrevet.mats[ex] = m.includes(v) ? m.filter(x => x !== v) : [...m, v]; vueBrevet();
   });
   const entr = $("#entr-brevet"); if (entr) entr.onchange = () => { choixBrevet.entrainement = entr.checked; vueBrevet(); };
-  if (ex === "dnb"){ brancherSujetsDnb(vueBrevet); brancherDicteesDnb(vueBrevet); } else { brancherCasiers(); zone().querySelectorAll("[data-lien]").forEach(b => b.onclick = () => window.open(b.dataset.lien, "_blank", "noopener")); }
+  if (ex === "dnb"){ brancherSujetsDnb(vueBrevet); brancherDicteesDnb(vueBrevet); } else { brancherCasiers(); zone().querySelectorAll("[data-doc-bia]").forEach(b => b.onclick = () => ouvrirSujetDnb(sujetBia(b.dataset.docBia), +b.dataset.quoi || 0)); zone().querySelectorAll("[data-lien]").forEach(b => b.onclick = () => window.open(b.dataset.lien, "_blank", "noopener")); }
   if ($("#raz-vues")) deuxClics($("#raz-vues"), () => { prog.vuesB = {}; sauver(); vueBrevet(); });
   zone().querySelectorAll("#lv-brevet button").forEach(b => b.onclick = () => { choixBrevet.lv = b.dataset.v; vueBrevet(); });
   if ($("#lancer-langues")) $("#lancer-langues").onclick = () => {
@@ -7133,6 +7164,14 @@ const sujetLv = q => q.ctxTitre || (q.genre === "ecoute" ? AUDIO_TITRE_DE.get(q.
 const sujetsLv = lv => [...new Set(BANQUE_LANGUES.filter(q => lvOk(q, lv)).map(sujetLv).filter(Boolean))].sort((x, y) => (x.startsWith("Audio") - y.startsWith("Audio")) || x.localeCompare(y));
 // questions de la banque retenues par les réglages (sujet précis, ou compétences cochées)
 const banqueLv = () => { const c = choixBrevet; return BANQUE_LANGUES.filter(q => lvOk(q, c.lv) && (c.lvSujet !== "tous" ? sujetLv(q) === c.lvSujet : c.lvComp.includes(compLv(q)))); };
+function docLv(sujet){
+  const q = BANQUE_LANGUES.find(x => sujetLv(x) === sujet); if (!q) return "";
+  const titre = esc(sujet.replace(/^(Text|Texto|Audio): /, ""));
+  if (q.genre === "ecoute") return `<div class="bx-doc"><div class="bx-doc-tete"><span class="mono">Document à écouter</span><b>${titre}</b></div>
+    <div class="rangee"><button type="button" class="mini-btn" data-lv-ecoute="normal" data-voix="${esc(q.voix || "en-GB")}">▶ Écouter</button><button type="button" class="mini-btn" data-lv-ecoute="lent" data-voix="${esc(q.voix || "en-GB")}">▶ Plus lentement</button></div>
+    <details class="ec-transcription"><summary>Lire le texte entendu</summary><p>${esc(q.audio)}</p></details></div>`;
+  return `<div class="bx-doc"><div class="bx-doc-tete"><span class="mono">Texte à lire</span><b>${titre}</b></div><p class="bx-doc-txt" lang="${q.lv === "es" ? "es" : "en"}">${esc(q.ctx)}</p></div>`;
+}
 function blocLangues(){
   const c = choixBrevet, lv = c.lv, rec = (prog.brevet || {}).langues, vues = (prog && prog.vuesB) || {};
   if (c.lvSujet !== "tous" && !sujetsLv(lv).includes(c.lvSujet)) c.lvSujet = "tous";
@@ -7157,9 +7196,10 @@ function blocLangues(){
         ${unSujet ? "" : `<span class="bx-lab">Compétences</span>
         <div class="bx-val"><div class="filtres" id="lv-comp">${COMP_LV.map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${c.lvComp.includes(v)}">${t} <span class="doux">${parComp(v)}</span></button>`).join("")}</div></div>`}
       </div>
+      ${unSujet ? docLv(c.lvSujet) : ""}
       <div class="bx-pied">
         <button class="btn bx-go" type="button" id="lancer-langues" ${nb ? "" : "disabled"}>▶ ${unSujet ? `Travailler ce sujet (${nb} question${nb > 1 ? "s" : ""})` : `Lancer une série de ${nb} questions`}</button>
-        <span class="bx-compte">${nb ? (unSujet ? "Le document s'affiche avec chaque question." : `${pool.length} rédigée${pool.length > 1 ? "s" : ""}${gen ? " · ∞ générées" : ""}`) : `<span class="statut erreur">Choisis au moins une compétence.</span>`}</span>
+        <span class="bx-compte">${nb ? (unSujet ? "Lis le document ci-dessus : il reste affiché avec chaque question." : `${pool.length} rédigée${pool.length > 1 ? "s" : ""}${gen ? " · ∞ générées" : ""}`) : `<span class="statut erreur">Choisis au moins une compétence.</span>`}</span>
       </div>
     </div>`;
 }
@@ -14945,7 +14985,7 @@ const FLECHE_CASIER = `<svg class="sd-fl" viewBox="0 0 10 10" aria-hidden="true"
 const ligneCasier = (id, nom, info, docs) => { const ouvert = casiersOuverts.has(id);
   return `<div class="sd-item${ouvert ? " ouvert" : ""}"><button type="button" class="sd-nom" data-casier="${esc(id)}" aria-expanded="${ouvert}">${FLECHE_CASIER}<span>${nom}</span>${info ? `<span class="doux sd-info">${esc(info)}</span>` : ""}</button>
     <div class="sd-casier"><div class="sd-casier-in">${docs.map(([t, url, ext, nomDoc], i) => {
-      const corr = /^Corrigé/.test(t), attrs = id.startsWith("dnb-") || !SUJETS_DNB.some(x => x.id === id) ? `data-lien="${esc(url)}"` : `data-doc-dnb="${esc(id)}" data-quoi="${i}"`;
+      const corr = /^Corrigé/.test(t), attrs = id.startsWith("bia-") ? `data-doc-bia="${esc(id)}" data-quoi="${i}"` : id.startsWith("dnb-") || !SUJETS_DNB.some(x => x.id === id) ? `data-lien="${esc(url)}"` : `data-doc-dnb="${esc(id)}" data-quoi="${i}"`;
       return `<button type="button" class="sd-doc ${corr ? "corr" : "suj"}" ${attrs}${ouvert ? "" : ' tabindex="-1"'}>${corr ? ICONE_CORRIGE : ICONE_SUJET}<b>${t.replace(/ \(.*\)$/, "")} :</b> <span>${esc(nomDoc || url.split("/").pop())}</span>${ext ? ` <span class="doux">· ${esc(domaineDnb(url))}</span>` : ""}</button>`; }).join("")}</div></div></div>`; };
 const ICONE_SUJET = `<svg class="sd-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.5h5.5L13 5v9.5H4z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M9.5 1.5V5H13M6 8h5M6 10.5h5M6 13h3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
 const ICONE_CORRIGE = `<svg class="sd-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.5h5.5L13 5v9.5H4z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M9.5 1.5V5H13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="m5.8 10 1.8 1.8 3.4-3.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -14977,23 +15017,66 @@ function brancherSujetsDnb(redessiner){
 // Page d'une épreuve : onglets Sujet / Corrigé, pages du PDF dessinées une par une
 let rendusDnb = 0;
 function ouvrirSujetDnb(s, n){
-  const tous = docsDe(s), d = tous[n] || tous[0]; if (!d) return;
+  const tous = s.liste || docsDe(s), d = tous[n] || tous[0]; if (!d) return;
   zone().innerHTML = `<button type="button" class="retour" id="retour">← Exercices Brevet</button>`
-    + entete("Sujet du DNB · " + esc(s.session) + " " + s.an, esc(nomMatDnb(s.mat)), `<span class="doux">${s.date ? dateLongueDnb(s.date) : ""}</span>`) + `
+    + entete(s.titrePage || "Sujet du DNB · " + esc(s.session) + " " + s.an, s.sousTitre || esc(nomMatDnb(s.mat)), `<span class="doux">${s.date ? dateLongueDnb(s.date) : ""}</span>`) + `
     <div class="bloc sd-page">
       <div class="rangee" style="justify-content:space-between;gap:10px">
         ${segment("sd-quoi", tous.map((x, i) => [String(i), esc(x.t)]), String(n))}
-        ${d.ext ? "" : `<a class="mini-btn" href="${esc(d.url)}" download="${esc(d.nom || "")}">Télécharger</a>`}
+        ${d.ext || d.helper ? "" : `<a class="mini-btn" href="${esc(d.url)}" download="${esc(d.nom || "")}">Télécharger</a>`}
       </div>
       <p class="doux" style="font-size:.8rem;margin:0">${esc(d.nom || "")}${d.src ? " · source : " + esc(domaineDnb(d.src)) : ""}</p>
-      <div class="sd-pages" id="sd-pages">${d.ext ? `<iframe class="sd-cadre" src="${esc(d.url)}" title="${esc(d.t)}" referrerpolicy="no-referrer"></iframe>
-        <p class="doux" style="font-size:.8rem;margin:0">Ce corrigé vient de ${esc(domaineDnb(d.url))}. S'il ne s'affiche pas, <a class="lien" href="${esc(d.url)}" target="_blank" rel="noopener">ouvre-le sur son site</a>.</p>` : `<p class="doux">Chargement…</p>`}</div>
+      <div class="sd-pages" id="sd-pages">${contenuDoc(d)}</div>
     </div>`;
   $("#retour").onclick = () => changerVue("brevet");
   zone().querySelectorAll("#sd-quoi button").forEach(b => b.onclick = () => { if (+b.dataset.v !== n) ouvrirSujetDnb(s, +b.dataset.v); });
   scrollTo(0, 0);
-  if (!d.ext) dessinerPdfDnb(d.url, $("#sd-pages"));
+  if (!d.ext && !d.helper) dessinerPdfDnb(d.url, $("#sd-pages"));
 }
+// contenu d'un document : corrigé écrit par Helper, document d'un autre site (lu dans Helper par la visionneuse), ou PDF hébergé (dessiné ensuite)
+const cadreDoc = u => /\.pdf($|\?)/i.test(u) ? "https://docs.google.com/gview?embedded=1&url=" + encodeURIComponent(u) : u;
+const contenuDoc = d => d.helper ? corrigeBiaHtml(d.an) : d.ext ? `<iframe class="sd-cadre" src="${esc(cadreDoc(d.url))}" title="${esc(d.t)}" referrerpolicy="no-referrer"></iframe>
+        <p class="doux" style="font-size:.8rem;margin:0">Ce document vient de ${esc(domaineDnb(d.url))}. S'il ne s'affiche pas, <a class="lien" href="${esc(d.url)}" target="_blank" rel="noopener">ouvre-le sur son site</a>.</p>` : `<p class="doux">Chargement…</p>`;
+// Sujet du BIA : le sujet (lu dans Helper) et son corrigé
+const nbCorrBia = an => BANQUE_BREVET.filter(q => q.ex === "bia" && q.an === an).length;
+const sujetBia = cle => { const v = SUJETS[cle], an = +cle.slice(4);
+  return {titrePage: "Sujet du BIA · " + an, sousTitre: "Brevet d'initiation aéronautique", an, liste: [
+    {t: "Sujet", url: v.url, ext: !/^donnees\//.test(v.url), nom: "BIA " + an + " · Sujet.pdf", src: v.url},
+    v.corrige ? {t: "Corrigé officiel", url: v.corrige, ext: !/^donnees\//.test(v.corrige), nom: "BIA " + an + " · Corrigé.pdf", src: v.corrige} : null,
+    {t: "Corrigé Helper", helper: "bia", an, nom: nbCorrBia(an) + " questions corrigées et expliquées"}].filter(Boolean)}; };
+function corrigeBiaHtml(an){
+  const qs = BANQUE_BREVET.filter(q => q.ex === "bia" && q.an === an); let k = 0;
+  return `<div class="cb"><p class="cb-intro">Corrigé rédigé par Helper : les <strong>${qs.length} questions</strong> de ce sujet reprises dans les séries, rangées par module, avec la bonne réponse et l'explication.</p>
+    ${MODULES_BIA.map(([m, nom]) => { const l = qs.filter(q => q.mat === m); if (!l.length) return "";
+      return `<section class="cb-mod"><h3>${esc(nom)}</h3>${l.map(q => `<div class="cb-q"><p class="cb-enonce"><span class="cb-n">${++k}</span>${esc(q.q || "")}</p>
+        ${q.choix ? `<ul class="cb-choix">${q.choix.map((c, i) => `<li class="${i === q.bonne ? "bon" : ""}">${i === q.bonne ? "✓" : "·"} ${esc(c)}</li>`).join("")}</ul>` : q.rep ? `<p class="cb-rep">Réponse : <b>${esc([].concat(q.rep)[0])}</b></p>` : ""}
+        ${q.exp ? `<p class="cb-exp">${esc(q.exp)}</p>` : ""}</div>`).join("")}</section>`; }).join("")}</div>`;
+}
+// Lire un sujet par-dessus la page (pendant une série, sans la quitter)
+function docsDeCle(cle){
+  if (cle.startsWith("bia-")) return sujetBia(cle);
+  const v = SUJETS[cle], s = v && v.dnb && SUJETS_DNB.find(x => x.id === v.dnb);
+  if (s) return {titrePage: `DNB ${s.an} ${s.session} · ${nomMatDnb(s.mat)}`, liste: docsDe(s)};
+  return v ? {titrePage: v.titre, liste: [{t: "Sujet", url: v.url, ext: !/^donnees\//.test(v.url), nom: v.titre}]} : null;
+}
+function ouvrirDocModal(cle, n = 0){
+  const info = docsDeCle(cle); if (!info) return;
+  const d = info.liste[n] || info.liste[0];
+  let voile = document.getElementById("sdm");
+  if (!voile){ voile = document.createElement("div"); voile.id = "sdm"; voile.className = "sdm"; document.body.appendChild(voile);
+    voile.onclick = e => { if (e.target === voile) fermerDocModal(); };
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && document.getElementById("sdm")?.classList.contains("ouvert")) fermerDocModal(); }); }
+  voile.innerHTML = `<div class="sdm-boite" role="dialog" aria-modal="true" aria-label="${esc(info.titrePage)}">
+    <div class="sdm-tete"><b>${esc(info.titrePage)}</b>${info.liste.length > 1 ? segment("sdm-quoi", info.liste.map((x, i) => [String(i), esc(x.t)]), String(n)) : ""}
+      ${d.ext || d.helper ? "" : `<a class="mini-btn" href="${esc(d.url)}" download="${esc(d.nom || "")}">Télécharger</a>`}<button type="button" class="sdm-x" id="sdm-x" aria-label="Fermer">✕</button></div>
+    <div class="sdm-corps"><div class="sd-pages" id="sdm-pages">${contenuDoc(d)}</div></div></div>`;
+  voile.classList.add("ouvert"); document.documentElement.classList.add("sdm-bloque");
+  $("#sdm-x").onclick = fermerDocModal;
+  voile.querySelectorAll("#sdm-quoi button").forEach(b => b.onclick = () => ouvrirDocModal(cle, +b.dataset.v));
+  if (!d.ext && !d.helper) dessinerPdfDnb(d.url, $("#sdm-pages"));
+}
+function fermerDocModal(){ const v = document.getElementById("sdm"); if (v){ v.classList.remove("ouvert"); v.innerHTML = ""; } document.documentElement.classList.remove("sdm-bloque"); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-sujet-doc]"); if (!b) return; e.preventDefault(); ouvrirDocModal(b.dataset.sujetDoc); });
 async function dessinerPdfDnb(url, boite){
   const moi = ++rendusDnb;
   try {
@@ -17777,7 +17860,7 @@ function lancerQuiz(questions, ctx){
     const q = questions[i], dnb = ctx.brevet === "dnb", illu = dnb ? illustrationDnb(q) : "";
     zone().innerHTML = entete(esc(ctx.sur), esc(ctx.titre)) + `
       ${q.ctx || ctx.contexte || q.sujet ? `<details class="contexte" open><summary>Document et énoncé</summary>${q.ctxTitre ? `<p class="ctx-titre">${esc(q.ctxTitre)}</p>` : ""}${q.ctx || ctx.contexte ? `<p class="${String(q.ctx || ctx.contexte).length > 380 ? "ctx-long" : ""}">${esc(q.ctx || ctx.contexte)}</p>` : ""}${q.ctxFig ? figureHtml(q.ctxFig) : ""}
-        ${q.sujet && SUJETS[q.sujet] ? `<p class="source-q">Source : ${esc(SUJETS[q.sujet].titre)}${q.src ? " · " + esc(q.src) : ""} — <a href="${esc(SUJETS[q.sujet].url)}" target="_blank" rel="noopener">Ouvrir le sujet complet ↗</a></p>` : ""}</details>` : ""}
+        ${q.sujet && SUJETS[q.sujet] ? `<p class="source-q">Source : ${esc(SUJETS[q.sujet].titre)}${q.src ? " · " + esc(q.src) : ""} — <a href="#" data-sujet-doc="${esc(q.sujet)}">Lire le sujet complet${q.sujet.startsWith("bia-") ? " et son corrigé" : ""}</a></p>` : ""}</details>` : ""}
       <div class="bloc">
         <div class="rangee" style="justify-content:space-between">${dnb ? `<span class="rangee" style="gap:10px">${bandeauDnbQ(q)}<span class="mono">${esc(String(q.matiere || "").split(" · ").slice(1).join(" · "))}</span></span>` : `<span class="mono">${q.matiere ? esc(q.matiere) : "Question"}${NIVEAUX[q.n] ? ` · <span class="niveau">${NIVEAUX[q.n]}</span>` : ""}</span>`}<span class="rangee" style="gap:10px">${avecBrouillon(q, ctx) ? `<button type="button" class="btn-brouillon" id="ouvrir-brouillon" title="Ouvrir une page de brouillon pour poser tes calculs">✎ Brouillon</button>` : ""}<button type="button" class="prevenir" id="prevenir" title="Signaler un bug, une erreur ou un glitch">⚑ Prévenir</button><span class="mono">${i + 1} / ${questions.length}</span></span></div>
         <div class="avance"><i style="width:${i / questions.length * 100}%"></i></div>
@@ -18044,7 +18127,7 @@ VUES["g-signal"] = function vueSignal(){
           <span style="overflow-wrap:anywhere">« ${esc(x.question)} »</span>`}
           ${x.capture ? `<button type="button" class="sig-cap" data-cap="${esc(x.id)}" title="Agrandir la capture"><span class="doux">Chargement de la capture…</span></button>` : ""}
           ${x.message ? `<span class="sig-msg">${esc(x.message)}</span>` : ""}
-          <span class="doux" style="font-size:.8rem">${esc(x.par || "?")} · ${dateFr(String(x.le || "").slice(0, 10))} ${String(x.le || "").slice(11, 16)}${x.sujet && SUJETS[x.sujet] ? ` · <a class="lien" href="${esc(SUJETS[x.sujet].url)}" target="_blank" rel="noopener">${esc(SUJETS[x.sujet].titre)} ↗</a>` : ""}</span>
+          <span class="doux" style="font-size:.8rem">${esc(x.par || "?")} · ${dateFr(String(x.le || "").slice(0, 10))} ${String(x.le || "").slice(11, 16)}${x.sujet && SUJETS[x.sujet] ? ` · <a class="lien" href="#" data-sujet-doc="${esc(x.sujet)}">${esc(SUJETS[x.sujet].titre)} ↗</a>` : ""}</span>
         </span>
         <span class="rangee">
           <button type="button" class="mini-btn" data-traite="${esc(x.id)}">${x.traite ? "Rouvrir" : "Traité ✓"}</button>
