@@ -2802,6 +2802,76 @@ html.sdm-bloque{overflow:hidden}
 .cb-ctx{margin:0 0 8px 34px;font-size:.86rem;color:var(--doux);font-style:italic}
 .cb-page{margin:0 0 8px 34px;font:inherit;font-size:.82rem;color:var(--accent);background:none;border:1px dashed color-mix(in srgb,var(--accent) 50%,var(--ligne));border-radius:8px;padding:4px 10px;cursor:pointer}
 .cb-n{min-width:34px}
+
+/* Lecteur vidéo Helper */
+.hv{position:relative;display:flex;flex-direction:column;align-items:stretch;width:100%;height:100%;min-height:0;background:#000;color:#fff;outline:none;user-select:none;-webkit-user-select:none;overflow:hidden}
+.hv-ecran{position:relative;flex:1;width:100%;min-height:200px;overflow:hidden;touch-action:manipulation}
+.hv video{position:absolute;left:50%;top:50%;object-fit:contain;background:#000;max-width:none;max-height:none}
+.hv-gros{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;border:0;background:color-mix(in srgb,var(--accent) 88%,transparent);color:#1a1405;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,.5);transition:opacity .2s,transform .2s}
+.hv-gros svg{width:36px;height:36px;margin-left:4px}
+.hv:not(.hv-arret) .hv-gros{opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.8)}
+.hv.charge .hv-ecran::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:var(--accent);animation:hvTourne .8s linear infinite}
+@keyframes hvTourne{to{transform:rotate(360deg)}}
+.hv-saut{position:absolute;top:0;bottom:0;width:34%;opacity:0;pointer-events:none;background:radial-gradient(circle at center,rgba(255,255,255,.18),transparent 70%)}
+.hv-saut.g{left:0}.hv-saut.d{right:0}.hv-saut.vu{animation:hvSaut .5s}
+@keyframes hvSaut{30%{opacity:1}}
+.hv-info{position:absolute;left:50%;top:14px;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.65);font-size:.85rem;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.hv-info.vu{opacity:1}
+.hv-erreur{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;background:#000;font-size:.9rem;line-height:1.6}
+.hv-barre{position:absolute;left:0;right:0;bottom:0;padding:24px 10px 8px;background:linear-gradient(transparent,rgba(0,0,0,.82));transition:opacity .25s,transform .25s;z-index:2}
+.hv.cache .hv-barre{opacity:0;transform:translateY(8px);pointer-events:none}.hv.cache{cursor:none}
+.hv-ligne{display:flex;align-items:center;gap:10px}
+.hv-t{font-size:.78rem;font-variant-numeric:tabular-nums;min-width:38px;text-align:center;opacity:.9}
+.hv-temps{flex:1;-webkit-appearance:none;appearance:none;height:22px;background:transparent;cursor:pointer;touch-action:none;margin:0}
+.hv-temps::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:linear-gradient(90deg,var(--accent) var(--p,0%),rgba(255,255,255,.45) var(--p,0%),rgba(255,255,255,.45) var(--b,0%),rgba(255,255,255,.2) var(--b,0%))}
+.hv-temps::-moz-range-track{height:5px;border-radius:3px;background:linear-gradient(90deg,var(--accent) var(--p,0%),rgba(255,255,255,.45) var(--p,0%),rgba(255,255,255,.45) var(--b,0%),rgba(255,255,255,.2) var(--b,0%))}
+.hv-temps::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;margin-top:-5.5px;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 45%,transparent)}
+.hv-temps::-moz-range-thumb{width:16px;height:16px;border:0;border-radius:50%;background:#fff}
+.hv-ctrl{display:flex;align-items:center;gap:2px;margin-top:2px}
+.hv-ctrl button{display:inline-flex;align-items:center;gap:3px;height:40px;min-width:40px;padding:0 8px;border:0;border-radius:10px;background:none;color:#fff;cursor:pointer;font:inherit;font-size:.75rem}
+.hv-ctrl button:hover{background:rgba(255,255,255,.12)}
+.hv-ctrl svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.hv-esp{flex:1}
+.hv-vol{width:80px;accent-color:var(--accent)}
+.hv-vit{height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.4);color:#fff;font:inherit;font-size:.8rem;padding:0 6px}
+.hv-rot-val{font-weight:600;font-size:.72rem}
+.hv-dl{position:absolute;right:10px;bottom:96px;z-index:3;width:min(360px,calc(100% - 20px));max-height:calc(100% - 110px);overflow:auto;display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:14px;background:var(--surface);color:var(--texte);border:1px solid var(--ligne);box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.hv-dl-tete{display:flex;align-items:center;justify-content:space-between}
+.hv-dl-lab{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--doux)}
+.hv-qual{gap:6px}.hv-qual button:disabled{opacity:.35;cursor:not-allowed}
+.hv-coche{display:flex;align-items:center;gap:8px;font-size:.88rem}.hv-coche input{accent-color:var(--accent);width:18px;height:18px}
+.hv-dl-note{font-size:.78rem;margin:0}
+.hv-dl .btn{display:inline-flex;align-items:center;gap:8px}.hv-dl .btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.hv-prog{display:flex;align-items:center;gap:10px}.hv-prog-barre{flex:1;height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}.hv-prog-barre i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.hv-prog-txt{font-size:.8rem;font-variant-numeric:tabular-nums;min-width:52px}
+.hv.plein{width:100vw;height:100vh}
+.lp-video{display:flex;padding:0;overflow:hidden;flex:none;height:min(72vh,680px)}
+.lecteur-pj:has(.lp-video){width:min(1200px,100%)}
+@media (max-width:700px){
+  .hv-vol{display:none}.hv-ctrl button{min-width:36px;padding:0 6px}.hv-ctrl{gap:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .hv-dl{left:10px;right:10px;width:auto;bottom:90px}
+  .lp-video{flex:1;height:auto;min-height:0}
+}
+/* Conversations : vignette vidéo */
+.pc-vid{position:relative;padding:0;border:0;background:none;cursor:pointer;display:block;width:min(320px,100%)}
+.pc-vid .pc-video{width:100%;pointer-events:none}
+.pc-vid-lire{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center}
+.pc-vid-lire svg{width:26px;height:26px;margin-left:3px}
+button.pc-fichier{font:inherit;background:none;border:1px solid color-mix(in srgb,var(--prof) 40%,var(--ligne));border-radius:10px;padding:8px 12px;cursor:pointer;text-align:left}
+/* Lecture des pièces jointes sur téléphone */
+html.fond-bloque{overflow:hidden}
+.voile:has(.lecteur-pj),.sdm{overscroll-behavior:contain}
+.lp-corps,.sdm-corps{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.lp-pdf.zoome{align-items:flex-start}
+.lp-pdf .sd-feuille{width:calc(100% * var(--z,1));max-width:none}
+.lp-pdf:not(.zoome) .sd-feuille{max-width:1000px}
+.lp-zoom{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;font-variant-numeric:tabular-nums}.lp-zoom span{min-width:44px;text-align:center}
+@media (max-width:700px){
+  .voile:has(.lecteur-pj) .lecteur-pj{height:100%;max-height:100%;width:100%}
+  .lp-tete{gap:6px}.lp-nom{font-size:.92rem;flex-basis:100%;order:2}.lp-ic{order:1}.lp-boutons{order:1;margin-left:auto}
+  .lp-pdf{padding:6px}
+  .lp-docx-cadre{padding:4px}
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -6942,7 +7012,7 @@ function marquerNav(v){ document.querySelectorAll("#nav button").forEach(b => b.
 const VUES = {};
 // ambiance violette de la dictée : formes du fond, menu de côté et couleur d'accent
 // ----- Application Android (téléchargée sur Entarsh Catalogue) -----
-const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-2.0.apk";   // le nom du fichier change à chaque version : le téléphone ne peut pas réinstaller une ancienne copie
+const URL_APK = "https://entarsh-studio.github.io/fichiers/helper-android/Helper-Entarsh-2.1.apk";   // le nom du fichier change à chaque version : le téléphone ne peut pas réinstaller une ancienne copie
 const enModeApp = () => { try { if (new URLSearchParams(location.search).get("app")) sessionStorage.setItem("helper.app", "1"); } catch {}
   let s = false; try { s = sessionStorage.getItem("helper.app") === "1"; } catch {}
   return s || matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; };
@@ -6952,7 +7022,7 @@ const APPLI_NATIVE = (() => { const v = (/HelperApp\/([\d.]+)/.exec(navigator.us
   // l'appli 1.6 annonçait « 1.4 » par erreur : on reconnaît sa version à ce qu'elle sait faire
   try { if (window.HelperApp && typeof window.HelperApp.configNotifs === "function" && parseFloat(v || 0) < 1.6) return "1.6"; } catch {}
   return v; })();
-const DERNIERE_APPLI = "2.0";
+const DERNIERE_APPLI = "2.1";
 const VIEILLE_APPLI = enModeApp() && /android/i.test(navigator.userAgent) && (!APPLI_NATIVE || parseFloat(APPLI_NATIVE) < parseFloat(DERNIERE_APPLI));   // appli Android à mettre à jour
 { const b = document.getElementById("btn-installer"); if (b){ b.hidden = (enModeApp() && !VIEILLE_APPLI) || !/android/i.test(navigator.userAgent);
   if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : heure des notifications" : "Nouvelle version : couleurs corrigées";
@@ -6994,7 +7064,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.23";
+const VERSION_SITE = "2.24";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -8707,14 +8777,208 @@ const GENRES_LECTURE = [[/^(mp4|webm|mov|m4v|ogv)$/, "video"], [/^(mp3|wav|ogg|o
   [/^pdf$/, "pdf"], [/^docx$/, "docx"], [/^(txt|md|csv|tsv|json|xml|log|py|js|html?|css|c|cpp|h|java|lua|srt|vtt|ini|yml|yaml)$/, "texte"]];
 const genreLecture = nom => { const e = String(nom || "").toLowerCase().split(".").pop(); return (GENRES_LECTURE.find(([r]) => r.test(e)) || [, ""])[1]; };
 const iconeLecture = nom => ({video: "🎬", son: "🎵", image: "🖼️", pdf: "📕", docx: "📘", texte: "📄"})[genreLecture(nom)] || "📎";
+
+/* ===================== LECTEUR VIDÉO HELPER =====================
+   Commandes Helper (lecture, avance, vitesse, son, rotation, image dans l'image, plein écran)
+   et téléchargement : fichier d'origine ou converti dans le téléphone (qualité choisie, rotation appliquée). */
+const HV_ICO = {
+  lire: `<svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z" fill="currentColor" stroke="none"/></svg>`,
+  pause: `<svg viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor" stroke="none"/></svg>`,
+  moins: `<svg viewBox="0 0 24 24"><path d="M11 7 6 12l5 5M18 7l-5 5 5 5"/></svg>`,
+  plus: `<svg viewBox="0 0 24 24"><path d="m13 7 5 5-5 5M6 7l5 5-5 5"/></svg>`,
+  son: `<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>`,
+  muet: `<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="m17 9 5 6M22 9l-5 6"/></svg>`,
+  rot: `<svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>`,
+  pip: `<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="12" y="11" width="7" height="6" rx="1" fill="currentColor"/></svg>`,
+  plein: `<svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>`,
+  sortir: `<svg viewBox="0 0 24 24"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>`,
+  dl: `<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>`
+};
+const hvTemps = t => { t = Math.max(0, Math.floor(t || 0)); const h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60, s = String(t % 60).padStart(2, "0"); return h ? `${h}:${String(m).padStart(2, "0")}:${s}` : `${m}:${s}`; };
+const HV_QUALITES = [[0, "Originale"], [1080, "1080p"], [720, "720p"], [480, "480p"], [360, "360p"]];
+const lecteurVideoHtml = (url, nom) => `<div class="hv" tabindex="0" data-nom="${esc(nom || "video")}">
+  <div class="hv-ecran"><video src="${esc(url)}" playsinline webkit-playsinline preload="metadata"></video>
+    <button type="button" class="hv-gros" aria-label="Lire">${HV_ICO.lire}</button><span class="hv-saut g"></span><span class="hv-saut d"></span><span class="hv-info" aria-live="polite"></span></div>
+  <div class="hv-barre">
+    <div class="hv-ligne"><span class="hv-t" data-hv="t">0:00</span><input type="range" class="hv-temps" min="0" max="1000" step="1" value="0" aria-label="Position dans la vidéo"><span class="hv-t" data-hv="d">0:00</span></div>
+    <div class="hv-ctrl">
+      <button type="button" data-hv="lire" title="Lecture / pause (espace)">${HV_ICO.lire}</button>
+      <button type="button" data-hv="moins" title="Reculer de 10 s">${HV_ICO.moins}</button>
+      <button type="button" data-hv="plus" title="Avancer de 10 s">${HV_ICO.plus}</button>
+      <button type="button" data-hv="son" title="Couper le son">${HV_ICO.son}</button>
+      <input type="range" class="hv-vol" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+      <span class="hv-esp"></span>
+      <select class="hv-vit" title="Vitesse" aria-label="Vitesse">${[0.5, 0.75, 1, 1.25, 1.5, 2].map(v => `<option value="${v}"${v === 1 ? " selected" : ""}>${String(v).replace(".", ",")}×</option>`).join("")}</select>
+      <button type="button" data-hv="rot" title="Tourner la vidéo de 90°">${HV_ICO.rot}<b class="hv-rot-val">0°</b></button>
+      ${document.pictureInPictureEnabled ? `<button type="button" data-hv="pip" title="Image dans l'image">${HV_ICO.pip}</button>` : ""}
+      <button type="button" data-hv="plein" title="Plein écran">${HV_ICO.plein}</button>
+      <button type="button" data-hv="dl" title="Télécharger">${HV_ICO.dl}</button>
+    </div>
+  </div>
+  <div class="hv-dl" hidden>
+    <div class="hv-dl-tete"><b>Télécharger la vidéo</b><button type="button" class="mini-btn" data-hv="dl-fermer">✕</button></div>
+    <span class="hv-dl-lab">Qualité</span>
+    <div class="filtres hv-qual">${HV_QUALITES.map(([q, t], i) => `<button type="button" data-q="${q}" aria-pressed="${i === 0}">${t}</button>`).join("")}</div>
+    <label class="hv-coche"><input type="checkbox" class="hv-garder-rot"> Enregistrer avec la rotation choisie (<span class="hv-rot-txt">0°</span>)</label>
+    <p class="doux hv-dl-note">« Originale » télécharge le fichier tel quel, tout de suite. Une autre qualité ou une rotation est préparée dans ton appareil : cela prend la durée de la vidéo, garde Helper ouvert.</p>
+    <div class="hv-prog" hidden><span class="hv-prog-barre"><i></i></span><span class="hv-prog-txt">0 %</span><button type="button" class="mini-btn" data-hv="dl-stop">Arrêter</button></div>
+    <div class="rangee"><button type="button" class="btn" data-hv="dl-go">${HV_ICO.dl} Télécharger</button></div>
+  </div>
+</div>`;
+function monterLecteurVideo(racine, {url, nom, telecharger}){
+  const hv = racine.querySelector(".hv"), v = hv.querySelector("video"), ecran = hv.querySelector(".hv-ecran"), $h = k => hv.querySelector(`[data-hv="${k}"]`);
+  const temps = hv.querySelector(".hv-temps"), vol = hv.querySelector(".hv-vol"), info = hv.querySelector(".hv-info");
+  let rot = 0, cache = 0, deplace = false, qualite = 0, conv = null;
+  const montrer = () => { hv.classList.remove("cache"); clearTimeout(cache); if (!v.paused) cache = setTimeout(() => { if (!hv.querySelector(".hv-dl:not([hidden])") && !deplace) hv.classList.add("cache"); }, 2600); };
+  const msg = t => { info.textContent = t; info.classList.add("vu"); clearTimeout(msg.t); msg.t = setTimeout(() => info.classList.remove("vu"), 900); };
+  const majLecture = () => { const p = v.paused; $h("lire").innerHTML = p ? HV_ICO.lire : HV_ICO.pause; hv.classList.toggle("hv-arret", p); montrer(); };
+  const majTemps = () => { if (deplace) return; const d = v.duration || 0; temps.value = d ? Math.round(v.currentTime / d * 1000) : 0;
+    $h("t").textContent = hvTemps(v.currentTime); temps.style.setProperty("--p", (d ? v.currentTime / d * 100 : 0) + "%");
+    const b = v.buffered; if (b.length && d) temps.style.setProperty("--b", (b.end(b.length - 1) / d * 100) + "%"); };
+  // rotation : la vidéo tournée remplit l'écran sans être coupée
+  const ajuster = () => { const W = ecran.clientWidth, H = ecran.clientHeight, cote = rot % 180 !== 0;
+    v.style.width = (cote ? H : W) + "px"; v.style.height = (cote ? W : H) + "px"; v.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
+    hv.querySelectorAll(".hv-rot-val, .hv-rot-txt").forEach(e => e.textContent = rot + "°"); };
+  const lireOuPause = () => { if (v.paused) v.play().catch(() => {}); else v.pause(); };
+  const saut = (n, cote) => { v.currentTime = Math.max(0, Math.min((v.duration || 0), v.currentTime + n)); msg((n > 0 ? "+" : "−") + Math.abs(n) + " s");
+    const el = hv.querySelector(".hv-saut." + (cote || (n > 0 ? "d" : "g"))); el.classList.remove("vu"); void el.offsetWidth; el.classList.add("vu"); };
+  v.addEventListener("loadedmetadata", () => { $h("d").textContent = hvTemps(v.duration); ajuster(); majTemps();
+    const court = Math.min(v.videoWidth, v.videoHeight) || 0;   // qualités plus hautes que l'original : inutiles
+    hv.querySelectorAll(".hv-qual [data-q]").forEach(b => { const q = +b.dataset.q; b.disabled = q > 0 && court > 0 && q >= court; }); });
+  ["play", "pause", "ended"].forEach(e => v.addEventListener(e, majLecture));
+  v.addEventListener("timeupdate", majTemps); v.addEventListener("progress", majTemps);
+  v.addEventListener("waiting", () => hv.classList.add("charge")); ["playing", "canplay", "seeked"].forEach(e => v.addEventListener(e, () => hv.classList.remove("charge")));
+  v.addEventListener("error", () => { ecran.insertAdjacentHTML("beforeend", `<div class="hv-erreur">Cette vidéo ne peut pas être lue ici.<br><a class="lien" href="${esc(url)}" target="_blank" rel="noopener">Ouvrir le fichier ↗</a></div>`); });
+  temps.addEventListener("input", () => { deplace = true; const d = v.duration || 0; $h("t").textContent = hvTemps(temps.value / 1000 * d); temps.style.setProperty("--p", temps.value / 10 + "%"); });
+  temps.addEventListener("change", () => { const d = v.duration || 0; if (d) v.currentTime = temps.value / 1000 * d; deplace = false; montrer(); });
+  vol.addEventListener("input", () => { v.volume = +vol.value; v.muted = v.volume === 0; });
+  v.addEventListener("volumechange", () => { $h("son").innerHTML = v.muted || v.volume === 0 ? HV_ICO.muet : HV_ICO.son; if (!v.muted) vol.value = v.volume; });
+  $h("lire").onclick = lireOuPause; hv.querySelector(".hv-gros").onclick = lireOuPause;
+  $h("moins").onclick = () => saut(-10); $h("plus").onclick = () => saut(10);
+  $h("son").onclick = () => { v.muted = !v.muted; if (!v.muted && v.volume === 0) v.volume = vol.value = 1; };
+  hv.querySelector(".hv-vit").onchange = e => { v.playbackRate = +e.target.value; msg(e.target.selectedOptions[0].textContent); };
+  $h("rot").onclick = () => { rot = (rot + 90) % 360; ajuster(); msg(rot + "°"); };
+  if ($h("pip")) $h("pip").onclick = () => (document.pictureInPictureElement ? document.exitPictureInPicture() : v.requestPictureInPicture()).catch(() => {});
+  // plein écran : tout le lecteur (les commandes Helper restent) ; sur iPhone, le plein écran de la vidéo elle-même
+  const pleinEcran = () => document.fullscreenElement || document.webkitFullscreenElement;
+  $h("plein").onclick = async () => {
+    if (pleinEcran()) return (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    const f = hv.requestFullscreen || hv.webkitRequestFullscreen;
+    if (f) { try { await f.call(hv); const large = (v.videoWidth > v.videoHeight) !== (rot % 180 !== 0); if (screen.orientation && screen.orientation.lock) screen.orientation.lock(large ? "landscape" : "portrait").catch(() => {}); } catch {} }
+    else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+  };
+  const finPlein = () => { const p = pleinEcran() === hv; hv.classList.toggle("plein", p); $h("plein").innerHTML = p ? HV_ICO.sortir : HV_ICO.plein;
+    if (!p && screen.orientation && screen.orientation.unlock) try { screen.orientation.unlock(); } catch {} setTimeout(ajuster, 60); };
+  document.addEventListener("fullscreenchange", finPlein); document.addEventListener("webkitfullscreenchange", finPlein);
+  if (window.ResizeObserver) new ResizeObserver(ajuster).observe(ecran); else addEventListener("resize", ajuster);
+  // toucher l'écran : afficher les commandes ; double toucher à gauche / à droite : −10 s / +10 s ; à la souris : clic = pause
+  let dernier = 0, attente = 0;
+  ecran.addEventListener("click", ev => { if (ev.target.closest(".hv-gros, .hv-erreur")) return;
+    const maintenant = Date.now(), x = ev.clientX - ecran.getBoundingClientRect().left, tiers = ecran.clientWidth / 3;
+    if (maintenant - dernier < 300){ clearTimeout(attente); dernier = 0; if (x < tiers) saut(-10, "g"); else if (x > 2 * tiers) saut(10, "d"); else $h("plein").click(); return; }
+    dernier = maintenant;
+    attente = setTimeout(() => { if (matchMedia("(hover: hover)").matches || !hv.classList.contains("cache")) { if (matchMedia("(hover: hover)").matches) lireOuPause(); else { hv.classList.add("cache"); return; } } montrer(); }, 260);
+  });
+  hv.addEventListener("pointermove", ev => { if (ev.pointerType === "mouse") montrer(); });
+  hv.addEventListener("keydown", ev => { if (ev.target.closest("input, select")) return;
+    if (ev.key === " " || ev.key === "k") { ev.preventDefault(); lireOuPause(); } else if (ev.key === "ArrowRight") saut(5); else if (ev.key === "ArrowLeft") saut(-5);
+    else if (ev.key === "f") $h("plein").click(); else if (ev.key === "m") $h("son").click(); else if (ev.key === "r") $h("rot").click(); });
+  // téléchargement
+  const panneau = hv.querySelector(".hv-dl"), prog = hv.querySelector(".hv-prog"), go = $h("dl-go");
+  $h("dl").onclick = () => { panneau.hidden = !panneau.hidden; montrer(); };
+  $h("dl-fermer").onclick = () => { panneau.hidden = true; };
+  hv.querySelectorAll(".hv-qual [data-q]").forEach(b => b.onclick = () => { qualite = +b.dataset.q; hv.querySelectorAll(".hv-qual [data-q]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  const base = String(nom || "video").replace(/\.[^.]+$/, "");
+  go.onclick = async () => {
+    const tourner = hv.querySelector(".hv-garder-rot").checked && rot !== 0;
+    if (!qualite && !tourner){
+      if (telecharger) return telecharger();
+      try { const b = await fetch(url).then(r => { if (!r.ok) throw 0; return r.blob(); }); return enregistrerBlob(b, nom || "video.mp4"); }
+      catch { const a = document.createElement("a"); a.href = url; a.download = nom || "video"; a.target = "_blank"; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove(); return; }
+    }
+    if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){ msg("Conversion impossible sur cet appareil"); return; }
+    go.disabled = true; prog.hidden = false; const barre = prog.querySelector("i"), txt = prog.querySelector(".hv-prog-txt");
+    conv = convertirVideo(url, {hauteur: qualite, rotation: tourner ? rot : 0, progres: x => { barre.style.width = Math.round(x * 100) + "%"; txt.textContent = Math.round(x * 100) + " %"; }});
+    try { const {blob, ext} = await conv.promesse; if (blob) await enregistrerBlob(blob, `${base}${qualite ? "-" + qualite + "p" : ""}${tourner ? "-" + rot + "deg" : ""}.${ext}`); txt.textContent = blob ? "Terminé" : "Arrêté"; }
+    catch (e) { txt.textContent = "Échec de la conversion"; console.warn(e); }
+    go.disabled = false; conv = null;
+  };
+  $h("dl-stop").onclick = () => { if (conv) conv.arreter(); };
+  majLecture(); ajuster();
+  return {fermer: () => { try { v.pause(); } catch {} if (conv) conv.arreter(); document.removeEventListener("fullscreenchange", finPlein); document.removeEventListener("webkitfullscreenchange", finPlein); }};
+}
+// Conversion dans l'appareil : la vidéo est rejouée dans une toile à la taille voulue (et tournée), puis enregistrée
+function convertirVideo(url, {hauteur = 0, rotation = 0, progres = () => {}}){
+  let stop = false, rec = null, v = null, ac = null;
+  const promesse = new Promise(async (ok, ko) => {
+    try {
+      v = document.createElement("video"); v.crossOrigin = "anonymous"; v.playsInline = true; v.preload = "auto"; v.src = url;
+      await new Promise((a, b) => { v.onloadedmetadata = a; v.onerror = () => b(new Error("lecture")); });
+      const sw = v.videoWidth, sh = v.videoHeight, k = hauteur ? Math.min(1, hauteur / Math.min(sw, sh)) : 1;
+      const w = Math.max(2, Math.round(sw * k / 2) * 2), h = Math.max(2, Math.round(sh * k / 2) * 2), cote = rotation % 180 !== 0;
+      const cv = document.createElement("canvas"); cv.width = cote ? h : w; cv.height = cote ? w : h;
+      const ctx = cv.getContext("2d"), flux = cv.captureStream(30);
+      try { ac = new (window.AudioContext || window.webkitAudioContext)(); const src = ac.createMediaElementSource(v), dest = ac.createMediaStreamDestination(); src.connect(dest); dest.stream.getAudioTracks().forEach(t => flux.addTrack(t)); }
+      catch { v.muted = true; }
+      const types = ["video/mp4;codecs=avc1.42E01E,mp4a.40.2", "video/mp4", "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"];
+      const type = types.find(t => MediaRecorder.isTypeSupported(t)) || "";
+      const debit = {360: 900e3, 480: 1500e3, 720: 3e6, 1080: 6e6}[hauteur] || Math.min(10e6, w * h * 30 * 0.12);
+      rec = new MediaRecorder(flux, {mimeType: type || undefined, videoBitsPerSecond: debit, audioBitsPerSecond: 128e3});
+      const morceaux = []; rec.ondataavailable = e => { if (e.data && e.data.size) morceaux.push(e.data); };
+      rec.onstop = () => { try { ac && ac.close(); } catch {} v.ontimeupdate = v.onended = null; v.pause(); v.removeAttribute("src"); v.load();
+        ok(stop ? {blob: null} : {blob: new Blob(morceaux, {type: (type || "video/webm").split(";")[0]}), ext: /mp4/.test(type) ? "mp4" : "webm"}); };
+      const dessiner = () => { ctx.save(); ctx.translate(cv.width / 2, cv.height / 2); ctx.rotate(rotation * Math.PI / 180); ctx.drawImage(v, -w / 2, -h / 2, w, h); ctx.restore(); };
+      const boucle = () => { if (v.ended || stop) return; dessiner(); if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(boucle); else requestAnimationFrame(boucle); };
+      v.ontimeupdate = () => progres(v.duration ? v.currentTime / v.duration : 0);
+      v.onended = () => { progres(1); if (rec.state !== "inactive") rec.stop(); };
+      rec.start(1000); await v.play(); boucle();
+    } catch (e) { ko(e); }
+  });
+  return {promesse, arreter: () => { stop = true; try { if (rec && rec.state !== "inactive") rec.stop(); else if (v) v.pause(); } catch {} }};
+}
+// Enregistrer un fichier : dans l'appli Android, par l'appli (dossier Téléchargements) ; sinon, téléchargement du navigateur
+async function enregistrerBlob(blob, nom){
+  const A = window.HelperApp;
+  if (A && typeof A.fichierDebut === "function"){
+    const id = A.fichierDebut(nom, blob.type || "application/octet-stream"), T = 512 * 1024;
+    for (let i = 0; i < blob.size; i += T){
+      const b64 = await new Promise(r => { const f = new FileReader(); f.onload = () => r(String(f.result).split(",")[1] || ""); f.readAsDataURL(blob.slice(i, i + T)); });
+      A.fichierMorceau(id, b64);
+    }
+    const ok = A.fichierFin(id); statut(ok ? "Fichier enregistré dans Téléchargements." : "L'enregistrement a échoué.", !!ok); return;
+  }
+  const u = URL.createObjectURL(blob), a = document.createElement("a");
+  a.href = u; a.download = nom; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000);
+}
+/* ----- Fenêtres de lecture : le fond ne bouge plus sous le doigt ----- */
+let fondY = null;
+function bloquerFond(){ if (fondY !== null) return; fondY = scrollY; const b = document.body.style;
+  Object.assign(b, {position: "fixed", top: -fondY + "px", left: "0", right: "0", width: "100%"}); document.documentElement.classList.add("fond-bloque"); }
+function libererFond(){ if (fondY === null) return; const b = document.body.style, y = fondY; fondY = null;
+  Object.assign(b, {position: "", top: "", left: "", right: "", width: ""}); document.documentElement.classList.remove("fond-bloque"); scrollTo(0, y); }
+const fenetreLectureOuverte = () => !!document.querySelector("#voile .lecteur-pj, #voile .fen-lecture, .sdm.ouvert");
+new MutationObserver(() => { fenetreLectureOuverte() ? bloquerFond() : libererFond(); }).observe(document.body, {childList: true, subtree: true, attributes: true, attributeFilter: ["class"]});
+// glisser sur le fond sombre (en dehors d'une zone qui défile) : rien ne bouge
+document.addEventListener("touchmove", ev => {
+  if (fondY === null) return;
+  let el = ev.target;
+  for (; el && el !== document.body; el = el.parentElement){
+    if (el.classList && (el.classList.contains("voile") || el.classList.contains("sdm"))) break;
+    if (el.matches && el.matches("input[type=range]")) return;
+    const st = getComputedStyle(el);
+    if ((/(auto|scroll)/.test(st.overflowY) && el.scrollHeight > el.clientHeight + 1) || (/(auto|scroll)/.test(st.overflowX) && el.scrollWidth > el.clientWidth + 1)) return;
+  }
+  if (ev.touches.length < 2) ev.preventDefault();
+}, {passive: false});
+
 function lireFichier({url, nom, telecharger}){
   fermerFenetre();
   const g = genreLecture(nom);
   const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
   el.innerHTML = `<div class="fenetre lecteur-pj" role="dialog" aria-modal="true" aria-label="${esc(nom)}">
     <div class="lp-tete"><span class="lp-ic" aria-hidden="true">${iconeLecture(nom)}</span><b class="lp-nom">${esc(nom)}</b>
-      <span class="rangee lp-boutons">${telecharger ? `<button class="mini-btn" type="button" id="lp-dl">Télécharger</button>` : `<a class="mini-btn" href="${esc(url)}" target="_blank" rel="noopener" download="${esc(nom)}">Télécharger</a>`}<button class="mini-btn" type="button" id="lp-fermer" aria-label="Fermer">✕ Fermer</button></span></div>
-    <div class="lp-corps lp-${g || "autre"}" id="lp-corps">${g === "video" ? `<video src="${esc(url)}" controls playsinline preload="metadata"></video>`
+      <span class="rangee lp-boutons">${g === "pdf" ? `<span class="lp-zoom"><button class="mini-btn" type="button" data-lp-zoom="-0.5" aria-label="Dézoomer">−</button><span id="lp-zoom-val">100 %</span><button class="mini-btn" type="button" data-lp-zoom="0.5" aria-label="Zoomer">+</button></span>` : ""}${g === "video" ? "" : telecharger ? `<button class="mini-btn" type="button" id="lp-dl">Télécharger</button>` : `<button class="mini-btn" type="button" id="lp-dl-direct">Télécharger</button>`}<button class="mini-btn" type="button" id="lp-fermer" aria-label="Fermer">✕ Fermer</button></span></div>
+    <div class="lp-corps lp-${g || "autre"}" id="lp-corps">${g === "video" ? lecteurVideoHtml(url, nom)
       : g === "son" ? `<div class="lp-son"><span aria-hidden="true">🎵</span><audio src="${esc(url)}" controls preload="metadata"></audio></div>`
       : g === "image" ? `<img src="${esc(url)}" alt="${esc(nom)}">`
       : g ? `<p class="doux lp-attente">Ouverture du fichier…</p>`
@@ -8722,10 +8986,12 @@ function lireFichier({url, nom, telecharger}){
   document.body.appendChild(el);
   const corps = el.querySelector("#lp-corps"), vivant = () => corps.isConnected;
   el.querySelector("#lp-fermer").onclick = fermerFenetre;
-  if (telecharger) el.querySelector("#lp-dl").onclick = telecharger;
+  if (telecharger && el.querySelector("#lp-dl")) el.querySelector("#lp-dl").onclick = telecharger;
+  if (el.querySelector("#lp-dl-direct")) el.querySelector("#lp-dl-direct").onclick = async () => {
+    try { enregistrerBlob(await fetch(url).then(r => { if (!r.ok) throw 0; return r.blob(); }), nom); } catch { window.open(url, "_blank", "noopener"); } };
   el.addEventListener("mousedown", ev => { if (ev.target === el) fermerFenetre(); });
   const raté = () => { if (vivant()) corps.innerHTML = `<div class="vide">Impossible d'afficher ce fichier ici. <a class="lien" href="${esc(url)}" target="_blank" rel="noopener">Ouvre-le dans un nouvel onglet ↗</a></div>`; };
-  if (g === "pdf") dessinerPdfDnb(url, corps);
+  if (g === "pdf") dessinerPdfDnb(url, corps, 0, 2);
   else if (g === "texte") fetch(url).then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(b => {
       if (!vivant()) return; let t = new TextDecoder("utf-8").decode(b); if (t.includes("\uFFFD")) t = new TextDecoder("windows-1252").decode(b);
       corps.innerHTML = `<pre class="lp-texte">${esc(t.slice(0, 400000))}${t.length > 400000 ? "\n\n[…] (fichier trop long : la fin n'est pas affichée)" : ""}</pre>`;
@@ -8742,7 +9008,12 @@ function lireFichier({url, nom, telecharger}){
         ajuster(); addEventListener("resize", ajuster);
       } catch { raté(); }
     })();
-  const v = corps.querySelector("video, audio"); if (v) v.onerror = raté;
+  if (g === "video"){ const lv = monterLecteurVideo(corps, {url, nom, telecharger}); el._fermer = lv.fermer; setTimeout(() => corps.querySelector(".hv").focus({preventScroll: true}), 50); }
+  const a = corps.querySelector("audio"); if (a) a.onerror = raté;
+  if (g === "pdf"){   // zoom du PDF (utile sur téléphone)
+    let z = 1; const zt = el.querySelector("#lp-zoom-val");
+    el.querySelectorAll("[data-lp-zoom]").forEach(b => b.onclick = () => { z = Math.max(1, Math.min(3, z + (+b.dataset.lpZoom))); corps.style.setProperty("--z", z); corps.classList.toggle("zoome", z > 1); zt.textContent = Math.round(z * 100) + " %"; });
+  }
 }
 // Lien d'un devoir : vidéo ou fichier ouverts dans Helper ; sinon le lien s'ouvre normalement
 function embedVideo(url){
@@ -8787,7 +9058,7 @@ function brancherPj(racine){
     if (!imagesDoc[ref]){ const s = await db.doc("images/" + ref).get(); if (s.exists) imagesDoc[ref] = s.data().data; }
     fermerFenetre();
     const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
-    el.innerHTML = `<div class="fenetre" style="width:min(900px,100%)"><img src="${esc(imagesDoc[ref] || "")}" alt="" style="width:100%;border-radius:6px"><div><button class="btn sec" type="button" id="fen-annuler">Fermer</button></div></div>`;
+    el.innerHTML = `<div class="fenetre fen-lecture" style="width:min(900px,100%)"><img src="${esc(imagesDoc[ref] || "")}" alt="" style="width:100%;border-radius:6px"><div><button class="btn sec" type="button" id="fen-annuler">Fermer</button></div></div>`;
     document.body.appendChild(el); $("#fen-annuler").onclick = fermerFenetre;
     el.addEventListener("mousedown", ev => { if (ev.target === el) fermerFenetre(); });
   });
@@ -15495,19 +15766,19 @@ function ouvrirDocModal(cle, n = 0, page = 0){
     <div class="sdm-tete"><b>${esc(info.titrePage)}</b>${info.liste.length > 1 ? segment("sdm-quoi", info.liste.map((x, i) => [String(i), esc(x.t)]), String(n)) : ""}
       ${d.ext || d.helper ? "" : `<a class="mini-btn" href="${esc(d.url)}" download="${esc(d.nom || "")}">Télécharger</a>`}<button type="button" class="sdm-x" id="sdm-x" aria-label="Fermer">✕</button></div>
     <div class="sdm-corps"><div class="sd-pages" id="sdm-pages">${contenuDoc(d)}</div></div></div>`;
-  voile.classList.add("ouvert"); document.documentElement.classList.add("sdm-bloque");
+  voile.classList.add("ouvert");
   $("#sdm-x").onclick = fermerDocModal;
   voile.querySelectorAll("#sdm-quoi button").forEach(b => b.onclick = () => ouvrirDocModal(cle, +b.dataset.v));
   if (!d.ext && !d.helper) dessinerPdfDnb(d.url, $("#sdm-pages"), page);
 }
-function fermerDocModal(){ const v = document.getElementById("sdm"); if (v){ v.classList.remove("ouvert"); v.innerHTML = ""; } document.documentElement.classList.remove("sdm-bloque"); }
+function fermerDocModal(){ const v = document.getElementById("sdm"); if (v){ v.classList.remove("ouvert"); v.innerHTML = ""; } }
 document.addEventListener("click", e => { const p = e.target.closest && e.target.closest("[data-cb-page]"); if (!p) return;
   const boite = p.closest(".sd-pages"), cle = "bia-" + (p.closest(".cb")?.dataset.an || "");
   if (!boite || !SUJETS[cle]) return; const page = +p.dataset.cbPage;
   ouvrirDocModal(cle, 0, page);
 });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-sujet-doc]"); if (!b) return; e.preventDefault(); ouvrirDocModal(b.dataset.sujetDoc); });
-async function dessinerPdfDnb(url, boite, aller = 0){
+async function dessinerPdfDnb(url, boite, aller = 0, finesse = 1){
   const moi = ++rendusDnb;
   try {
     await chargerScript(LIBS.pdf);
@@ -15515,7 +15786,7 @@ async function dessinerPdfDnb(url, boite, aller = 0){
     const doc = await L.getDocument(url).promise;
     if (moi !== rendusDnb || !boite.isConnected) return doc.destroy();
     boite.innerHTML = "";
-    const largeur = Math.min(boite.clientWidth || 800, 1000), ratio = Math.min(2, window.devicePixelRatio || 1);
+    const largeur = Math.min((boite.clientWidth || 800) * finesse, 1000 * finesse, 2400 / Math.min(2, window.devicePixelRatio || 1)), ratio = Math.min(2, window.devicePixelRatio || 1);
     for (let i = 1; i <= doc.numPages; i++){
       const page = await doc.getPage(i), vp0 = page.getViewport({scale: 1}), vp = page.getViewport({scale: largeur / vp0.width * ratio});
       const cv = document.createElement("canvas"); cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height); cv.className = "sd-feuille";
@@ -15681,8 +15952,9 @@ async function chargerPc(fil){
 }
 setInterval(() => { if (vueActive === "demandes" && (etatDm.onglet === "profs" || etatDm.pc.fil) && document.visibilityState === "visible") chargerPc(etatDm.pc.fil); }, 12000);
 setInterval(() => { if (pcAcces() && vueActive !== "demandes" && document.visibilityState === "visible") chargerPc(); }, 60000);   // pastille du menu
-const htmlPjPc = l => (l || []).map(p => /^video\//.test(p.type) ? `<video class="pc-video" src="${esc(p.url)}" controls preload="metadata" playsinline></video>`
+const htmlPjPc = l => (l || []).map(p => /^video\//.test(p.type) ? `<button type="button" class="pc-vid" data-pc-voir="${esc(p.url)}" data-nom="${esc(p.nom || "video.mp4")}" aria-label="Lire la vidéo ${esc(p.nom || "")}"><video class="pc-video" src="${esc(p.url)}#t=0.1" preload="metadata" playsinline muted></video><span class="pc-vid-lire">${HV_ICO.lire}</span></button>`
   : /^image\//.test(p.type) ? `<button type="button" class="pc-img" data-pc-voir="${esc(p.url)}" data-nom="${esc(p.nom || "image")}"><img src="${esc(p.url)}" alt="${esc(p.nom || "Image jointe")}" loading="lazy"></button>`
+  : genreLecture(p.nom) ? `<button type="button" class="pc-fichier" data-pc-voir="${esc(p.url)}" data-nom="${esc(p.nom)}">${iconeLecture(p.nom)} ${esc(p.nom)}</button>`
   : `<a class="pc-fichier" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.nom || "Fichier")}</a>`).join("");
 function htmlListePc(){
   if (pcFils === null) return `<div class="dmx-vide"><span>Chargement…</span></div>`;
@@ -16612,11 +16884,11 @@ async function telechargerFichier(f){
 }
 // Agrandir la miniature (ou l'image / la vidéo elle-même)
 function agrandirFichier(f){
-  if (["pdf", "docx", "texte"].includes(genreLecture(f.nom))) return lireFichier({url: blobUrl(f.id), nom: f.nom, telecharger: () => telechargerFichier(f)});
+  if (["pdf", "docx", "texte"].includes(genreLecture(f.nom)) || /^video\//.test(f.type) || genreLecture(f.nom) === "video") return lireFichier({url: blobUrl(f.id), nom: f.nom, telecharger: () => telechargerFichier(f)});
   fermerFenetre();
   const t = infoType(f), image = /^image\//.test(f.type), video = /^video\//.test(f.type), son = t.lib === "AUD";
   const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
-  el.innerHTML = `<div class="fenetre" style="width:min(1000px,100%)"><h3 class="rangee" style="gap:10px;flex-wrap:nowrap">${iconeType(f, 26)}<span style="overflow-wrap:anywhere">${esc(f.nom)}</span></h3>
+  el.innerHTML = `<div class="fenetre fen-lecture" style="width:min(1000px,100%)"><h3 class="rangee" style="gap:10px;flex-wrap:nowrap">${iconeType(f, 26)}<span style="overflow-wrap:anywhere">${esc(f.nom)}</span></h3>
     ${video ? `<video src="${esc(blobUrl(f.id))}" controls style="width:100%;border-radius:6px"></video>` : image || f.apercu ? `<img src="${esc(blobUrl(image ? f.id : f.apercu))}" alt="" class="grande-miniature"${son ? ` style="background:#0c1415"` : ""}>` : ""}
     ${son ? `<audio id="fen-audio" controls style="width:100%"></audio>` : ""}
     ${!image && !video && !son ? `<p class="doux" style="font-size:.85rem;margin:0">${t.lib === "PPT" ? "Première diapositive" : "Première page"} du fichier, avec sa mise en page.</p>` : ""}
@@ -17789,7 +18061,7 @@ function fenetreAjoutHeure(date, minute, exist, lundiChoix){
   };
 }
 
-function fermerFenetre(){ const v = $("#voile"); if (v) v.remove(); }
+function fermerFenetre(){ const v = $("#voile"); if (v){ if (v._fermer) try { v._fermer(); } catch {} v.remove(); } }
 function fenetreCours(c, defaut){
   fermerFenetre();
   const v = c ? {...c} : {jour: 0, debut: "08:10", fin: "09:05", matiere: COURS[0][0], prof: "", salle: "", semaine: "toutes", ...defaut};
