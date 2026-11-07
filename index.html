@@ -2736,6 +2736,14 @@ body.est-prof .doc-lecon ::selection,body.est-prof .contenu .bloc ::selection{ba
 .bx-tete{display:flex;align-items:center;gap:14px;padding:16px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 11%,var(--surface)),var(--surface) 70%);border-bottom:1px solid var(--ligne)}
 .bx-ico{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
 .bx-ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bx-ico.serie{width:46px;height:46px;background:none}
+.bx-ico.serie svg{width:44px;height:44px;stroke:none}
+.bx-ico.serie .c3{fill:color-mix(in srgb,var(--accent) 30%,var(--surface))}
+.bx-ico.serie .c2{fill:color-mix(in srgb,var(--accent) 60%,var(--surface))}
+.bx-ico.serie .c1{fill:var(--accent)}
+.bx-ico.serie .qm{fill:none;stroke:#1a1405;stroke-width:2.2;stroke-linecap:round}
+.bx-ico.serie .qp{fill:#1a1405}
+html[data-theme="clair"] .bx-ico.serie .qm{stroke:#fff}html[data-theme="clair"] .bx-ico.serie .qp{fill:#fff}
 .bx-tete-txt{flex:1;min-width:0}.bx-tete h3{margin:0;font-size:1.1rem}.bx-tete p{margin:2px 0 0;font-size:.85rem}
 .bx-stats{display:flex;gap:8px;flex:none}
 .bx-stat{display:flex;flex-direction:column;gap:3px;min-width:96px;padding:8px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--ligne)}
@@ -6502,7 +6510,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.19";
+const VERSION_SITE = "2.20";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7034,7 +7042,7 @@ VUES.brevet = function vueBrevet(){
   const record = (prog.brevet || {})[ex === "bia" ? "bia" : "serie"];
   zone().innerHTML = entete("Exercices Brevet", ex === "bia" ? "Brevet d'initiation aéronautique" : "Diplôme national du brevet") + ongletsBrevet(ex) + `
     <div class="bx">
-      <div class="bx-tete"><span class="bx-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="M15.5 16.5l1.5 1.5 3-3"/></svg></span>
+      <div class="bx-tete"><span class="bx-ico serie" aria-hidden="true"><svg viewBox="0 0 32 32"><rect class="c3" x="9" y="3" width="17" height="21" rx="3" transform="rotate(10 17.5 13.5)"/><rect class="c2" x="7.5" y="5" width="17" height="21" rx="3" transform="rotate(4 16 15.5)"/><rect class="c1" x="6" y="7" width="17" height="21" rx="3"/><path class="qm" d="M11.6 14.2a2.9 2.9 0 1 1 4.3 2.5c-.9.5-1.4 1.1-1.4 2v.5"/><circle class="qp" cx="14.5" cy="22.3" r="1.1"/></svg></span>
         <div class="bx-tete-txt"><h3>Séries d'entraînement</h3><p class="doux">Les questions des vrais sujets ${ex === "bia" ? "du BIA" : "du brevet"} : d'abord celles jamais vues, puis celles que tu as ratées.</p></div>
         <div class="bx-stats">
           <div class="bx-stat"><small>Record</small><b>${record ? record + " %" : "—"}</b></div>
@@ -7043,14 +7051,14 @@ VUES.brevet = function vueBrevet(){
       <div class="bx-reglages">
         <label class="bx-lab" for="an-brevet">Année</label>
         <div class="bx-val"><select id="an-brevet" class="dd-select bx-select"><option value="tous"${choixBrevet.an === "tous" ? " selected" : ""}>Toutes les années</option>${anneesDe(ex).map(a => `<option value="${a}"${String(a) === String(choixBrevet.an) ? " selected" : ""}>${a}</option>`).join("")}</select></div>
-        <span class="bx-lab">${ex === "bia" ? "Modules" : "Matières"}</span>
+        <span class="bx-lab">Matières</span>
         <div class="bx-val"><div class="filtres" id="mat-brevet">${listeMatieres(ex).map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${choixBrevet.mats[ex].includes(v)}">${t} <span class="doux">${parMat(v)}</span></button>`).join("")}</div></div>
         <span class="bx-lab">Entraînement</span>
         <div class="bx-val"><label class="bx-interrupteur"><input type="checkbox" id="entr-brevet"${choixBrevet.entrainement ? " checked" : ""}><span class="bx-glisse" aria-hidden="true"></span><span>${choixBrevet.entrainement ? "Questions de révision incluses, en plus des sujets officiels" : "Sujets officiels seulement"}</span></label></div>
       </div>
       <div class="bx-pied">
         <button class="btn bx-go" type="button" id="lancer-brevet" ${total || genMats.length ? "" : "disabled"}>▶ Lancer une série de ${nbSerie || 50} questions</button>
-        <span class="bx-compte">${total || genMats.length ? `${pool.length} officielle${pool.length > 1 ? "s" : ""}${choixBrevet.entrainement ? ` · ${rev.length} de révision${genMats.length ? " · ∞ générées" : ""}` : ""}` : `<span class="statut erreur">Choisis au moins ${ex === "bia" ? "un module" : "une matière"}.</span>`}</span>
+        <span class="bx-compte">${total || genMats.length ? `${pool.length} officielle${pool.length > 1 ? "s" : ""}${choixBrevet.entrainement ? ` · ${rev.length} de révision${genMats.length ? " · ∞ générées" : ""}` : ""}` : `<span class="statut erreur">Choisis au moins une matière.</span>`}</span>
         ${dejaVues ? `<button class="bx-oublier" type="button" id="raz-vues" title="Toutes les questions redeviennent « jamais vues »">↺ Oublier les questions vues</button>` : ""}
       </div>
     </div>
