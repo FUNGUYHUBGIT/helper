@@ -30,7 +30,7 @@
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="google-site-verification" content="N7lh45i-lomT5pUp2eEKhzKo25qO00gPnD6h0O-GCrU">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Helper by Entarsh", "alternateName": ["Helper", "Helper Entarsh"], "url": "https://funguyhubgit.github.io/helper/", "description": "Helper by Entarsh : site de révisions pour les élèves de 3e. Leçons, exercices, sujets du brevet (DNB) et du BIA, défi du jour, cartes et schémas interactifs.", "inLanguage": "fr", "publisher": {"@type": "Organization", "name": "Studio Entarsh"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Helper by Entarsh", "copyrightHolder": {"@type": "Organization", "name": "Entarsh Studio"}, "copyrightYear": 2026, "alternateName": ["Helper", "Helper Entarsh"], "url": "https://funguyhubgit.github.io/helper/", "description": "Helper by Entarsh : site de révisions pour les élèves de 3e. Leçons, exercices, sujets du brevet (DNB) et du BIA, défi du jour, cartes et schémas interactifs.", "inLanguage": "fr", "publisher": {"@type": "Organization", "name": "Studio Entarsh"}}</script>
 <meta name="msvalidate.01" content="D0705BD602FA3534DDB42159C03EC7F5">
 </head>
 <body>
@@ -2872,6 +2872,13 @@ html.fond-bloque{overflow:hidden}
   .lp-pdf{padding:6px}
   .lp-docx-cadre{padding:4px}
 }
+
+.mention-marque{margin:8px 0 0;font-size:.7rem;line-height:1.45;color:var(--doux)}
+.lien-marque{font:inherit;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.charte-marque{width:min(620px,100%);gap:14px}
+.charte-marque section h4{margin:0 0 4px;font-size:.92rem;color:var(--accent)}
+.charte-marque section p{margin:0;line-height:1.6;font-size:.92rem}
+.cm-pied{font-size:.78rem;margin:4px 0 0;padding-top:10px;border-top:1px solid var(--ligne)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2906,7 +2913,7 @@ html.fond-bloque{overflow:hidden}
   <div class="marque">
     <div class="logo"><svg><use href="#logo"/></svg><h1>Helper</h1></div>
     <div class="trait"></div>
-    <div class="par">imaginé par <b>Entarsh</b></div>
+    <div class="par">imaginé par <b>Entarsh™</b></div>
   </div>
 </div>
 
@@ -2988,6 +2995,7 @@ html.fond-bloque{overflow:hidden}
       <button class="btn sec btn-rafraichir" type="button" data-rafraichir title="Charge la dernière version de Helper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span>Rafraîchir l'appli</span></button>
       <button class="btn sec" type="button" id="deconnexion">Se déconnecter</button>
       <p class="version-site" data-version><span class="badge-beta">Bêta</span> Version <b data-num-version></b> · accès anticipé. Le site est encore en développement : signale les bugs avec ⚑ Prévenir.</p>
+      <p class="mention-marque">© 2026 Entarsh Studio · Entarsh™ est un nom réservé par Entarsh Studio. <button type="button" class="lien-marque" data-charte-marque>Le nom Entarsh</button></p>
     </div>
   </aside>
   <main class="contenu" id="vue"></main>
@@ -7064,7 +7072,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.24";
+const VERSION_SITE = "2.25";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -8971,6 +8979,21 @@ document.addEventListener("touchmove", ev => {
   if (ev.touches.length < 2) ev.preventDefault();
 }, {passive: false});
 
+
+/* ----- Le nom Entarsh™ : nom réservé par Entarsh Studio (non déposé) ----- */
+function ouvrirCharteMarque(){
+  fermerFenetre();
+  const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
+  el.innerHTML = `<div class="fenetre charte-marque" role="dialog" aria-modal="true" aria-labelledby="titre-marque">
+    <h3 id="titre-marque">Le nom Entarsh™</h3>
+    <section><h4>Un nom réservé</h4><p>« Entarsh » est un nom créé et utilisé par <b>Entarsh Studio</b> pour ses sites, logiciels et jeux : Helper by Entarsh, Entarsh Catalogue et les autres créations du studio. Entarsh Studio réserve ce nom à ses propres projets.</p></section><section><h4>Pourquoi ™ et pas ®</h4><p>Le symbole <b>™</b> indique que nous revendiquons ce nom et l'utilisons comme marque. <b>Entarsh n'est pas une marque déposée</b> : le nom n'est enregistré auprès d'aucun office officiel (INPI, EUIPO…). C'est pourquoi nous n'utilisons pas le symbole ®, réservé aux marques enregistrées.</p></section><section><h4>Ce que nous demandons</h4><p>Sans l'accord écrit d'Entarsh Studio, merci de ne pas utiliser le nom Entarsh, ses déclinaisons (Helper by Entarsh, Entarsh Studio, Entarsh Catalogue…) ni nos logos pour un autre projet, produit, compte ou site, ni pour faire croire qu'un projet vient d'Entarsh Studio ou est soutenu par lui.</p></section><section><h4>Ce qui est permis</h4><p>Parler de nos projets, les citer, les recommander ou mettre un lien vers eux, en les nommant correctement et sans modifier nos logos.</p></section>
+    <p class="doux cm-pied">© 2026 Entarsh Studio. Tous droits réservés. Entarsh™ est un nom utilisé et réservé par Entarsh Studio (nom non déposé).</p>
+    <div class="rangee" style="justify-content:flex-end"><button class="btn" type="button" id="cm-ok">Fermer</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener("mousedown", e => { if (e.target === el) fermerFenetre(); });
+  $("#cm-ok").onclick = fermerFenetre;
+}
+document.addEventListener("click", e => { if (e.target.closest && e.target.closest("[data-charte-marque]")) ouvrirCharteMarque(); });
 function lireFichier({url, nom, telecharger}){
   fermerFenetre();
   const g = genreLecture(nom);
