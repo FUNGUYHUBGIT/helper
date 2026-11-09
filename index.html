@@ -7072,7 +7072,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.26";
+const VERSION_SITE = "2.27";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7609,8 +7609,8 @@ VUES.brevet = function vueBrevet(){
   const record = (prog.brevet || {})[ex === "bia" ? "bia" : "serie"];
   zone().innerHTML = entete("Exercices Brevet", ex === "bia" ? "Brevet d'initiation aéronautique" : "Diplôme national du brevet") + ongletsBrevet(ex) + `
     <div class="bx">
-      <div class="bx-tete"><span class="bx-ico serie" aria-hidden="true">${ex === "bia" ? ICO_SERIE_BIA : `<svg viewBox="0 0 32 32"><rect class="c3" x="9" y="3" width="17" height="21" rx="3" transform="rotate(10 17.5 13.5)"/><rect class="c2" x="7.5" y="5" width="17" height="21" rx="3" transform="rotate(4 16 15.5)"/><rect class="c1" x="6" y="7" width="17" height="21" rx="3"/><path class="qm" d="M11.6 14.2a2.9 2.9 0 1 1 4.3 2.5c-.9.5-1.4 1.1-1.4 2v.5"/><circle class="qp" cx="14.5" cy="22.3" r="1.1"/></svg>`}</span>
-        <div class="bx-tete-txt"><h3>${ex === "bia" ? "Entraînement au BIA" : "Séries d'entraînement"}</h3><p class="doux">Les questions des vrais sujets ${ex === "bia" ? "du BIA" : "du brevet"} : d'abord celles jamais vues, puis celles que tu as ratées.</p></div>
+      <div class="bx-tete"><span class="bx-ico serie" aria-hidden="true">${ex === "bia" ? ICO_SERIE_BIA : ICO_SERIE_DNB}</span>
+        <div class="bx-tete-txt"><h3>${ex === "bia" ? "Entraînement au BIA" : "Entraînement au brevet"}</h3><p class="doux">Les questions des vrais sujets ${ex === "bia" ? "du BIA" : "du brevet"} : d'abord celles jamais vues, puis celles que tu as ratées.</p></div>
         <div class="bx-stats">
           <div class="bx-stat"><small>Record</small><b>${record ? record + " %" : "—"}</b></div>
           <div class="bx-stat"><small>Déjà vues</small><b>${dejaVues}<span> / ${total}</span></b><span class="bx-vues-barre"><i style="width:${total ? Math.round(dejaVues / total * 100) : 0}%"></i></span></div>
@@ -7671,6 +7671,8 @@ function docLv(sujet){
     <details class="ec-transcription"><summary>Lire le texte entendu</summary><p>${esc(q.audio)}</p></details></div>`;
   return `<div class="bx-doc"><div class="bx-doc-tete"><span class="mono">Texte à lire</span><b>${titre}</b></div><p class="bx-doc-txt" lang="${q.lv === "es" ? "es" : "en"}">${esc(q.ctx)}</p></div>`;
 }
+// icône des séries du brevet : une toque de diplômé avec son pompon
+const ICO_SERIE_DNB = `<svg viewBox="0 0 32 32"><circle class="c3" cx="16" cy="16" r="15"/><path class="c2" d="M8.5 15.6v5.6c0 2.3 3.4 4.3 7.5 4.3s7.5-2 7.5-4.3v-5.6L16 19z"/><path class="c1" d="M16 6.2 29.5 12.4 16 18.6 2.5 12.4z"/><path class="c2" d="M24.6 13.2v6.6" stroke-width="1.6" stroke-linecap="round" style="stroke:color-mix(in srgb,var(--accent) 60%,var(--surface));fill:none"/><circle class="c1" cx="24.6" cy="21.3" r="1.9"/></svg>`;
 // icône des séries du BIA : un avion qui décolle, avec sa traînée et un nuage
 const ICO_SERIE_BIA = `<svg viewBox="0 0 32 32"><circle class="c3" cx="16" cy="16" r="15"/><path class="c2" d="M2.6 27.3 10.2 19.7l2.1 2.1-7.6 7.6a1.5 1.5 0 0 1-2.1-2.1zM6.4 30.2l5.6-5.6 1.6 1.6L8 31.8z"/><g transform="translate(17 15) scale(1.12) translate(-16 -16)"><path class="c1" d="M27.2 4.8c.9.9.6 2.4-.4 3.4l-4.2 4.2 2.2 10.3-1.8 1.8-4.4-8.2-4.4 4.4.5 3.6-1.5 1.5-2-3.9-3.9-2 1.5-1.5 3.6.5 4.4-4.4-8.2-4.4 1.8-1.8 10.3 2.2 4.2-4.2c1-1 2.5-1.3 3.4-.4z"/></g></svg>`;
 function blocLangues(){
