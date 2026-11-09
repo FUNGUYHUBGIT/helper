@@ -2888,6 +2888,12 @@ html[data-theme="clair"] .info-fichier .if-i{color:#fff}
 .info-fichier .if-txt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
 .info-fichier[aria-expanded="true"] .if-txt{display:block}
 .mf-nom{display:flex;align-items:center;gap:6px}.mf-nom input{flex:1}
+
+@media (max-width:700px){
+  .lp-embed{flex:1;display:flex;align-items:center;justify-content:center;padding:0}
+  .lp-embed iframe{max-height:none}
+  .lecteur-pj:has(.lp-embed) .lp-nom{font-size:.85rem;color:var(--doux)}
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -7081,7 +7087,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.29";
+const VERSION_SITE = "2.30";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7920,6 +7926,7 @@ const normDv = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toL
 function matiereDevoir(m){ const n = normDv(m); const t = MAT_ED.find(([r]) => r.test(n)); if (t) return t[1];
   const s = String(m || "").trim().toLowerCase(); return s ? s.charAt(0).toUpperCase() + s.slice(1) : "Autre"; }
 // texte → HTML sûr, avec les retours à la ligne et les liens cliquables
+const texteLiens = t => esc(t).replace(/(https?:\/\/[^\s<()«»"]+[^\s<()«»".,;:!?])/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 const texteDevoir = t => esc(t).replace(/(https?:\/\/[^\s<()]+)/g, '<a href="$1" target="_blank" rel="noopener" data-lien-dv>$1</a>').replace(/\n/g, "<br>");
 function listeDevoirs(){
   const a = auj();
@@ -9094,7 +9101,7 @@ function ouvrirLienHelper(url){
     fermerFenetre();
     const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
     el.innerHTML = `<div class="fenetre lecteur-pj" role="dialog" aria-modal="true"><div class="lp-tete"><span class="lp-ic" aria-hidden="true">🎬</span><b class="lp-nom">${esc(url.replace(/^https?:\/\/(www\.)?/, "").slice(0, 70))}</b>
-      <span class="rangee lp-boutons"><a class="mini-btn" href="${esc(url)}" target="_blank" rel="noopener">Ouvrir le site ↗</a><button class="mini-btn" type="button" id="lp-fermer">✕ Fermer</button></span></div>
+      <span class="rangee lp-boutons"><a class="mini-btn" href="${esc(url)}" target="_blank" rel="noopener" data-externe>Ouvrir le site ↗</a><button class="mini-btn" type="button" id="lp-fermer">✕ Fermer</button></span></div>
       <div class="lp-corps lp-embed"><iframe src="${esc(e)}" title="Vidéo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>`;
     document.body.appendChild(el); el.querySelector("#lp-fermer").onclick = fermerFenetre;
     el.addEventListener("mousedown", ev => { if (ev.target === el) fermerFenetre(); });
@@ -9105,8 +9112,10 @@ function ouvrirLienHelper(url){
   return false;
 }
 document.addEventListener("click", ev => {
-  const a = ev.target.closest && ev.target.closest("a[data-lien-dv]");
-  if (a && !ev.ctrlKey && !ev.metaKey && ouvrirLienHelper(a.href)) ev.preventDefault();
+  const a = ev.target.closest && ev.target.closest("a[href]");
+  if (a && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && !a.hasAttribute("download") && !a.hasAttribute("data-externe") && /^https?:/i.test(a.href)
+      && (a.hasAttribute("data-lien-dv") || ((embedVideo(a.href) || /^(video|son)$/.test(genreLecture((a.pathname || "").split("/").pop()))) && !a.closest(".voile, .sdm")))
+      && ouvrirLienHelper(a.href)) ev.preventDefault();
   const b = ev.target.closest && ev.target.closest("[data-doc-dv]");
   if (b) lireFichier({url: blobUrl(b.dataset.docDv), nom: b.dataset.nom || "Fichier", type: b.dataset.type || ""});
 });
@@ -16038,7 +16047,7 @@ function lecturePc(f){
       ${moiM ? "" : suite ? `<span class="dmx-av-vide"></span>` : avatarDm(m.auteurNom, m.auteurRang, m.auteurId)}
       <div class="dmx-bulle-col">
         ${!moiM && !suite ? `<div class="dmx-qui"><b>${esc(m.auteurNom)}</b><span class="dm-rang ${m.auteurRang}">${m.auteurRang === "professeur" ? "Professeur" : libRangDm(m.auteurRang)}</span></div>` : ""}
-        <div class="dmx-bulle">${m.pj && m.pj.length ? `<div class="pc-pj">${htmlPjPc(m.pj)}</div>` : ""}${m.texte ? `<p>${esc(m.texte)}</p>` : ""}<span class="dmx-heure">${heureDm(m.le)}</span></div>
+        <div class="dmx-bulle">${m.pj && m.pj.length ? `<div class="pc-pj">${htmlPjPc(m.pj)}</div>` : ""}${m.texte ? `<p>${texteLiens(m.texte)}</p>` : ""}<span class="dmx-heure">${heureDm(m.le)}</span></div>
         ${moiM || jeSuisGerantDm() ? `<button type="button" class="dmx-suppr" data-pc-suppr="${esc(m.id)}">Supprimer</button>` : ""}
       </div></div>`; }).join("");
   return `<div class="dmx dmx-conv pc">
@@ -16199,7 +16208,7 @@ function lectureDm(f){
         <div class="dmx-bulle">
           ${i === 0 ? `<span class="dmx-bulle-tag">${icoDm(f.type)}${esc(nomTypeDm(f.type))}${f.refNom ? " · " + esc(f.refNom) : ""}</span>` : ""}
           ${i === 0 && f.passage ? `<blockquote class="dm-cite">« ${esc(f.passage)} »</blockquote>` : ""}
-          <p>${esc(m.corps || "")}</p>
+          <p>${texteLiens(m.corps || "")}</p>
           <span class="dmx-heure">${heureDm(m.le)}</span>
         </div>
         ${peutSuppr ? `<button type="button" class="dmx-suppr" data-suppr-msg="${esc(m.id)}" title="${i === 0 ? "Supprimer la demande et ses réponses" : "Supprimer ce message"}">${i === 0 ? "Supprimer la demande" : "Supprimer"}</button>` : ""}
@@ -16989,7 +16998,7 @@ function vueCloudDe(gerant){
           ${f.titre && f.titre !== f.nom ? `<span class="sous-nom" title="${esc(f.nom)}">${esc(f.nom)}</span>` : ""}
           <span class="doux">${esc(nomCategorie(f))} · ${f.taille ? tailleLisible(f.taille) : ""} · ${dateFr(String(f.le || "").slice(0, 10))}</span>
         </div>
-        ${f.info ? `<button type="button" class="info-fichier" data-info-f aria-expanded="false"><span class="if-i" aria-hidden="true">i</span><span class="if-txt">${esc(f.info)}</span></button>` : ""}
+        ${f.info ? `<div class="info-fichier" data-info-f role="button" tabindex="0" aria-expanded="false"><span class="if-i" aria-hidden="true">i</span><span class="if-txt">${texteLiens(f.info)}</span></div>` : ""}
         <div class="actions-fichier">
           ${["pdf", "docx", "texte", "video"].includes(genreLecture(f.nom)) ? `<button type="button" class="mini-btn" data-voir="${esc(f.docId)}">Ouvrir</button>` : !f.encodage && !/^(image|video)\//.test(f.type) ? `<a class="mini-btn" href="${esc(blobUrl(f.id))}" target="_blank" rel="noopener">Ouvrir ↗</a>` : ""}
           <button type="button" class="mini-btn" data-dl="${esc(f.docId)}" ${EXT_TELECHARGEABLES.test(f.nom) ? "" : `title="Téléchargé dans un .zip (ce format ne peut pas être téléchargé directement ici)"`}>${ICONE_DL}Télécharger</button>
@@ -17002,7 +17011,7 @@ function vueCloudDe(gerant){
   zone().querySelectorAll("[data-dl]").forEach(b => b.onclick = () => telechargerFichier(cloud.find(f => f.docId === b.dataset.dl)));
   zone().querySelectorAll("[data-prev]").forEach(b => b.onclick = () => fenetrePrevenirFichier(cloud.find(f => f.docId === b.dataset.prev)));
   zone().querySelectorAll("[data-conv]").forEach(b => b.onclick = () => fenetreConversion(cloud.find(f => f.docId === b.dataset.conv)));
-  zone().querySelectorAll("[data-info-f]").forEach(b => b.onclick = () => b.setAttribute("aria-expanded", b.getAttribute("aria-expanded") !== "true"));
+  zone().querySelectorAll("[data-info-f]").forEach(b => b.onclick = ev => { if (!ev.target.closest("a")) b.setAttribute("aria-expanded", b.getAttribute("aria-expanded") !== "true"); });
   zone().querySelectorAll("[data-modif-f]").forEach(b => b.onclick = () => fenetreModifFichier(cloud.find(f => f.docId === b.dataset.modifF)));
   zone().querySelectorAll("[data-suppr]").forEach(b => deuxClics(b, async () => {
     const f = cloud.find(x => x.docId === b.dataset.suppr);
