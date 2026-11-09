@@ -2879,6 +2879,15 @@ html.fond-bloque{overflow:hidden}
 .charte-marque section h4{margin:0 0 4px;font-size:.92rem;color:var(--accent)}
 .charte-marque section p{margin:0;line-height:1.6;font-size:.92rem}
 .cm-pied{font-size:.78rem;margin:4px 0 0;padding-top:10px;border-top:1px solid var(--ligne)}
+
+/* Cloud : sous-titre (nom du fichier) et info de la tuile */
+.sous-nom{font-family:var(--f-mono);font-size:.72rem;color:var(--doux);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.info-fichier{display:flex;gap:8px;align-items:flex-start;margin:4px 14px 2px;padding:8px 10px;border-radius:9px;border:1px solid color-mix(in srgb,var(--accent) 30%,var(--ligne));background:color-mix(in srgb,var(--accent) 7%,transparent);color:inherit;font:inherit;font-size:.8rem;line-height:1.45;text-align:left;cursor:pointer}
+.info-fichier .if-i{flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#1a1405;font:700 .7rem/1 var(--f-mono)}
+html[data-theme="clair"] .info-fichier .if-i{color:#fff}
+.info-fichier .if-txt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
+.info-fichier[aria-expanded="true"] .if-txt{display:block}
+.mf-nom{display:flex;align-items:center;gap:6px}.mf-nom input{flex:1}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -7031,7 +7040,7 @@ const APPLI_NATIVE = (() => { const v = (/HelperApp\/([\d.]+)/.exec(navigator.us
   try { if (window.HelperApp && typeof window.HelperApp.configNotifs === "function" && parseFloat(v || 0) < 1.6) return "1.6"; } catch {}
   return v; })();
 const DERNIERE_APPLI = "2.1";
-const VIEILLE_APPLI = enModeApp() && /android/i.test(navigator.userAgent) && (!APPLI_NATIVE || parseFloat(APPLI_NATIVE) < parseFloat(DERNIERE_APPLI));   // appli Android à mettre à jour
+const VIEILLE_APPLI = enModeApp() && /android/i.test(navigator.userAgent) && (!APPLI_NATIVE || numVersion(APPLI_NATIVE) < numVersion(DERNIERE_APPLI));   // appli Android à mettre à jour
 { const b = document.getElementById("btn-installer"); if (b){ b.hidden = (enModeApp() && !VIEILLE_APPLI) || !/android/i.test(navigator.userAgent);
   if (VIEILLE_APPLI){ b.querySelector("b").textContent = "Mettre à jour l'application"; b.querySelector("small").textContent = APPLI_NATIVE ? "Nouvelle version : heure des notifications" : "Nouvelle version : couleurs corrigées";
     let vu = false; try { vu = sessionStorage.getItem("helper.majAppli") === "1"; sessionStorage.setItem("helper.majAppli", "1"); } catch {}
@@ -7072,7 +7081,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.28";
+const VERSION_SITE = "2.29";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -8080,7 +8089,7 @@ function pageDevoir(d, l){
       <div class="dv-page-corps">
         <div class="dv-texte">${d.contenu ? texteDevoir(d.contenu) : `<span class="doux">Pas de détail.</span>`}</div>
         ${(d.documents || []).length ? `<div class="dv-docs"><span class="mono">Pièces jointes</span>${d.documents.map(x => { const nom = typeof x === "string" ? x : x.nom || "Fichier";
-            return x && x.id ? `<button type="button" class="dv-doc lisible" data-doc-dv="${esc(x.id)}" data-nom="${esc(nom)}" title="Ouvrir dans Helper">${iconeLecture(nom)} ${esc(nom)}${x.taille ? ` <span class="doux">${tailleLisible(x.taille)}</span>` : ""}</button>` : `<span class="dv-doc">📎 ${esc(nom)}</span>`; }).join("")}
+            return x && x.id ? `<button type="button" class="dv-doc lisible" data-doc-dv="${esc(x.id)}" data-nom="${esc(nom)}" data-type="${esc(x.mime || "")}" title="Ouvrir dans Helper">${iconeLecture(nom)} ${esc(nom)}${x.taille ? ` <span class="doux">${tailleLisible(x.taille)}</span>` : ""}</button>` : `<span class="dv-doc">📎 ${esc(nom)}</span>`; }).join("")}
           ${d.documents.some(x => !x || !x.id) ? `<small class="doux">${d.documents.some(x => x && x.id) ? "Les autres fichiers sont" : "À télécharger"} sur EcoleDirecte : ils seront dans Helper à la prochaine synchronisation.</small>` : ""}</div>` : ""}
         <dl class="dv-infos">${d.donneLe ? `<div><dt>Donné le</dt><dd>${esc(dateLongueDv(d.donneLe))}</dd></div>` : ""}${d.groupe ? `<div><dt>Groupe</dt><dd>${esc(d.groupe)}</dd></div>` : ""}</dl>
         ${edit ? `<div class="rangee"><button type="button" class="mini-btn" id="dv-modif">Modifier</button><button type="button" class="mini-btn danger" id="dv-suppr">Supprimer</button></div>` : ""}
@@ -8275,11 +8284,15 @@ async function syncED(ident, mdp, demanderQcm, etape){
           "data=" + encodeURIComponent(JSON.stringify({forceDownload: 0})));
         if (!r.body64 || r.status >= 300) continue;            // appli trop ancienne (avant 1.8) ou refus
         const octets = Uint8Array.from(atob(r.body64), c => c.charCodeAt(0));
-        if (octets.length < 20 || octets.length > 25e6 || (octets[0] === 123 && /"code"\s*:/.test(new TextDecoder().decode(octets.slice(0, 200))))) continue;   // une erreur en JSON, pas un fichier
+        if (octets.length < 20 || octets.length > 50e6 || (octets[0] === 123 && /"code"\s*:/.test(new TextDecoder().decode(octets.slice(0, 200))))) continue;   // une erreur en JSON, pas un fichier
         const ext = (x.nom.match(/\.([a-z0-9]{1,5})$/i) || [, "bin"])[1].toLowerCase();
-        const type = ({pdf: "application/pdf", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain", mp4: "video/mp4", mp3: "audio/mpeg", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg"})[ext] || "application/octet-stream";
-        const up = await assets.upload(new File([octets], x.nom, {type}), {type});
-        Object.assign(x, {id: up.id, taille: octets.length});
+        const tete = String.fromCharCode(...octets.slice(0, 12));
+        const type = ({pdf: "application/pdf", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain", mp4: "video/mp4", m4v: "video/mp4", mov: "video/quicktime", webm: "video/webm", mkv: "video/x-matroska", avi: "video/x-msvideo",
+          mp3: "audio/mpeg", m4a: "audio/mp4", wav: "audio/wav", ogg: "audio/ogg", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", webp: "image/webp"})[ext]
+          || (tete.slice(4, 8) === "ftyp" ? (/ftypqt/.test(tete) ? "video/quicktime" : "video/mp4") : octets[0] === 0x1a && octets[1] === 0x45 ? "video/webm" : tete.startsWith("%PDF") ? "application/pdf" : "application/octet-stream");
+        let up; try { up = await assets.upload(new File([octets], x.nom, {type}), {type}); }
+        catch { up = await assets.upload(new File([octets], x.nom, {type: "application/octet-stream"}), {type: "application/octet-stream"}); }
+        Object.assign(x, {id: up.id, taille: octets.length, mime: type});
       } catch {}
     }
   }
@@ -8998,12 +9011,31 @@ function ouvrirCharteMarque(){
   $("#cm-ok").onclick = fermerFenetre;
 }
 document.addEventListener("click", e => { if (e.target.closest && e.target.closest("[data-charte-marque]")) ouvrirCharteMarque(); });
-function lireFichier({url, nom, telecharger}){
+const genreDeType = t => /^video\//.test(t) ? "video" : /^audio\//.test(t) ? "son" : /^image\//.test(t) ? "image" : /pdf/.test(t) ? "pdf" : /wordprocessingml/.test(t) ? "docx" : /^text\//.test(t) ? "texte" : "";
+// si le nom ne dit rien (pas d'extension), on regarde le type annoncé par le serveur puis les premiers octets du fichier
+async function devinerGenre(url){
+  try { const r = await fetch(url, {headers: {Range: "bytes=0-31"}}); const t = r.headers.get("content-type") || "", g = genreDeType(t); if (g) return g;
+    const o = new Uint8Array(await r.arrayBuffer()), txt = String.fromCharCode(...o.slice(0, 12));
+    if (txt.slice(4, 8) === "ftyp") return /ftyp(M4A|M4B)/.test(txt) ? "son" : "video";
+    if (o[0] === 0x1a && o[1] === 0x45 && o[2] === 0xdf && o[3] === 0xa3) return "video";
+    if (txt.startsWith("%PDF")) return "pdf";
+    if (txt.startsWith("ID3") || (o[0] === 0xff && (o[1] & 0xe0) === 0xe0) || txt.startsWith("OggS")) return "son";
+    if (o[0] === 0x89 && txt.slice(1, 4) === "PNG" || (o[0] === 0xff && o[1] === 0xd8)) return "image";
+  } catch {}
+  return "";
+}
+const EXT_GENRE = {video: "mp4", son: "mp3", image: "png", pdf: "pdf", docx: "docx", texte: "txt"};
+function lireFichier({url, nom, telecharger, type, titre}){
   fermerFenetre();
-  const g = genreLecture(nom);
+  let g = genreLecture(nom) || genreDeType(type || "");
+  if (!g && !lireFichier.devine){   // nom sans extension : on devine, puis on rouvre avec le bon lecteur
+    lireFichier.devine = true;
+    devinerGenre(url).then(gd => { lireFichier.devine = false; if (gd) lireFichier({url, nom: nom + "." + EXT_GENRE[gd], telecharger, titre: titre || nom}); else lireFichier({url, nom, telecharger, type: "?", titre}); });
+    return;
+  }
   const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
   el.innerHTML = `<div class="fenetre lecteur-pj" role="dialog" aria-modal="true" aria-label="${esc(nom)}">
-    <div class="lp-tete"><span class="lp-ic" aria-hidden="true">${iconeLecture(nom)}</span><b class="lp-nom">${esc(nom)}</b>
+    <div class="lp-tete"><span class="lp-ic" aria-hidden="true">${iconeLecture(nom)}</span><b class="lp-nom">${esc(titre || nom)}</b>
       <span class="rangee lp-boutons">${g === "pdf" ? `<span class="lp-zoom"><button class="mini-btn" type="button" data-lp-zoom="-0.5" aria-label="Dézoomer">−</button><span id="lp-zoom-val">100 %</span><button class="mini-btn" type="button" data-lp-zoom="0.5" aria-label="Zoomer">+</button></span>` : ""}${g === "video" ? "" : telecharger ? `<button class="mini-btn" type="button" id="lp-dl">Télécharger</button>` : `<button class="mini-btn" type="button" id="lp-dl-direct">Télécharger</button>`}<button class="mini-btn" type="button" id="lp-fermer" aria-label="Fermer">✕ Fermer</button></span></div>
     <div class="lp-corps lp-${g || "autre"}" id="lp-corps">${g === "video" ? lecteurVideoHtml(url, nom)
       : g === "son" ? `<div class="lp-son"><span aria-hidden="true">🎵</span><audio src="${esc(url)}" controls preload="metadata"></audio></div>`
@@ -9076,10 +9108,10 @@ document.addEventListener("click", ev => {
   const a = ev.target.closest && ev.target.closest("a[data-lien-dv]");
   if (a && !ev.ctrlKey && !ev.metaKey && ouvrirLienHelper(a.href)) ev.preventDefault();
   const b = ev.target.closest && ev.target.closest("[data-doc-dv]");
-  if (b) lireFichier({url: blobUrl(b.dataset.docDv), nom: b.dataset.nom || "Fichier"});
+  if (b) lireFichier({url: blobUrl(b.dataset.docDv), nom: b.dataset.nom || "Fichier", type: b.dataset.type || ""});
 });
 function brancherPj(racine){
-  racine.querySelectorAll("[data-lire-pj]").forEach(b => b.onclick = () => lireFichier({url: blobUrl(b.dataset.lirePj), nom: b.dataset.nom || "Fichier"}));
+  racine.querySelectorAll("[data-lire-pj]").forEach(b => b.onclick = () => lireFichier({url: blobUrl(b.dataset.lirePj), nom: b.dataset.nom || "Fichier", type: b.dataset.type || ""}));
   racine.querySelectorAll("[data-voir-ref]").forEach(b => b.onclick = async () => {
     const ref = b.dataset.voirRef;
     if (!imagesDoc[ref]){ const s = await db.doc("images/" + ref).get(); if (s.exists) imagesDoc[ref] = s.data().data; }
@@ -16910,8 +16942,12 @@ async function telechargerFichier(f){
   }
 }
 // Agrandir la miniature (ou l'image / la vidéo elle-même)
-function agrandirFichier(f){
-  if (["pdf", "docx", "texte"].includes(genreLecture(f.nom)) || /^video\//.test(f.type) || genreLecture(f.nom) === "video") return lireFichier({url: blobUrl(f.id), nom: f.nom, telecharger: () => telechargerFichier(f)});
+async function agrandirFichier(f){
+  if (["pdf", "docx", "texte"].includes(genreLecture(f.nom)) || /^video\//.test(f.type) || genreLecture(f.nom) === "video"){
+    let url = blobUrl(f.id);
+    if (f.encodage === "base64") try { url = URL.createObjectURL(await blobFichier(f)); } catch {}
+    return lireFichier({url, nom: f.nom, titre: f.titre || "", type: f.type, telecharger: () => telechargerFichier(f)});
+  }
   fermerFenetre();
   const t = infoType(f), image = /^image\//.test(f.type), video = /^video\//.test(f.type), son = t.lib === "AUD";
   const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
@@ -16949,21 +16985,25 @@ function vueCloudDe(gerant){
           <span class="badge-type">${iconeType(f, 30)}</span>
         </button>
         <div class="corps-fichier">
-          <strong title="${esc(f.nom)}">${esc(f.nom)}</strong>
+          <strong title="${esc(f.titre || f.nom)}">${esc(f.titre || f.nom)}</strong>
+          ${f.titre && f.titre !== f.nom ? `<span class="sous-nom" title="${esc(f.nom)}">${esc(f.nom)}</span>` : ""}
           <span class="doux">${esc(nomCategorie(f))} · ${f.taille ? tailleLisible(f.taille) : ""} · ${dateFr(String(f.le || "").slice(0, 10))}</span>
         </div>
+        ${f.info ? `<button type="button" class="info-fichier" data-info-f aria-expanded="false"><span class="if-i" aria-hidden="true">i</span><span class="if-txt">${esc(f.info)}</span></button>` : ""}
         <div class="actions-fichier">
-          ${!f.encodage && !/^(image|video)\//.test(f.type) ? `<a class="mini-btn" href="${esc(blobUrl(f.id))}" target="_blank" rel="noopener">Ouvrir ↗</a>` : ""}
+          ${["pdf", "docx", "texte", "video"].includes(genreLecture(f.nom)) ? `<button type="button" class="mini-btn" data-voir="${esc(f.docId)}">Ouvrir</button>` : !f.encodage && !/^(image|video)\//.test(f.type) ? `<a class="mini-btn" href="${esc(blobUrl(f.id))}" target="_blank" rel="noopener">Ouvrir ↗</a>` : ""}
           <button type="button" class="mini-btn" data-dl="${esc(f.docId)}" ${EXT_TELECHARGEABLES.test(f.nom) ? "" : `title="Téléchargé dans un .zip (ce format ne peut pas être téléchargé directement ici)"`}>${ICONE_DL}Télécharger</button>
           <button type="button" class="mini-btn prevenir-fichier" data-prev="${esc(f.docId)}" title="Signaler un problème avec ce fichier">⚑ Prévenir</button>
           ${gerant && estImage(f) ? `<button type="button" class="mini-btn" data-conv="${esc(f.docId)}">Formats</button>` : ""}
-          ${gerant ? `<button type="button" class="mini-btn danger" data-suppr="${esc(f.docId)}">Supprimer</button>` : ""}
+          ${gerant ? `<button type="button" class="mini-btn" data-modif-f="${esc(f.docId)}">Modifier</button><button type="button" class="mini-btn danger" data-suppr="${esc(f.docId)}">Supprimer</button>` : ""}
         </div></div>`; }).join("")}</div>` : `<div class="vide">${cloud.length ? "Aucun fichier de ce type." : gerant ? "Le cloud est vide. Clique sur « Déposer des fichiers »." : "Aucun fichier pour le moment."}</div>`}`;
   zone().querySelectorAll("#dossiers button").forEach(b => b.onclick = () => { dossierCloud = b.dataset.d; vueCloud(); });
   zone().querySelectorAll("[data-voir]").forEach(b => b.onclick = () => agrandirFichier(cloud.find(f => f.docId === b.dataset.voir)));
   zone().querySelectorAll("[data-dl]").forEach(b => b.onclick = () => telechargerFichier(cloud.find(f => f.docId === b.dataset.dl)));
   zone().querySelectorAll("[data-prev]").forEach(b => b.onclick = () => fenetrePrevenirFichier(cloud.find(f => f.docId === b.dataset.prev)));
   zone().querySelectorAll("[data-conv]").forEach(b => b.onclick = () => fenetreConversion(cloud.find(f => f.docId === b.dataset.conv)));
+  zone().querySelectorAll("[data-info-f]").forEach(b => b.onclick = () => b.setAttribute("aria-expanded", b.getAttribute("aria-expanded") !== "true"));
+  zone().querySelectorAll("[data-modif-f]").forEach(b => b.onclick = () => fenetreModifFichier(cloud.find(f => f.docId === b.dataset.modifF)));
   zone().querySelectorAll("[data-suppr]").forEach(b => deuxClics(b, async () => {
     const f = cloud.find(x => x.docId === b.dataset.suppr);
     await db.doc("cloud/" + f.docId).delete(); if (assets){ assets.delete(f.id).catch(() => {}); if (f.apercu) assets.delete(f.apercu).catch(() => {}); }
@@ -16986,6 +17026,34 @@ function vueCloudDe(gerant){
   };
 }
 
+/* Gérant : titre de la tuile, nom du fichier et info affichée sur la tuile */
+function fenetreModifFichier(f){
+  if (!f) return;
+  fermerFenetre();
+  const ext = extDe(f.nom), base = f.nom.replace(/\.[^.]+$/, "");
+  const el = document.createElement("div"); el.className = "voile"; el.id = "voile";
+  el.innerHTML = `<div class="fenetre" role="dialog" aria-modal="true" aria-labelledby="titre-fen" style="width:min(560px,100%)">
+    <h3 id="titre-fen" class="rangee" style="gap:10px;flex-wrap:nowrap">${iconeType(f, 26)}<span>Modifier la tuile</span></h3>
+    <div class="champ"><label for="mf-titre">Titre de la tuile</label><input id="mf-titre" maxlength="90" value="${esc(f.titre || "")}" placeholder="${esc(f.nom)}">
+      <small class="doux">Laisse vide pour afficher le nom du fichier. S'il est différent, le nom du fichier s'affiche en dessous, en plus petit.</small></div>
+    <div class="champ"><label for="mf-nom">Nom du fichier</label><div class="mf-nom"><input id="mf-nom" maxlength="120" value="${esc(base)}">${ext ? `<span class="mono" style="text-transform:none;letter-spacing:0">.${esc(ext)}</span>` : ""}</div>
+      <small class="doux">C'est aussi le nom du fichier téléchargé. L'extension ne change pas.</small></div>
+    <div class="champ"><label for="mf-info">Info sur la tuile</label><textarea id="mf-info" rows="4" maxlength="500" placeholder="Ex. : fait par M. Durand ; aussi sur l'ENT, rubrique Documents ; à lire avant le contrôle…">${esc(f.info || "")}</textarea>
+      <small class="doux">Facultatif. S'affiche sur la tuile pour tout le monde.</small></div>
+    <p id="statut-fen" class="statut" role="status"></p>
+    <div class="rangee"><button class="btn" type="button" id="mf-ok">Enregistrer</button><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div></div>`;
+  document.body.appendChild(el);
+  $("#fen-annuler").onclick = fermerFenetre;
+  el.addEventListener("mousedown", ev => { if (ev.target === el) fermerFenetre(); });
+  $("#mf-titre").focus();
+  $("#mf-ok").onclick = async () => {
+    const nb = $("#mf-nom").value.trim().replace(/[\\/:*?"<>|]/g, "_") || base, nom = ext ? nb.replace(new RegExp("\\." + ext + "$", "i"), "") + "." + ext : nb;
+    const titre = $("#mf-titre").value.trim(), info = $("#mf-info").value.trim();
+    $("#mf-ok").disabled = true;
+    try { await db.doc("cloud/" + f.docId).set({...Object.fromEntries(Object.entries(f).filter(([k]) => k !== "docId")), nom, titre: titre === nom ? "" : titre, info}); fermerFenetre(); toast("Tuile modifiée."); }
+    catch (err){ $("#mf-ok").disabled = false; const s = $("#statut-fen"); s.className = "statut erreur"; s.textContent = erreurEcriture(err); }
+  };
+}
 /* Signaler un problème sur un fichier du cloud (arrive dans Gérant → Signalements) */
 const TYPES_SIGNAL_FICHIER = [["ouvre","Le fichier ne s'ouvre pas"],["telechargement","Le téléchargement ne marche pas"],["contenu","Mauvais fichier / contenu"],["apercu","Aperçu incorrect"],["autre-f","Autre"]];
 function fenetrePrevenirFichier(f){
