@@ -3058,8 +3058,8 @@ span.obj-txt:has(> .badge-l){vertical-align:baseline}
 .r-pdf.occupe{opacity:.5;cursor:progress}
 .lien-h{color:var(--accent);text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:1.5px;text-underline-offset:3px;cursor:pointer;border-radius:3px}
 .lien-h::after{content:"↗";font-size:.75em;margin-left:.12em;vertical-align:.25em;text-decoration:none;display:inline-block;opacity:.8}
-.lien-h:hover{background:var(--accent-sombre);text-decoration-style:solid}
-.lien-h:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lien-h{transition:color .15s,text-decoration-color .15s}.lien-h:hover{text-decoration-style:solid;color:color-mix(in srgb,var(--accent) 80%,var(--texte))}
+.lien-h:focus{outline:none}.lien-h:focus-visible{text-decoration-style:solid;text-decoration-thickness:2px}
 .lien-h.lien-casse{color:var(--doux);text-decoration-style:wavy}
 .lien-bulle{position:fixed;z-index:1000;display:flex;align-items:center;gap:4px;flex-wrap:wrap;max-width:min(440px,calc(100vw - 16px));padding:6px;background:var(--surface);border:1px solid var(--ligne);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.4);font-size:.85rem}
 .lien-bulle .lb-cible{padding:0 8px;color:var(--accent);font-weight:600;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -7275,7 +7275,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.47";
+const VERSION_SITE = "2.48";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
