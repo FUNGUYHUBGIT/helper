@@ -3083,6 +3083,7 @@ span.obj-txt:has(> .badge-l){vertical-align:baseline}
 .pdf-p-bas{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:.9rem;color:var(--doux)}
 .pdf-p-bas b{color:var(--texte);font-variant-numeric:tabular-nums}
 .ag-k{font-size:17px;fill:var(--texte)}
+.mod-curseur-tete .mod-k-txt,.mod-k-txt{width:96px!important;flex:none;text-align:right;font:italic 600 1.05rem "Times New Roman",Times,"Liberation Serif",serif;padding:4px 8px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -7276,7 +7277,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.49";
+const VERSION_SITE = "2.50";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -11489,9 +11490,11 @@ function svgAgrandissement(o){
   if (o.grille !== false && !vol && s >= 7){ let gr = ""; const pas = s < 12 ? 2 : 1; for (let x = x0 - 2 * s; x <= xmax; x += s * pas) gr += lg(x, 10, x, base + 30, `class="gr-grille"`); for (let y = base + s * Math.ceil(30 / s); y >= 10; y -= s * pas) gr += lg(x0 - 2 * s, y, xmax, y, `class="gr-grille"`); svg += `<g opacity=".6">${gr}</g>`; }
   svg += forme(x0, 1, c, F) + forme(x1, k, ci, F + "'");
   // flèche « × k »
-  const xa = x0 + dims[0] * s * .5, xb = x1 + dims[0] * k * s * .5, yh = base - Math.max(dims[1], dims[1] * k) * s - (vol ? Math.max(b, b * k) * .45 * s : 0) - 12;
-  svg += `<path d="M${f1(xa)} ${f1(base - dims[1] * s - (vol ? b * .45 * s : 0) - 8)} Q${f1((xa + xb) / 2)} ${f1(yh - 34)} ${f1(xb - 4)} ${f1(base - dims[1] * k * s - (vol ? b * k * .45 * s : 0) - 10)}" fill="none" stroke="var(--doux)" stroke-width="1.4" marker-end="url(#ag-f)"/>`;
-  svg += svgTexte((xa + xb) / 2, yh - 24, "× " + kTxt(k), "geo-cote ag-k", "middle"); boites.push([(xa + xb) / 2 - 40, yh - 44, (xa + xb) / 2 + 40, yh - 18]);
+  // la flèche passe au-dessus des deux figures : elle part vers le haut et redescend à la verticale sur l'image
+  const hautF = base - dims[1] * s - (vol ? b * .45 * s : 0), hautI = base - dims[1] * k * s - (vol ? b * k * .45 * s : 0);
+  const xa = x0 + dims[0] * s * .5, xb = x1 + dims[0] * k * s * .5, yh = Math.min(hautF, hautI) - 12, crete = yh - 30;
+  svg += `<path d="M${f1(xa)} ${f1(hautF - 8)} C${f1(xa)} ${f1(crete)} ${f1(xb)} ${f1(crete)} ${f1(xb)} ${f1(hautI - 9)}" fill="none" stroke="var(--doux)" stroke-width="1.4" marker-end="url(#ag-f)"/>`;
+  svg += svgTexte((xa + xb) / 2, crete - 2, "× " + kTxt(k), "geo-cote ag-k", "middle"); boites.push([(xa + xb) / 2 - 40, crete - 22, (xa + xb) / 2 + 40, crete + 4]);
   const defs = `<defs><marker id="ag-f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="var(--doux)" stroke-width="1.5"/></marker></defs>`;
   let vx0 = x0 - 6, vy0 = yh - 50, vx1 = xmax - 30, vy1 = base + 8;
   boites.forEach(([p, q, r, t]) => { vx0 = Math.min(vx0, p - 8); vy0 = Math.min(vy0, q - 8); vx1 = Math.max(vx1, r + 8); vy1 = Math.max(vy1, t + 8); });
@@ -11500,7 +11503,7 @@ function svgAgrandissement(o){
   const nomsL = vol ? [["L", a], ["l", b], ["h", h3]] : fig === "carre" ? [["c", a]] : fig === "triangle" ? [["a", a], ["b", b]] : [["L", a], ["l", b]];
   if (mode === "trouver") red.push(`Le coefficient est le quotient d'une longueur de l'image par la longueur correspondante de la figure de départ : ${m_(`k = ${frac(frN(a * k), frN(a))} ${Math.abs(k * 1e4 - Math.round(k * 1e4)) < 1e-6 ? "=" : "≈"} ${kTxt(k)}`)}`);
   else red.push(`Le coefficient est ${m_(`k = ${kTxt(k)}`)}.`);
-  red.push(k === 1 ? `Comme ${m_("k = 1")}, ${F}' a exactement la même taille que ${F}.` : `Comme ${m_(k > 1 ? "k &gt; 1" : "0 &lt; k &lt; 1")}, ${F}' est un <b>${nat(k)}</b> de ${F}.`);
+  red.push(k === 1 ? `Comme ${m_("k = 1")}, ${F}' a exactement la même taille que ${F}.` : `Comme ${m_(k > 1 ? "k &gt; 1" : "0 &lt; k &lt; 1")}, ${F}' est ${k > 1 ? "un" : "une"} <b>${nat(k)}</b> de ${F}.`);
   red.push(`<b>Longueurs × k</b> : ${nomsL.map(([n, v]) => m_(`${n}' = ${kTxt(k)} × ${frN(v)} = ${frN(v * k)} ${u}`)).join(" ; ")}`);
   if (vol){ const V = a * b * h3; red.push(`<b>Volumes × k³</b> : ${m_(`V = ${frN(a)} × ${frN(b)} × ${frN(h3)} = ${frN(V)} ${u}³`)} et ${m_(`V' = k³ × V = ${frN(k ** 3, 4)} × ${frN(V)} = ${frN(V * k ** 3)} ${u}³`)}`);
     red.push(`<b>Aires × k²</b> : chaque face a une aire multipliée par ${m_(`k² = ${frN(k * k, 4)}`)}.`); }
@@ -12143,7 +12146,7 @@ const MODULES = [
     champs: [CHAMP("mode", "Ce que l'on fait", "choix", {options: [["figure","Agrandir ou réduire une figure (k donné)"],["trouver","Trouver le coefficient k"],["volume","Solide : volume × k³"],["thales","Lien avec Thalès (triangles)"]]}),
       CHAMP("figure", "Figure", "choix", {options: [["rectangle","Rectangle"],["carre","Carré"],["triangle","Triangle rectangle"]], si: o => o.mode === "figure" || o.mode === "trouver"}),
       CHAMP("nom", "Nom de la figure", "texte", {aide: "L'image s'appellera avec un prime : F → F'", si: o => o.mode !== "thales"}),
-      CHAMP("k", "Coefficient k", "texte", {aide: "Un nombre ou une fraction : 1,5 ; 3/2 ; 0,5. k > 1 : agrandissement, k < 1 : réduction", si: o => o.mode === "figure" || o.mode === "volume"}),
+      CHAMP("k", "Coefficient k", "texteCurseur", {min: .1, max: 5, pas: .05, aide: "Fais glisser, ou écris un nombre ou une fraction : 1,5 ; 3/2 ; 0,5. k > 1 : agrandissement, k < 1 : réduction", si: o => o.mode === "figure" || o.mode === "volume"}),
       CHAMP("a", "Longueur (base)", "texte", {si: o => o.mode !== "thales"}), CHAMP("b", "Largeur / hauteur / profondeur", "texte", {si: o => o.mode !== "thales" && !(o.mode !== "volume" && o.figure === "carre")}),
       CHAMP("c", "Hauteur du solide", "texte", {si: o => o.mode === "volume"}),
       CHAMP("aPrime", "Longueur correspondante sur l'image", "texte", {aide: "Image de la base : k = longueur de l'image ÷ longueur de départ", si: o => o.mode === "trouver"}),
@@ -12330,6 +12333,9 @@ function fenetreModule(depart, valider){
     m.champs.filter(c => !c.si || c.si(o)).forEach(c => {
       if (c.t === "case"){ cases.push(`<label class="mod-case" for="mc-${c.k}"><span>${esc(c.label)}</span><input type="checkbox" role="switch" id="mc-${c.k}" ${o[c.k] !== false ? "checked" : ""}></label>`); return; }
       viderCases();
+      if (c.t === "texteCurseur"){ const v = lireK(o[c.k]) ?? c.min, pc = ((Math.min(c.max, Math.max(c.min, v)) - c.min) / (c.max - c.min) * 100).toFixed(1);
+        html += `<div class="champ"><div class="mod-curseur-tete"><label for="mc-${c.k}">${esc(c.label)}</label><input type="text" class="mod-k-txt" id="mc-${c.k}" value="${esc(o[c.k] ?? "")}" inputmode="decimal" autocomplete="off"></div>
+          <div class="mod-curseur"><input type="range" id="mc-${c.k}-r" min="${c.min}" max="${c.max}" step="${c.pas}" value="${Math.min(c.max, Math.max(c.min, v))}" style="--pc:${pc}%" aria-label="${esc(c.label)}"></div>${c.aide ? `<span class="aide">${esc(c.aide)}</span>` : ""}</div>`; return; }
       if (c.t === "curseur"){ html += `<div class="champ"><div class="mod-curseur-tete"><label for="mc-${c.k}">${esc(c.label)}</label><b class="mod-valeur" data-val-de="mc-${c.k}" data-unite="${esc(c.unite || "")}">${esc(o[c.k] ?? 0)}${esc(c.unite || "")}</b></div>${champHtml(c, o[c.k], "mc-" + c.k)}${c.aide ? `<span class="aide">${esc(c.aide)}</span>` : ""}</div>`; return; }
       html += champUn(c);
     });
@@ -12384,6 +12390,10 @@ function fenetreModule(depart, valider){
     z.querySelectorAll("[data-sty]").forEach(x => x.oninput = () => { o.styles = {...(o.styles || {}), [x.dataset.sty]: x.value}; x.closest(".th-sw").classList.add("choisi"); apercu(); });
     z.querySelectorAll("[data-sty]").forEach(x => x.onchange = () => champs());
     z.querySelectorAll("[data-sty-r]").forEach(x => x.onchange = () => { const st = {...(o.styles || {})}; if (x.checked) st[x.dataset.styR] = true; else delete st[x.dataset.styR]; o.styles = st; apercu(); });
+    m.champs.filter(c => c.t === "texteCurseur").forEach(c => { const t = z.querySelector("#mc-" + c.k), r = z.querySelector("#mc-" + c.k + "-r"); if (!t || !r) return;
+      const pos = v => { const x = Math.min(c.max, Math.max(c.min, v)); r.value = x; r.style.setProperty("--pc", ((x - c.min) / (c.max - c.min) * 100).toFixed(1) + "%"); };
+      r.addEventListener("input", () => { const v = +r.value; t.value = String(+v.toFixed(2)).replace(".", ","); o[c.k] = t.value; pos(v); apercu(); });
+      t.addEventListener("input", () => { const v = lireK(t.value); if (v) pos(v); }); });
     z.querySelectorAll("[data-bdg]").forEach(b => b.onclick = () => { o.badge = b.dataset.bdg; const sc = z.querySelector(".bdg-choix")?.scrollTop; champs(); const n = z.querySelector(".bdg-choix"); if (n) n.scrollTop = sc || 0; apercu(); });
     z.querySelectorAll("[data-coul-raz]").forEach(b => b.onclick = () => { o[b.dataset.coulRaz] = ""; champs(); apercu(); });
     m.champs.filter(c => c.t === "couleurTexte").forEach(c => { const x = z.querySelector("#mc-" + c.k); if (!x) return;
