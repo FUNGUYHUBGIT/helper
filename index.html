@@ -3018,12 +3018,18 @@ span.obj-txt{display:inline-block;vertical-align:middle;border-radius:4px}
 .frac-apercu{font-size:1.2rem;line-height:1.9;text-align:center;margin:auto}
 .coul-txt{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .coul-txt .th-sw{font:inherit;font-size:.9rem}
-.badge-l{display:inline-flex;align-items:center;gap:.38em;padding:.16em .62em .16em .48em;border-radius:999px;font-family:inherit;font-style:normal;font-weight:700;letter-spacing:.01em;line-height:1.25;vertical-align:.08em;white-space:nowrap;color:var(--bc);background:color-mix(in srgb,var(--bc) 15%,transparent);border:1px solid color-mix(in srgb,var(--bc) 42%,transparent)}
-.badge-l svg{width:1.12em;height:1.12em;flex:none;display:block}
+.badge-l{display:inline-block;padding:.12em .62em .12em .5em;border-radius:999px;font-family:inherit;font-style:normal;font-weight:700;letter-spacing:.01em;line-height:1.3;vertical-align:baseline;white-space:nowrap;color:var(--bc);background:color-mix(in srgb,var(--bc) 15%,transparent);border:1px solid color-mix(in srgb,var(--bc) 42%,transparent);text-indent:0}
+.badge-l svg{display:inline-block;width:1.12em;height:1.12em;vertical-align:-.2em;margin-right:.36em}
 .badge-l.b-plein{background:var(--bc);border-color:var(--bc);color:#141414}
 .badge-l.b-contour{background:transparent;border-color:var(--bc)}
-.badge-l.b-seul{display:inline-grid;place-items:center;padding:0;gap:0;width:1.72em;height:1.72em;box-sizing:border-box;vertical-align:middle}
-.badge-l.b-maj{text-transform:uppercase;letter-spacing:.06em;font-size:.86em}
+.badge-l.b-maj .b-txt{text-transform:uppercase;letter-spacing:.06em;font-size:.88em}
+.badge-l.b-seul,.badge-l.b-nu{padding:0;border:0;background:none;line-height:1}
+.badge-l.b-seul svg{width:1.72em;height:1.72em;margin:0;vertical-align:-.5em}
+.badge-l.b-seul .b-rond{fill:color-mix(in srgb,var(--bc) 15%,transparent);stroke:color-mix(in srgb,var(--bc) 42%,transparent);stroke-width:1.2}
+.badge-l.b-seul.b-plein .b-rond{fill:var(--bc);stroke:var(--bc)}.badge-l.b-seul.b-plein svg{color:#141414}
+.badge-l.b-seul.b-contour .b-rond{fill:none;stroke:var(--bc)}
+.badge-l.b-nu svg{width:1.3em;height:1.3em;margin:0;vertical-align:-.27em}
+span.obj-txt:has(> .badge-l){vertical-align:baseline}
 .bdg-choix{max-height:300px;overflow:auto;border:1px solid var(--ligne);border-radius:10px;padding:4px 10px 10px;background:var(--surface-2)}
 .bdg-grille{display:flex;flex-wrap:wrap;gap:6px}
 .bdg-btn{background:none;border:1px solid transparent;border-radius:999px;padding:2px;cursor:pointer;font-size:.92rem}
@@ -7222,7 +7228,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.37";
+const VERSION_SITE = "2.38";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -11808,12 +11814,12 @@ function htmlCode(o){
 /* ===================== CATALOGUE ===================== */
 const CHAMP = (k, label, t = "texte", extra = {}) => ({k, label, t, ...extra});
 const MODULES = [
-  {id: "badge", nom: "Badge", cat: "Texte", icone: "◉", enLigne: true, phrase: r => `${r} Pourquoi les villes s'étendent-elles ?`, defaut: () => ({badge: "problematique", texte: "", couleur: "", style: "doux", affichage: "tout", taille: "normale", majuscules: false}),
+  {id: "badge", nom: "Badge", cat: "Texte", icone: "◉", enLigne: true, phrase: r => `${r} Pourquoi les villes s'étendent-elles ?`, defaut: () => ({badge: "problematique", texte: "", couleur: "", style: "doux", affichage: "tout", taille: .9, majuscules: false}),
     champs: [CHAMP("badge", "Badge", "badgeType"), CHAMP("texte", "Texte du badge", "texte", {aide: "Laisse vide pour garder le nom du badge, ou écris le tien : « Problématique 2 », « Info brevet »…"}),
-      CHAMP("affichage", "Affichage", "choix", {options: [["tout","Symbole et texte"],["symbole","Symbole seul"],["texte","Texte seul"]]}),
+      CHAMP("affichage", "Affichage", "choix", {options: [["tout","Symbole et texte"],["symbole","Symbole seul, dans sa pastille"],["nu","Symbole seul, sans pastille ni contour"],["texte","Texte seul"]]}),
       CHAMP("style", "Style", "choix", {options: [["doux","Teinté"],["plein","Plein"],["contour","Contour"]]}),
-      CHAMP("taille", "Taille", "choix", {options: [["petite","Petite"],["normale","Normale"],["grande","Grande"]]}),
-      CHAMP("couleur", "Couleur", "couleurTexte", {vide: "Couleur du badge"}), CHAMP("majuscules", "En majuscules", "case")], rendu: htmlBadge},
+      CHAMP("taille", "Taille", "curseur", {min: .6, max: 2, pas: .05, unite: " em", aide: "1 em = la taille du texte autour"}),
+      CHAMP("couleur", "Couleur", "couleurTexte", {vide: "Couleur du badge", defCoul: o => badgeDe(o.badge)[3]}), CHAMP("majuscules", "En majuscules", "case")], rendu: htmlBadge},
   {id: "fraction", nom: "Fraction", cat: "Texte", icone: "½", enLigne: true, defaut: () => ({num: "3", den: "4", coulNum: "", coulDen: "", coulBarre: "", styleNum: "normal", styleDen: "normal", taille: "1.15"}),
     champs: [CHAMP("num", "Numérateur", "texte", {aide: "Un nombre, une lettre ou une expression : 3, x, 2a + 1…"}), CHAMP("den", "Dénominateur", "texte"),
       CHAMP("styleNum", "Style du numérateur", "choix", {options: [["normal","Italique"],["gras","Italique gras"]]}), CHAMP("styleDen", "Style du dénominateur", "choix", {options: [["normal","Italique"],["gras","Italique gras"]]}),
@@ -11917,8 +11923,13 @@ const svgBadge = i => { const d = CENTRE_BADGE[i]; return `<svg viewBox="0 0 24 
 // Badge « en ligne » (pin) : symbole + mot, posé dans le texte comme une étiquette
 function htmlBadge(o){
   const [, lab, ico, c0] = badgeDe(o.badge), c = /^#[0-9a-f]{3,8}$/i.test(o.couleur || "") ? o.couleur : c0, t = String(o.texte ?? "").trim() || lab, aff = o.affichage || "tout";
-  const taille = {petite: ".78em", normale: ".9em", grande: "1.08em"}[o.taille] || ".9em", st = ["doux","plein","contour"].includes(o.style) ? o.style : "doux";
-  return `<span class="badge-l b-${st}${aff === "symbole" ? " b-seul" : ""}${o.majuscules ? " b-maj" : ""}" style="--bc:${c};font-size:${taille}" ${aff === "symbole" ? `role="img" aria-label="${esc(t)}" title="${esc(t)}"` : ""}>${aff !== "texte" ? svgBadge(ico) : ""}${aff !== "symbole" ? `<span>${esc(t)}</span>` : ""}</span>`;
+  const tl = {petite: .78, normale: .9, grande: 1.08}[o.taille] ?? +o.taille, taille = (tl >= .5 && tl <= 3 ? tl : .9) + "em", st = ["doux","plein","contour"].includes(o.style) ? o.style : "doux";
+  const d = CENTRE_BADGE[ico] || [0, 0], dessin = ICO_BADGE[ico] || "", aria = `role="img" aria-label="${esc(t)}" title="${esc(t)}"`;
+  // Symbole seul : cercle et symbole dans un même dessin, centrés au pixel près
+  if (aff === "symbole") return `<span class="badge-l b-seul b-${st}" style="--bc:${c};font-size:${taille}" ${aria}><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="b-rond" cx="16" cy="16" r="15.2"/><g transform="translate(16 16) scale(.74) translate(${-12 + d[0]} ${-12 + d[1]})" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${dessin}</g></svg></span>`;
+  // Symbole nu : sans pastille ni contour
+  if (aff === "nu") return `<span class="badge-l b-nu" style="--bc:${c};font-size:${taille}" ${aria}>${svgBadge(ico)}</span>`;
+  return `<span class="badge-l b-${st}${o.majuscules ? " b-maj" : ""}" style="--bc:${c};font-size:${taille}">${aff !== "texte" ? svgBadge(ico) : ""}<span class="b-txt">${esc(t)}</span></span>`;
 }
 // Fraction « en ligne » : un grand caractère posé dans le texte, à l'endroit du curseur
 function htmlFraction(o){
@@ -11966,6 +11977,7 @@ function fenetreModule(depart, valider){
     if (m.editeur){ m.editeur({kind: "module", ...m.defaut(), type: m.id}, valider); return; } o = {kind: "module", ...m.defaut(), type: m.id}; if (m.champs.some(c => c.t === "grille")) o.grille = m.champs.find(c => c.t === "grille").generer(o); edition(); };
   const edition = () => {
     const m = moduleDe(o.type);
+    if (o.type === "badge"){ if (typeof o.taille === "string") o.taille = {petite: .78, normale: .9, grande: 1.08}[o.taille] ?? .9; if (o.majuscules === undefined) o.majuscules = false; }
     el.querySelector("#mod-corps").innerHTML = `<div class="rangee" style="justify-content:space-between"><h3 class="mc-titre-ed"><span class="mc-ico mc-ico-p" style="--mc:${COUL_CAT_MODULES[m.cat] || "var(--accent)"}">${ICONES_MODULES[m.id] || m.icone}</span>${m.nom}</h3>${depart ? "" : `<button type="button" class="mini-btn" id="mod-retour">← Autre module</button>`}</div>
       <div class="mod-edition"><div class="mod-champs" id="mod-champs"></div><div class="apercu-graphe mod-apercu" id="mod-apercu"></div></div>
       <div class="rangee"><button class="btn" type="button" id="mod-ok">Valider</button><button class="btn sec" type="button" id="fen-annuler">Annuler</button></div>`;
@@ -12001,7 +12013,7 @@ function fenetreModule(depart, valider){
       case "nombre": return `<input type="number" step="any" id="${id}" value="${esc(v ?? "")}" ${c.min !== undefined ? `min="${c.min}"` : ""} ${c.max !== undefined ? `max="${c.max}"` : ""}>`;
       case "curseur": return `<div class="mod-curseur"><input type="range" id="${id}" min="${c.min}" max="${c.max}" step="${c.pas || 1}" value="${esc(v ?? 0)}" style="--pc:${((+(v ?? 0) - c.min) / (c.max - c.min) * 100).toFixed(1)}%">${c.reperes ? `<div class="mod-reperes">${c.reperes.map(([val, t]) => `<span style="left:${((val - c.min) / (c.max - c.min) * 100).toFixed(1)}%">${esc(t)}</span>`).join("")}</div>` : ""}</div>`;
       case "couleur": return `<input type="color" id="${id}" value="${esc(v || "#f2ae02")}">`;
-      case "couleurTexte": return `<span class="coul-txt"><label class="th-sw${v ? " choisi" : ""}"><input type="color" id="${id}" value="${esc(v || "#f2f2f2")}"><span>${v ? "Couleur choisie" : c.vide || "Comme le texte"}</span></label>${v ? `<button type="button" class="mini-btn" data-coul-raz="${id.replace(/^mc-/, "")}">↺ ${c.vide || "Comme le texte"}</button>` : ""}</span>`;
+      case "couleurTexte": return `<span class="coul-txt"><label class="th-sw${v ? " choisi" : ""}"><input type="color" id="${id}" value="${esc(v || (c.defCoul ? c.defCoul(o) : "#f2f2f2"))}"><span>${v ? "Couleur choisie" : c.vide || "Comme le texte"}</span></label>${v ? `<button type="button" class="mini-btn" data-coul-raz="${id.replace(/^mc-/, "")}">↺ ${c.vide || "Comme le texte"}</button>` : ""}</span>`;
       case "case": return `<input type="checkbox" id="${id}" ${v !== false ? "checked" : ""}>`;
       case "zone": return `<textarea id="${id}" rows="6" spellcheck="false" class="mono-zone">${esc(v ?? "")}</textarea>`;
       case "lignes": return `<textarea id="${id}" rows="2">${esc(v ?? "")}</textarea>`;
