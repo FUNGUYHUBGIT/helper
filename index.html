@@ -7228,7 +7228,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.38";
+const VERSION_SITE = "2.39";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -11817,9 +11817,9 @@ const MODULES = [
   {id: "badge", nom: "Badge", cat: "Texte", icone: "◉", enLigne: true, phrase: r => `${r} Pourquoi les villes s'étendent-elles ?`, defaut: () => ({badge: "problematique", texte: "", couleur: "", style: "doux", affichage: "tout", taille: .9, majuscules: false}),
     champs: [CHAMP("badge", "Badge", "badgeType"), CHAMP("texte", "Texte du badge", "texte", {aide: "Laisse vide pour garder le nom du badge, ou écris le tien : « Problématique 2 », « Info brevet »…"}),
       CHAMP("affichage", "Affichage", "choix", {options: [["tout","Symbole et texte"],["symbole","Symbole seul, dans sa pastille"],["nu","Symbole seul, sans pastille ni contour"],["texte","Texte seul"]]}),
-      CHAMP("style", "Style", "choix", {options: [["doux","Teinté"],["plein","Plein"],["contour","Contour"]]}),
+      CHAMP("style", "Style", "choix", {options: [["doux","Teinté"],["plein","Plein"],["contour","Contour"]], si: o => o.affichage !== "nu"}),
       CHAMP("taille", "Taille", "curseur", {min: .6, max: 2, pas: .05, unite: " em", aide: "1 em = la taille du texte autour"}),
-      CHAMP("couleur", "Couleur", "couleurTexte", {vide: "Couleur du badge", defCoul: o => badgeDe(o.badge)[3]}), CHAMP("majuscules", "En majuscules", "case")], rendu: htmlBadge},
+      CHAMP("couleur", "Couleur", "couleurTexte", {vide: "Couleur du badge", defCoul: o => badgeDe(o.badge)[3]}), CHAMP("majuscules", "En majuscules", "case", {si: o => o.affichage !== "nu" && o.affichage !== "symbole"})], rendu: htmlBadge},
   {id: "fraction", nom: "Fraction", cat: "Texte", icone: "½", enLigne: true, defaut: () => ({num: "3", den: "4", coulNum: "", coulDen: "", coulBarre: "", styleNum: "normal", styleDen: "normal", taille: "1.15"}),
     champs: [CHAMP("num", "Numérateur", "texte", {aide: "Un nombre, une lettre ou une expression : 3, x, 2a + 1…"}), CHAMP("den", "Dénominateur", "texte"),
       CHAMP("styleNum", "Style du numérateur", "choix", {options: [["normal","Italique"],["gras","Italique gras"]]}), CHAMP("styleDen", "Style du dénominateur", "choix", {options: [["normal","Italique"],["gras","Italique gras"]]}),
@@ -12077,7 +12077,7 @@ function fenetreModule(depart, valider){
         if (c.k === "modele" && o.type === "conjugaison"){ const d = LA_DEFAUT[o.modele]; o.radical = d[0]; o.radicalParfait = d[1]; }
         if (c.k === "modele" && o.type === "declinaison"){ const d = DECL_MODELES.find(x => x[0] === o.modele); o.nominatif = d[4]; o.genitif = d[5]; }
         if (["langue","verbe","modele","radical","radicalParfait","nominatif","genitif","perso1","perso2"].includes(c.k)){ regenerer(); champs(); el.querySelector("#mc-" + c.k)?.focus(); if (c.t === "texte"){ const y = el.querySelector("#mc-" + c.k); y.setSelectionRange(y.value.length, y.value.length); } }
-        else if (["mode","montage","epoque","transition","phenomene","scenario"].includes(c.k)){ if (c.k === "epoque" && o.type === "carte"){ o.surligner = []; if (!o.epoque2 || +o.epoque2 <= +o.epoque) o.epoque2 = String(ANNEES_HISTO.find(a => a > +o.epoque) || ANNEES_HISTO.at(-1)); } champs(); }
+        else if (["mode","montage","epoque","transition","phenomene","scenario","affichage"].includes(c.k)){ if (c.k === "epoque" && o.type === "carte"){ o.surligner = []; if (!o.epoque2 || +o.epoque2 <= +o.epoque) o.epoque2 = String(ANNEES_HISTO.find(a => a > +o.epoque) || ANNEES_HISTO.at(-1)); } champs(); }
         apercu();
       });
     });
