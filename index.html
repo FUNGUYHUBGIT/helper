@@ -1671,7 +1671,7 @@ li.juste .et-corr b{color:#6fbf73}li.faux .et-corr b{color:#e86f9a}
 @media (max-width:760px){.geo-ed{grid-template-columns:1fr}.geo-droite{position:static;order:-1}.geo-choix{grid-template-columns:repeat(3,1fr)}.geo-reglages{max-height:none}}
 
 .geo-sommet{fill:var(--texte);font:700 15px var(--f-texte)}
-.geo-cote{fill:var(--doux);font:600 12.5px var(--f-texte)}
+.geo-cote{fill:var(--doux);font:italic 15px "Times New Roman",Times,"Liberation Serif","Nimbus Roman",serif}
 .obj-doc:has(.geo-svg){width:fit-content}
 .fig-exo .geo-svg{max-width:100%}
 .plan-svg{width:min(400px,100%);height:auto}
@@ -7191,7 +7191,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.32";
+const VERSION_SITE = "2.33";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -11064,6 +11064,12 @@ const MONDE_A2 = {"242":"FJ","834":"TZ","732":"EH","124":"CA","840":"US","398":"
 /* Un module = {kind: "module", type, ...réglages}. Il s'insère dans une leçon (figure.obj-doc)
    ou illustre une question d'exercice (fig.type = "module"). */
 const f1 = v => (+v).toFixed(1);
+// Étiquette d'une mesure à côté d'un trait : on éloigne le centre du texte de (écart + demi-largeur projetée), pour qu'il ne touche jamais le trait.
+// (mx, my) : point du trait ; (nx, ny) : normale unitaire vers l'extérieur. Renvoie le centre et la boîte du texte.
+const largeurMesure = t => String(t).length * 7.1 + 6, HAUT_MESURE = 15;
+const placerMesure = (mx, my, nx, ny, t, ecart = 5) => { const w = largeurMesure(t), h = HAUT_MESURE, d = ecart + Math.abs(nx) * w / 2 + Math.abs(ny) * h / 2, x = mx + nx * d, y = my + ny * d;
+  return {x, y, boite: [x - w / 2, y - h / 2, x + w / 2, y + h / 2]}; };
+const svgMesure = (pm, t, extra = "") => svgTexte(pm.x, pm.y + 5, t, "geo-cote", "middle", extra);
 const svgTexte = (x, y, t, cls = "mod-txt", ancre = "middle", extra = "") => `<text x="${f1(x)}" y="${f1(y)}" text-anchor="${ancre}" class="${cls}" ${extra}>${esc(t)}</text>`;
 const MARQ_MOD = c => `<marker id="fm-${c.replace(/[^a-z0-9]/gi, "")}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker>`;
 const flecheMod = (x1, y1, x2, y2, c, l = 2.2, deux = false) => `<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${l}" marker-end="url(#fm-${c.replace(/[^a-z0-9]/gi, "")})" ${deux ? `marker-start="url(#fm-${c.replace(/[^a-z0-9]/gi, "")})"` : ""}/>`;
@@ -11143,18 +11149,27 @@ function svgPythagore(o){
   const T = ([x, y]) => [mg + (x - Math.min(...xs)) * k + ((W - 2 * mg) - (Math.max(...xs) - Math.min(...xs)) * k) / 2, mg + (y - Math.min(...ys)) * k + ((H - 2 * mg) - (Math.max(...ys) - Math.min(...ys)) * k) / 2];
   const Q = P.map(T), poly = pts => pts.map(T).map(p => f1(p[0]) + " " + f1(p[1])).join(" L");
   const coulC = ["#5fa8d3", "#e86f9a", "#6fbf73"];
+  const boitesP = [];
   let svg = carresP.map((q, i) => { const ctr = T([q.reduce((s, p) => s + p[0], 0) / 4, q.reduce((s, p) => s + p[1], 0) / 4]), l = [ab || fb, bc || Math.hypot(fb, fc), ac || fc][i], nomC = [AB, BC, AC][i];
     const inconnu = (i === 1 && mode === "hypotenuse") || (i === 2 && mode === "cote");
-    return `<path d="M${poly(q)}Z" fill="color-mix(in srgb, ${coulC[i]} 14%, transparent)" stroke="${coulC[i]}" stroke-width="1.4" stroke-dasharray="5 4"/>${svgTexte(ctr[0], ctr[1] - 3, `${nomC}² = ${inconnu ? "?" : carreTxt(l)}`, "mod-txt-b", "middle", `style="fill:${coulC[i]}"`)}${svgTexte(ctr[0], ctr[1] + 12, `${nomC} = ${inconnu ? "?" : frN(l) + " " + (o.unite || "cm")}`, "gr-txt")}`; }).join("");
+    const t1 = `${nomC}² = ${inconnu ? "?" : carreTxt(l)}`, t2 = `${nomC} = ${inconnu ? "?" : frN(l) + " " + (o.unite || "cm")}`, larg = Math.max(t1.length * 7.6, largeurMesure(t2)), cote = l * k;
+    let lx = ctr[0], ly = ctr[1];
+    if (larg + 10 > cote){   // carré trop petit pour ses étiquettes : on les pose juste à l'extérieur, sans chevaucher le trait
+      const tc = T([(P[0][0] + P[1][0] + P[2][0]) / 3, (P[0][1] + P[1][1] + P[2][1]) / 3]); let dx = ctr[0] - tc[0], dy = ctr[1] - tc[1]; const n = Math.hypot(dx, dy) || 1; dx /= n; dy /= n;
+      const ext = cote / 2 * (Math.abs(dx) + Math.abs(dy)) + 8 + Math.abs(dx) * larg / 2 + Math.abs(dy) * 20; lx = ctr[0] + dx * ext; ly = ctr[1] + dy * ext; }
+    boitesP.push([lx - larg / 2, ly - 18, lx + larg / 2, ly + 18]);
+    return `<path d="M${poly(q)}Z" fill="color-mix(in srgb, ${coulC[i]} 14%, transparent)" stroke="${coulC[i]}" stroke-width="1.4" stroke-dasharray="5 4"/>${svgTexte(lx, ly - 4, t1, "mod-txt-b", "middle", `style="fill:${coulC[i]}"`)}${svgTexte(lx, ly + 13, t2, "geo-cote", "middle")}`; }).join("");
   svg += `<path d="M${f1(Q[0][0])} ${f1(Q[0][1])} L${f1(Q[1][0])} ${f1(Q[1][1])} L${f1(Q[2][0])} ${f1(Q[2][1])}Z" fill="color-mix(in srgb, ${c} 18%, transparent)" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"/>`;
   if (Math.abs(angA - Math.PI / 2) < 1e-6 && mode !== "reciproque"){ const d = 12; svg += `<path d="M${f1(Q[0][0] + d)} ${f1(Q[0][1])} L${f1(Q[0][0] + d)} ${f1(Q[0][1] - d)} L${f1(Q[0][0])} ${f1(Q[0][1] - d)}" fill="none" stroke="var(--texte)" stroke-width="1.4"/>`; }
   const cx = (Q[0][0] + Q[1][0] + Q[2][0]) / 3, cy = (Q[0][1] + Q[1][1] + Q[2][1]) / 3;
-  const etiq = (i, j, t, inc) => { const mx = (Q[i][0] + Q[j][0]) / 2, my = (Q[i][1] + Q[j][1]) / 2; let nx = mx - cx, ny = my - cy; const n = Math.hypot(nx, ny) || 1; const dd = carres ? -16 : 16;
-    return svgTexte(mx + nx / n * dd, my + ny / n * dd + 4, t, "geo-cote", "middle", inc ? `style="fill:${c};font-weight:700"` : ""); };
+  const etiq = (i, j, t, inc) => { if (!t) return ""; const mx = (Q[i][0] + Q[j][0]) / 2, my = (Q[i][1] + Q[j][1]) / 2, ux = Q[j][0] - Q[i][0], uy = Q[j][1] - Q[i][1], n = Math.hypot(ux, uy) || 1;
+    let nx = -uy / n, ny = ux / n; if ((mx - cx) * nx + (my - cy) * ny < 0){ nx = -nx; ny = -ny; } if (carres){ nx = -nx; ny = -ny; }
+    const pm = placerMesure(mx, my, nx, ny, t, 5); boitesP.push(pm.boite); return svgMesure(pm, t, inc ? `style="fill:${c};font-weight:700"` : ""); };
   const val = (v, inconnu) => inconnu ? "?" : v ? frN(v) + " " + (o.unite || "cm") : "";
   if (!carres) svg += etiq(0, 1, val(nbT(o.ab), false), false) + etiq(0, 2, mode === "cote" ? "?" : val(nbT(o.ac), false), mode === "cote") + etiq(1, 2, mode === "hypotenuse" ? "?" : val(nbT(o.bc), false), mode === "hypotenuse");
   [[0, A], [1, B], [2, C]].forEach(([i, L]) => { let dx = Q[i][0] - cx, dy = Q[i][1] - cy; const n = Math.hypot(dx, dy) || 1; svg += svgTexte(Q[i][0] + dx / n * 15, Q[i][1] + dy / n * 15 + 5, L, "geo-sommet"); });
-  const fig = `<svg viewBox="0 0 ${W} ${H}" class="mod-svg" style="max-width:${W + 40}px" role="img" aria-label="Théorème de Pythagore, triangle ${esc(S)}">${svg}</svg>`;
+  let vx0 = 0, vy0 = 0, vx1 = W, vy1 = H; boitesP.forEach(([a, b2, c2, d2]) => { vx0 = Math.min(vx0, a - 6); vy0 = Math.min(vy0, b2 - 6); vx1 = Math.max(vx1, c2 + 6); vy1 = Math.max(vy1, d2 + 6); });
+  const fig = `<svg viewBox="${f1(vx0)} ${f1(vy0)} ${f1(vx1 - vx0)} ${f1(vy1 - vy0)}" class="mod-svg" style="max-width:${W + 40}px" role="img" aria-label="Théorème de Pythagore, triangle ${esc(S)}">${svg}</svg>`;
   return `<div class="mod-theoreme">${fig}${o.redaction !== false && red.length ? htmlRedaction(red, titre) : ""}</div>`;
 }
 function svgThales(o){
@@ -11201,22 +11216,30 @@ function svgThales(o){
   svg += ln(Pb2, Pc2, `stroke="${c}" stroke-width="2.6"`) + ln(Pm, Pn, `stroke="#5fa8d3" stroke-width="2.6"`);
   if ((o.mode || "calcul") === "calcul" || o._k2 === undefined && kR) svg += chevron(Pb2, Pc2, c) + chevron(Pm, Pn, "#5fa8d3");
   // longueurs : sur les segments
-  const lab = (p, q, t, petit) => { if (!t) return ""; const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, ux = q[0] - p[0], uy = q[1] - p[1], n = Math.hypot(ux, uy); let nx = -uy / n, ny = ux / n; const T3 = petit ? [Pa2, Pm, Pn] : [Pa2, Pb2, Pc2], gx = (T3[0][0] + T3[1][0] + T3[2][0]) / 3, gy = (T3[0][1] + T3[1][1] + T3[2][1]) / 3, dec = 0;
-    if ((mx - gx) * nx + (my - gy) * ny < 0){ nx = -nx; ny = -ny; } return svgTexte(mx + nx * (14 + dec) , my + ny * (14 + dec) + 4, t, "geo-cote"); };
+  const boites = [];
+  const lab = (p, q, t, petit, dedans) => { if (!t) return ""; const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, ux = q[0] - p[0], uy = q[1] - p[1], n = Math.hypot(ux, uy); let nx = -uy / n, ny = ux / n; const T3 = petit ? [Pa2, Pm, Pn] : [Pa2, Pb2, Pc2], gx = (T3[0][0] + T3[1][0] + T3[2][0]) / 3, gy = (T3[0][1] + T3[1][1] + T3[2][1]) / 3, dec = 0;
+    if ((mx - gx) * nx + (my - gy) * ny < 0){ nx = -nx; ny = -ny; }
+    if (dedans){ nx = -nx; ny = -ny; }   // AM et AN : à l'intérieur, car l'extérieur est pris par les flèches de AB et AC
+    const pm = placerMesure(mx, my, nx, ny, t, 5 + dec); boites.push(pm.boite); return svgMesure(pm, t); };
   const tx = key => L[key] && String(L[key]).trim() ? (nbT(L[key]) ? frN(nbT(L[key])) + " " + u : String(L[key])) : "";
   if (o.longueurs !== false){
     svg += lab(Pa2, Pm, tx("AM"), true) + lab(Pa2, Pn, tx("AN"), true) + lab(Pm, Pn, tx("MN"), true) + lab(Pb2, Pc2, tx("BC"), false);
     // AB et AC : cotes décalées vers l'extérieur
-    const cote = (p, q, t) => { if (!t) return ""; const ux = q[0] - p[0], uy = q[1] - p[1], n = Math.hypot(ux, uy); let nx = -uy / n, ny = ux / n; const gx = (Pa2[0] + Pb2[0] + Pc2[0]) / 3, gy = (Pa2[1] + Pb2[1] + Pc2[1]) / 3, mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
-      if ((mx - gx) * nx + (my - gy) * ny < 0){ nx = -nx; ny = -ny; } const d = 30, p2 = [p[0] + nx * d, p[1] + ny * d], q2 = [q[0] + nx * d, q[1] + ny * d];
-      return ln(p2, q2, `stroke="var(--doux)" stroke-width="1" marker-start="url(#th-f)" marker-end="url(#th-f)"`) + svgTexte(mx + nx * (d + 12), my + ny * (d + 12) + 4, t, "geo-cote"); };
-    svg += pap ? lab(Pa2, Pb2, tx("AB"), false) + lab(Pa2, Pc2, tx("AC"), false) : cote(Pa2, Pb2, tx("AB")) + cote(Pa2, Pc2, tx("AC"));
+    const cote = (p, q, t, voisin) => { if (!t) return ""; const ux = q[0] - p[0], uy = q[1] - p[1], n = Math.hypot(ux, uy); let nx = -uy / n, ny = ux / n; const gx = (Pa2[0] + Pb2[0] + Pc2[0]) / 3, gy = (Pa2[1] + Pb2[1] + Pc2[1]) / 3, mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
+      if ((mx - gx) * nx + (my - gy) * ny < 0){ nx = -nx; ny = -ny; }
+      // la flèche passe au-delà de la mesure AM / AN posée le long du même côté, pour ne jamais la traverser
+      const d = Math.max(28, voisin ? 5 + Math.abs(nx) * largeurMesure(voisin) + Math.abs(ny) * HAUT_MESURE + 10 : 0), p2 = [p[0] + nx * d, p[1] + ny * d], q2 = [q[0] + nx * d, q[1] + ny * d];
+      const pm = placerMesure(mx + nx * d, my + ny * d, nx, ny, t, 5); boites.push(pm.boite, [Math.min(p2[0], q2[0]) - 4, Math.min(p2[1], q2[1]) - 4, Math.max(p2[0], q2[0]) + 4, Math.max(p2[1], q2[1]) + 4]);
+      return ln(p2, q2, `stroke="var(--doux)" stroke-width="1" marker-start="url(#th-f)" marker-end="url(#th-f)"`) + svgMesure(pm, t); };
+    svg += pap ? lab(Pa2, Pb2, tx("AB"), false) + lab(Pa2, Pc2, tx("AC"), false) : cote(Pa2, Pb2, tx("AB"), tx("AM")) + cote(Pa2, Pc2, tx("AC"), tx("AN"));
   }
   const g = [(Pa2[0] + Pb2[0] + Pc2[0]) / 3, (Pa2[1] + Pb2[1] + Pc2[1]) / 3];
   [[Pa2, A, pap ? [0, -1] : null], [Pb2, B], [Pc2, C], [Pm, M], [Pn, N]].forEach(([p, Lt, dir]) => { let dx = p[0] - g[0], dy = p[1] - g[1]; if (dir){ dx = dir[0]; dy = dir[1]; } const n = Math.hypot(dx, dy) || 1;
     svg += `<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="2.6" fill="var(--texte)"/>` + svgTexte(p[0] + dx / n * 15, p[1] + dy / n * 15 + 5, Lt, "geo-sommet"); });
   const defs = `<defs><marker id="th-f" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9" fill="none" stroke="var(--doux)" stroke-width="1.4"/></marker></defs>`;
-  const fig = `<svg viewBox="${f1(mx0 - 20)} ${f1(my0 - 10)} ${f1(W + 40)} ${f1(H + 20)}" class="mod-svg" style="max-width:420px" role="img" aria-label="Configuration de Thalès ${pap ? "en papillon" : "en triangles emboîtés"}">${defs}${svg}</svg>`;
+  let vx0 = mx0 - 20, vy0 = my0 - 10, vx1 = mx0 + W + 20, vy1 = my0 + H + 10;
+  boites.forEach(([a, b2, c2, d2]) => { vx0 = Math.min(vx0, a - 6); vy0 = Math.min(vy0, b2 - 6); vx1 = Math.max(vx1, c2 + 6); vy1 = Math.max(vy1, d2 + 6); });
+  const fig = `<svg viewBox="${f1(vx0)} ${f1(vy0)} ${f1(vx1 - vx0)} ${f1(vy1 - vy0)}" class="mod-svg" style="max-width:440px" role="img" aria-label="Configuration de Thalès ${pap ? "en papillon" : "en triangles emboîtés"}">${defs}${svg}</svg>`;
   return `<div class="mod-theoreme">${fig}${o.redaction !== false && red.length ? htmlRedaction(red, titre) : ""}</div>`;
 }
 
