@@ -7277,7 +7277,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.52";
+const VERSION_SITE = "2.53";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -11464,14 +11464,16 @@ function svgAgrandissement(o){
   if (mode === "trouver"){ const ap = nbT(o.aPrime); if (ap) k = ap / a; }
   const vol = mode === "volume", F = esc(o.nom || "F");
   const dims = vol ? [a, h3] : fig === "carre" ? [a, a] : [a, b];
-  const W = 560, H = 230, gap = 86, s = Math.min(42, (W - gap - 60) / ((dims[0] + (vol ? b * .45 : 0)) * (1 + k)), (H - 50) / ((dims[1] + (vol ? b * .45 : 0)) * Math.max(1, k)));
+  const imbr = o.disposition === "dedans" && !vol;   // la petite figure posée dans la grande, coin contre coin
+  const W = 560, H = 230, gap = 86, s = Math.min(42, imbr ? (W - 60) / (dims[0] * Math.max(1, k)) : (W - gap - 60) / ((dims[0] + (vol ? b * .45 : 0)) * (1 + k)), (H - 50) / ((dims[1] + (vol ? b * .45 : 0)) * Math.max(1, k)));
   const x0 = 34, base = 40 + Math.max(dims[1] + (vol ? b * .45 : 0), (dims[1] + (vol ? b * .45 : 0)) * k) * s;
-  const x1 = x0 + (dims[0] + (vol ? b * .45 : 0)) * s + gap;
+  const x1 = imbr ? x0 : x0 + (dims[0] + (vol ? b * .45 : 0)) * s + gap;
   const lg = (x, y, x2, y2, st) => `<line x1="${f1(x)}" y1="${f1(y)}" x2="${f1(x2)}" y2="${f1(y2)}" ${st}/>`;
-  const boites = [], mes = (x, y, nx, ny, t) => { const pm = placerMesure(x, y, nx, ny, t, 5); boites.push(pm.boite); return svgMesure(pm, t); };
-  const forme = (x, kk, col, nom) => {
+  let coulMes = "";   // dans la disposition « dedans », chaque mesure prend la couleur de sa figure
+  const boites = [], mes = (x, y, nx, ny, t) => { const pm = placerMesure(x, y, nx, ny, t, 5); boites.push(pm.boite); return svgMesure(pm, t, coulMes ? `style="fill:${coulMes}"` : ""); };
+  const forme = (x, kk, col, nom, place = "", r = 0) => {   // r : part de la grande couverte par la petite (disposition « dedans »)
     const w = dims[0] * kk * s, h = dims[1] * kk * s, y = base, st = `stroke="${col}" stroke-width="2.2" stroke-linejoin="round"`, fill = `fill="color-mix(in srgb, ${col} 14%, transparent)"`;
-    const la = frN(a * kk) + " " + u, lb = frN((fig === "carre" ? a : b) * kk) + " " + u;
+    const la = frN(a * kk) + " " + u, lb = frN((fig === "carre" ? a : b) * kk) + " " + u; coulMes = imbr ? col : "";
     let g = "";
     if (vol){ const d = b * kk * s * .45, p = (X, Y) => `${f1(X)} ${f1(Y)}`;
       g += `<path d="M${p(x, y)} L${p(x + w, y)} L${p(x + w, y - h)} L${p(x, y - h)}Z" ${fill} ${st}/>`;
@@ -11481,26 +11483,26 @@ function svgAgrandissement(o){
       g += svgTexte(x + w / 2, y - h / 2 + 5, nom, "geo-sommet", "middle", `style="fill:${col}"`); return g; }
     if (fig === "triangle"){
       g += `<path d="M${f1(x)} ${f1(y)} L${f1(x + w)} ${f1(y)} L${f1(x)} ${f1(y - h)}Z" ${fill} ${st}/>` + `<path d="M${f1(x + 9)} ${f1(y)} V${f1(y - 9)} H${f1(x)}" fill="none" stroke="var(--texte)" stroke-width="1.3"/>`;
-      g += mes(x + w / 2, y, 0, 1, la) + mes(x, y - h / 2, -1, 0, lb) + svgTexte(x + w * .3, y - h * .3 + 5, nom, "geo-sommet", "middle", `style="fill:${col}"`); return g; }
+      // la grande figure écrit ses mesures sur la partie de ses côtés que la petite ne couvre pas
+      if (place === "grand") g += mes(x + w * (1 + r) / 2, y, 0, 1, la) + mes(x, y - h * (1 + r) / 2, -1, 0, lb);
+      else g += mes(x + w / 2, y, 0, 1, la) + mes(x, y - h / 2, -1, 0, lb);
+      g += place === "grand" ? svgTexte(x + w * .62, y - h * .58, nom, "geo-sommet", "middle", `style="fill:${col}"`) : svgTexte(x + w * .3, y - h * .3 + 5, nom, "geo-sommet", "middle", `style="fill:${col}"`); return g; }
     g += `<rect x="${f1(x)}" y="${f1(y - h)}" width="${f1(w)}" height="${f1(h)}" ${fill} ${st}/>`;
-    g += mes(x + w / 2, y, 0, 1, la) + mes(x, y - h / 2, -1, 0, lb) + svgTexte(x + w / 2, y - h / 2 + 5, nom, "geo-sommet", "middle", `style="fill:${col}"`); return g;
+    if (place === "grand") g += mes(x + w * (1 + r) / 2, y, 0, 1, la) + mes(x, y - h * (1 + r) / 2, -1, 0, lb);
+    else g += mes(x + w / 2, y, 0, 1, la) + mes(x, y - h / 2, -1, 0, lb);
+    g += place === "grand" ? svgTexte(x + w - 16, y - h + 22, nom, "geo-sommet", "middle", `style="fill:${col}"`) : svgTexte(x + w / 2, y - h / 2 + 5, nom, "geo-sommet", "middle", `style="fill:${col}"`); return g;
   };
   let svg = "";
-  const xmax = x1 + (dims[0] + (vol ? b * .45 : 0)) * k * s + 40;
+  const xmax = imbr ? x0 + dims[0] * Math.max(1, k) * s + 40 : x1 + (dims[0] + (vol ? b * .45 : 0)) * k * s + 40;
   if (o.grille !== false && !vol && s >= 7){ let gr = ""; const pas = s < 12 ? 2 : 1; for (let x = x0 - 2 * s; x <= xmax; x += s * pas) gr += lg(x, 10, x, base + 30, `class="gr-grille"`); for (let y = base + s * Math.ceil(30 / s); y >= 10; y -= s * pas) gr += lg(x0 - 2 * s, y, xmax, y, `class="gr-grille"`); svg += `<g opacity=".6">${gr}</g>`; }
-  svg += forme(x0, 1, c, F) + forme(x1, k, ci, F + "'");
-  // flèche « × k »
-  // la flèche passe au-dessus des deux figures : elle part vers le haut et redescend à la verticale sur l'image
+  if (imbr) svg += k >= 1 ? forme(x0, k, ci, F + "'", "grand", 1 / k) + forme(x0, 1, c, F, "petit") : forme(x0, 1, c, F, "grand", k) + forme(x0, k, ci, F + "'", "petit");
+  else svg += forme(x0, 1, c, F) + forme(x1, k, ci, F + "'");
+  // coefficient écrit au-dessus des figures (sans flèche)
   const hautF = base - dims[1] * s - (vol ? b * .45 * s : 0), hautI = base - dims[1] * k * s - (vol ? b * k * .45 * s : 0);
-  const xa = x0 + dims[0] * s * .5, xb = x1 + dims[0] * k * s * .5, yh = Math.min(hautF, hautI) - 12, crete = yh - 30;
-  // pointe : petit triangle plein, dans l'axe exact de l'arrivée de la courbe (qui arrive en biais, sans cassure)
-  const P3 = [xb, hautI - 7], C2 = [xb, Math.min(crete, hautI - 50)], dl = Math.hypot(P3[0] - C2[0], P3[1] - C2[1]) || 1, dx = (P3[0] - C2[0]) / dl, dy = (P3[1] - C2[1]) / dl;
-  const L = 11, Lg = 5, bx = P3[0] - dx * L, by = P3[1] - dy * L;
-  svg += `<path d="M${f1(xa)} ${f1(hautF - 8)} C${f1(xa)} ${f1(crete)} ${f1(C2[0])} ${f1(C2[1])} ${f1(bx + dx * 1.5)} ${f1(by + dy * 1.5)}" fill="none" stroke="var(--doux)" stroke-width="1.5" stroke-linecap="round"/>`;
-  svg += `<path d="M${f1(P3[0])} ${f1(P3[1])} L${f1(bx - dy * Lg)} ${f1(by + dx * Lg)} L${f1(bx + dy * Lg)} ${f1(by - dx * Lg)}Z" fill="var(--doux)"/>`;
-  svg += svgTexte((xa + xb) / 2, crete - 2, "× " + kTxt(k), "geo-cote ag-k", "middle"); boites.push([(xa + xb) / 2 - 40, crete - 22, (xa + xb) / 2 + 40, crete + 4]);
-  const defs = `<defs><marker id="ag-f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="var(--doux)" stroke-width="1.5"/></marker></defs>`;
-  let vx0 = x0 - 6, vy0 = yh - 50, vx1 = xmax - 30, vy1 = base + 8;
+  const xa = x0 + dims[0] * s * .5, xb = x1 + dims[0] * k * s * .5, xk = imbr ? x0 + dims[0] * Math.max(1, k) * s / 2 : (xa + xb) / 2, yk = Math.min(hautF, hautI) - 16, yh = yk;
+  svg += svgTexte(xk, yk, (imbr ? `${F} → ${F}' : ` : "") + "× " + kTxt(k), "geo-cote ag-k", "middle"); boites.push([xk - 60, yk - 20, xk + 60, yk + 6]);
+  const defs = "";
+  let vx0 = x0 - 6, vy0 = yh - 24, vx1 = xmax - 30, vy1 = base + 8;
   boites.forEach(([p, q, r, t]) => { vx0 = Math.min(vx0, p - 8); vy0 = Math.min(vy0, q - 8); vx1 = Math.max(vx1, r + 8); vy1 = Math.max(vy1, t + 8); });
   const figSvg = `<svg viewBox="${f1(vx0)} ${f1(vy0)} ${f1(vx1 - vx0)} ${f1(vy1 - vy0)}" class="mod-svg" style="max-width:${Math.round(Math.min(640, (vx1 - vx0) * 1.15))}px" role="img" aria-label="${esc(F)} et son ${nat(k)} ${esc(F)}' de rapport ${kTxt(k)}">${defs}${svg}</svg>`;
   // ----- rédaction -----
@@ -12146,10 +12148,11 @@ const MODULES = [
       CHAMP("sommets", "Points (A, M, N, B, C)", "texte", {aide: "Sommet commun, puis M sur (AB), N sur (AC), puis B et C. ex. AMNBC, OEFGH"}),
       CHAMP("am", "AM", "texte", {aide: "Un nombre, ou « ? » pour une longueur à trouver"}), CHAMP("ab", "AB"), CHAMP("an", "AN"), CHAMP("ac", "AC"), CHAMP("mn", "MN", "texte", {si: o => o.mode !== "reciproque"}), CHAMP("bc", "BC", "texte", {si: o => o.mode !== "reciproque"}),
       CHAMP("unite", "Unité"), CHAMP("couleur", "Couleur", "couleur"), CHAMP("styles", "Couleurs et mesures, une par une", "thstyle"), CHAMP("longueurs", "Longueurs sur la figure", "case"), CHAMP("redaction", "Rédaction de la démonstration", "case")], rendu: svgThales},
-  {id: "agrandissement", nom: "Agrandissement et réduction", cat: "Maths", icone: "×k", defaut: () => ({mode: "figure", figure: "rectangle", nom: "F", k: "1,5", a: "4", b: "2", c: "2", aPrime: "6", sommets: "AMNBC", config: "emboites", am: "3", ab: "5", bc: "6", aire: "", unite: "cm", grille: true, longueurs: true, redaction: true, couleur: "#f2ae02", couleurImage: "#5fa8d3"}),
+  {id: "agrandissement", nom: "Agrandissement et réduction", cat: "Maths", icone: "×k", defaut: () => ({mode: "figure", figure: "rectangle", disposition: "cote", nom: "F", k: "1,5", a: "4", b: "2", c: "2", aPrime: "6", sommets: "AMNBC", config: "emboites", am: "3", ab: "5", bc: "6", aire: "", unite: "cm", grille: true, longueurs: true, redaction: true, couleur: "#f2ae02", couleurImage: "#5fa8d3"}),
     champs: [CHAMP("mode", "Ce que l'on fait", "choix", {options: [["figure","Agrandir ou réduire une figure (k donné)"],["trouver","Trouver le coefficient k"],["volume","Solide : volume × k³"],["thales","Lien avec Thalès (triangles)"]]}),
       CHAMP("figure", "Figure", "choix", {options: [["rectangle","Rectangle"],["carre","Carré"],["triangle","Triangle rectangle"]], si: o => o.mode === "figure" || o.mode === "trouver"}),
       CHAMP("nom", "Nom de la figure", "texte", {aide: "L'image s'appellera avec un prime : F → F'", si: o => o.mode !== "thales"}),
+      CHAMP("disposition", "Disposition", "choix", {options: [["cote","Côte à côte"],["dedans","La petite figure dans la grande"]], si: o => o.mode === "figure" || o.mode === "trouver"}),
       CHAMP("k", "Coefficient k", "texteCurseur", {min: .1, max: 5, pas: .05, aide: "Fais glisser, ou écris un nombre ou une fraction : 1,5 ; 3/2 ; 0,5. k > 1 : agrandissement, k < 1 : réduction", si: o => o.mode === "figure" || o.mode === "volume"}),
       CHAMP("a", "Longueur (base)", "texte", {si: o => o.mode !== "thales"}), CHAMP("b", "Largeur / hauteur / profondeur", "texte", {si: o => o.mode !== "thales" && !(o.mode !== "volume" && o.figure === "carre")}),
       CHAMP("c", "Hauteur du solide", "texte", {si: o => o.mode === "volume"}),
