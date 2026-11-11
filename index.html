@@ -3055,6 +3055,7 @@ span.obj-txt:has(> .badge-l){vertical-align:baseline}
 .o-esp[aria-pressed="false"]{color:var(--doux)}
 .o-esp[aria-pressed="false"] svg{opacity:.6}
 .esp-calque[hidden]{display:none}
+.r-pdf.occupe{opacity:.5;cursor:progress}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -7248,7 +7249,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.43";
+const VERSION_SITE = "2.44";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -7446,8 +7447,8 @@ function rgbVersHsl([r, g, b]){ r /= 255; g /= 255; b /= 255; const mx = Math.ma
 function hslVersRgb([h, s, l]){ if (!s) return [l, l, l].map(v => Math.round(v * 255)); const q = l < .5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
   const t = x => { x = (x + 1) % 1; return x < 1 / 6 ? p + (q - p) * 6 * x : x < .5 ? q : x < 2 / 3 ? p + (q - p) * (2 / 3 - x) * 6 : p; };
   return [t(h + 1 / 3), t(h), t(h - 1 / 3)].map(v => Math.round(v * 255)); }
-function adapterCouleursLecons(racine){
-  const clair = document.documentElement.dataset.theme === "clair";
+function adapterCouleursLecons(racine, forcerClair){
+  const clair = forcerClair || document.documentElement.dataset.theme === "clair";
   const docs = racine && racine.nodeType === 1 ? [...(racine.matches(".doc-lecon") ? [racine] : []), ...racine.querySelectorAll(".doc-lecon")] : [...document.querySelectorAll(".doc-lecon")];
   docs.forEach(doc => {
     [doc, ...doc.querySelectorAll("*")].forEach(el => {
@@ -9748,7 +9749,7 @@ function dessinerEditeur(){
     <div class="editeur">
       <div class="barre-outils ruban" role="toolbar" aria-label="Mise en forme">
         <div class="r-ligne">
-          <span class="r-lot"><button type="button" id="enreg-rapide" class="r-enreg" title="Enregistrer sans fermer la leçon (Ctrl+S)" aria-label="Enregistrer sans fermer la leçon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h11l3.5 3.5v12a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 19V5A1.5 1.5 0 0 1 5 3.5z"/><path d="M7.5 3.5v5h8v-5M7.5 20.5v-6h9v6"/></svg><svg class="ic ok" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="enreg-etat" class="enreg-etat" hidden></span></button></span>
+          <span class="r-lot"><button type="button" id="enreg-rapide" class="r-enreg" title="Enregistrer sans fermer la leçon (Ctrl+S)" aria-label="Enregistrer sans fermer la leçon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h11l3.5 3.5v12a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 19V5A1.5 1.5 0 0 1 5 3.5z"/><path d="M7.5 3.5v5h8v-5M7.5 20.5v-6h9v6"/></svg><svg class="ic ok" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="enreg-etat" class="enreg-etat" hidden></span></button><button type="button" id="o-pdf" class="r-enreg r-pdf" title="Télécharger la leçon en PDF" aria-label="Télécharger la leçon en PDF"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg></button></span>
           <select id="o-police" aria-label="Police" title="Police">${POLICES.map(([v, t]) => `<option value="${esc(v)}">${t}</option>`).join("")}</select>
         <select id="o-taille" aria-label="Taille du texte" title="Taille">${TAILLES.map(([v, t]) => `<option value="${v}" ${v === "3" ? "selected" : ""}>${t}</option>`).join("")}</select>
           <span class="sep"></span>
@@ -10298,6 +10299,19 @@ function dessinerEditeur(){
   };
   $("#enregistrer").onclick = () => enregistrer(true);
   $("#enreg-rapide").onclick = () => enregistrer(false);
+  $("#o-pdf").onmousedown = ev => ev.preventDefault();
+  $("#o-pdf").onclick = async () => { const b = $("#o-pdf"); if (b.classList.contains("occupe")) return; b.classList.add("occupe"); b.disabled = true;
+    statut("Création du PDF de la leçon…", true);
+    try {
+      const copie = doc.cloneNode(true); copie.removeAttribute("contenteditable"); copie.removeAttribute("id"); copie.classList.remove("edition");
+      copie.querySelectorAll("[contenteditable]").forEach(x => x.removeAttribute("contenteditable")); copie.querySelectorAll(".choisie").forEach(x => x.classList.remove("choisie"));
+      const titre = $("#ed-titre").value.trim() || "Leçon", sous = $("#ed-sous").value.trim();
+      const tete = `<p class="titre-fixe-lecon">${esc($("#ed-titre-fixe").textContent)}</p>${sous ? `<p class="pdf-sous">${esc(sous)}</p>` : ""}`;
+      const blob = await leconEnPdf(tete + copie.innerHTML + ($("#ed-legende") ? $("#ed-legende").outerHTML : ""), titre);
+      await enregistrerBlob(blob, titre.replace(/[\\/:*?"<>|]+/g, "-").slice(0, 80) + ".pdf");
+      if (!window.HelperApp) statut("PDF téléchargé.", true);
+    } catch (e){ console.warn(e); statut("Le PDF n'a pas pu être créé : " + (e && e.message || e), false); }
+    b.classList.remove("occupe"); b.disabled = false; };
   $("#enreg-rapide").onmousedown = ev => ev.preventDefault();   // le curseur reste dans le texte
   const raccourci = ev => { if (!$("#enreg-rapide")){ removeEventListener("keydown", raccourci); return; }
     if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === "s"){ ev.preventDefault(); enregistrer(false); } };
@@ -17544,6 +17558,68 @@ async function pdf(cv){
   const xref = pos;
   ajout(`xref\n0 6\n0000000000 65535 f \n${[1,2,3,4,5].map(n => String(offs[n]).padStart(10, "0") + " 00000 n \n").join("")}trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`);
   return new Blob(morceaux, {type: "application/pdf"});
+}
+/* --- Leçon → PDF A4 de plusieurs pages, coupé entre les lignes (jamais au milieu d'une ligne ou d'une figure) --- */
+async function leconEnPdf(html, titre){
+  const PT = .75, MARGE = 40, PW = 595.28, PH = 841.89, LARG = Math.round((PW - 2 * MARGE) / PT), HPAGE = Math.floor((PH - 2 * MARGE - 16) / PT);
+  const c = await creerCadre(LARG, 1400);
+  try {
+    const d = c.d; d.documentElement.dataset.theme = "clair";
+    document.querySelectorAll("style").forEach(st => { const x = d.createElement("style"); x.textContent = st.textContent; d.head.appendChild(x); });
+    document.querySelectorAll('link[rel="stylesheet"]').forEach(l => { const x = d.createElement("link"); x.rel = "stylesheet"; x.href = l.href; x.crossOrigin = "anonymous"; d.head.appendChild(x); });
+    const x = d.createElement("style"); x.textContent = `html,body{background:#fff!important;margin:0;padding:0}body{width:${LARG}px;overflow:hidden}
+      #pdf-l{width:${LARG}px;background:#fff;padding:0 0 6px;margin:0;border:0;box-shadow:none;min-height:0}#pdf-l .titre-fixe-lecon{margin-top:0}
+      .pdf-sous{color:var(--doux);margin:-.3em 0 .9em}.esp-calque,.esp-btn{display:none!important}`; d.head.appendChild(x);
+    d.body.innerHTML = `<div class="doc-lecon" id="pdf-l">${html}</div>`;
+    const el = d.getElementById("pdf-l");
+    adapterCouleursLecons(el, true);
+    await Promise.all([...el.querySelectorAll("img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; setTimeout(r, 6000); })));
+    if (d.fonts && d.fonts.ready) await Promise.race([d.fonts.ready, attendre(3000)]);
+    await attendre(300);
+    // endroits où l'on ne doit pas couper : chaque ligne de texte, chaque image, figure, formule, badge
+    const base = el.getBoundingClientRect().top, zones = [];
+    const tw = d.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n;
+    while ((n = tw.nextNode())){ if (!n.textContent.trim()) continue; const r = d.createRange(); r.selectNodeContents(n); for (const q of r.getClientRects()) if (q.height) zones.push([q.top - base, q.bottom - base]); }
+    el.querySelectorAll("img, svg, figure, .obj-txt, .obj-doc, tr, .frac-txt, .badge-l, canvas, video").forEach(e => { const q = e.getBoundingClientRect(); if (q.height) zones.push([q.top - base, q.bottom - base]); });
+    el.querySelectorAll(".partie-lecon, h1, h2, h3").forEach(e => { const q = e.getBoundingClientRect(); if (q.height) zones.push([q.top - base, q.bottom - base + 30]); });   // un titre reste avec la ligne qui le suit
+    const total = Math.ceil(el.getBoundingClientRect().height);
+    const libre = y => !zones.some(([a, b]) => a < y - .5 && b > y + .5);
+    const coupes = [0]; let y0 = 0;
+    while (total - y0 > HPAGE){ let y = y0 + HPAGE; const mini = y0 + HPAGE * .45; while (y > mini && !libre(y)) y -= 1; if (y <= mini) y = y0 + HPAGE; coupes.push(y); y0 = y; }
+    coupes.push(total);
+    // capture complète, puis découpe en pages
+    let ratio = 2; while (total * ratio > 30000 && ratio > 1) ratio -= .25;
+    const optsCap = {pixelRatio: ratio, backgroundColor: "#fff", cacheBust: false, width: LARG, height: total, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="};
+    let cv; try { cv = await c.w.htmlToImage.toCanvas(el, optsCap); } catch { cv = await c.w.htmlToImage.toCanvas(el, {...optsCap, skipFonts: true}); }
+    const k = cv.width / LARG, pages = [];
+    for (let i = 0; i < coupes.length - 1; i++){
+      const h = coupes[i + 1] - coupes[i]; if (h < 2) continue;
+      const t = document.createElement("canvas"); t.width = cv.width; t.height = Math.ceil(h * k);
+      const g = t.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, t.width, t.height); g.drawImage(cv, 0, Math.round(coupes[i] * k), cv.width, t.height, 0, 0, t.width, t.height);
+      pages.push({jpg: await lireOctets(await versBlob(t, "image/jpeg", .9)), w: t.width, h: t.height, hpt: h * PT});
+    }
+    // écriture du PDF
+    const morceaux = [], offs = []; let pos = 0;
+    const ajout = v => { const o = typeof v === "string" ? enc.encode(v) : v; morceaux.push(o); pos += o.length; };
+    const obj = (num, corps) => { offs[num] = pos; ajout(`${num} 0 obj\n`); corps.forEach(ajout); ajout("\nendobj\n"); };
+    ajout("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n");
+    const N = pages.length, kids = pages.map((_, i) => `${4 + i * 3} 0 R`).join(" ");
+    const pdfTxt = t => String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\x20-\x7e]/g, "").replace(/[\\()]/g, m => "\\" + m);
+    obj(1, ["<< /Type /Catalog /Pages 2 0 R >>"]);
+    obj(2, [`<< /Type /Pages /Kids [${kids}] /Count ${N} >>`]);
+    obj(3, ["<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"]);
+    pages.forEach((p, i) => {
+      const o = 4 + i * 3, W = PW - 2 * MARGE, H = p.hpt, y = PH - MARGE - H;
+      const pied = `BT /F1 8 Tf 0.45 0.45 0.45 rg ${MARGE} ${(MARGE / 2).toFixed(2)} Td (${pdfTxt(titre)} - Helper by Entarsh) Tj ET BT /F1 8 Tf 0.45 0.45 0.45 rg ${(PW - MARGE - 40).toFixed(2)} ${(MARGE / 2).toFixed(2)} Td (${i + 1} / ${N}) Tj ET`;
+      const flux = `q ${W.toFixed(2)} 0 0 ${H.toFixed(2)} ${MARGE} ${y.toFixed(2)} cm /Im${i} Do Q ${pied}`;
+      obj(o, [`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im${i} ${o + 1} 0 R >> /Font << /F1 3 0 R >> >> /Contents ${o + 2} 0 R >>`]);
+      obj(o + 1, [`<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.jpg.length} >>\nstream\n`, p.jpg, "\nendstream"]);
+      obj(o + 2, [`<< /Length ${flux.length} >>\nstream\n${flux}\nendstream`]);
+    });
+    const tot = 4 + N * 3, xref = pos;
+    ajout(`xref\n0 ${tot}\n0000000000 65535 f \n${Array.from({length: tot - 1}, (_, i) => String(offs[i + 1]).padStart(10, "0") + " 00000 n \n").join("")}trailer\n<< /Size ${tot} /Root 1 0 R /Info << /Title (${pdfTxt(titre)}) /Producer (Helper by Entarsh) >> >>\nstartxref\n${xref}\n%%EOF`);
+    return new Blob(morceaux, {type: "application/pdf"});
+  } finally { c.fermer(); }
 }
 async function toileBlanche(cv){ const c = document.createElement("canvas"); c.width = cv.width; c.height = cv.height; const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(cv, 0, 0); return c; }
 /* --- DOCX (document Word contenant l'image) --- */
