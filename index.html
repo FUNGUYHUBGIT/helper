@@ -7249,7 +7249,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.45";
+const VERSION_SITE = "2.46";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -17564,63 +17564,102 @@ async function leconEnPdf(html, titre){
   const PT = .75, MARGE = 40, PW = 595.28, PH = 841.89, LARG = Math.round((PW - 2 * MARGE) / PT), HPAGE = Math.floor((PH - 2 * MARGE - 16) / PT);
   const c = await creerCadre(LARG, 1400);
   try {
-    const d = c.d; d.documentElement.dataset.theme = "clair";
+    const d = c.d, w = c.w; d.documentElement.dataset.theme = "clair";
     document.querySelectorAll("style").forEach(st => { const x = d.createElement("style"); x.textContent = st.textContent; d.head.appendChild(x); });
     const liens = [...document.querySelectorAll('link[rel="stylesheet"]')].map(l => { const x = d.createElement("link"); x.rel = "stylesheet"; x.href = l.href; x.crossOrigin = "anonymous";
       const p = new Promise(r => { x.onload = x.onerror = r; setTimeout(r, 5000); }); d.head.appendChild(x); return p; });
-    await Promise.all(liens);   // la feuille des polices doit être là avant de mesurer, sinon les lignes bougent après coup
-    const x = d.createElement("style"); x.textContent = `html,body{background:#fff!important;margin:0;padding:0}body{width:${LARG}px;overflow:hidden}
-      #pdf-l{width:${LARG}px;background:#fff;padding:0 0 6px;margin:0;border:0;box-shadow:none;min-height:0}#pdf-l .titre-fixe-lecon{margin-top:0}
-      .pdf-sous{color:var(--doux);margin:-.3em 0 .9em}.esp-calque,.esp-btn{display:none!important}`; d.head.appendChild(x);
-    d.body.innerHTML = `<div class="doc-lecon" id="pdf-l">${html}</div>`;
+    await Promise.all(liens);   // la feuille des polices doit être là avant de mesurer
+    const x = d.createElement("style"); x.textContent = `html,body{background:#fff!important;margin:0;padding:0}body{width:${LARG}px}
+      .pdf-l{width:${LARG}px;background:#fff;padding:0;margin:0 0 40px;border:0;box-shadow:none;min-height:0;position:relative}.pdf-l .titre-fixe-lecon{margin-top:0}
+      .pdf-page>:first-child,.pdf-page>:first-child>:first-child,.pdf-page>:first-child>:first-child>:first-child{margin-top:0!important}
+      .pdf-sous{color:var(--doux);margin:-.3em 0 .9em}.pdf-l ol{padding-left:2.4em}.esp-calque,.esp-btn{display:none!important}`; d.head.appendChild(x);
+    d.body.innerHTML = `<div class="doc-lecon pdf-l" id="pdf-l">${html}</div><div id="pdf-pages"></div>`;
     const el = d.getElementById("pdf-l");
     adapterCouleursLecons(el, true);
     await Promise.all([...el.querySelectorAll("img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; setTimeout(r, 6000); })));
     if (d.fonts){
-      // on charge toutes les polices réellement utilisées (famille, graisse, style) avant de mesurer
-      const vues = new Set(); [el, ...el.querySelectorAll("*")].forEach(e => { const cs = c.w.getComputedStyle(e); vues.add(`${cs.fontStyle} ${cs.fontWeight} 16px ${cs.fontFamily}`); });
+      const vues = new Set(); [el, ...el.querySelectorAll("*")].forEach(e => { const cs = w.getComputedStyle(e); vues.add(`${cs.fontStyle} ${cs.fontWeight} 16px ${cs.fontFamily}`); });
       await Promise.race([Promise.all([...vues].map(f => d.fonts.load(f, "Aaéèàç0123456789").catch(() => 0))), attendre(6000)]);
       await Promise.race([d.fonts.ready, attendre(4000)]);
     }
-    await attendre(300); el.getBoundingClientRect();
-    // endroits où l'on ne doit pas couper : chaque ligne de texte, chaque image, figure, formule, badge
-    const base = el.getBoundingClientRect().top, zones = [];
-    const tw = d.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n;
-    while ((n = tw.nextNode())){ if (!n.textContent.trim()) continue; const r = d.createRange(); r.selectNodeContents(n); for (const q of r.getClientRects()) if (q.height) zones.push([q.top - base, q.bottom - base]); }
-    el.querySelectorAll("img, svg, figure, .obj-txt, .obj-doc, tr, .frac-txt, .badge-l, canvas, video").forEach(e => { const q = e.getBoundingClientRect(); if (q.height) zones.push([q.top - base, q.bottom - base]); });
-    el.querySelectorAll(".partie-lecon, h1, h2, h3").forEach(e => { const q = e.getBoundingClientRect(); if (q.height) zones.push([q.top - base, q.bottom - base + 30]); });   // un titre reste avec la ligne qui le suit
-    const total = Math.ceil(el.getBoundingClientRect().height);
-    const libre = y => !zones.some(([a, b]) => a < y - .5 && b > y + .5);
-    const coupes = [0]; let y0 = 0;
-    while (total - y0 > HPAGE){ let y = y0 + HPAGE; const mini = y0 + HPAGE * .45; while (y > mini && !libre(y)) y -= 1;
-      if (y <= mini) y = y0 + HPAGE;
-      else { let h = y; while (h > mini && libre(h - 1)) h -= 1; y = Math.round((h + y) / 2); }   // au milieu de l'espace entre deux lignes, pas au ras du texte
-      coupes.push(y); y0 = y; }
-    coupes.push(total);
-    // capture complète, puis découpe en pages
-    let ratio = 2; while (total * ratio > 30000 && ratio > 1) ratio -= .25;
-    const optsCap = {pixelRatio: ratio, backgroundColor: "#fff", cacheBust: false, width: LARG, height: total, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="};
-    let cv; try { cv = await c.w.htmlToImage.toCanvas(el, optsCap); } catch { cv = await c.w.htmlToImage.toCanvas(el, {...optsCap, skipFonts: true}); }
-    const k = cv.width / LARG, pages = [], ech = cv.height / k / total;
-    if (Math.abs(ech - 1) > .002) for (let i = 1; i < coupes.length; i++) coupes[i] = coupes[i] * ech;
-    for (let i = 0; i < coupes.length - 1; i++){
-      const h = coupes[i + 1] - coupes[i]; if (h < 2) continue;
-      const t = document.createElement("canvas"); t.width = cv.width; t.height = Math.ceil(h * k);
-      const g = t.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, t.width, t.height); g.drawImage(cv, 0, Math.round(coupes[i] * k), cv.width, t.height, 0, 0, t.width, t.height);
-      pages.push({jpg: await lireOctets(await versBlob(t, "image/jpeg", .9)), w: t.width, h: t.height, hpt: h * PT});
+    await attendre(300);
+    // 1) la leçon en blocs (paragraphes, titres, figures, tableaux, listes) ; chaque page est composée de blocs entiers
+    const BLOC = /^(DIV|P|UL|OL|TABLE|FIGURE|H1|H2|H3|BLOCKQUOTE)$/, feuilles = [], libres = [];
+    const parcourir = p => { for (const e of p.children){
+      if (w.getComputedStyle(e).position === "absolute"){ libres.push(e); continue; }
+      const enveloppe = /^(DIV|BLOCKQUOTE)$/.test(e.tagName) && !e.matches(".sommaire-lecon, .obj-doc, .img-doc, .tab-doc") && e.children.length
+        && [...e.childNodes].every(n => n.nodeType === 1 ? BLOC.test(n.tagName) || w.getComputedStyle(n).position === "absolute" : !n.textContent.trim());
+      if (enveloppe) parcourir(e);
+      else if (/^(UL|OL)$/.test(e.tagName) && e.getBoundingClientRect().height > HPAGE * .6) [...e.children].forEach(li => feuilles.push(li));   // longue liste : coupée entre ses puces
+      else if (e.tagName === "TABLE" && e.getBoundingClientRect().height > HPAGE * .6) [...e.rows].forEach(tr => feuilles.push(tr));   // long tableau : coupé entre ses lignes
+      else feuilles.push(e); } };
+    parcourir(el);
+    const base = el.getBoundingClientRect().top;
+    const boite = e => { const r = e.getBoundingClientRect(), cs = w.getComputedStyle(e); return [r.top - base - (parseFloat(cs.marginTop) || 0), r.bottom - base + (parseFloat(cs.marginBottom) || 0)]; };
+    const estTitre = e => e.matches(".partie-lecon, h1, h2, h3, .titre-fixe-lecon");
+    const pages = []; let cur = null;
+    feuilles.forEach(f => { const [t, b] = boite(f);
+      if (!cur){ cur = {y0: t, bas: b, items: [f]}; return; }
+      if (Math.max(cur.bas, b) - cur.y0 > HPAGE * .97){
+        let suite = []; const der = cur.items[cur.items.length - 1];
+        if (cur.items.length > 1 && estTitre(der)){ cur.items.pop(); suite = [der]; }   // un titre part avec ce qui le suit
+        pages.push(cur); const t0 = suite.length ? boite(suite[0])[0] : t; cur = {y0: t0, bas: b, items: [...suite, f]};
+      } else { cur.items.push(f); cur.bas = Math.max(cur.bas, b); } });
+    if (cur) pages.push(cur);
+    pages.forEach((pg, i) => { pg.y1 = i < pages.length - 1 ? pages[i + 1].y0 : Infinity; });
+    // 2) chaque page devient un vrai bloc à part, mis en page séparément : rien ne peut glisser d'une page à l'autre
+    const zone = d.getElementById("pdf-pages");
+    const copier = src => { const k = src.cloneNode(true); const a = src.querySelectorAll("canvas"), b = k.querySelectorAll("canvas"); a.forEach((cv, i) => { try { b[i].getContext("2d").drawImage(cv, 0, 0); } catch {} }); return k; };
+    const conteneurs = pages.map(pg => {
+      const pe = d.createElement("div"); pe.className = el.className.replace("pdf-l", "") + " pdf-l pdf-page"; zone.appendChild(pe);
+      pg.items.forEach(f => { const chaine = []; let a = f.parentElement; while (a && a !== el){ chaine.unshift(a); a = a.parentElement; }
+        let parent = pe; chaine.forEach(a => { let wr = parent.lastElementChild && parent.lastElementChild._orig === a ? parent.lastElementChild : null; if (!wr){ wr = a.cloneNode(false); wr._orig = a; parent.appendChild(wr); } parent = wr; });
+        const k = copier(f); k._orig = f; parent.appendChild(k); });
+      pe.querySelectorAll("ol").forEach(ol => { const li = ol.firstElementChild; if (ol._orig && li && li._orig){ const i = [...ol._orig.children].indexOf(li._orig); if (i > 0) ol.start = (ol._orig.start || 1) + i; } });
+      libres.forEach(f => { const t = boite(f)[0]; if (t >= pg.y0 - 1 && t < pg.y1 - 1){ const k = copier(f); k.style.top = (f.offsetTop - (pg.y0 + 0)) + "px"; pe.appendChild(k); } });
+      return pe; });
+    await attendre(250);
+    // 3) capture de chaque page
+    let polices = ""; try { polices = await w.htmlToImage.getFontEmbedCSS(el); } catch {}
+    const capture = async (e, h) => { const o = {pixelRatio: 2, backgroundColor: "#fff", cacheBust: false, width: LARG, height: h, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==", ...(polices ? {fontEmbedCSS: polices} : {skipFonts: true})};
+      try { return await w.htmlToImage.toCanvas(e, o); } catch { return await w.htmlToImage.toCanvas(e, {...o, fontEmbedCSS: undefined, skipFonts: true}); } };
+    const sorties = [];
+    for (const pe of conteneurs){
+      const h = Math.ceil(pe.getBoundingClientRect().height);
+      if (h <= HPAGE * 1.04 || h <= HPAGE / .7){
+        // tient sur la page (au besoin légèrement réduit)
+        const cv = await capture(pe, h), ech = Math.min(1, HPAGE / h);
+        sorties.push({cv, wpt: (PW - 2 * MARGE) * ech, hpt: h * PT * ech});
+      } else {
+        // un seul bloc plus grand qu'une page (long tableau, longue liste) : découpé entre ses lignes
+        const bz = pe.getBoundingClientRect().top, zones = [];
+        const tw = d.createTreeWalker(pe, NodeFilter.SHOW_TEXT); let n;
+        while ((n = tw.nextNode())){ if (!n.textContent.trim()) continue; const r = d.createRange(); r.selectNodeContents(n); for (const q of r.getClientRects()) if (q.height) zones.push([q.top - bz - 3, q.bottom - bz + 3]); }
+        pe.querySelectorAll("img, svg, tr, .obj-txt, .frac-txt, .badge-l, li").forEach(e => { const q = e.getBoundingClientRect(); if (q.height && q.height < HPAGE) zones.push([q.top - bz, q.bottom - bz]); });
+        const libre = y => !zones.some(([a, b]) => a < y && b > y);
+        const coupes = [0]; let y0 = 0;
+        while (h - y0 > HPAGE){ let y = y0 + HPAGE; const mini = y0 + HPAGE * .45; while (y > mini && !libre(y)) y--; if (y <= mini) y = y0 + HPAGE; else { let a = y; while (a > mini && libre(a - 1)) a--; y = Math.round((a + y) / 2); } coupes.push(y); y0 = y; }
+        coupes.push(h);
+        const cv = await capture(pe, h), k = cv.width / LARG;
+        for (let i = 0; i < coupes.length - 1; i++){ const hh = coupes[i + 1] - coupes[i]; if (hh < 2) continue;
+          const t = document.createElement("canvas"); t.width = cv.width; t.height = Math.ceil(hh * k); const g = t.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, t.width, t.height);
+          g.drawImage(cv, 0, Math.round(coupes[i] * k), cv.width, t.height, 0, 0, t.width, t.height); sorties.push({cv: t, wpt: PW - 2 * MARGE, hpt: hh * PT}); }
+      }
     }
-    // écriture du PDF
+    const feuillets = [];
+    for (const sx of sorties) feuillets.push({jpg: await lireOctets(await versBlob(sx.cv, "image/jpeg", .9)), w: sx.cv.width, h: sx.cv.height, wpt: sx.wpt, hpt: sx.hpt});
+    // 4) écriture du PDF
     const morceaux = [], offs = []; let pos = 0;
     const ajout = v => { const o = typeof v === "string" ? enc.encode(v) : v; morceaux.push(o); pos += o.length; };
     const obj = (num, corps) => { offs[num] = pos; ajout(`${num} 0 obj\n`); corps.forEach(ajout); ajout("\nendobj\n"); };
     ajout("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n");
-    const N = pages.length, kids = pages.map((_, i) => `${4 + i * 3} 0 R`).join(" ");
-    const pdfTxt = t => String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\x20-\x7e]/g, "").replace(/[\\()]/g, m => "\\" + m);
+    const N = feuillets.length, kids = feuillets.map((_, i) => `${4 + i * 3} 0 R`).join(" ");
+    const pdfTxt = t => String(t).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\x20-\x7e]/g, "").replace(/[\\()]/g, m => "\\" + m);
     obj(1, ["<< /Type /Catalog /Pages 2 0 R >>"]);
     obj(2, [`<< /Type /Pages /Kids [${kids}] /Count ${N} >>`]);
     obj(3, ["<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"]);
-    pages.forEach((p, i) => {
-      const o = 4 + i * 3, W = PW - 2 * MARGE, H = p.hpt, y = PH - MARGE - H;
+    feuillets.forEach((p, i) => {
+      const o = 4 + i * 3, W = p.wpt, H = p.hpt, y = PH - MARGE - H;
       const pied = `BT /F1 8 Tf 0.45 0.45 0.45 rg ${MARGE} ${(MARGE / 2).toFixed(2)} Td (${pdfTxt(titre)} - Helper by Entarsh) Tj ET BT /F1 8 Tf 0.45 0.45 0.45 rg ${(PW - MARGE - 40).toFixed(2)} ${(MARGE / 2).toFixed(2)} Td (${i + 1} / ${N}) Tj ET`;
       const flux = `q ${W.toFixed(2)} 0 0 ${H.toFixed(2)} ${MARGE} ${y.toFixed(2)} cm /Im${i} Do Q ${pied}`;
       obj(o, [`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im${i} ${o + 1} 0 R >> /Font << /F1 3 0 R >> >> /Contents ${o + 2} 0 R >>`]);
