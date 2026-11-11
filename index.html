@@ -7244,7 +7244,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.41";
+const VERSION_SITE = "2.42";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -9823,7 +9823,34 @@ function dessinerEditeur(){
   remplirImages(doc); remplirObjets(doc);
   // ----- Hauteur des lignes vides : une petite icône à côté de chaque retour à la ligne vide -----
   const cadreEd = doc.parentElement, calqueEsp = document.createElement("div"); calqueEsp.className = "esp-calque"; cadreEd.appendChild(calqueEsp);
-  const estLigneVide = el => el !== doc && /^(P|DIV)$/.test(el.tagName) && !el.closest("figure, table, li, .sommaire-lecon, .obj-txt") && ![...el.children].some(c => c.tagName !== "BR") && !el.textContent.replace(/[\s\u200b]/g, "") && (!!el.querySelector("br") || el.classList.contains("esp"));
+  const INLINE_FMT = /^(SPAN|B|I|U|S|STRIKE|STRONG|EM|FONT|SUB|SUP|BR)$/;
+  const estLigneVide = el => el !== doc && /^(P|DIV)$/.test(el.tagName) && !el.closest("figure, table, li, .sommaire-lecon, .obj-txt") && !el.textContent.replace(/[\s\u200b\u00a0]/g, "")
+    && [...el.querySelectorAll("*")].every(c => INLINE_FMT.test(c.tagName) && !c.classList.contains("obj-txt")) && (!!el.querySelector("br") || el.classList.contains("esp"));
+  // Les sauts de ligne faits avec <br> (anciennes leçons, Maj+Entrée) deviennent de vraies lignes, pour que chaque ligne vide ait son icône.
+  // Le rendu ne change pas : chaque ligne devient un bloc sans marge, le dernier garde la balise (et la marge) d'origine.
+  const BLOCS = "div,p,ul,ol,table,figure,h1,h2,h3,blockquote,li";
+  const normaliserLignes = () => {
+    const horsZone = el => el.closest("figure, table, li, .sommaire-lecon, .obj-txt, .obj-doc");
+    // 1) texte posé directement à côté de blocs : on l'enveloppe dans un bloc
+    [doc, ...doc.querySelectorAll("div, blockquote")].filter(c => !(c !== doc && horsZone(c)) && [...c.children].some(x => x.matches(BLOCS))).forEach(c => {
+      let lot = []; const fermer = () => { if (lot.some(n => n.nodeType === 1 || n.textContent.trim())){ const d = document.createElement("div"); lot[0].before(d); lot.forEach(n => d.appendChild(n)); } lot = []; };
+      [...c.childNodes].forEach(n => { if (n.nodeType === 1 && n.matches(BLOCS)) fermer(); else lot.push(n); }); fermer(); });
+    // 2) un bloc contenant des <br> est découpé ligne par ligne
+    [...doc.querySelectorAll("div, p")].reverse().forEach(b => {
+      if (horsZone(b) || b.querySelector(BLOCS)) return;
+      const brs = [...b.querySelectorAll("br")]; if (!brs.length || (brs.length === 1 && b.lastChild === brs[0] && b.childNodes.length > 1) || (brs.length === 1 && b.childNodes.length === 1)) return;
+      const morceaux = []; let br;
+      while ((br = b.querySelector("br"))){ const r = document.createRange(); r.setStart(b, 0); r.setEndBefore(br); const f = r.extractContents(); b.querySelector("br").remove(); morceaux.push(f); }
+      if (b.textContent.replace(/[\s\u200b]/g, "") || b.querySelector("img, .obj-txt")) morceaux.push(null);   // il reste du texte après le dernier saut
+      const att = [...b.attributes].filter(a => a.name === "style" || a.name === "class");
+      const neuf = morceaux.map((f, k) => { const dernier = k === morceaux.length - 1, e = document.createElement(dernier ? b.tagName.toLowerCase() : "div"); att.forEach(a => e.setAttribute(a.name, a.value));
+        if (f === null){ while (b.firstChild) e.appendChild(b.firstChild); } else { e.appendChild(f); if (!e.textContent.replace(/[\s\u200b]/g, "") && !e.querySelector("img, .obj-txt")){ e.textContent = ""; e.appendChild(document.createElement("br")); } }
+        return e; });
+      if (neuf.length) b.replaceWith(...neuf);
+    });
+  };
+  normaliserLignes();
+  doc.addEventListener("paste", () => setTimeout(() => { normaliserLignes(); remplirObjets(doc); }, 0));
   let espTimer = null;
   const placerEsp = () => {
     doc.querySelectorAll(".esp").forEach(el => { if (!estLigneVide(el)){ el.classList.remove("esp"); el.style.removeProperty("--esp"); if (!el.getAttribute("style")) el.removeAttribute("style"); if (!el.className) el.removeAttribute("class"); } });
