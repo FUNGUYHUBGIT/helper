@@ -2998,6 +2998,18 @@ html[data-theme="clair"] .ge2-onglets button[aria-selected="true"]{color:#fff}
 .bc-actif{outline:2px solid color-mix(in srgb,var(--erreur) 60%,transparent);outline-offset:2px}
 @keyframes bcEntree{from{opacity:0;transform:translateY(-4px)}}
 .ge2 > .statut:empty{display:none}
+.th-sty{gap:6px}
+.th-sous{font-size:.78rem;color:var(--doux);margin-top:4px}
+.th-sws{display:flex;flex-wrap:wrap;gap:6px}
+.th-sw{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border:1px solid var(--ligne);border-radius:999px;background:var(--surface-2);cursor:pointer;font:italic 15px "Times New Roman",Times,"Liberation Serif",serif;min-height:32px}
+.th-sw.choisi{border-color:var(--accent,#f2ae02)}
+.th-sw input[type=color]{width:24px;height:24px;padding:0;border:0;border-radius:50%;background:none;cursor:pointer;flex:none}
+.th-sw input[type=color]::-webkit-color-swatch-wrapper{padding:0}.th-sw input[type=color]::-webkit-color-swatch{border:1px solid var(--ligne);border-radius:50%}
+.th-sw input[type=color]::-moz-color-swatch{border:1px solid var(--ligne);border-radius:50%}
+.th-mes{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
+.th-mes-l{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--ligne);border-radius:10px;padding:2px 10px 2px 4px;background:var(--surface-2)}
+.th-mes-l .th-sw{border:0;background:none;padding-right:0}
+.th-mes-l .mod-case{border:0;padding:4px 0;font-size:.85rem;gap:8px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -7191,7 +7203,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.33";
+const VERSION_SITE = "2.34";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -11069,7 +11081,12 @@ const f1 = v => (+v).toFixed(1);
 const largeurMesure = t => String(t).length * 7.1 + 6, HAUT_MESURE = 15;
 const placerMesure = (mx, my, nx, ny, t, ecart = 5) => { const w = largeurMesure(t), h = HAUT_MESURE, d = ecart + Math.abs(nx) * w / 2 + Math.abs(ny) * h / 2, x = mx + nx * d, y = my + ny * d;
   return {x, y, boite: [x - w / 2, y - h / 2, x + w / 2, y + h / 2]}; };
-const svgMesure = (pm, t, extra = "") => svgTexte(pm.x, pm.y + 5, t, "geo-cote", "middle", extra);
+const svgMesure = (pm, t, extra = "") => svgTexte(pm.x, pm.y + 5, t, "geo-cote", "middle", (pm.angle ? `transform="rotate(${f1(pm.angle)} ${f1(pm.x)} ${f1(pm.y)})" ` : "") + extra);
+// Mesure « penchée » : écrite dans la direction de son côté (toujours lisible, jamais à l'envers)
+const placerMesurePenchee = (mx, my, nx, ny, t, ecart = 5) => { const w = largeurMesure(t), h = HAUT_MESURE, d = ecart + h / 2, x = mx + nx * d, y = my + ny * d;
+  let a = Math.atan2(nx, -ny) * 180 / Math.PI; if (a > 90) a -= 180; if (a < -90) a += 180;
+  const r = a * Math.PI / 180, ex = Math.abs(Math.cos(r)) * w / 2 + Math.abs(Math.sin(r)) * h / 2, ey = Math.abs(Math.sin(r)) * w / 2 + Math.abs(Math.cos(r)) * h / 2;
+  return {x, y, angle: a, boite: [x - ex, y - ey, x + ex, y + ey]}; };
 const svgTexte = (x, y, t, cls = "mod-txt", ancre = "middle", extra = "") => `<text x="${f1(x)}" y="${f1(y)}" text-anchor="${ancre}" class="${cls}" ${extra}>${esc(t)}</text>`;
 const MARQ_MOD = c => `<marker id="fm-${c.replace(/[^a-z0-9]/gi, "")}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker>`;
 const flecheMod = (x1, y1, x2, y2, c, l = 2.2, deux = false) => `<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${c}" stroke-width="${l}" marker-end="url(#fm-${c.replace(/[^a-z0-9]/gi, "")})" ${deux ? `marker-start="url(#fm-${c.replace(/[^a-z0-9]/gi, "")})"` : ""}/>`;
@@ -11208,38 +11225,45 @@ function svgThales(o){
   const Pm = sur(Pa2, Pb2, k), Pn = sur(Pa2, Pc2, k2);
   const pts = [Pa2, Pb2, Pc2, Pm, Pn], xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), mx0 = Math.min(...xs) - 34, my0 = Math.min(...ys) - 30, W = Math.max(...xs) - mx0 + 34, H = Math.max(...ys) - my0 + 34;
   const ln = (p, q, st) => `<line x1="${f1(p[0])}" y1="${f1(p[1])}" x2="${f1(q[0])}" y2="${f1(q[1])}" ${st}/>`;
+  // couleurs choisies côté par côté, point par point, mesure par mesure (vide = couleur par défaut)
+  const sty = o.styles || {}, coulCote = {AB: sty.c_AB || "var(--texte)", AC: sty.c_AC || "var(--texte)", MN: sty.c_MN || "#5fa8d3", BC: sty.c_BC || c};
+  const coulPt = i => sty["p_" + i] || "var(--texte)", coulMes = key => sty["m_" + key] || "", penchee = key => sty["r_" + key] === true;
   const chevron = (p, q, col) => { const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, ux = q[0] - p[0], uy = q[1] - p[1], n = Math.hypot(ux, uy), a = [ux / n, uy / n], nn = [-a[1], a[0]];
     return [-4, 4].map(o2 => { const bx = mx + a[0] * o2, by = my + a[1] * o2; return `<path d="M${f1(bx - a[0] * 5 + nn[0] * 5)} ${f1(by - a[1] * 5 + nn[1] * 5)} L${f1(bx)} ${f1(by)} L${f1(bx - a[0] * 5 - nn[0] * 5)} ${f1(by - a[1] * 5 - nn[1] * 5)}" fill="none" stroke="${col}" stroke-width="1.6"/>`; }).join(""); };
   let svg = `<path d="M${f1(Pa2[0])} ${f1(Pa2[1])} L${f1(Pb2[0])} ${f1(Pb2[1])} L${f1(Pc2[0])} ${f1(Pc2[1])}Z" fill="color-mix(in srgb, ${c} 10%, transparent)" stroke="none"/>`;
   if (pap) svg += `<path d="M${f1(Pa2[0])} ${f1(Pa2[1])} L${f1(Pm[0])} ${f1(Pm[1])} L${f1(Pn[0])} ${f1(Pn[1])}Z" fill="color-mix(in srgb, #5fa8d3 12%, transparent)" stroke="none"/>`;
-  svg += ln(pap ? Pm : Pa2, Pb2, `stroke="var(--texte)" stroke-width="2"`) + ln(pap ? Pn : Pa2, Pc2, `stroke="var(--texte)" stroke-width="2"`);
-  svg += ln(Pb2, Pc2, `stroke="${c}" stroke-width="2.6"`) + ln(Pm, Pn, `stroke="#5fa8d3" stroke-width="2.6"`);
-  if ((o.mode || "calcul") === "calcul" || o._k2 === undefined && kR) svg += chevron(Pb2, Pc2, c) + chevron(Pm, Pn, "#5fa8d3");
+  svg += ln(pap ? Pm : Pa2, Pb2, `stroke="${coulCote.AB}" stroke-width="2"`) + ln(pap ? Pn : Pa2, Pc2, `stroke="${coulCote.AC}" stroke-width="2"`);
+  svg += ln(Pb2, Pc2, `stroke="${coulCote.BC}" stroke-width="2.6"`) + ln(Pm, Pn, `stroke="${coulCote.MN}" stroke-width="2.6"`);
+  if ((o.mode || "calcul") === "calcul" || o._k2 === undefined && kR) svg += chevron(Pb2, Pc2, coulCote.BC) + chevron(Pm, Pn, coulCote.MN);
   // longueurs : sur les segments
   const boites = [];
-  const lab = (p, q, t, petit, dedans) => { if (!t) return ""; const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, ux = q[0] - p[0], uy = q[1] - p[1], n = Math.hypot(ux, uy); let nx = -uy / n, ny = ux / n; const T3 = petit ? [Pa2, Pm, Pn] : [Pa2, Pb2, Pc2], gx = (T3[0][0] + T3[1][0] + T3[2][0]) / 3, gy = (T3[0][1] + T3[1][1] + T3[2][1]) / 3, dec = 0;
+  const fillMes = key => coulMes(key) ? `style="fill:${coulMes(key)}"` : "", legende = [];
+  const lab = (p, q, t, petit, dedans, key) => { if (!t) return ""; const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, ux = q[0] - p[0], uy = q[1] - p[1], n = Math.hypot(ux, uy); let nx = -uy / n, ny = ux / n; const T3 = petit ? [Pa2, Pm, Pn] : [Pa2, Pb2, Pc2], gx = (T3[0][0] + T3[1][0] + T3[2][0]) / 3, gy = (T3[0][1] + T3[1][1] + T3[2][1]) / 3, dec = 0;
     if ((mx - gx) * nx + (my - gy) * ny < 0){ nx = -nx; ny = -ny; }
     if (dedans){ nx = -nx; ny = -ny; }   // AM et AN : à l'intérieur, car l'extérieur est pris par les flèches de AB et AC
-    const pm = placerMesure(mx, my, nx, ny, t, 5 + dec); boites.push(pm.boite); return svgMesure(pm, t); };
+    const pm = (penchee(key) ? placerMesurePenchee : placerMesure)(mx, my, nx, ny, t, 5 + dec); boites.push(pm.boite); return svgMesure(pm, t, fillMes(key)); };
   const tx = key => L[key] && String(L[key]).trim() ? (nbT(L[key]) ? frN(nbT(L[key])) + " " + u : String(L[key])) : "";
   if (o.longueurs !== false){
-    svg += lab(Pa2, Pm, tx("AM"), true) + lab(Pa2, Pn, tx("AN"), true) + lab(Pm, Pn, tx("MN"), true) + lab(Pb2, Pc2, tx("BC"), false);
+    svg += lab(Pa2, Pm, tx("AM"), true, false, "AM") + lab(Pa2, Pn, tx("AN"), true, false, "AN") + lab(Pm, Pn, tx("MN"), true, false, "MN") + lab(Pb2, Pc2, tx("BC"), false, false, "BC");
     // AB et AC : cotes décalées vers l'extérieur
-    const cote = (p, q, t, voisin) => { if (!t) return ""; const ux = q[0] - p[0], uy = q[1] - p[1], n = Math.hypot(ux, uy); let nx = -uy / n, ny = ux / n; const gx = (Pa2[0] + Pb2[0] + Pc2[0]) / 3, gy = (Pa2[1] + Pb2[1] + Pc2[1]) / 3, mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
+    const cote = (p, q, t, key, cleVoisin) => { const voisin = tx(cleVoisin); if (!t) return ""; const ux = q[0] - p[0], uy = q[1] - p[1], n = Math.hypot(ux, uy); let nx = -uy / n, ny = ux / n; const gx = (Pa2[0] + Pb2[0] + Pc2[0]) / 3, gy = (Pa2[1] + Pb2[1] + Pc2[1]) / 3, mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
       if ((mx - gx) * nx + (my - gy) * ny < 0){ nx = -nx; ny = -ny; }
       // la flèche passe au-delà de la mesure AM / AN posée le long du même côté, pour ne jamais la traverser
-      const d = Math.max(28, voisin ? 5 + Math.abs(nx) * largeurMesure(voisin) + Math.abs(ny) * HAUT_MESURE + 10 : 0), p2 = [p[0] + nx * d, p[1] + ny * d], q2 = [q[0] + nx * d, q[1] + ny * d];
-      const pm = placerMesure(mx + nx * d, my + ny * d, nx, ny, t, 5); boites.push(pm.boite, [Math.min(p2[0], q2[0]) - 4, Math.min(p2[1], q2[1]) - 4, Math.max(p2[0], q2[0]) + 4, Math.max(p2[1], q2[1]) + 4]);
-      return ln(p2, q2, `stroke="var(--doux)" stroke-width="1" marker-start="url(#th-f)" marker-end="url(#th-f)"`) + svgMesure(pm, t); };
-    svg += pap ? lab(Pa2, Pb2, tx("AB"), false) + lab(Pa2, Pc2, tx("AC"), false) : cote(Pa2, Pb2, tx("AB"), tx("AM")) + cote(Pa2, Pc2, tx("AC"), tx("AN"));
+      const d = Math.max(28, voisin ? 5 + (penchee(cleVoisin) ? HAUT_MESURE : Math.abs(nx) * largeurMesure(voisin) + Math.abs(ny) * HAUT_MESURE) + 10 : 0), p2 = [p[0] + nx * d, p[1] + ny * d], q2 = [q[0] + nx * d, q[1] + ny * d];
+      // flèche trop loin du triangle (la mesure AM / AN prend la place) : la mesure passe à côté du schéma, « AB = 5 cm »
+      if (d > 34){ legende.push([`${nomL[key]} = ${t}`, key]); return ""; }
+      const pm = (penchee(key) ? placerMesurePenchee : placerMesure)(mx + nx * d, my + ny * d, nx, ny, t, 5); boites.push(pm.boite, [Math.min(p2[0], q2[0]) - 4, Math.min(p2[1], q2[1]) - 4, Math.max(p2[0], q2[0]) + 4, Math.max(p2[1], q2[1]) + 4]);
+      return ln(p2, q2, `stroke="var(--doux)" stroke-width="1" marker-start="url(#th-f)" marker-end="url(#th-f)"`) + svgMesure(pm, t, fillMes(key)); };
+    svg += pap ? lab(Pa2, Pb2, tx("AB"), false, false, "AB") + lab(Pa2, Pc2, tx("AC"), false, false, "AC") : cote(Pa2, Pb2, tx("AB"), "AB", "AM") + cote(Pa2, Pc2, tx("AC"), "AC", "AN");
   }
   const g = [(Pa2[0] + Pb2[0] + Pc2[0]) / 3, (Pa2[1] + Pb2[1] + Pc2[1]) / 3];
-  [[Pa2, A, pap ? [0, -1] : null], [Pb2, B], [Pc2, C], [Pm, M], [Pn, N]].forEach(([p, Lt, dir]) => { let dx = p[0] - g[0], dy = p[1] - g[1]; if (dir){ dx = dir[0]; dy = dir[1]; } const n = Math.hypot(dx, dy) || 1;
-    svg += `<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="2.6" fill="var(--texte)"/>` + svgTexte(p[0] + dx / n * 15, p[1] + dy / n * 15 + 5, Lt, "geo-sommet"); });
+  [[Pa2, A, pap ? [0, -1] : null, "A"], [Pb2, B, null, "B"], [Pc2, C, null, "C"], [Pm, M, null, "M"], [Pn, N, null, "N"]].forEach(([p, Lt, dir, cle]) => { let dx = p[0] - g[0], dy = p[1] - g[1]; if (dir){ dx = dir[0]; dy = dir[1]; } const n = Math.hypot(dx, dy) || 1;
+    svg += `<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="2.6" fill="${coulPt(cle)}"/>` + svgTexte(p[0] + dx / n * 15, p[1] + dy / n * 15 + 5, Lt, "geo-sommet", "middle", sty["p_" + cle] ? `style="fill:${sty["p_" + cle]}"` : ""); });
   const defs = `<defs><marker id="th-f" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9" fill="none" stroke="var(--doux)" stroke-width="1.4"/></marker></defs>`;
   let vx0 = mx0 - 20, vy0 = my0 - 10, vx1 = mx0 + W + 20, vy1 = my0 + H + 10;
   boites.forEach(([a, b2, c2, d2]) => { vx0 = Math.min(vx0, a - 6); vy0 = Math.min(vy0, b2 - 6); vx1 = Math.max(vx1, c2 + 6); vy1 = Math.max(vy1, d2 + 6); });
-  const fig = `<svg viewBox="${f1(vx0)} ${f1(vy0)} ${f1(vx1 - vx0)} ${f1(vy1 - vy0)}" class="mod-svg" style="max-width:440px" role="img" aria-label="Configuration de Thalès ${pap ? "en papillon" : "en triangles emboîtés"}">${defs}${svg}</svg>`;
+  if (legende.length){ const lx = Math.max(Math.max(...xs) + 30, ...boites.map(bx => bx[2] + 12)), lw = Math.max(...legende.map(([t]) => largeurMesure(t))); legende.forEach(([t, key], i) => { svg += svgTexte(lx, vy0 + 26 + i * 22, t, "geo-cote", "start", fillMes(key)); }); vx1 = lx + lw + 8; }
+  const fig = `<svg viewBox="${f1(vx0)} ${f1(vy0)} ${f1(vx1 - vx0)} ${f1(vy1 - vy0)}" class="mod-svg" style="max-width:${legende.length ? 520 : 440}px" role="img" aria-label="Configuration de Thalès ${pap ? "en papillon" : "en triangles emboîtés"}">${defs}${svg}</svg>`;
   return `<div class="mod-theoreme">${fig}${o.redaction !== false && red.length ? htmlRedaction(red, titre) : ""}</div>`;
 }
 
@@ -11783,7 +11807,7 @@ const MODULES = [
       CHAMP("config", "Configuration", "choix", {options: [["emboites","Triangles emboîtés"],["papillon","Papillon"]]}),
       CHAMP("sommets", "Points (A, M, N, B, C)", "texte", {aide: "Sommet commun, puis M sur (AB), N sur (AC), puis B et C. ex. AMNBC, OEFGH"}),
       CHAMP("am", "AM", "texte", {aide: "Un nombre, ou « ? » pour une longueur à trouver"}), CHAMP("ab", "AB"), CHAMP("an", "AN"), CHAMP("ac", "AC"), CHAMP("mn", "MN", "texte", {si: o => o.mode !== "reciproque"}), CHAMP("bc", "BC", "texte", {si: o => o.mode !== "reciproque"}),
-      CHAMP("unite", "Unité"), CHAMP("couleur", "Couleur", "couleur"), CHAMP("longueurs", "Longueurs sur la figure", "case"), CHAMP("redaction", "Rédaction de la démonstration", "case")], rendu: svgThales},
+      CHAMP("unite", "Unité"), CHAMP("couleur", "Couleur", "couleur"), CHAMP("styles", "Couleurs et mesures, une par une", "thstyle"), CHAMP("longueurs", "Longueurs sur la figure", "case"), CHAMP("redaction", "Rédaction de la démonstration", "case")], rendu: svgThales},
   {id: "symetrie", nom: "Symétrie", cat: "Maths", icone: "⇹", defaut: () => ({mode: "axiale", axe: "vertical", figure: "drapeau", image: "pleine", grille: true, couleur: "#f2ae02", centre: "O"}),
     champs: [CHAMP("mode", "Symétrie", "choix", {options: [["axiale","Axiale"],["centrale","Centrale"]]}), CHAMP("axe", "Axe (symétrie axiale)", "choix", {options: [["vertical","Vertical"],["horizontal","Horizontal"],["oblique","Oblique"]]}),
       CHAMP("figure", "Figure", "choix", {options: [["drapeau","Drapeau"],["triangle","Triangle"],["L","Forme en L"],["fleche","Flèche"],["maison","Maison"]]}), CHAMP("image", "Image", "choix", {options: [["pleine","Affichée"],["pointilles","En pointillés"],["cachee","Cachée (à construire)"]]}),
@@ -11950,6 +11974,14 @@ function fenetreModule(depart, valider){
         ${n < (c.max || 10) ? `<button type="button" class="mini-btn mod-ajout-carte" data-ajoute="${c.k}">+ ${esc(c.cartes.ajout || "Ajouter")}</button>` : ""}</div>`; }
       if (c.t === "liste") return `<div class="mod-liste"><span class="mono">${esc(c.label)}</span>${(o[c.k] || []).map((it, i) => `<div class="mod-ligne">${c.sous.map((s, si) => `<label class="champ-mini"><span>${esc(s.label)}</span>${champHtml(s, it[s.k], `ml-${c.k}-${i}-${s.k}`)}</label>`).join("")}<button type="button" class="mini-btn" data-retire="${c.k}:${i}" aria-label="Retirer">×</button></div>`).join("")}
         ${(o[c.k] || []).length < (c.max || 10) ? `<button type="button" class="mini-btn" data-ajoute="${c.k}">+ Ajouter</button>` : ""}</div>`;
+      if (c.t === "thstyle"){ const sy = o.styles || {}, S5 = String(o.sommets || "AMNBC").toUpperCase().replace(/[^A-Z]/g, "").padEnd(5, "?"), nom = {A: S5[0], M: S5[1], N: S5[2], B: S5[3], C: S5[4]}, nomS = k2 => nom[k2[0]] + nom[k2[1]];
+        const defC = {AB: "#f2f2f2", AC: "#f2f2f2", MN: "#5fa8d3", BC: o.couleur || "#f2ae02"};
+        const pastille = (cle, def, txt) => `<label class="th-sw${sy[cle] ? " choisi" : ""}"><input type="color" data-sty="${cle}" value="${esc(sy[cle] || def)}"><span>${esc(txt)}</span></label>`;
+        return `<div class="champ th-sty"><div class="rangee" style="justify-content:space-between"><span class="mono">${esc(c.label)}</span>${Object.keys(sy).length ? `<button type="button" class="mini-btn" data-sty-raz>↺ Par défaut</button>` : ""}</div>
+          <span class="th-sous">Côtés</span><div class="th-sws">${["AB","AC","MN","BC"].map(k2 => pastille("c_" + k2, defC[k2], `[${nomS(k2)}]`)).join("")}</div>
+          <span class="th-sous">Points</span><div class="th-sws">${["A","M","N","B","C"].map(k2 => pastille("p_" + k2, "#f2f2f2", nom[k2])).join("")}</div>
+          <span class="th-sous">Mesures</span><div class="th-mes">${["AM","AB","AN","AC","MN","BC"].map(k2 => `<div class="th-mes-l">${pastille("m_" + k2, "#9a9a9a", nomS(k2))}<label class="mod-case"><span>Penchée</span><input type="checkbox" role="switch" data-sty-r="r_${k2}" ${sy["r_" + k2] ? "checked" : ""}></label></div>`).join("")}</div>
+          <span class="aide">« Penchée » : la mesure suit la direction de son côté au lieu d'être horizontale, ce qui la rapproche de la figure.</span></div>`; }
       if (c.t === "temps") return `<div class="champ"><span class="mono">${esc(c.label)}</span><div class="filtres" id="mod-temps">${(TEMPS_CONJ[o.langue] || []).map(([k, t]) => `<button type="button" data-tp="${k}" aria-pressed="${(o.temps || []).includes(k)}">${t}</button>`).join("")}</div></div>`;
       if (c.t === "grille") return `<div class="champ"><div class="rangee" style="justify-content:space-between"><span class="mono">Tableau (modifiable)</span><button type="button" class="mini-btn" id="mod-generer">↻ Recalculer</button></div>
         <table class="tab-saisie">${(o.grille || []).map((l, i) => `<tr>${l.map((v, k) => `<td><input type="text" data-gr="${i}:${k}" value="${esc(v)}" ${i === 0 || k === 0 ? `class="th"` : ""}></td>`).join("")}</tr>`).join("")}</table>
@@ -11977,6 +12009,10 @@ function fenetreModule(depart, valider){
         apercu();
       });
     });
+    z.querySelectorAll("[data-sty]").forEach(x => x.oninput = () => { o.styles = {...(o.styles || {}), [x.dataset.sty]: x.value}; x.closest(".th-sw").classList.add("choisi"); apercu(); });
+    z.querySelectorAll("[data-sty]").forEach(x => x.onchange = () => champs());
+    z.querySelectorAll("[data-sty-r]").forEach(x => x.onchange = () => { const st = {...(o.styles || {})}; if (x.checked) st[x.dataset.styR] = true; else delete st[x.dataset.styR]; o.styles = st; apercu(); });
+    const raz = z.querySelector("[data-sty-raz]"); if (raz) raz.onclick = () => { o.styles = {}; champs(); apercu(); };
     z.querySelectorAll("[data-tp]").forEach(b => b.onclick = () => { const t = b.dataset.tp, l = o.temps || []; o.temps = l.includes(t) ? l.filter(x => x !== t) : l.length < 4 ? [...l, t] : l; const ordre = (TEMPS_CONJ[o.langue] || []).map(x => x[0]); o.temps.sort((a, b) => ordre.indexOf(a) - ordre.indexOf(b)); regenerer(); champs(); apercu(); });
     z.querySelectorAll("[data-gr]").forEach(x => x.oninput = () => { const [i, k] = x.dataset.gr.split(":").map(Number); o.grille[i][k] = x.value; apercu(); });
     const gen = z.querySelector("#mod-generer"); if (gen) gen.onclick = () => { regenerer(); champs(); apercu(); };
