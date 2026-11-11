@@ -3051,6 +3051,10 @@ span.obj-txt:has(> .badge-l){vertical-align:baseline}
 .esp-opt[aria-pressed="true"]{background:var(--accent-sombre);color:var(--accent)}
 .esp-menu .mod-curseur-tete{margin:8px 4px 0}
 .esp-menu .mod-curseur{margin:0 4px 4px}
+.o-esp[aria-pressed="true"]{color:var(--accent);background:var(--accent-sombre)}
+.o-esp[aria-pressed="false"]{color:var(--doux)}
+.o-esp[aria-pressed="false"] svg{opacity:.6}
+.esp-calque[hidden]{display:none}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -7244,7 +7248,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.42";
+const VERSION_SITE = "2.43";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -8772,7 +8776,7 @@ function parGroupes(ls){
 function remplirSommaires(racine){
   if (!racine || !racine.querySelectorAll) return;
   racine.querySelectorAll(".sommaire-lecon").forEach(som => {
-    const doc = som.closest(".doc-lecon") || racine, parties = [...doc.querySelectorAll(".partie-lecon")];
+    const doc = som.closest(".doc-lecon") || racine, parties = [...doc.querySelectorAll(".partie-lecon")].filter(h => h.textContent.replace(/[\s\u200b\u00a0]/g, ""));
     parties.forEach((h, i) => { if (!h.id || !h.id.startsWith("partie-")) h.id = "partie-" + (i + 1) + "-" + Math.random().toString(36).slice(2, 6); });
     som.innerHTML = parties.length ? `<ol>${parties.map(h => `<li><a href="#${h.id}" data-partie="${h.id}">${esc(h.textContent.trim().replace(/^\d+\s*[.)-]\s*/, "").replace(/\s*:\s*$/, ""))}</a></li>`).join("")}</ol>`
       : `<p class="doux">Sommaire : transforme des lignes en titres de partie avec le bouton « § Partie » pour qu'elles apparaissent ici.</p>`;
@@ -8937,7 +8941,9 @@ function nettoyerHtml(html){
         if (!garder) n.removeAttribute(a.name);
       });
       if ((n.tagName === "FIGURE" || n.tagName === "SPAN") && n.hasAttribute("data-obj")){ n.textContent = ""; if (n.tagName === "SPAN") n.removeAttribute("style"); return; }
-      if (n.classList && n.classList.contains("sommaire-lecon")){ n.textContent = ""; return; }   // le sommaire est recalculé à l'affichage
+      if (n.classList && n.classList.contains("sommaire-lecon")){ n.textContent = ""; return; }
+      // un « titre de partie » sans texte n'en est pas un (sinon il prend une ligne vide du sommaire)
+      if (n.classList && n.classList.contains("partie-lecon") && !n.textContent.replace(/[\s\u200b\u00a0]/g, "")){ n.classList.remove("partie-lecon"); if (!n.className) n.removeAttribute("class"); }   // le sommaire est recalculé à l'affichage
       // exposant / indice écrits par le navigateur en style : on les range dans de vraies balises <sup> / <sub>
       if (n.tagName === "SPAN" && /vertical-align:\s*(super|sub)/.test(n.getAttribute("style") || "")){
         const haut = /vertical-align:\s*super/.test(n.getAttribute("style")), b = n.ownerDocument.createElement(haut ? "sup" : "sub");
@@ -9780,6 +9786,7 @@ function dessinerEditeur(){
           <button type="button" id="o-partie" class="o-ins o-partie" title="Faire de la ligne un titre de partie (il apparaîtra dans le sommaire)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3h5.5v8.5L6.75 9.6 4 11.5z" fill="currentColor" fill-opacity=".25"/><path d="M13 5.5h7M13 9h5" stroke-width="2.6"/><path d="M4 15.5h16M4 19.5h11" opacity=".55"/></svg><span>Partie</span></button><button type="button" id="o-sommaire" class="o-ins o-sommaire" title="Insérer un sommaire cliquable des parties"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01" stroke-width="2.6"/></svg><span>Sommaire</span></button>
           <span class="sep"></span>
           <button type="button" id="o-tableau" class="o-ins" title="Insérer un tableau"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10M15 9.5v10"/></svg><span>Tableau</span></button><button type="button" id="o-graphe" class="o-ins" title="Insérer un graphique"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><rect x="6" y="11" width="3" height="7" rx=".6"/><rect x="11" y="6" width="3" height="12" rx=".6"/><rect x="16" y="13" width="3" height="5" rx=".6"/></svg><span>Graphique</span></button><button type="button" id="o-forme" class="o-ins" title="Insérer une figure géométrique"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.6" r="1.9"/><path d="M11 6.4 6.6 19.5M13 6.4l4.4 13.1" stroke-width="2.2"/><path d="M8.4 13.6h7.2"/><path d="M3.5 15.5a10 10 0 0 0 17 0" opacity=".6"/></svg><span>Géométrie</span></button><button type="button" id="o-symb" class="o-ins" title="Insérer un symbole"><span class="ic ic-txt" aria-hidden="true">Ω</span><span>Symboles</span></button><button type="button" id="o-module" class="o-ins o-module" title="Ajouter un module : fonction, carte, atome, conjugaison, circuit…"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4.5a2 2 0 0 1 4 0V6h3.5a1 1 0 0 1 1 1v3.5H17a2 2 0 0 0 0 4h1.5V18a1 1 0 0 1-1 1H14v-1.5a2 2 0 0 0-4 0V19H6.5a1 1 0 0 1-1-1v-3.5H7a2 2 0 0 0 0-4H5.5V7a1 1 0 0 1 1-1H10z"/></svg><span>Module</span></button><button type="button" id="o-image" class="o-ins" title="Insérer une image"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/></svg><span>Image</span></button><button type="button" id="o-pj" class="o-ins" title="Joindre un fichier"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11.5 12.2 18.3a4.5 4.5 0 0 1-6.4-6.4l7.3-7.3a3 3 0 0 1 4.2 4.2l-7.2 7.2a1.5 1.5 0 0 1-2.1-2.1l6.6-6.6"/></svg><span>Pièce jointe</span></button>
+          <span class="sep"></span><button type="button" id="o-esp" class="o-ins o-esp" aria-pressed="true" aria-label="Icônes des lignes vides" title="Afficher ou masquer les icônes de hauteur des lignes vides"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M8.5 7.5 12 4l3.5 3.5M8.5 16.5 12 20l3.5-3.5"/></svg></button>
         </div>
         <input type="file" id="f-image" accept="image/*" hidden><input type="file" id="f-pj" multiple hidden>
       </div>
@@ -9823,6 +9830,9 @@ function dessinerEditeur(){
   remplirImages(doc); remplirObjets(doc);
   // ----- Hauteur des lignes vides : une petite icône à côté de chaque retour à la ligne vide -----
   const cadreEd = doc.parentElement, calqueEsp = document.createElement("div"); calqueEsp.className = "esp-calque"; cadreEd.appendChild(calqueEsp);
+  { let voir = true; try { voir = localStorage.getItem("helper-icones-esp") !== "non"; } catch {}
+    const bEsp = $("#o-esp"), majVoir = () => { calqueEsp.hidden = !voir; bEsp.setAttribute("aria-pressed", voir); bEsp.title = voir ? "Masquer les icônes de hauteur des lignes vides" : "Afficher les icônes de hauteur des lignes vides"; if (!voir) document.querySelector(".esp-menu")?.remove(); };
+    bEsp.onmousedown = ev => ev.preventDefault(); bEsp.onclick = () => { voir = !voir; try { localStorage.setItem("helper-icones-esp", voir ? "oui" : "non"); } catch {} majVoir(); }; majVoir(); }
   const INLINE_FMT = /^(SPAN|B|I|U|S|STRIKE|STRONG|EM|FONT|SUB|SUP|BR)$/;
   const estLigneVide = el => el !== doc && /^(P|DIV)$/.test(el.tagName) && !el.closest("figure, table, li, .sommaire-lecon, .obj-txt") && !el.textContent.replace(/[\s\u200b\u00a0]/g, "")
     && [...el.querySelectorAll("*")].every(c => INLINE_FMT.test(c.tagName) && !c.classList.contains("obj-txt")) && (!!el.querySelector("br") || el.classList.contains("esp"));
@@ -9837,7 +9847,7 @@ function dessinerEditeur(){
       [...c.childNodes].forEach(n => { if (n.nodeType === 1 && n.matches(BLOCS)) fermer(); else lot.push(n); }); fermer(); });
     // 2) un bloc contenant des <br> est découpé ligne par ligne
     [...doc.querySelectorAll("div, p")].reverse().forEach(b => {
-      if (horsZone(b) || b.querySelector(BLOCS)) return;
+      if (horsZone(b) || b.querySelector(BLOCS) || b.classList.contains("partie-lecon")) return;   // un titre de partie reste d'un seul tenant
       const brs = [...b.querySelectorAll("br")]; if (!brs.length || (brs.length === 1 && b.lastChild === brs[0] && b.childNodes.length > 1) || (brs.length === 1 && b.childNodes.length === 1)) return;
       const morceaux = []; let br;
       while ((br = b.querySelector("br"))){ const r = document.createRange(); r.setStart(b, 0); r.setEndBefore(br); const f = r.extractContents(); b.querySelector("br").remove(); morceaux.push(f); }
