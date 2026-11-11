@@ -7277,7 +7277,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.50";
+const VERSION_SITE = "2.51";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -11493,7 +11493,9 @@ function svgAgrandissement(o){
   // la flèche passe au-dessus des deux figures : elle part vers le haut et redescend à la verticale sur l'image
   const hautF = base - dims[1] * s - (vol ? b * .45 * s : 0), hautI = base - dims[1] * k * s - (vol ? b * k * .45 * s : 0);
   const xa = x0 + dims[0] * s * .5, xb = x1 + dims[0] * k * s * .5, yh = Math.min(hautF, hautI) - 12, crete = yh - 30;
-  svg += `<path d="M${f1(xa)} ${f1(hautF - 8)} C${f1(xa)} ${f1(crete)} ${f1(xb)} ${f1(crete)} ${f1(xb)} ${f1(hautI - 9)}" fill="none" stroke="var(--doux)" stroke-width="1.4" marker-end="url(#ag-f)"/>`;
+  const yb = hautI - 7;   // pointe de la flèche, juste au-dessus de l'image
+  svg += `<path d="M${f1(xa)} ${f1(hautF - 8)} C${f1(xa)} ${f1(crete)} ${f1(xb)} ${f1(crete)} ${f1(xb)} ${f1(yb - 8)}" fill="none" stroke="var(--doux)" stroke-width="1.5" stroke-linecap="round"/>`;
+  svg += `<path d="M${f1(xb)} ${f1(yb)} L${f1(xb - 5)} ${f1(yb - 10)} Q${f1(xb)} ${f1(yb - 7.5)} ${f1(xb + 5)} ${f1(yb - 10)}Z" fill="var(--doux)" stroke="var(--doux)" stroke-width="1" stroke-linejoin="round"/>`;
   svg += svgTexte((xa + xb) / 2, crete - 2, "× " + kTxt(k), "geo-cote ag-k", "middle"); boites.push([(xa + xb) / 2 - 40, crete - 22, (xa + xb) / 2 + 40, crete + 4]);
   const defs = `<defs><marker id="ag-f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="var(--doux)" stroke-width="1.5"/></marker></defs>`;
   let vx0 = x0 - 6, vy0 = yh - 50, vx1 = xmax - 30, vy1 = base + 8;
