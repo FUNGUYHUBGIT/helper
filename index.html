@@ -7249,7 +7249,7 @@ const brancherFiltres = r => { zone().querySelectorAll(".filtres-pc button").for
 const verrou = quoi => `<div class="verrou"><h3>Réservé à la 3C</h3><p class="doux">${quoi} n'est disponible que pour les élèves de la classe de 3C. Si tu en fais partie, demande au gérant de vérifier ton code d'accès.</p></div>`;
 // onglets pas encore terminés
 const EN_CHANTIER = ["defi"];
-const VERSION_SITE = "2.44";
+const VERSION_SITE = "2.45";
 document.querySelectorAll("[data-num-version]").forEach(e => e.textContent = VERSION_SITE + (APPLI_NATIVE ? " · appli " + APPLI_NATIVE : VIEILLE_APPLI ? " · ancienne appli" : ""));
 const BANDEAU_CHANTIER = `<div class="bandeau-chantier" role="note"><span class="bandeau-chantier-ico" aria-hidden="true">🚧</span><span><b>Onglet en construction.</b> Il n'est pas terminé : son contenu peut changer, être incomplet ou contenir des erreurs.</span></div>`;
 const enConstruction = (titre, texte) => `<div class="construction"><span class="badge accent">En construction</span><h3>${titre}</h3><p class="doux" style="max-width:62ch">${texte}</p></div>`;
@@ -17566,7 +17566,9 @@ async function leconEnPdf(html, titre){
   try {
     const d = c.d; d.documentElement.dataset.theme = "clair";
     document.querySelectorAll("style").forEach(st => { const x = d.createElement("style"); x.textContent = st.textContent; d.head.appendChild(x); });
-    document.querySelectorAll('link[rel="stylesheet"]').forEach(l => { const x = d.createElement("link"); x.rel = "stylesheet"; x.href = l.href; x.crossOrigin = "anonymous"; d.head.appendChild(x); });
+    const liens = [...document.querySelectorAll('link[rel="stylesheet"]')].map(l => { const x = d.createElement("link"); x.rel = "stylesheet"; x.href = l.href; x.crossOrigin = "anonymous";
+      const p = new Promise(r => { x.onload = x.onerror = r; setTimeout(r, 5000); }); d.head.appendChild(x); return p; });
+    await Promise.all(liens);   // la feuille des polices doit être là avant de mesurer, sinon les lignes bougent après coup
     const x = d.createElement("style"); x.textContent = `html,body{background:#fff!important;margin:0;padding:0}body{width:${LARG}px;overflow:hidden}
       #pdf-l{width:${LARG}px;background:#fff;padding:0 0 6px;margin:0;border:0;box-shadow:none;min-height:0}#pdf-l .titre-fixe-lecon{margin-top:0}
       .pdf-sous{color:var(--doux);margin:-.3em 0 .9em}.esp-calque,.esp-btn{display:none!important}`; d.head.appendChild(x);
@@ -17574,8 +17576,13 @@ async function leconEnPdf(html, titre){
     const el = d.getElementById("pdf-l");
     adapterCouleursLecons(el, true);
     await Promise.all([...el.querySelectorAll("img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; setTimeout(r, 6000); })));
-    if (d.fonts && d.fonts.ready) await Promise.race([d.fonts.ready, attendre(3000)]);
-    await attendre(300);
+    if (d.fonts){
+      // on charge toutes les polices réellement utilisées (famille, graisse, style) avant de mesurer
+      const vues = new Set(); [el, ...el.querySelectorAll("*")].forEach(e => { const cs = c.w.getComputedStyle(e); vues.add(`${cs.fontStyle} ${cs.fontWeight} 16px ${cs.fontFamily}`); });
+      await Promise.race([Promise.all([...vues].map(f => d.fonts.load(f, "Aaéèàç0123456789").catch(() => 0))), attendre(6000)]);
+      await Promise.race([d.fonts.ready, attendre(4000)]);
+    }
+    await attendre(300); el.getBoundingClientRect();
     // endroits où l'on ne doit pas couper : chaque ligne de texte, chaque image, figure, formule, badge
     const base = el.getBoundingClientRect().top, zones = [];
     const tw = d.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n;
@@ -17585,13 +17592,17 @@ async function leconEnPdf(html, titre){
     const total = Math.ceil(el.getBoundingClientRect().height);
     const libre = y => !zones.some(([a, b]) => a < y - .5 && b > y + .5);
     const coupes = [0]; let y0 = 0;
-    while (total - y0 > HPAGE){ let y = y0 + HPAGE; const mini = y0 + HPAGE * .45; while (y > mini && !libre(y)) y -= 1; if (y <= mini) y = y0 + HPAGE; coupes.push(y); y0 = y; }
+    while (total - y0 > HPAGE){ let y = y0 + HPAGE; const mini = y0 + HPAGE * .45; while (y > mini && !libre(y)) y -= 1;
+      if (y <= mini) y = y0 + HPAGE;
+      else { let h = y; while (h > mini && libre(h - 1)) h -= 1; y = Math.round((h + y) / 2); }   // au milieu de l'espace entre deux lignes, pas au ras du texte
+      coupes.push(y); y0 = y; }
     coupes.push(total);
     // capture complète, puis découpe en pages
     let ratio = 2; while (total * ratio > 30000 && ratio > 1) ratio -= .25;
     const optsCap = {pixelRatio: ratio, backgroundColor: "#fff", cacheBust: false, width: LARG, height: total, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="};
     let cv; try { cv = await c.w.htmlToImage.toCanvas(el, optsCap); } catch { cv = await c.w.htmlToImage.toCanvas(el, {...optsCap, skipFonts: true}); }
-    const k = cv.width / LARG, pages = [];
+    const k = cv.width / LARG, pages = [], ech = cv.height / k / total;
+    if (Math.abs(ech - 1) > .002) for (let i = 1; i < coupes.length; i++) coupes[i] = coupes[i] * ech;
     for (let i = 0; i < coupes.length - 1; i++){
       const h = coupes[i + 1] - coupes[i]; if (h < 2) continue;
       const t = document.createElement("canvas"); t.width = cv.width; t.height = Math.ceil(h * k);
